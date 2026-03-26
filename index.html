@@ -3,62 +3,549 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eduardo C. Garrido-Merchán</title>
+  <title>Eduardo C. Garrido-Merchán — Researcher in AI &amp; Machine Learning</title>
+  <meta name="description" content="Personal academic page of Eduardo C. Garrido-Merchán, researcher in Bayesian Optimization, Reinforcement Learning, and Generative AI at Universidad Pontificia Comillas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --accent: #7c3aed;
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #f8fafc;
+      --border: #334155;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    }
+
     body {
-      font-family: 'Georgia', 'Times New Roman', serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-      line-height: 1.6;
-      color: #333;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
     }
-    h1 { margin-bottom: 0.2em; }
-    .subtitle {
-      color: #666;
-      font-style: italic;
-      margin-bottom: 2em;
+
+    /* Animated background */
+    .bg-pattern {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(37,99,235,0.05) 0%, transparent 50%);
+      z-index: -1;
+      animation: bgShift 20s ease-in-out infinite alternate;
     }
-    h2 {
-      font-size: 1.2em;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 0.3em;
-      margin-top: 2em;
+    @keyframes bgShift {
+      0% { opacity: 0.8; }
+      100% { opacity: 1.2; }
     }
-    a { color: #2563eb; }
-    .paper {
-      margin-bottom: 1.5em;
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
     }
-    .paper-title {
-      font-weight: bold;
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
     }
-    .paper-authors {
-      color: #555;
+    .avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(99,102,241,0.4);
+      box-shadow: 0 0 40px rgba(99,102,241,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .avatar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 60px rgba(99,102,241,0.25);
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+    }
+    .hero .tagline {
+      font-size: 1.15em;
+      color: var(--text-muted);
+      max-width: 600px;
+    }
+    .hero .affiliation {
       font-size: 0.95em;
+      color: var(--text-muted);
     }
-    .paper-meta {
+    .hero .affiliation strong { color: var(--text); }
+
+    /* Social links */
+    .social-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85em;
+      transition: all 0.2s;
+    }
+    .social-links a:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-bright);
+      border-color: var(--primary);
+    }
+    .social-links a svg { width: 16px; height: 16px; }
+
+    /* Section */
+    section {
+      padding: 50px 0;
+    }
+    section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8em;
+      color: var(--text-bright);
+      margin-bottom: 12px;
+    }
+    section .section-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 1.05em;
+    }
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: var(--gradient-2);
+      border-radius: 3px;
+      margin-bottom: 32px;
+    }
+
+    /* Research areas grid */
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .research-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .research-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--gradient-2);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .research-card:hover {
+      border-color: rgba(99,102,241,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .research-card:hover::before { opacity: 1; }
+    .research-card .icon {
+      font-size: 2em;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .research-card h3 {
+      font-size: 1.05em;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    .research-card p {
       font-size: 0.9em;
-      color: #888;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Education */
+    .education-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .edu-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .edu-icon {
+      font-size: 1.6em;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .edu-item h3 {
+      font-size: 0.95em;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .edu-item p {
+      font-size: 0.85em;
+      color: var(--text-muted);
+    }
+    .edu-item .award {
+      display: inline-block;
+      background: rgba(124,58,237,0.15);
+      color: #a78bfa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8em;
+      margin-top: 4px;
+    }
+
+    /* Paper highlight */
+    .paper-highlight {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .paper-highlight:hover {
+      border-color: rgba(99,102,241,0.3);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    .paper-highlight::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--gradient-1);
+    }
+    .paper-badge {
+      display: inline-block;
+      background: rgba(37,99,235,0.15);
+      color: #60a5fa;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.8em;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      margin-bottom: 14px;
+    }
+    .paper-highlight h3 {
+      font-size: 1.15em;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .paper-highlight h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .paper-highlight h3 a:hover {
+      color: #818cf8;
+    }
+    .paper-authors-line {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .paper-abstract {
+      font-size: 0.88em;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .paper-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .paper-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85em;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--gradient-2);
+      color: white;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-bright);
+      border-color: var(--primary);
+    }
+
+    /* Hobbies */
+    .hobbies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .hobby-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .hobby-card:hover {
+      border-color: rgba(124,58,237,0.3);
+      transform: translateY(-2px);
+    }
+    .hobby-card .hobby-icon {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .hobby-card h3 {
+      font-size: 0.95em;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .hobby-card p {
+      font-size: 0.82em;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--text-muted);
+      font-size: 0.85em;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2em; }
+      .hero { padding: 50px 0 40px; }
+      .avatar { width: 120px; height: 120px; }
+      section h2 { font-size: 1.5em; }
+      .research-grid { grid-template-columns: 1fr; }
+      .hobbies-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <h1>Eduardo C. Garrido-Merch&aacute;n</h1>
-  <p class="subtitle">
-    Institute for Research in Technology (IIT)<br>
-    Universidad Pontificia Comillas, Madrid, Spain<br>
-    <a href="mailto:ecgarrido@comillas.edu">ecgarrido@comillas.edu</a>
-  </p>
+  <div class="bg-pattern"></div>
 
-  <h2>Papers</h2>
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container hero-inner">
+      <img src="https://avatars.githubusercontent.com/u/535678?s=400&v=4"
+           alt="Eduardo C. Garrido-Merchán"
+           class="avatar">
+      <h1>Eduardo C. Garrido-Merch&aacute;n</h1>
+      <p class="tagline">Researcher in Artificial Intelligence, Bayesian Optimization &amp; Generative AI</p>
+      <p class="affiliation">
+        <strong>Institute for Research in Technology (IIT)</strong><br>
+        Universidad Pontificia Comillas &middot; ICADE &middot; Madrid, Spain
+      </p>
+      <div class="social-links">
+        <a href="mailto:ecgarrido@comillas.edu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Email
+        </a>
+        <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769 0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+          Scholar
+        </a>
+        <a href="https://github.com/EduardoGarrido90" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.researchgate.net/profile/Eduardo-Garrido-Merchan" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.586 0c-.818 0-1.508.19-2.073.565-.563.377-.97.936-1.213 1.68a3.193 3.193 0 0 0-.112.437 8.365 8.365 0 0 0-.078.53 9 9 0 0 0-.032.58c0 .464.06.927.18 1.39.12.464.33.87.63 1.22.3.35.66.6 1.08.75.42.15.9.18 1.44.09v-.02c.16-.03.31-.08.44-.14l.12-.06.03-.03a.56.56 0 0 0 .18-.18.5.5 0 0 0 .06-.27c0-.09-.02-.18-.05-.27-.14-.36-.3-.66-.47-.9a3.6 3.6 0 0 1-.3-.6 1.7 1.7 0 0 1-.1-.6c0-.29.07-.55.2-.77s.33-.34.6-.34c.26 0 .47.12.62.35.15.24.23.53.23.89 0 .73-.25 1.33-.75 1.81a2.38 2.38 0 0 1-1.76.72c-.58 0-1.06-.14-1.44-.43-.38-.29-.68-.68-.9-1.17-.22-.49-.37-1.04-.46-1.67a12 12 0 0 1-.14-1.8c0-1.11.18-2.05.54-2.82.36-.77.87-1.36 1.53-1.77A4.04 4.04 0 0 1 19.586 0zM4.166 7.12a4.94 4.94 0 0 1 1.87.36c.6.24 1.12.6 1.55 1.06.43.47.77 1.04 1.01 1.71.24.68.36 1.44.36 2.3 0 .87-.12 1.64-.36 2.3-.24.68-.58 1.24-1.01 1.71-.44.47-.95.82-1.55 1.06-.6.24-1.23.36-1.87.36s-1.27-.12-1.87-.36a4.38 4.38 0 0 1-1.55-1.06c-.43-.47-.77-1.04-1.01-1.71A6.1 6.1 0 0 1 0 12.55c0-.86.12-1.63.36-2.3.24-.68.58-1.24 1.01-1.71a4.38 4.38 0 0 1 1.55-1.06c.6-.24 1.23-.36 1.87-.36zm0 2.07c-.38 0-.72.1-1.01.32-.29.21-.52.51-.69.89a5.2 5.2 0 0 0-.4 1.3c-.08.5-.13 1.03-.13 1.6 0 .56.05 1.09.13 1.6.09.5.22.95.4 1.3.17.38.4.68.69.89.29.21.63.32 1.01.32s.72-.1 1.01-.32c.29-.21.52-.51.69-.89.18-.38.31-.8.4-1.3.09-.5.13-1.03.13-1.6 0-.56-.04-1.1-.13-1.6a4.7 4.7 0 0 0-.4-1.3 1.82 1.82 0 0 0-.69-.89c-.29-.21-.63-.32-1.01-.32z"/></svg>
+          ResearchGate
+        </a>
+        <a href="https://x.com/vedugarmer" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @vedugarmer
+        </a>
+      </div>
+    </div>
+  </header>
 
-  <div class="paper">
-    <p class="paper-title">
-      <a href="papers/automated-survey-generative-ai.html">An Automated Survey of Generative Artificial Intelligence: Large Language Models, Architectures, Protocols, and Applications</a>
-    </p>
-    <p class="paper-authors">Eduardo C. Garrido-Merch&aacute;n and &Aacute;lvaro L&oacute;pez L&oacute;pez</p>
-    <p class="paper-meta">Technical Report, March 2026 &middot; <a href="papers/automated-survey-generative-ai.pdf">PDF</a></p>
-  </div>
+  <main class="container">
 
+    <!-- Research -->
+    <section>
+      <h2>Research</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">My work spans probabilistic machine learning, optimization under uncertainty, and the societal impact of AI systems.</p>
+      <div class="research-grid">
+        <div class="research-card">
+          <span class="icon">&#x1F3AF;</span>
+          <h3>Bayesian Optimization</h3>
+          <p>Information-theoretic acquisition functions, multi-objective optimization, and optimization in complex scenarios with constraints and noise.</p>
+        </div>
+        <div class="research-card">
+          <span class="icon">&#x1F916;</span>
+          <h3>Reinforcement Learning</h3>
+          <p>Deep RL applied to finance (ESG portfolio management, stock trading) and industrial process optimization.</p>
+        </div>
+        <div class="research-card">
+          <span class="icon">&#x1F4CA;</span>
+          <h3>Probabilistic Methods</h3>
+          <p>Gaussian processes, extreme value estimation, and probabilistic numerical methods for uncertainty quantification.</p>
+        </div>
+        <div class="research-card">
+          <span class="icon">&#x1F4AC;</span>
+          <h3>Generative AI &amp; LLMs</h3>
+          <p>Large language model evaluation, bias detection, automated survey generation, and climate risk analysis with fine-tuned transformers.</p>
+        </div>
+        <div class="research-card">
+          <span class="icon">&#x2696;&#xFE0F;</span>
+          <h3>AI Ethics &amp; Governance</h3>
+          <p>Algorithmic fairness, intersectional perspectives on AI justice, data sovereignty, and the social dimensions of artificial intelligence.</p>
+        </div>
+        <div class="research-card">
+          <span class="icon">&#x1F9E0;</span>
+          <h3>Machine Consciousness</h3>
+          <p>Philosophical and computational aspects of AI consciousness, bridging technical AI research with philosophy of mind.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <h2>Education</h2>
+      <div class="divider"></div>
+      <div class="education-list">
+        <div class="edu-item">
+          <span class="edu-icon">&#x1F393;</span>
+          <div>
+            <h3>PhD in Computer Science &amp; Telecommunications</h3>
+            <p>Universidad Aut&oacute;noma de Madrid</p>
+            <span class="award">Cum Laude</span>
+          </div>
+        </div>
+        <div class="edu-item">
+          <span class="edu-icon">&#x1F4D6;</span>
+          <div>
+            <h3>MSc in Artificial Intelligence</h3>
+            <p>Universidad Polit&eacute;cnica de Madrid</p>
+            <span class="award">Jos&eacute; Cuena Award</span>
+          </div>
+        </div>
+        <div class="edu-item">
+          <span class="edu-icon">&#x1F4BB;</span>
+          <div>
+            <h3>BSc in Computer Engineering</h3>
+            <p>Universidad Pontificia Comillas (ICAI)</p>
+            <span class="award">Extraordinary Award</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Paper -->
+    <section>
+      <h2>Featured Paper</h2>
+      <div class="divider"></div>
+      <div class="paper-highlight">
+        <span class="paper-badge">TECHNICAL REPORT &middot; MARCH 2026</span>
+        <h3><a href="papers/automated-survey-generative-ai.html">An Automated Survey of Generative Artificial Intelligence: Large Language Models, Architectures, Protocols, and Applications</a></h3>
+        <p class="paper-authors-line">Eduardo C. Garrido-Merch&aacute;n and &Aacute;lvaro L&oacute;pez L&oacute;pez</p>
+        <p class="paper-abstract">
+          Generative artificial intelligence, and large language models in particular, have emerged as one of the most transformative paradigms in modern computer science. This automated survey provides an accessible treatment of the field as of early 2026, covering frontier LLMs (GPT-5.4, Gemini 3.1, Claude Opus 4.6, DeepSeek, Qwen, GLM-5), deployment protocols (RAG, MCP, A2A), and real-world applications across 15 industry sectors. 72 pages, 200+ references.
+        </p>
+        <div class="paper-links">
+          <a href="papers/automated-survey-generative-ai.pdf" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </a>
+          <a href="papers/automated-survey-generative-ai.html" class="btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Details &amp; Charts
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interests -->
+    <section>
+      <h2>Beyond Research</h2>
+      <div class="divider"></div>
+      <p class="section-subtitle">When I'm not optimizing acquisition functions, you'll find me exploring these passions.</p>
+      <div class="hobbies-grid">
+        <div class="hobby-card">
+          <span class="hobby-icon">&#x2728;</span>
+          <h3>Artificial Intelligence</h3>
+          <p>Not just a job &mdash; a lifelong fascination with the quest to understand and build intelligence.</p>
+        </div>
+        <div class="hobby-card">
+          <span class="hobby-icon">&#x1F680;</span>
+          <h3>Science Fiction</h3>
+          <p>From Asimov to Lem, exploring how speculative futures illuminate the present.</p>
+        </div>
+        <div class="hobby-card">
+          <span class="hobby-icon">&#x1F4AD;</span>
+          <h3>Philosophy</h3>
+          <p>Philosophy of mind, consciousness, ethics of technology, and the big questions that drive inquiry.</p>
+        </div>
+        <div class="hobby-card">
+          <span class="hobby-icon">&#x1F310;</span>
+          <h3>Utopias</h3>
+          <p>Imagining better worlds &mdash; from More to solarpunk, thinking about how technology can serve humanity.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; Universidad Pontificia Comillas &middot; Madrid, Spain</p>
+    </div>
+  </footer>
 </body>
 </html>

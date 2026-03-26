@@ -17,104 +17,711 @@
   <meta name="citation_technical_report_institution" content="Institute for Research in Technology (IIT), Universidad Pontificia Comillas">
   <meta name="citation_keywords" content="large language models; transformers; DeepSeek; Qwen; open-weight models; retrieval-augmented generation; model context protocol; reinforcement learning from human feedback; direct preference optimisation; generative AI applications">
 
-  <!-- Standard SEO metadata -->
-  <meta name="description" content="A comprehensive automated survey of generative AI as of early 2026, covering frontier LLMs, deployment protocols, and real-world applications across 15 industry sectors.">
+  <!-- SEO -->
+  <meta name="description" content="A comprehensive automated survey of generative AI as of early 2026, covering frontier LLMs, deployment protocols, and real-world applications across 15 industry sectors. Interactive charts and data visualizations.">
   <meta name="author" content="Eduardo C. Garrido-Merchán, Álvaro López López">
-  <meta name="keywords" content="large language models, generative AI, survey, DeepSeek, Qwen, GPT, Claude, Gemini, transformers, RAG, MCP">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Automated Survey of Generative AI (March 2026)">
+  <meta property="og:description" content="72-page survey covering GPT-5.4, Gemini 3.1, Claude Opus 4.6, DeepSeek, Qwen, and 20+ frontier models. Interactive benchmark comparisons.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://eduardogarrido90.github.io/papers/automated-survey-generative-ai.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
   <style>
-    body {
-      font-family: 'Georgia', 'Times New Roman', serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-      line-height: 1.6;
-      color: #333;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #2563eb;
+      --accent: #7c3aed;
+      --bg: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-bright: #f8fafc;
+      --border: #334155;
+      --us-color: #3b82f6;
+      --cn-color: #ef4444;
+      --eu-color: #22c55e;
+      --gradient-2: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     }
-    h1 {
-      font-size: 1.5em;
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .bg-pattern {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 50%);
+      z-index: -1;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    .paper-header {
+      padding: 60px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .paper-badge {
+      display: inline-block;
+      background: rgba(37,99,235,0.15);
+      color: #60a5fa;
+      padding: 4px 14px;
+      border-radius: 6px;
+      font-size: 0.8em;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+    }
+    .paper-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2em;
+      color: var(--text-bright);
       line-height: 1.3;
-      margin-bottom: 0.5em;
+      margin-bottom: 16px;
     }
     .authors {
       font-size: 1.1em;
-      color: #555;
-      margin-bottom: 0.3em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
     }
+    .authors strong { color: var(--text); }
     .affiliation {
-      font-size: 0.95em;
-      color: #777;
-      font-style: italic;
-      margin-bottom: 1.5em;
-    }
-    .meta {
       font-size: 0.9em;
-      color: #888;
-      margin-bottom: 2em;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 20px;
     }
-    h2 {
-      font-size: 1.2em;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 0.3em;
-      margin-top: 1.5em;
+    .paper-meta-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 0.85em;
+      color: var(--text-muted);
     }
-    .abstract {
+    .paper-meta-row span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      padding: 32px 0;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2em;
+      font-weight: 700;
+      background: var(--gradient-2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.8em;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Sections */
+    section { padding: 40px 0; }
+    section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5em;
+      color: var(--text-bright);
+      margin-bottom: 8px;
+    }
+    .divider {
+      width: 50px; height: 3px;
+      background: var(--gradient-2);
+      border-radius: 3px;
+      margin-bottom: 24px;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 0.92em;
+      margin-bottom: 24px;
+      max-width: 700px;
+    }
+
+    /* Chart containers */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .chart-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--gradient-2);
+    }
+    .chart-card h3 {
+      font-size: 1em;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .chart-card .chart-subtitle {
+      font-size: 0.82em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .chart-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Abstract */
+    .abstract-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+    .abstract-box p {
+      font-size: 0.92em;
+      color: var(--text-muted);
       text-align: justify;
-      margin-bottom: 1.5em;
+      line-height: 1.75;
     }
     .keywords {
-      font-size: 0.95em;
-      color: #555;
+      margin-top: 16px;
+      font-size: 0.85em;
+      color: var(--text-muted);
     }
-    .download-btn {
+    .keywords strong { color: var(--text); }
+    .keyword-tag {
       display: inline-block;
-      background: #2563eb;
-      color: white;
-      padding: 10px 24px;
+      background: rgba(99,102,241,0.1);
+      color: #818cf8;
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-size: 0.82em;
+      margin: 3px 2px;
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 32px 0;
+    }
+    .btn-row a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
       text-decoration: none;
-      border-radius: 6px;
-      font-size: 1em;
-      margin-top: 1em;
-    }
-    .download-btn:hover {
-      background: #1d4ed8;
-    }
-    a {
-      color: #2563eb;
-    }
-    .back-link {
-      margin-top: 2em;
       font-size: 0.9em;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--gradient-2);
+      color: white;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-bright);
+      border-color: var(--primary);
+    }
+
+    /* Key findings */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .finding-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .finding-card .finding-icon { font-size: 1.5em; margin-bottom: 8px; }
+    .finding-card h4 { font-size: 0.95em; color: var(--text-bright); margin-bottom: 6px; }
+    .finding-card p { font-size: 0.82em; color: var(--text-muted); line-height: 1.6; }
+
+    /* Footer */
+    .back-link {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+    }
+    .back-link a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9em;
+    }
+    .back-link a:hover { color: var(--text-bright); }
+
+    @media (max-width: 700px) {
+      .paper-header h1 { font-size: 1.5em; }
+      .chart-row { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <h1>An Automated Survey of Generative Artificial Intelligence: Large Language Models, Architectures, Protocols, and Applications</h1>
+  <div class="bg-pattern"></div>
 
-  <p class="authors">
-    <strong>Eduardo C. Garrido-Merch&aacute;n</strong> and <strong>&Aacute;lvaro L&oacute;pez L&oacute;pez</strong>
-  </p>
-  <p class="affiliation">
-    Institute for Research in Technology (IIT)<br>
-    Universidad Pontificia Comillas, Madrid, Spain
-  </p>
-  <p class="meta">
-    March 2026 &middot; Contact: <a href="mailto:ecgarrido@comillas.edu">ecgarrido@comillas.edu</a>
-  </p>
+  <div class="container">
 
-  <h2>Abstract</h2>
-  <p class="abstract">
-    Generative artificial intelligence, and large language models in particular, have emerged as one of the most transformative paradigms in modern computer science. This automated survey provides an accessible treatment of the field as of early 2026, with a strong focus on the leading model families, deployment protocols, and real-world applications. The core of the survey is devoted to a detailed comparative analysis of the frontier large language models, with particular emphasis on open-weight systems: DeepSeek-V3, DeepSeek-R1, DeepSeek-V3.2, and the forthcoming DeepSeek V4; the Qwen 3 and Qwen 3.5 series; GLM-5; Kimi K2.5; MiniMax M2.5; LLaMA 4; Mistral Large 3; Gemma 3; and Phi-4, alongside proprietary systems including GPT-5.4, Gemini 3.1 Pro, Grok 4.20, and Claude Opus 4.6. For each model, we describe the architectural innovations, training regimes, and empirical performance on current benchmarks and the Chatbot Arena leaderboard. The survey further covers deployment protocols including Retrieval-Augmented Generation, the Model Context Protocol, the Agent-to-Agent protocol, function calling standards, and serving frameworks. We present an extensive review of real-world applications across fifteen industry sectors, from financial services and legal technology to tourism and agriculture, supported by empirical evidence and case studies. Technical foundations covering the Transformer architecture and training methodologies are provided in a self-contained appendix. This survey synthesises over 200 references to provide researchers and practitioners with a unified reference for the current state and future directions of generative AI.
-  </p>
+    <!-- Header -->
+    <header class="paper-header">
+      <span class="paper-badge">TECHNICAL REPORT &middot; MARCH 2026 &middot; 72 PAGES</span>
+      <h1>An Automated Survey of Generative Artificial Intelligence</h1>
+      <p style="font-size:1.05em; color:var(--text-muted); margin-bottom:20px;">Large Language Models, Architectures, Protocols, and Applications</p>
+      <p class="authors">
+        <strong>Eduardo C. Garrido-Merch&aacute;n</strong> and <strong>&Aacute;lvaro L&oacute;pez L&oacute;pez</strong>
+      </p>
+      <p class="affiliation">Institute for Research in Technology (IIT) &middot; Universidad Pontificia Comillas, Madrid, Spain</p>
+      <div class="paper-meta-row">
+        <span>&#x1F4C5; March 2026</span>
+        <span>&#x1F4DA; 200+ references</span>
+        <span>&#x1F4E7; <a href="mailto:ecgarrido@comillas.edu" style="color:#60a5fa;">ecgarrido@comillas.edu</a></span>
+      </div>
+    </header>
 
-  <p class="keywords">
-    <strong>Keywords:</strong> large language models, transformers, DeepSeek, Qwen, open-weight models, retrieval-augmented generation, model context protocol, reinforcement learning from human feedback, direct preference optimisation, generative AI applications
-  </p>
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-number">25+</div>
+        <div class="stat-label">LLM families analysed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">15</div>
+        <div class="stat-label">Industry sectors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">AI modalities</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Deployment protocols</div>
+      </div>
+    </div>
 
-  <a href="automated-survey-generative-ai.pdf" class="download-btn">Download PDF</a>
+    <!-- Download -->
+    <div class="btn-row">
+      <a href="automated-survey-generative-ai.pdf" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Full PDF (72 pages)
+      </a>
+      <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" class="btn-outline" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769 0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+        Google Scholar
+      </a>
+    </div>
 
-  <div class="back-link">
-    <a href="/">&larr; Back to homepage</a>
+    <!-- Abstract -->
+    <section>
+      <h2>Abstract</h2>
+      <div class="divider"></div>
+      <div class="abstract-box">
+        <p>
+          Generative artificial intelligence, and large language models in particular, have emerged as one of the most transformative paradigms in modern computer science. This automated survey provides an accessible treatment of the field as of early 2026, with a strong focus on the leading model families, deployment protocols, and real-world applications. The core of the survey is devoted to a detailed comparative analysis of the frontier large language models, with particular emphasis on open-weight systems: DeepSeek-V3, DeepSeek-R1, DeepSeek-V3.2, and the forthcoming DeepSeek V4; the Qwen 3 and Qwen 3.5 series; GLM-5; Kimi K2.5; MiniMax M2.5; LLaMA 4; Mistral Large 3; Gemma 3; and Phi-4, alongside proprietary systems including GPT-5.4, Gemini 3.1 Pro, Grok 4.20, and Claude Opus 4.6. For each model, we describe the architectural innovations, training regimes, and empirical performance on current benchmarks and the Chatbot Arena leaderboard. The survey further covers deployment protocols including Retrieval-Augmented Generation, the Model Context Protocol, the Agent-to-Agent protocol, function calling standards, and serving frameworks. We present an extensive review of real-world applications across fifteen industry sectors, from financial services and legal technology to tourism and agriculture, supported by empirical evidence and case studies. Technical foundations covering the Transformer architecture and training methodologies are provided in a self-contained appendix. This survey synthesises over 200 references to provide researchers and practitioners with a unified reference for the current state and future directions of generative AI.
+        </p>
+        <div class="keywords" style="margin-top:16px;">
+          <span class="keyword-tag">large language models</span>
+          <span class="keyword-tag">transformers</span>
+          <span class="keyword-tag">DeepSeek</span>
+          <span class="keyword-tag">Qwen</span>
+          <span class="keyword-tag">open-weight models</span>
+          <span class="keyword-tag">RAG</span>
+          <span class="keyword-tag">model context protocol</span>
+          <span class="keyword-tag">RLHF</span>
+          <span class="keyword-tag">DPO</span>
+          <span class="keyword-tag">generative AI applications</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section>
+      <h2>Key Results</h2>
+      <div class="divider"></div>
+      <p class="section-desc">Interactive charts from the paper's comparative analysis. Data sourced from Chatbot Arena (arena.ai) and independent benchmarks as of March 2026.</p>
+
+      <div class="chart-grid">
+        <!-- Chart 1: Arena ELO -->
+        <div class="chart-card">
+          <h3>Chatbot Arena Text ELO Rankings</h3>
+          <p class="chart-subtitle">Top 12 models as of March 2026, coloured by geographic origin (US vs China)</p>
+          <div class="chart-wrapper">
+            <canvas id="chartELO"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: SWE-bench -->
+        <div class="chart-card">
+          <h3>SWE-bench Verified Performance</h3>
+          <p class="chart-subtitle">Software engineering capability (%) for top models, March 2026</p>
+          <div class="chart-wrapper">
+            <canvas id="chartSWE"></canvas>
+          </div>
+        </div>
+
+        <!-- Row of 2 smaller charts -->
+        <div class="chart-row">
+          <!-- Chart 3: Geographic Leadership -->
+          <div class="chart-card">
+            <h3>Geographic Leadership by Modality</h3>
+            <p class="chart-subtitle">Highest Arena ELO per region</p>
+            <div class="chart-wrapper">
+              <canvas id="chartGeo"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 4: US-China Gap -->
+          <div class="chart-card">
+            <h3>US&ndash;China ELO Gap</h3>
+            <p class="chart-subtitle">Gap between top US and Chinese models</p>
+            <div class="chart-wrapper">
+              <canvas id="chartGap"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row of 2: Params + Ecosystem -->
+        <div class="chart-row">
+          <!-- Chart 5: Parameters vs ELO -->
+          <div class="chart-card">
+            <h3>Parameters vs Arena ELO</h3>
+            <p class="chart-subtitle">Open-weight models with disclosed architectures</p>
+            <div class="chart-wrapper">
+              <canvas id="chartParams"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 6: Model count -->
+          <div class="chart-card">
+            <h3>Model Ecosystem by Region</h3>
+            <p class="chart-subtitle">Number of frontier model families per modality</p>
+            <div class="chart-wrapper">
+              <canvas id="chartEcosystem"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Findings -->
+    <section>
+      <h2>Key Findings</h2>
+      <div class="divider"></div>
+      <div class="findings-grid">
+        <div class="finding-card">
+          <div class="finding-icon">&#x1F3C6;</div>
+          <h4>Claude Opus 4.6 leads at 1504 ELO</h4>
+          <p>The top 10 text models span only 31 ELO points, indicating an extremely competitive landscape among proprietary systems.</p>
+        </div>
+        <div class="finding-card">
+          <div class="finding-icon">&#x1F1E8;&#x1F1F3;</div>
+          <h4>Chinese open-weight models reach near-parity</h4>
+          <p>GLM-5 (1451) closes to within 53 ELO points of the best proprietary model. The open-weight premium is diminishing rapidly.</p>
+        </div>
+        <div class="finding-card">
+          <div class="finding-icon">&#x1F4BB;</div>
+          <h4>SWE-bench convergence</h4>
+          <p>The best US model (Claude, 80.8%) and Chinese model (MiniMax M2.5, 80.2%) achieve near-identical software engineering scores.</p>
+        </div>
+        <div class="finding-card">
+          <div class="finding-icon">&#x1F30D;</div>
+          <h4>Text parity, image gap persists</h4>
+          <p>The US-China gap is just 53 points in text but 117 points in image generation, suggesting uneven capability transfer across modalities.</p>
+        </div>
+        <div class="finding-card">
+          <div class="finding-icon">&#x1F50D;</div>
+          <h4>MoE dominates the frontier</h4>
+          <p>All open-weight models above 1400 ELO use mixture-of-experts, clustering at 400B-1T total parameters with 37B-170B active.</p>
+        </div>
+        <div class="finding-card">
+          <div class="finding-icon">&#x1F4C8;</div>
+          <h4>China leads in model count</h4>
+          <p>12 Chinese text model families vs 9 US. China also leads in video (4 vs 3). Europe has only 1 text and 1 image family at frontier level.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="btn-row" style="justify-content:center;">
+      <a href="automated-survey-generative-ai.pdf" class="btn-primary" style="font-size:1em; padding:14px 32px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Full Paper (PDF)
+      </a>
+    </div>
+
+    <div class="back-link">
+      <a href="/">&larr; Back to homepage</a>
+    </div>
   </div>
+
+  <script>
+    // Chart.js defaults for dark theme
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(51,65,85,0.5)';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    const US = '#3b82f6';
+    const CN = '#ef4444';
+    const EU = '#22c55e';
+
+    // 1. Arena ELO
+    new Chart(document.getElementById('chartELO'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'Claude Opus 4.6', 'Gemini 3.1 Pro', 'Claude (thinking)',
+          'Grok 4.20 beta', 'Gemini 3 Pro', 'GPT-5.2',
+          'GPT-5.4', 'Gemini 3 Flash', 'Grok 4.1 (thinking)',
+          'GLM-5', 'Kimi K2.5', 'DeepSeek-R1'
+        ],
+        datasets: [{
+          data: [1504, 1500, 1500, 1493, 1485, 1481, 1480, 1473, 1473, 1451, 1447, 1436],
+          backgroundColor: [US, US, US, US, US, US, US, US, US, CN, CN, CN],
+          borderColor: [US, US, US, US, US, US, US, US, US, CN, CN, CN],
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => `ELO: ${ctx.raw}`
+            }
+          }
+        },
+        scales: {
+          x: { min: 1420, max: 1520, grid: { color: 'rgba(51,65,85,0.3)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // 2. SWE-bench
+    new Chart(document.getElementById('chartSWE'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'Claude Opus 4.6', 'MiniMax M2.5', 'Gemini 3 Flash',
+          'GLM-5', 'Gemini 3 Pro', 'GPT-5',
+          'MiMo-V2-Flash', 'Qwen3-Coder-Next'
+        ],
+        datasets: [{
+          data: [80.8, 80.2, 78.0, 77.8, 76.2, 74.9, 73.4, 70.6],
+          backgroundColor: [US, CN, US, CN, US, US, CN, CN],
+          borderColor: [US, CN, US, CN, US, US, CN, CN],
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.raw}%`
+            }
+          }
+        },
+        scales: {
+          x: { min: 65, max: 85, grid: { color: 'rgba(51,65,85,0.3)' },
+            ticks: { callback: v => v + '%' }
+          },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // 3. Geographic Leadership
+    new Chart(document.getElementById('chartGeo'), {
+      type: 'bar',
+      data: {
+        labels: ['Text', 'Image', 'Video'],
+        datasets: [
+          { label: 'United States', data: [1504, 1264, 1386], backgroundColor: US, borderRadius: 4 },
+          { label: 'China', data: [1451, 1147, 1305], backgroundColor: CN, borderRadius: 4 },
+          { label: 'Europe', data: [1418, 1168, null], backgroundColor: EU, borderRadius: 4 },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } }
+        },
+        scales: {
+          y: { min: 1050, max: 1560, grid: { color: 'rgba(51,65,85,0.3)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // 4. US-China Gap
+    new Chart(document.getElementById('chartGap'), {
+      type: 'bar',
+      data: {
+        labels: ['Text', 'Video', 'Image'],
+        datasets: [{
+          label: 'ELO Gap (US - China)',
+          data: [53, 81, 117],
+          backgroundColor: ['#f59e0b', '#f97316', '#ef4444'],
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => `Gap: ${ctx.raw} ELO points`
+            }
+          }
+        },
+        scales: {
+          y: { min: 0, max: 140, grid: { color: 'rgba(51,65,85,0.3)' },
+            ticks: { callback: v => v + ' pts' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // 5. Parameters vs ELO (scatter)
+    new Chart(document.getElementById('chartParams'), {
+      type: 'scatter',
+      data: {
+        datasets: [
+          {
+            label: 'China',
+            data: [
+              { x: 1000, y: 1447, label: 'Kimi K2.5' },
+              { x: 744, y: 1451, label: 'GLM-5' },
+              { x: 671, y: 1436, label: 'DeepSeek-R1' },
+              { x: 685, y: 1421, label: 'V3.2' },
+            ],
+            backgroundColor: CN,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+          },
+          {
+            label: 'Europe',
+            data: [
+              { x: 675, y: 1418, label: 'Mistral L3' },
+            ],
+            backgroundColor: EU,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointStyle: 'rect',
+          },
+          {
+            label: 'United States',
+            data: [
+              { x: 400, y: 1417, label: 'LLaMA 4' },
+              { x: 27, y: 1339, label: 'Gemma 3' },
+            ],
+            backgroundColor: US,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointStyle: 'triangle',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, usePointStyle: true } },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const p = ctx.raw;
+                return `${p.label}: ${p.x}B params, ELO ${p.y}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { min: 0, max: 1100, title: { display: true, text: 'Total Parameters (B)', color: '#94a3b8' }, grid: { color: 'rgba(51,65,85,0.3)' } },
+          y: { min: 1310, max: 1475, title: { display: true, text: 'Arena ELO', color: '#94a3b8' }, grid: { color: 'rgba(51,65,85,0.3)' } }
+        }
+      }
+    });
+
+    // 6. Model Ecosystem
+    new Chart(document.getElementById('chartEcosystem'), {
+      type: 'bar',
+      data: {
+        labels: ['Text', 'Image', 'Video'],
+        datasets: [
+          { label: 'United States', data: [9, 4, 3], backgroundColor: US, borderRadius: 4 },
+          { label: 'China', data: [12, 2, 4], backgroundColor: CN, borderRadius: 4 },
+          { label: 'Europe', data: [1, 1, 0], backgroundColor: EU, borderRadius: 4 },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } }
+        },
+        scales: {
+          y: { min: 0, max: 15, grid: { color: 'rgba(51,65,85,0.3)' },
+            title: { display: true, text: 'Model Families', color: '#94a3b8' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
