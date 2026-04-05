@@ -6,362 +6,265 @@
   <title>Eduardo C. Garrido-Merch&aacute;n — AI Researcher &amp; Engineer</title>
   <meta name="description" content="Eduardo C. Garrido-Merchán: AI researcher, engineer, and professor at Universidad Pontificia Comillas. 3,300+ citations, h-index 19. Bayesian Optimization, Reinforcement Learning, Generative AI, Neurosymbolic AI, and ESG Quantitative Finance.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1e40af;
-      --accent: #7c3aed;
-      --bg: #0f172a;
-      --bg-card: #1e293b;
-      --bg-card-hover: #334155;
-      --text: #e2e8f0;
-      --text-muted: #94a3b8;
-      --text-bright: #f8fafc;
-      --border: #334155;
-      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --gradient-2: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.7;
       overflow-x: hidden;
     }
 
-    .bg-pattern {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background:
-        radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(37,99,235,0.05) 0%, transparent 50%);
-      z-index: -1;
-      animation: bgShift 20s ease-in-out infinite alternate;
-    }
-    @keyframes bgShift { 0% { opacity: 0.8; } 100% { opacity: 1.2; } }
+    .container { max-width: 1060px; margin: 0 auto; padding: 0 28px; }
 
-    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-
-    /* Hero */
+    /* ── Hero ── */
     .hero {
-      padding: 70px 0 30px;
-      text-align: center;
+      padding: 72px 0 40px;
+      border-bottom: 1px solid var(--border);
     }
     .hero-inner {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 40px;
     }
     .avatar {
-      width: 170px;
-      height: 170px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid rgba(99,102,241,0.4);
-      box-shadow: 0 0 40px rgba(99,102,241,0.15);
-      transition: transform 0.3s, box-shadow 0.3s;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
     }
-    .avatar:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 60px rgba(99,102,241,0.3);
-    }
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.8em;
+    .hero-text h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.4em;
       color: var(--text-bright);
       letter-spacing: -0.02em;
+      margin-bottom: 8px;
     }
-    .hero .tagline {
-      font-size: 1.1em;
+    .hero-text .tagline {
+      font-size: 1.05em;
       color: var(--text-muted);
-      max-width: 640px;
+      margin-bottom: 6px;
     }
-    .hero .tagline strong { color: var(--text); }
-    .hero .affiliation {
-      font-size: 0.92em;
+    .hero-text .affiliation {
+      font-size: 0.88em;
       color: var(--text-muted);
+      margin-bottom: 16px;
     }
-    .hero .affiliation strong { color: var(--text); }
+    .hero-text .affiliation strong { color: var(--text); }
 
-    /* Stats bar */
-    .stats-bar {
+    /* Stats inline */
+    .stats-inline {
       display: flex;
-      gap: 0;
-      justify-content: center;
-      margin: 24px 0 12px;
+      gap: 24px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
     }
-    .stat {
-      padding: 16px 28px;
-      text-align: center;
-      position: relative;
-    }
-    .stat:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 25%;
-      height: 50%;
-      width: 1px;
-      background: var(--border);
-    }
-    .stat-number {
-      font-size: 1.8em;
-      font-weight: 700;
-      color: var(--text-bright);
-      display: block;
-      line-height: 1.2;
-      background: var(--gradient-2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .stat-label {
-      font-size: 0.78em;
+    .stats-inline .stat {
+      font-size: 0.84em;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+    }
+    .stats-inline .stat strong {
+      color: var(--text-bright);
+      font-family: 'IBM Plex Mono', monospace;
       font-weight: 500;
     }
 
     /* Social links */
     .social-links {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 8px;
     }
     .social-links a {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      background: var(--bg-card);
+      gap: 5px;
+      padding: 5px 12px;
+      background: transparent;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 6px;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.82em;
+      font-size: 0.78em;
+      font-family: 'IBM Plex Mono', monospace;
       transition: all 0.2s;
     }
     .social-links a:hover {
       background: var(--bg-card-hover);
       color: var(--text-bright);
-      border-color: var(--primary);
-      transform: translateY(-1px);
+      border-color: var(--border-hover);
     }
-    .social-links a svg { width: 15px; height: 15px; }
+    .social-links a svg { width: 14px; height: 14px; }
 
-    /* Section */
-    section { padding: 44px 0; }
+    /* ── Sections ── */
+    section { padding: 52px 0; }
     section h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8em;
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.6em;
       color: var(--text-bright);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
     }
-    section .section-subtitle {
+    section .section-sub {
       color: var(--text-muted);
-      margin-bottom: 28px;
-      font-size: 1.0em;
+      margin-bottom: 32px;
+      font-size: 0.92em;
     }
-    .divider {
-      width: 60px;
-      height: 3px;
-      background: var(--gradient-2);
-      border-radius: 3px;
-      margin-bottom: 28px;
+    .sep {
+      width: 40px;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin-bottom: 24px;
     }
 
-    /* Research grid */
+    /* ── Research Grid ── */
     .research-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
     }
     .research-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0;
-      transition: all 0.3s;
-      position: relative;
+      border-radius: 10px;
       overflow: hidden;
       text-decoration: none;
       color: inherit;
-      display: block;
-    }
-    .research-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 3px;
-      background: var(--gradient-2);
-      opacity: 0;
-      transition: opacity 0.3s;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
     }
     .research-card:hover {
-      border-color: rgba(99,102,241,0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
     }
-    .research-card:hover::before { opacity: 1; }
-    .research-card .card-body {
-      padding: 0 24px 24px;
+
+    /* Card image */
+    .card-image {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+      background: #1a1a2e;
     }
-    .research-card h3 {
-      font-size: 1.0em;
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform 0.4s ease;
+    }
+    .research-card:hover .card-image img {
+      transform: scale(1.04);
+    }
+    .card-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50px;
+      background: linear-gradient(transparent, var(--bg-card));
+      pointer-events: none;
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 16px 20px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-body h3 {
+      font-size: 0.95em;
+      font-weight: 600;
       color: var(--text-bright);
       margin-bottom: 6px;
     }
-    .research-card p {
-      font-size: 0.88em;
+    .card-body p {
+      font-size: 0.82em;
       color: var(--text-muted);
-      line-height: 1.6;
+      line-height: 1.55;
+      flex: 1;
     }
-    .research-card .card-tag {
+    .card-tag {
       display: inline-block;
-      font-size: 0.7em;
+      font-size: 0.65em;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 2px 8px;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
       border-radius: 4px;
-      margin-top: 10px;
-      background: rgba(37,99,235,0.12);
+      margin-top: 12px;
+      background: rgba(59,130,246,0.1);
       color: #60a5fa;
+      font-family: 'IBM Plex Mono', monospace;
+      align-self: flex-start;
     }
 
-    /* Paper thumbnail */
-    .paper-thumb {
-      background: linear-gradient(145deg, #141e2e, #0c1421);
-      height: 110px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .paper-thumb .paper-page {
-      width: 50px;
-      height: 66px;
-      background: #f1f5f9;
-      border-radius: 2px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-      position: relative;
-      transition: transform 0.3s;
-    }
-    .research-card:hover .paper-page {
-      transform: scale(1.08);
-    }
-    .paper-page::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--gradient-2);
-      border-radius: 2px 2px 0 0;
-    }
-    .paper-page::after {
-      content: '';
-      position: absolute;
-      top: 10px; left: 6px; right: 6px; bottom: 8px;
-      background: repeating-linear-gradient(
-        to bottom,
-        #94a3b8 0px, #94a3b8 2px,
-        transparent 2px, transparent 7px
-      );
-      opacity: 0.25;
-    }
-    .paper-thumb .paper-id {
-      position: absolute;
-      bottom: 6px;
-      right: 10px;
-      font-size: 0.62em;
-      color: var(--text-muted);
-      font-family: 'Courier New', monospace;
-      opacity: 0.7;
-    }
-
-    /* Education */
-    .education-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .edu-item {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px 20px;
-    }
-    .edu-icon { font-size: 1.5em; flex-shrink: 0; margin-top: 2px; }
-    .edu-item h3 { font-size: 0.95em; color: var(--text-bright); margin-bottom: 3px; }
-    .edu-item p { font-size: 0.85em; color: var(--text-muted); }
-    .edu-item .award {
-      display: inline-block;
-      background: rgba(124,58,237,0.15);
-      color: #a78bfa;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.78em;
-      margin-top: 4px;
-    }
-
-    /* Paper highlight */
+    /* ── Paper Highlight ── */
     .paper-highlight {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 28px;
+      border-radius: 10px;
+      padding: 28px 32px;
       position: relative;
       overflow: hidden;
       transition: all 0.3s;
     }
     .paper-highlight:hover {
-      border-color: rgba(99,102,241,0.3);
+      border-color: var(--border-hover);
       box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
     .paper-highlight::before {
       content: '';
       position: absolute;
       top: 0; left: 0;
-      width: 100%; height: 3px;
-      background: var(--gradient-1);
+      width: 100%; height: 2px;
+      background: var(--gradient);
     }
     .paper-badge {
       display: inline-block;
-      background: rgba(37,99,235,0.15);
+      background: rgba(59,130,246,0.1);
       color: #60a5fa;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 0.78em;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.72em;
       font-weight: 500;
-      letter-spacing: 0.03em;
-      margin-bottom: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
+      margin-bottom: 14px;
     }
-    .paper-highlight h3 { font-size: 1.1em; color: var(--text-bright); margin-bottom: 8px; line-height: 1.4; }
+    .paper-highlight h3 { font-size: 1.05em; color: var(--text-bright); margin-bottom: 8px; line-height: 1.4; }
     .paper-highlight h3 a { color: inherit; text-decoration: none; }
-    .paper-highlight h3 a:hover { color: #818cf8; }
-    .paper-authors-line { font-size: 0.88em; color: var(--text-muted); margin-bottom: 10px; }
+    .paper-highlight h3 a:hover { color: #93c5fd; }
+    .paper-authors-line { font-size: 0.85em; color: var(--text-muted); margin-bottom: 12px; }
     .paper-abstract {
-      font-size: 0.86em;
+      font-size: 0.84em;
       color: var(--text-muted);
       line-height: 1.65;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       display: -webkit-box;
-      -webkit-line-clamp: 4;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -371,169 +274,188 @@
       align-items: center;
       gap: 6px;
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 6px;
       text-decoration: none;
-      font-size: 0.84em;
+      font-size: 0.82em;
       font-weight: 500;
       transition: all 0.2s;
     }
-    .btn-primary { background: var(--gradient-2); color: white; }
+    .btn-primary { background: var(--gradient); color: white; }
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-outline { border: 1px solid var(--border); color: var(--text-muted); }
-    .btn-outline:hover { background: var(--bg-card-hover); color: var(--text-bright); border-color: var(--primary); }
+    .btn-outline:hover { background: var(--bg-card-hover); color: var(--text-bright); border-color: var(--border-hover); }
 
-    /* Media section */
+    /* ── Education ── */
+    .education-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .edu-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .edu-icon { font-size: 1.3em; flex-shrink: 0; margin-top: 2px; }
+    .edu-item h3 { font-size: 0.9em; color: var(--text-bright); margin-bottom: 2px; }
+    .edu-item p { font-size: 0.82em; color: var(--text-muted); }
+    .edu-item .award {
+      display: inline-block;
+      background: rgba(139,92,246,0.12);
+      color: #a78bfa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.72em;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-top: 4px;
+    }
+
+    /* ── Media Grid ── */
     .media-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 18px;
     }
     .media-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
       transition: all 0.3s;
     }
     .media-card:hover {
-      border-color: rgba(99,102,241,0.3);
+      border-color: var(--border-hover);
       transform: translateY(-2px);
       box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
     .media-card img {
       width: 100%;
-      height: 180px;
+      height: 160px;
       object-fit: cover;
       display: block;
     }
+    .media-placeholder {
+      width: 100%;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9em;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.02em;
+    }
     .media-card .media-body {
-      padding: 18px 20px;
+      padding: 16px 18px;
     }
     .media-card .media-type {
-      font-size: 0.72em;
+      font-size: 0.68em;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: #a78bfa;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
+      font-family: 'IBM Plex Mono', monospace;
     }
-    .media-card h3 { font-size: 0.95em; color: var(--text-bright); margin-bottom: 6px; }
+    .media-card h3 { font-size: 0.88em; color: var(--text-bright); margin-bottom: 5px; line-height: 1.4; }
     .media-card h3 a { color: inherit; text-decoration: none; }
-    .media-card h3 a:hover { color: #818cf8; }
-    .media-card p { font-size: 0.82em; color: var(--text-muted); }
+    .media-card h3 a:hover { color: #93c5fd; }
+    .media-card p { font-size: 0.78em; color: var(--text-muted); line-height: 1.5; }
+    .media-card .republished {
+      font-size: 0.7em;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-style: italic;
+    }
 
-    /* Hobbies */
+    /* ── Hobbies ── */
     .hobbies-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
     }
     .hobby-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 22px;
+      border-radius: 8px;
+      padding: 20px;
       text-align: center;
       transition: all 0.3s;
-      text-decoration: none;
-      color: inherit;
-      display: block;
     }
-    .hobby-card:hover { border-color: rgba(124,58,237,0.3); transform: translateY(-2px); }
-    .hobby-card .hobby-icon { font-size: 2em; margin-bottom: 8px; display: block; }
-    .hobby-card h3 { font-size: 0.92em; color: var(--text-bright); margin-bottom: 5px; }
-    .hobby-card p { font-size: 0.8em; color: var(--text-muted); }
+    .hobby-card:hover { border-color: var(--border-hover); }
+    .hobby-card .hobby-icon { font-size: 1.6em; margin-bottom: 8px; display: block; }
+    .hobby-card h3 { font-size: 0.85em; color: var(--text-bright); margin-bottom: 4px; }
+    .hobby-card p { font-size: 0.76em; color: var(--text-muted); line-height: 1.5; }
 
-    /* Footer */
+    /* ── Footer ── */
     footer {
       text-align: center;
-      padding: 36px 0;
+      padding: 32px 0;
       color: var(--text-muted);
-      font-size: 0.84em;
+      font-size: 0.78em;
       border-top: 1px solid var(--border);
-      margin-top: 36px;
+      margin-top: 32px;
     }
 
-    /* Responsive */
-    @media (max-width: 640px) {
-      .hero h1 { font-size: 2em; }
-      .hero { padding: 50px 0 20px; }
-      .avatar { width: 130px; height: 130px; }
-      section h2 { font-size: 1.5em; }
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .avatar { width: 120px; height: 120px; }
+      .hero-text h1 { font-size: 1.8em; }
+      .stats-inline { justify-content: center; }
+      .social-links { justify-content: center; }
       .research-grid { grid-template-columns: 1fr; }
-      .hobbies-grid { grid-template-columns: repeat(2, 1fr); }
-      .stat { padding: 12px 18px; }
-      .stat-number { font-size: 1.4em; }
-      .stats-bar { gap: 0; }
-      .paper-thumb { height: 90px; }
+      .media-grid { grid-template-columns: 1fr; }
+      .hobbies-grid { grid-template-columns: 1fr; }
+      section h2 { font-size: 1.4em; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .research-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <div class="bg-pattern"></div>
 
   <!-- Hero -->
   <header class="hero">
-    <div class="container hero-inner">
-      <img src="foto.jpg"
-           alt="Eduardo C. Garrido-Merch&aacute;n"
-           class="avatar">
-      <h1>Eduardo C. Garrido-Merch&aacute;n</h1>
-      <p class="tagline">
-        <strong>Engineer, PhD in Machine Learning &amp; AI.</strong>
-        Building intelligent systems that optimise under uncertainty.
-      </p>
-      <p class="affiliation">
-        <strong>Profesor Propio Adjunto</strong> &middot; Institute for Research in Technology (IIT)<br>
-        Universidad Pontificia Comillas &middot; ICADE &middot; Madrid
-      </p>
-
-      <!-- Stats -->
-      <div class="stats-bar">
-        <div class="stat">
-          <span class="stat-number">3,300+</span>
-          <span class="stat-label">Citations</span>
+    <div class="container">
+      <div class="hero-inner">
+        <img src="foto.jpg"
+             alt="Eduardo C. Garrido-Merch&aacute;n"
+             class="avatar">
+        <div class="hero-text">
+          <h1>Eduardo C. Garrido-Merch&aacute;n</h1>
+          <p class="tagline">
+            Engineer, PhD in Machine Learning &amp; AI. Building intelligent systems that optimise under uncertainty.
+          </p>
+          <p class="affiliation">
+            <strong>Profesor Propio Adjunto</strong> &middot; Institute for Research in Technology (IIT) &middot; Universidad Pontificia Comillas, Madrid
+          </p>
+          <div class="stats-inline">
+            <span class="stat"><strong>3,300+</strong> citations</span>
+            <span class="stat"><strong>h-19</strong></span>
+            <span class="stat"><strong>i10-29</strong></span>
+            <span class="stat"><strong>50+</strong> publications</span>
+          </div>
+          <div class="social-links">
+            <a href="mailto:ecgarrido@comillas.edu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              email
+            </a>
+            <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" target="_blank">scholar</a>
+            <a href="https://github.com/EduardoGarrido90" target="_blank">github</a>
+            <a href="https://arxiv.org/a/garridomerchan_e_1.html" target="_blank">arxiv</a>
+            <a href="https://www.researchgate.net/profile/Eduardo-Garrido-Merchan" target="_blank">researchgate</a>
+            <a href="https://x.com/vedugarmer" target="_blank">@vedugarmer</a>
+          </div>
         </div>
-        <div class="stat">
-          <span class="stat-number">19</span>
-          <span class="stat-label">h-index</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">29</span>
-          <span class="stat-label">i10-index</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">50+</span>
-          <span class="stat-label">Publications</span>
-        </div>
-      </div>
-
-      <!-- Social -->
-      <div class="social-links">
-        <a href="mailto:ecgarrido@comillas.edu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-          Email
-        </a>
-        <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769 0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
-          Scholar
-        </a>
-        <a href="https://github.com/EduardoGarrido90" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
-        </a>
-        <a href="https://arxiv.org/a/garridomerchan_e_1.html" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3v18h18V3H3zm9 14.5L6.5 12 12 6.5l5.5 5.5L12 17.5z"/></svg>
-          arXiv
-        </a>
-        <a href="https://www.researchgate.net/profile/Eduardo-Garrido-Merchan" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.586 0c-.818 0-1.508.19-2.073.565-.563.377-.97.936-1.213 1.68a3.2 3.2 0 0 0-.112.437 8.4 8.4 0 0 0-.078.53 9 9 0 0 0-.032.58c0 .464.06.927.18 1.39.12.464.33.87.63 1.22.3.35.66.6 1.08.75.42.15.9.18 1.44.09v-.02c.16-.03.31-.08.44-.14l.12-.06.03-.03a.56.56 0 0 0 .18-.18.5.5 0 0 0 .06-.27c0-.09-.02-.18-.05-.27-.14-.36-.3-.66-.47-.9a3.6 3.6 0 0 1-.3-.6 1.7 1.7 0 0 1-.1-.6c0-.29.07-.55.2-.77s.33-.34.6-.34c.26 0 .47.12.62.35.15.24.23.53.23.89 0 .73-.25 1.33-.75 1.81a2.38 2.38 0 0 1-1.76.72c-.58 0-1.06-.14-1.44-.43-.38-.29-.68-.68-.9-1.17-.22-.49-.37-1.04-.46-1.67a12 12 0 0 1-.14-1.8c0-1.11.18-2.05.54-2.82.36-.77.87-1.36 1.53-1.77A4.04 4.04 0 0 1 19.586 0zM4.166 7.12c.64 0 1.27.12 1.87.36.6.24 1.12.6 1.55 1.06.43.47.77 1.04 1.01 1.71.24.68.36 1.44.36 2.3 0 .87-.12 1.64-.36 2.3-.24.68-.58 1.24-1.01 1.71-.44.47-.95.82-1.55 1.06-.6.24-1.23.36-1.87.36s-1.27-.12-1.87-.36a4.38 4.38 0 0 1-1.55-1.06c-.43-.47-.77-1.04-1.01-1.71A6.1 6.1 0 0 1 0 12.55c0-.86.12-1.63.36-2.3.24-.68.58-1.24 1.01-1.71a4.38 4.38 0 0 1 1.55-1.06c.6-.24 1.23-.36 1.87-.36zm0 2.07c-.38 0-.72.1-1.01.32-.29.21-.52.51-.69.89a5.2 5.2 0 0 0-.4 1.3c-.08.5-.13 1.03-.13 1.6 0 .56.05 1.09.13 1.6.09.5.22.95.4 1.3.17.38.4.68.69.89.29.21.63.32 1.01.32s.72-.1 1.01-.32c.29-.21.52-.51.69-.89.18-.38.31-.8.4-1.3.09-.5.13-1.03.13-1.6 0-.56-.04-1.1-.13-1.6a4.7 4.7 0 0 0-.4-1.3 1.82 1.82 0 0 0-.69-.89c-.29-.21-.63-.32-1.01-.32z"/></svg>
-          ResearchGate
-        </a>
-        <a href="https://x.com/vedugarmer" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          @vedugarmer
-        </a>
       </div>
     </div>
   </header>
@@ -543,24 +465,24 @@
     <!-- Research -->
     <section>
       <h2>Research</h2>
-      <div class="divider"></div>
-      <p class="section-subtitle">Probabilistic machine learning, optimization under uncertainty, and applied AI across finance, symbolic reasoning, and generative models.</p>
+      <div class="sep"></div>
+      <p class="section-sub">Probabilistic machine learning, optimization under uncertainty, and applied AI across finance, symbolic reasoning, and generative models.</p>
       <div class="research-grid">
+
         <a href="https://arxiv.org/abs/2502.06789" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2502.06789</span>
+          <div class="card-image">
+            <img src="img/papers/2502.06789.png" alt="Bayesian Optimization survey paper">
           </div>
           <div class="card-body">
             <h3>Bayesian Optimization</h3>
-            <p>Information-theoretic acquisition functions, multi-objective optimization, and optimization in complex scenarios with constraints and noise.</p>
+            <p>Information-theoretic acquisition functions, multi-objective optimization, and optimization with constraints and noise.</p>
             <span class="card-tag">Survey &middot; 2025</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/2307.09631" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2307.09631</span>
+          <div class="card-image">
+            <img src="img/papers/2307.09631.png" alt="Reinforcement Learning paper">
           </div>
           <div class="card-body">
             <h3>Reinforcement Learning</h3>
@@ -568,10 +490,10 @@
             <span class="card-tag">Methodology &middot; XAI</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/1805.03463" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:1805.03463</span>
+          <div class="card-image">
+            <img src="img/papers/1805.03463.png" alt="Probabilistic Methods paper">
           </div>
           <div class="card-body">
             <h3>Probabilistic Methods</h3>
@@ -579,21 +501,21 @@
             <span class="card-tag">Gaussian Processes</span>
           </div>
         </a>
+
         <a href="papers/automated-survey-generative-ai.html" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">IIT Report &middot; 2026</span>
+          <div class="card-image">
+            <img src="img/papers/genai.png" alt="Generative AI survey paper">
           </div>
           <div class="card-body">
             <h3>Generative AI &amp; LLMs</h3>
-            <p>Large language model evaluation, bias detection, automated survey generation, and real-world applications across 15 industry sectors.</p>
+            <p>Large language model evaluation, automated survey generation, and applications across 15 industry sectors.</p>
             <span class="card-tag">72 pp. &middot; 200+ refs</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/2602.23918" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2602.23918</span>
+          <div class="card-image">
+            <img src="img/papers/2602.23918.png" alt="AI Ethics paper">
           </div>
           <div class="card-body">
             <h3>AI Ethics &amp; Data Sovereignty</h3>
@@ -601,21 +523,21 @@
             <span class="card-tag">Data Personalism &middot; 2026</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/2405.07340" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2405.07340</span>
+          <div class="card-image">
+            <img src="img/papers/2405.07340.png" alt="Machine Consciousness paper">
           </div>
           <div class="card-body">
             <h3>Machine Consciousness</h3>
-            <p>The myth of conscious machines: why computational intelligence and phenomenal consciousness are independent. Bridging AI research with philosophy of mind.</p>
+            <p>Why computational intelligence and phenomenal consciousness are independent. Bridging AI research with philosophy of mind.</p>
             <span class="card-tag">Philosophy of AI</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/2507.13550" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2507.13550</span>
+          <div class="card-image">
+            <img src="img/papers/2507.13550.png" alt="Neurosymbolic AI paper">
           </div>
           <div class="card-body">
             <h3>Neurosymbolic AI</h3>
@@ -623,35 +545,36 @@
             <span class="card-tag">GOFAI &middot; LLMs</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/2602.08774" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2602.08774</span>
+          <div class="card-image">
+            <img src="img/papers/2602.08774.png" alt="Hyperparameter Optimization paper">
           </div>
           <div class="card-body">
             <h3>Hyperparameter Optimization</h3>
-            <p>Machine learning hyperparameters and Bayesian optimization: automating model selection at scale with principled uncertainty quantification.</p>
+            <p>Automating model selection at scale with Bayesian optimization and principled uncertainty quantification.</p>
             <span class="card-tag">AutoML &middot; 2026</span>
           </div>
         </a>
+
         <a href="https://arxiv.org/abs/2303.01485" target="_blank" class="research-card">
-          <div class="paper-thumb">
-            <div class="paper-page"></div>
-            <span class="paper-id">arXiv:2303.01485</span>
+          <div class="card-image">
+            <img src="img/papers/2303.01485.png" alt="ESG Quantitative Finance paper">
           </div>
           <div class="card-body">
             <h3>ESG Quantitative Finance</h3>
-            <p>Bayesian optimization and machine learning for ESG portfolio construction, climate risk analysis, and sustainable financial investment strategies.</p>
+            <p>Bayesian optimization and machine learning for ESG portfolio construction, climate risk analysis, and sustainable investment strategies.</p>
             <span class="card-tag">ESG &middot; Portfolio Optimization</span>
           </div>
         </a>
+
       </div>
     </section>
 
     <!-- Featured Paper -->
     <section>
       <h2>Featured Paper</h2>
-      <div class="divider"></div>
+      <div class="sep"></div>
       <div class="paper-highlight">
         <span class="paper-badge">TECHNICAL REPORT &middot; MARCH 2026</span>
         <h3><a href="papers/automated-survey-generative-ai.html">An Automated Survey of Generative Artificial Intelligence: Large Language Models, Architectures, Protocols, and Applications</a></h3>
@@ -675,7 +598,7 @@
     <!-- Education -->
     <section>
       <h2>Education</h2>
-      <div class="divider"></div>
+      <div class="sep"></div>
       <div class="education-list">
         <div class="edu-item">
           <span class="edu-icon">&#x1F393;</span>
@@ -707,35 +630,82 @@
     <!-- Media & Outreach -->
     <section>
       <h2>Media &amp; Outreach</h2>
-      <div class="divider"></div>
-      <p class="section-subtitle">Communicating research beyond the lab &mdash; in podcasts and public forums.</p>
+      <div class="sep"></div>
+      <p class="section-sub">Commentary and analysis in national press, radio, and academic platforms.</p>
       <div class="media-grid">
+
+        <div class="media-card">
+          <div class="media-placeholder" style="background:linear-gradient(135deg,#d4380d,#cf1322);">The Conversation</div>
+          <div class="media-body">
+            <div class="media-type">Analysis &middot; Jan 2025</div>
+            <h3><a href="https://theconversation.com/deepseek-todas-las-claves-de-la-bomba-china-que-tumba-a-chatgpt-nvidia-y-las-big-tech-norteamericanas-248458" target="_blank">DeepSeek: todas las claves de la bomba china que tumba a ChatGPT, NVIDIA y las Big Tech</a></h3>
+            <p>In-depth analysis of DeepSeek-R1 and its impact on the global AI industry, NVIDIA&rsquo;s valuation, and US&ndash;China technology strategy.</p>
+            <p class="republished">Republished in The Objective, El Observador (UY), El Mostrador (CL), CODDII, and 3 more outlets.</p>
+          </div>
+        </div>
+
+        <div class="media-card">
+          <div class="media-placeholder" style="background:linear-gradient(135deg,#1e3a5f,#0d2137);">El Mundo &middot; PAPEL</div>
+          <div class="media-body">
+            <div class="media-type">National Press &middot; 2025</div>
+            <h3><a href="https://losperiodistas.com.mx/portal/el-dia-en-que-las-maquinas-funden-su-propia-religion-computar-la-palabra-dios-no-es-ni-de-lejos-lo-mismo-que-buscar-a-dios-papel/" target="_blank">El d&iacute;a en que las m&aacute;quinas funden su propia religi&oacute;n</a></h3>
+            <p>Quoted as AI expert in El Mundo&rsquo;s PAPEL supplement on the Moltbook phenomenon &mdash; AI agents and the limits of computational theology.</p>
+          </div>
+        </div>
+
         <div class="media-card">
           <img src="xhub.jpg" alt="xHUB podcast appearance">
           <div class="media-body">
             <div class="media-type">Podcast</div>
-            <h3><a href="https://open.spotify.com/show/xhub" target="_blank">xHUB &mdash; Machine Consciousness as Pseudoscience</a></h3>
-            <p>Discussion on why computational intelligence and phenomenal consciousness are independent &mdash; and why the hype around &ldquo;sentient AI&rdquo; is misleading.</p>
+            <h3><a href="https://podcasts.apple.com/pe/podcast/xhub-ai/id1576725819?l=en-GB" target="_blank">xHUB &mdash; Machine Consciousness as Pseudoscience</a></h3>
+            <p>Why computational intelligence and phenomenal consciousness are independent &mdash; and why the hype around &ldquo;sentient AI&rdquo; is misleading.</p>
           </div>
         </div>
+
+        <div class="media-card">
+          <div class="media-placeholder" style="background:linear-gradient(135deg,#d4380d,#cf1322);">The Conversation</div>
+          <div class="media-body">
+            <div class="media-type">Analysis &middot; 2025</div>
+            <h3><a href="https://theconversation.com/como-sera-la-educacion-universitaria-en-la-era-de-la-inteligencia-artificial-253448" target="_blank">&iquest;C&oacute;mo ser&aacute; la educaci&oacute;n universitaria en la era de la inteligencia artificial?</a></h3>
+            <p>How generative AI is transforming university education &mdash; AI agents, academic integrity, and the future of teaching.</p>
+          </div>
+        </div>
+
+        <div class="media-card">
+          <div class="media-placeholder" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">Radio Intereconom&iacute;a</div>
+          <div class="media-body">
+            <div class="media-type">Radio &middot; 2025</div>
+            <h3>Visi&oacute;n Global &mdash; DeepSeek &amp; Agentic AI</h3>
+            <p>Two appearances discussing DeepSeek&rsquo;s impact on the AI industry and the rise of agentic AI systems in enterprise.</p>
+          </div>
+        </div>
+
+        <div class="media-card">
+          <div class="media-placeholder" style="background:linear-gradient(135deg,#0c4a6e,#164e63);">Comillas TV</div>
+          <div class="media-body">
+            <div class="media-type">Educational &middot; University</div>
+            <h3><a href="https://www.comillas.edu/tv/microcredencial-ia-eduardo-garrido-el-modelo-gpt-1-1-r9y61zfz/" target="_blank">Microcredencial IA &mdash; GPT-1 &amp; Specialised AI Systems</a></h3>
+            <p>Video lectures on GPT architectures and specialised AI systems for the Comillas AI Micro-credential programme.</p>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- Beyond Research -->
     <section>
       <h2>Beyond Research</h2>
-      <div class="divider"></div>
-      <p class="section-subtitle">When I'm not optimising acquisition functions, I'm reading, thinking, and imagining.</p>
+      <div class="sep"></div>
       <div class="hobbies-grid">
         <div class="hobby-card">
           <span class="hobby-icon">&#x2728;</span>
           <h3>Artificial Intelligence</h3>
-          <p>Not just a job &mdash; a lifelong fascination with building intelligent systems and pushing the boundaries of what machines can learn.</p>
+          <p>A lifelong fascination with building intelligent systems and pushing the boundaries of what machines can learn.</p>
         </div>
         <div class="hobby-card">
           <span class="hobby-icon">&#x1F680;</span>
           <h3>Science Fiction</h3>
-          <p>From Asimov and Lem to Greg Egan and Stephen Baxter &mdash; stories that take physics seriously and ask what it means to be human.</p>
+          <p>Greg Egan, Stephen Baxter, Asimov, Lem &mdash; stories that take physics seriously and ask what it means to be human.</p>
         </div>
         <div class="hobby-card">
           <span class="hobby-icon">&#x1F4AD;</span>
