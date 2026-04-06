@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Complete list of publications by Eduardo C. Garrido-Merch&aacute;n: Bayesian Optimization, Gaussian Processes, Reinforcement Learning, Generative AI, ESG Finance, AI Ethics and Philosophy of Mind.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 920px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Top nav ── */
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topnav a:hover { color: var(--text-bright); }
+
+    /* ── Header ── */
+    header.page {
+      padding: 56px 0 24px;
+    }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 10px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.4em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    header.page p.lead {
+      color: var(--text-muted);
+      font-size: 1em;
+      max-width: 720px;
+    }
+    .sep {
+      width: 48px;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin: 22px 0 0;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin: 36px 0 12px;
+      padding: 22px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .stats-row .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stats-row .stat .num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.6em;
+      font-weight: 500;
+      color: var(--text-bright);
+      line-height: 1;
+    }
+    .stats-row .stat .lbl {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .stats-row .counter-img { margin-left: auto; align-self: center; }
+    .stats-row .counter-img img { height: 24px; opacity: 0.85; }
+
+    /* ── Filter chips ── */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 30px 0 20px;
+    }
+    .chip {
+      display: inline-block;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.75em;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: lowercase;
+      letter-spacing: 0.02em;
+    }
+    .chip:hover { border-color: var(--border-hover); color: var(--text-bright); }
+    .chip.active {
+      background: rgba(59,130,246,0.12);
+      border-color: rgba(59,130,246,0.4);
+      color: #60a5fa;
+    }
+
+    /* ── Year groups ── */
+    .year-group {
+      margin-bottom: 38px;
+    }
+    .year-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .year-header h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.4em;
+      color: var(--text-bright);
+      letter-spacing: -0.01em;
+    }
+    .year-header .count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.74em;
+      color: var(--text-muted);
+    }
+
+    /* ── Paper item ── */
+    .paper {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .paper:last-child { border-bottom: none; }
+    .paper h3 {
+      font-size: 1.02em;
+      line-height: 1.45;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .paper h3 a {
+      color: var(--text-bright);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .paper h3 a:hover { color: #60a5fa; }
+    .paper .authors {
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .paper .authors .self {
+      color: var(--text);
+      font-weight: 500;
+      border-bottom: 1px dotted var(--border-hover);
+    }
+    .paper .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+    }
+    .paper .meta .tag {
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(59,130,246,0.1);
+      color: #60a5fa;
+      letter-spacing: 0.02em;
+    }
+    .paper .meta .tag.t-bo { background: rgba(59,130,246,0.1); color: #60a5fa; }
+    .paper .meta .tag.t-rl { background: rgba(139,92,246,0.1); color: #a78bfa; }
+    .paper .meta .tag.t-llm { background: rgba(16,185,129,0.1); color: #34d399; }
+    .paper .meta .tag.t-eth { background: rgba(244,114,182,0.1); color: #f472b6; }
+    .paper .meta .tag.t-fin { background: rgba(245,158,11,0.1); color: #fbbf24; }
+    .paper .meta .tag.t-sym { background: rgba(248,113,113,0.1); color: #fca5a5; }
+    .paper .meta .arxiv {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .paper .meta .arxiv:hover {
+      color: var(--text-bright);
+      border-color: var(--border-hover);
+    }
+    .paper .meta .venue {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 36px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.7em; }
+      .stats-row { gap: 22px; padding: 18px 20px; }
+      .stats-row .stat .num { font-size: 1.3em; }
+      .stats-row .counter-img { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../code/index.html">code</a> &middot;
+        <a href="../blog/index.html">blog</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">Publications &middot; arXiv &middot; peer-reviewed</div>
+      <h1>Publications</h1>
+      <p class="lead">Complete list of preprints and published work in Bayesian Optimization, Gaussian Processes, Reinforcement Learning, Generative AI, ESG quantitative finance, AI ethics, and philosophy of mind.</p>
+      <div class="sep"></div>
+
+      <div class="stats-row">
+        <div class="stat"><span class="num">41</span><span class="lbl">papers</span></div>
+        <div class="stat"><span class="num">3,300+</span><span class="lbl">citations</span></div>
+        <div class="stat"><span class="num">19</span><span class="lbl">h-index</span></div>
+        <div class="stat"><span class="num">2016&ndash;26</span><span class="lbl">years active</span></div>
+        <div class="counter-img">
+          <img src="https://hits.sh/eduardogarrido90.github.io/papers.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
+        </div>
+      </div>
+
+      <div class="filters">
+        <span class="chip active">all</span>
+        <span class="chip">bayesian opt.</span>
+        <span class="chip">reinforcement learning</span>
+        <span class="chip">generative ai &amp; llms</span>
+        <span class="chip">esg / finance</span>
+        <span class="chip">ethics &amp; philosophy</span>
+        <span class="chip">neurosymbolic</span>
+      </div>
+    </header>
+
+    <section>
+
+      <!-- ─────────────────────────── 2026 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2026</h2><span class="count">6 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2602.13154" target="_blank">Anarchist Automation: A Sociotechnical Framework for Decentralization and Universal Care</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-eth">cs.CY</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2602.13154" target="_blank">arXiv:2602.13154</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2601.22893" target="_blank">When Machines Get It Wrong: Large Language Models Perpetuate Autism Myths More Than Humans Do</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Adriana Constanza Cirera Tirschtigel</p>
+          <div class="meta">
+            <span class="tag t-llm">cs.CY</span>
+            <span class="tag t-eth">LLM bias</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2601.22893" target="_blank">arXiv:2601.22893</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2602.23918" target="_blank">Personal Data as a Human Right: A New Social Contract Based on Data Sovereignty, Human Dignity and Data Personalism</a></h3>
+          <p class="authors">J.M. Alvarez-Pallete, R. Calder&oacute;n, M.T. Corzo, <span class="self">E.C. Garrido-Merch&aacute;n</span>, G. L&oacute;pez, I. Navarro-Mendiz&aacute;bal, S. Padilla, A. Pad&iacute;n, R. Redondo</p>
+          <div class="meta">
+            <span class="tag t-eth">cs.CY</span>
+            <span class="tag t-eth">data personalism</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2602.23918" target="_blank">arXiv:2602.23918</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2602.08774" target="_blank">Default Machine Learning Hyperparameters Do Not Provide Informative Initialization for Bayesian Optimization</a></h3>
+          <p class="authors">Nicol&aacute;s Villagr&aacute;n Prieto, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-bo">cs.LG</span>
+            <span class="tag t-bo">AutoML</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2602.08774" target="_blank">arXiv:2602.08774</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2602.05485" target="_blank">Fine-Tuning Large Language Models for Automatic Detection of Sexually Explicit Content in Spanish-Language Song Lyrics</a></h3>
+          <p class="authors">Dolores Zamacola S&aacute;nchez de Lamadrid, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-llm">cs.CY</span>
+            <span class="tag t-llm">NLP</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2602.05485" target="_blank">arXiv:2602.05485</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2601.08574" target="_blank">Intersectional Data and the Social Cost of Digital Extraction: A Pigouvian Surcharge</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-eth">cs.CY</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2601.08574" target="_blank">arXiv:2601.08574</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2025 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2025</h2><span class="count">3 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2507.13550" target="_blank">GOFAI meets Generative AI: Development of Expert Systems by means of Large Language Models</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Cristina Puente</p>
+          <div class="meta">
+            <span class="tag t-sym">cs.AI</span>
+            <span class="tag t-sym">neurosymbolic</span>
+            <span class="tag t-llm">LLM</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2507.13550" target="_blank">arXiv:2507.13550</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2507.14742" target="_blank">An Information-Theoretic Intersectional Data Valuation Theory</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-eth">cs.IT</span>
+            <span class="tag t-eth">data valuation</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2507.14742" target="_blank">arXiv:2507.14742</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2502.06789" target="_blank">Information-theoretic Bayesian Optimization: Survey and Tutorial</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-bo">cs.LG</span>
+            <span class="tag t-bo">survey</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2502.06789" target="_blank">arXiv:2502.06789</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2024 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2024</h2><span class="count">4 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2410.20550" target="_blank">Deep Reinforcement Learning Agents for Strategic Production Policies in Microeconomic Market Simulations</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Maria Coronado-Vaca, &Aacute;lvaro L&oacute;pez-L&oacute;pez, Carlos Martinez de Ibarreta</p>
+          <div class="meta">
+            <span class="tag t-rl">cs.LG</span>
+            <span class="tag t-rl">multi-agent RL</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2410.20550" target="_blank">arXiv:2410.20550</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2407.14486" target="_blank">Explainable Post hoc Portfolio Management Financial Policy of a Deep Reinforcement Learning agent</a></h3>
+          <p class="authors">Alejandra de la Rica Escudero, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Maria Coronado-Vaca</p>
+          <div class="meta">
+            <span class="tag t-rl">q-fin.PM</span>
+            <span class="tag t-fin">XAI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2407.14486" target="_blank">arXiv:2407.14486</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2407.01556" target="_blank">A Taxonomy of the Biases of the Images created by Generative Artificial Intelligence</a></h3>
+          <p class="authors">Adriana Fern&aacute;ndez de Caleya V&aacute;zquez, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-llm">cs.CY</span>
+            <span class="tag t-eth">bias</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2407.01556" target="_blank">arXiv:2407.01556</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2405.07340" target="_blank">Machine Consciousness as Pseudoscience: The Myth of Conscious Machines</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-eth">cs.CY</span>
+            <span class="tag t-eth">phil. of mind</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2405.07340" target="_blank">arXiv:2405.07340</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2023 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2023</h2><span class="count">9 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2311.11175" target="_blank">Best uses of ChatGPT and Generative AI for computer science research</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-llm">cs.AI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2311.11175" target="_blank">arXiv:2311.11175</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2307.11119" target="_blank">From computational ethics to morality: how decision-making algorithms can help us understand the emergence of moral principles</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Sara Lumbreras-Sancho</p>
+          <div class="meta">
+            <span class="tag t-eth">cs.CY</span>
+            <span class="tag t-eth">computational ethics</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2307.11119" target="_blank">arXiv:2307.11119</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2307.09631" target="_blank">Deep Reinforcement Learning for ESG financial portfolio management</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Sol Mora-Figueroa-Cruz-Guzm&aacute;n, Mar&iacute;a Coronado-Vaca</p>
+          <div class="meta">
+            <span class="tag t-rl">q-fin.PM</span>
+            <span class="tag t-fin">ESG</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2307.09631" target="_blank">arXiv:2307.09631</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2306.02781" target="_blank">A survey of Generative AI Applications</a></h3>
+          <p class="authors">Roberto Gozalo-Brizuela, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-llm">cs.LG</span>
+            <span class="tag t-llm">survey</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2306.02781" target="_blank">arXiv:2306.02781</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2305.03429" target="_blank">Simulating H.P. Lovecraft horror literature with the ChatGPT large language model</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Jos&eacute; Luis Arroyo-Barrig&uuml;ete, Roberto Gozalo-Brizuela</p>
+          <div class="meta">
+            <span class="tag t-llm">cs.CL</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2305.03429" target="_blank">arXiv:2305.03429</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2304.11215" target="_blank">ChatGPT: More than a Weapon of Mass Deception. Ethical challenges and responses from the Human-Centered AI perspective</a></h3>
+          <p class="authors">Alejo Jose G. Sison, Marco Tulio Daza, Roberto Gozalo-Brizuela, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-eth">cs.CY</span>
+            <span class="tag t-llm">HCAI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2304.11215" target="_blank">arXiv:2304.11215</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2303.13373" target="_blank">Fine-tuning ClimateBert transformer with ClimaText for the disclosure analysis of climate-related financial risks</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Cristina Gonz&aacute;lez-Barthe, Mar&iacute;a Coronado Vaca</p>
+          <div class="meta">
+            <span class="tag t-llm">cs.CL</span>
+            <span class="tag t-fin">climate finance</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2303.13373" target="_blank">arXiv:2303.13373</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2303.01485" target="_blank">Bayesian Optimization of ESG Financial Investments</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Gabriel Gonz&aacute;lez Piris, Maria Coronado Vaca</p>
+          <div class="meta">
+            <span class="tag t-bo">q-fin.PM</span>
+            <span class="tag t-fin">ESG</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2303.01485" target="_blank">arXiv:2303.01485</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2301.04655" target="_blank">ChatGPT is not all you need. A State of the Art Review of large Generative AI models</a></h3>
+          <p class="authors">Roberto Gozalo-Brizuela, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-llm">cs.LG</span>
+            <span class="tag t-llm">survey</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2301.04655" target="_blank">arXiv:2301.04655</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2022 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2022</h2><span class="count">3 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2212.04589" target="_blank">Optimizing Integrated Information with a Prior Guided Random Search Algorithm</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Javier S&aacute;nchez-Ca&ntilde;izares</p>
+          <div class="meta">
+            <span class="tag t-bo">cs.AI</span>
+            <span class="tag t-eth">IIT</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2212.04589" target="_blank">arXiv:2212.04589</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2208.02187" target="_blank">On the independence between phenomenal consciousness and computational intelligence</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Sara Lumbreras</p>
+          <div class="meta">
+            <span class="tag t-eth">cs.AI</span>
+            <span class="tag t-eth">phil. of mind</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2208.02187" target="_blank">arXiv:2208.02187</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2207.11089" target="_blank">Do Artificial Intelligence Systems Understand?</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Carlos Blanco</p>
+          <div class="meta">
+            <span class="tag t-eth">cs.AI</span>
+            <span class="tag t-eth">phil. of AI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2207.11089" target="_blank">arXiv:2207.11089</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2021 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2021</h2><span class="count">2 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2107.04126" target="_blank">Many Objective Bayesian Optimization</a></h3>
+          <p class="authors">Lucia Asencio Mart&iacute;n, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <span class="tag t-bo">multi-objective</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2107.04126" target="_blank">arXiv:2107.04126</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2101.08061" target="_blank">A Similarity Measure of Gaussian Process Predictive Distributions</a></h3>
+          <p class="authors">Lucia Asencio-Mart&iacute;n, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-bo">cs.LG</span>
+            <span class="tag t-bo">GPs</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2101.08061" target="_blank">arXiv:2101.08061</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2020 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2020</h2><span class="count">9 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2011.14475" target="_blank">An Artificial Consciousness Model and its relations with Philosophy of Mind</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Martin Molina, Francisco M. Mendoza</p>
+          <div class="meta">
+            <span class="tag t-eth">cs.AI</span>
+            <span class="tag t-eth">phil. of mind</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2011.14475" target="_blank">arXiv:2011.14475</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2011.12075" target="_blank">Fuzzy Stochastic Timed Petri Nets for Causal properties representation</a></h3>
+          <p class="authors">Alejandro Sobrino, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Cristina Puente</p>
+          <div class="meta">
+            <span class="tag t-sym">cs.AI</span>
+            <span class="tag t-sym">causal</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2011.12075" target="_blank">arXiv:2011.12075</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2005.13012" target="_blank">Comparing BERT against traditional machine learning text classification</a></h3>
+          <p class="authors">Santiago Gonz&aacute;lez-Carvajal, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span></p>
+          <div class="meta">
+            <span class="tag t-llm">cs.CL</span>
+            <span class="venue">J. Comp. Cogn. Eng. (2023)</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2005.13012" target="_blank">arXiv:2005.13012</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2004.00601" target="_blank">Parallel Predictive Entropy Search for Multi-objective Bayesian Optimization with Constraints</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Daniel Hern&aacute;ndez-Lobato</p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <span class="tag t-bo">PESMOC</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2004.00601" target="_blank">arXiv:2004.00601</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2003.09643" target="_blank">Towards Automatic Bayesian Optimization: A first step involving acquisition functions</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Luis C. Jariego P&eacute;rez</p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <span class="tag t-bo">AutoBO</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2003.09643" target="_blank">arXiv:2003.09643</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2002.01065" target="_blank">Fake News Detection by means of Uncertainty Weighted Causal Graphs</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Cristina Puente, Rafael Palacios</p>
+          <div class="meta">
+            <span class="tag t-sym">cs.AI</span>
+            <span class="tag t-sym">causal graphs</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2002.01065" target="_blank">arXiv:2002.01065</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2002.00509" target="_blank">A Machine Consciousness architecture based on Deep Learning and Gaussian Processes</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Mart&iacute;n Molina</p>
+          <div class="meta">
+            <span class="tag t-eth">cs.AI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2002.00509" target="_blank">arXiv:2002.00509</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2002.00429" target="_blank">Uncertainty Weighted Causal Graphs</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, C. Puente, A. Sobrino, J.A. Olivas</p>
+          <div class="meta">
+            <span class="tag t-sym">cs.AI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2002.00429" target="_blank">arXiv:2002.00429</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/2001.10523" target="_blank">Multi-class Gaussian Process Classification with Noisy Inputs</a></h3>
+          <p class="authors">Carlos Villacampa-Calvo, Bryan Zaldivar, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Daniel Hern&aacute;ndez-Lobato</p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <span class="tag t-bo">GPs</span>
+            <a class="arxiv" href="https://arxiv.org/abs/2001.10523" target="_blank">arXiv:2001.10523</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2018 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2018</h2><span class="count">3 papers</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/1811.03868" target="_blank">Suggesting Cooking Recipes Through Simulation and Bayesian Optimization</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Alejandro Albarca-Molina</p>
+          <div class="meta">
+            <span class="tag t-bo">cs.AI</span>
+            <a class="arxiv" href="https://arxiv.org/abs/1811.03868" target="_blank">arXiv:1811.03868</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/1806.11015" target="_blank">Bayesian optimization of the PC algorithm for learning Gaussian Bayesian networks</a></h3>
+          <p class="authors">Irene C&oacute;rdoba, <span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Daniel Hern&aacute;ndez-Lobato, Concha Bielza, Pedro Larra&ntilde;aga</p>
+          <div class="meta">
+            <span class="tag t-bo">cs.LG</span>
+            <span class="venue">LNAI &middot; CAEPIA 2018</span>
+            <a class="arxiv" href="https://arxiv.org/abs/1806.11015" target="_blank">arXiv:1806.11015</a>
+          </div>
+        </div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/1805.03463" target="_blank">Dealing with Categorical and Integer-valued Variables in Bayesian Optimization with Gaussian Processes</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Daniel Hern&aacute;ndez-Lobato</p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <span class="tag t-bo">discrete BO</span>
+            <a class="arxiv" href="https://arxiv.org/abs/1805.03463" target="_blank">arXiv:1805.03463</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2017 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2017</h2><span class="count">1 paper</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/1706.03673" target="_blank">Dealing with Integer-valued Variables in Bayesian Optimization with Gaussian Processes</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Daniel Hern&aacute;ndez-Lobato</p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <a class="arxiv" href="https://arxiv.org/abs/1706.03673" target="_blank">arXiv:1706.03673</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────────────────────── 2016 ─────────────────────────── -->
+      <div class="year-group">
+        <div class="year-header"><h2>2016</h2><span class="count">1 paper</span></div>
+
+        <div class="paper">
+          <h3><a href="https://arxiv.org/abs/1609.01051" target="_blank">Predictive Entropy Search for Multi-objective Bayesian Optimization with Constraints</a></h3>
+          <p class="authors"><span class="self">Eduardo C. Garrido-Merch&aacute;n</span>, Daniel Hern&aacute;ndez-Lobato</p>
+          <div class="meta">
+            <span class="tag t-bo">stat.ML</span>
+            <span class="venue">Neurocomputing 361:50-68 (2019)</span>
+            <a class="arxiv" href="https://arxiv.org/abs/1609.01051" target="_blank">arXiv:1609.01051</a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a> &middot; <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" target="_blank">scholar</a> &middot; <a href="https://arxiv.org/a/garridomerchan_e_1.html" target="_blank">arxiv</a></p>
+    </div>
+  </footer>
+</body>
+</html>

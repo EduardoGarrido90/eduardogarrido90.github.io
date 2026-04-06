@@ -156,6 +156,36 @@
     article .body strong { color: var(--text-bright); font-weight: 600; }
     article .body em { color: var(--text-bright); }
 
+    /* ── Stats / counter row ── */
+    .post-stats {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .post-stats img { height: 22px; opacity: 0.85; transition: opacity 0.2s; }
+    .post-stats img:hover { opacity: 1; }
+
+    /* ── Comments ── */
+    .comments-section {
+      margin-top: 56px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+    }
+    .comments-section h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.25em;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .comments-section .comments-sub {
+      color: var(--text-muted);
+      font-size: 0.85em;
+      margin-bottom: 22px;
+    }
+    .giscus { margin-top: 8px; }
+
     /* ── Syllogism block ── */
     .syllogism {
       background: var(--bg-card);
@@ -233,6 +263,9 @@
           <span class="dot">&middot;</span>
           <span>Lectura: 3 min</span>
         </div>
+        <div class="post-stats">
+          <img src="https://hits.sh/eduardogarrido90.github.io/blog/ia-apoyo-manuscrito.html.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
+        </div>
         <figure class="hero-image">
           <img src="../img/blog/header-aceleracionismo-humanista.jpg" alt="Salida de carretera abandonada y cubierta por kudzu, naturaleza reconquistando la infraestructura humana">
         </figure>
@@ -271,6 +304,47 @@
         <p>La conclusi&oacute;n tiene consecuencias pr&aacute;cticas fuertes. Rechazar el uso de IA como apoyo editorial, cuando tal uso amplifica la claridad y el acierto del autor, no solo es injustificado: bajo un realismo moral robusto es <strong>contraproducente</strong>, porque priva al lector de un bien epist&eacute;mico genuino. Lo moralmente cuestionable no es usar la herramienta; lo cuestionable es <em>no usarla</em> cuando su empleo mejora la calidad del conocimiento comunicado.</p>
 
       </div>
+
+      <!--
+        ── Comentarios (Giscus) ─────────────────────────────────────────────
+        Para activar los comentarios necesitas hacer 3 cosas (una sola vez):
+          1. Habilitar GitHub Discussions en el repo eduardogarrido90.github.io
+             (Settings → General → Features → Discussions ✓)
+          2. Instalar la GitHub App "giscus" en el repo:
+             https://github.com/apps/giscus
+          3. Ir a https://giscus.app, introducir el repo, y copiar los valores
+             data-repo-id y data-category-id que aparecen, sustituyendo
+             los placeholders REPO_ID_AQUI y CATEGORY_ID_AQUI más abajo.
+        Mientras esos placeholders estén ahí, el script no cargará.
+      -->
+      <section class="comments-section" id="comentarios">
+        <h2>Comentarios</h2>
+        <p class="comments-sub">Discusi&oacute;n p&uacute;blica v&iacute;a GitHub Discussions. Requiere cuenta de GitHub para comentar.</p>
+        <div class="giscus"></div>
+        <script>
+          (function() {
+            var REPO_ID = "REPO_ID_AQUI";
+            var CATEGORY_ID = "CATEGORY_ID_AQUI";
+            if (REPO_ID === "REPO_ID_AQUI") return;
+            var s = document.createElement('script');
+            s.src = "https://giscus.app/client.js";
+            s.setAttribute("data-repo", "EduardoGarrido90/eduardogarrido90.github.io");
+            s.setAttribute("data-repo-id", REPO_ID);
+            s.setAttribute("data-category", "Comentarios");
+            s.setAttribute("data-category-id", CATEGORY_ID);
+            s.setAttribute("data-mapping", "pathname");
+            s.setAttribute("data-strict", "1");
+            s.setAttribute("data-reactions-enabled", "1");
+            s.setAttribute("data-emit-metadata", "0");
+            s.setAttribute("data-input-position", "top");
+            s.setAttribute("data-theme", "dark_dimmed");
+            s.setAttribute("data-lang", "es");
+            s.setAttribute("crossorigin", "anonymous");
+            s.async = true;
+            document.querySelector('.giscus').appendChild(s);
+          })();
+        </script>
+      </section>
     </article>
   </main>
 

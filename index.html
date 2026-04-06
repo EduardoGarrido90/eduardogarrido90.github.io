@@ -116,6 +116,9 @@
     }
     .social-links a svg { width: 14px; height: 14px; }
 
+    .hero-counter { margin-top: 12px; }
+    .hero-counter img { height: 22px; opacity: 0.85; }
+
     /* ── Sections ── */
     section { padding: 52px 0; }
     section h2 {
@@ -449,11 +452,18 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
               email
             </a>
+            <a href="papers/index.html">papers</a>
+            <a href="code/index.html">code</a>
+            <a href="press/index.html">press</a>
+            <a href="blog/index.html">blog</a>
             <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" target="_blank">scholar</a>
             <a href="https://github.com/EduardoGarrido90" target="_blank">github</a>
             <a href="https://arxiv.org/a/garridomerchan_e_1.html" target="_blank">arxiv</a>
             <a href="https://www.researchgate.net/profile/Eduardo-Garrido-Merchan" target="_blank">researchgate</a>
             <a href="https://x.com/vedugarmer" target="_blank">@vedugarmer</a>
+          </div>
+          <div class="hero-counter">
+            <img src="https://hits.sh/eduardogarrido90.github.io.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
           </div>
         </div>
       </div>
@@ -569,6 +579,11 @@
         </a>
 
       </div>
+      <p style="text-align: right; margin-top: 22px;">
+        <a href="papers/index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.82em; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s;" onmouseover="this.style.color='var(--text-bright)';this.style.borderColor='var(--border-hover)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+          See all 41 publications &rarr;
+        </a>
+      </p>
     </section>
 
     <!-- Featured Paper -->
@@ -690,6 +705,74 @@
         </div>
 
       </div>
+      <p style="text-align: right; margin-top: 22px;">
+        <a href="press/index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.82em; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s;" onmouseover="this.style.color='var(--text-bright)';this.style.borderColor='var(--border-hover)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+          All press &amp; media &rarr;
+        </a>
+      </p>
+    </section>
+
+    <!-- Code & Projects -->
+    <section>
+      <h2>Code &amp; Projects</h2>
+      <div class="sep"></div>
+      <p class="section-sub">Open-source research code, reference implementations, and tutorial notebooks. Bayesian optimization, Gaussian processes, deep RL and educational material.</p>
+      <div class="research-grid">
+
+        <a href="https://github.com/EduardoGarrido90/UPM_summer_school_GP_BO_course" target="_blank" class="research-card">
+          <div class="card-body" style="padding: 22px 24px;">
+            <h3>UPM Summer School &mdash; GPs &amp; BO</h3>
+            <p>Course notebooks for the Gaussian Processes and Bayesian Optimization summer school at UPM.</p>
+            <span class="card-tag">Jupyter &middot; &#9733; 28</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/ML_books" target="_blank" class="research-card">
+          <div class="card-body" style="padding: 22px 24px;">
+            <h3>ML Books</h3>
+            <p>Curated list of high-quality machine learning books available freely online &mdash; a reading map.</p>
+            <span class="card-tag">Reading list &middot; &#9733; 12</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/bo_tutorials_botorch" target="_blank" class="research-card">
+          <div class="card-body" style="padding: 22px 24px;">
+            <h3>BoTorch Tutorials</h3>
+            <p>Bayesian optimization tutorials in Jupyter / Colab format using BoTorch.</p>
+            <span class="card-tag">Jupyter &middot; &#9733; 10</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/Spearmint" target="_blank" class="research-card">
+          <div class="card-body" style="padding: 22px 24px;">
+            <h3>Spearmint</h3>
+            <p>Bayesian optimization codebase used as the basis for several research papers and PESMOC variants.</p>
+            <span class="card-tag">Python &middot; &#9733; 8</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/spearmint_ppesmoc" target="_blank" class="research-card">
+          <div class="card-body" style="padding: 22px 24px;">
+            <h3>Parallel PESMOC</h3>
+            <p>Parallel Predictive Entropy Search for Multi-objective BO with Constraints &mdash; reference implementation.</p>
+            <span class="card-tag">Python &middot; &#9733; 6</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/micro_agents" target="_blank" class="research-card">
+          <div class="card-body" style="padding: 22px 24px;">
+            <h3>Microeconomic DRL Agents</h3>
+            <p>Multi-agent deep reinforcement learning on microeconomic market simulators.</p>
+            <span class="card-tag">Python &middot; DRL</span>
+          </div>
+        </a>
+
+      </div>
+      <p style="text-align: right; margin-top: 22px;">
+        <a href="code/index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.82em; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s;" onmouseover="this.style.color='var(--text-bright)';this.style.borderColor='var(--border-hover)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
+          All 19 repositories &rarr;
+        </a>
+      </p>
     </section>
 
     <!-- Aceleracionismo Humanista (blog) -->

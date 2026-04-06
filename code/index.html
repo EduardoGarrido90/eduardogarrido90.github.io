@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code &amp; Projects &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Open-source code, research repositories and tutorials by Eduardo C. Garrido-Merch&aacute;n on Bayesian Optimization, Gaussian Processes, Reinforcement Learning, and machine learning education.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 1020px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .topnav a:hover { color: var(--text-bright); }
+
+    header.page { padding: 56px 0 24px; }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 10px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.4em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    header.page p.lead {
+      color: var(--text-muted);
+      font-size: 1em;
+      max-width: 720px;
+    }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 22px 0; }
+
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 16px 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 36px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78em;
+    }
+    .stats-bar .item { color: var(--text-muted); }
+    .stats-bar .item strong { color: var(--text-bright); font-weight: 500; }
+    .stats-bar .counter { margin-left: auto; }
+    .stats-bar .counter img { height: 22px; opacity: 0.85; }
+
+    /* ── Repo grid ── */
+    .repos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-bottom: 48px; }
+    .repo {
+      display: flex;
+      flex-direction: column;
+      padding: 22px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s;
+    }
+    .repo:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    }
+    .repo .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .repo h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95em;
+      color: var(--text-bright);
+      font-weight: 500;
+      word-break: break-word;
+    }
+    .repo .stars {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      color: #fbbf24;
+      flex-shrink: 0;
+    }
+    .repo p {
+      font-size: 0.86em;
+      color: var(--text-muted);
+      line-height: 1.55;
+      flex: 1;
+      margin-bottom: 14px;
+    }
+    .repo .meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+    }
+    .repo .lang {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+    .repo .lang::before {
+      content: '';
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #888;
+    }
+    .repo .lang.python::before { background: #3572A5; }
+    .repo .lang.jupyter::before { background: #DA5B0B; }
+    .repo .lang.html::before { background: #e34c26; }
+    .repo .lang.shell::before { background: #89e051; }
+    .repo .lang.prolog::before { background: #74283c; }
+    .repo .updated { color: var(--text-muted); }
+
+    /* ── Section heads ── */
+    .group-head {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 12px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .group-head .small {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6em;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    footer {
+      text-align: center;
+      padding: 36px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.7em; }
+      .repos { grid-template-columns: 1fr; }
+      .stats-bar { gap: 14px; }
+      .stats-bar .counter { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../papers/index.html">papers</a> &middot;
+        <a href="../blog/index.html">blog</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">Open source &middot; GitHub</div>
+      <h1>Code &amp; Projects</h1>
+      <p class="lead">Research repositories, tutorial notebooks, and reference implementations. Bayesian optimization, Gaussian processes, deep reinforcement learning, and educational material for ML courses.</p>
+      <div class="sep"></div>
+
+      <div class="stats-bar">
+        <span class="item"><strong>19</strong> public repos</span>
+        <span class="item"><strong>~70</strong> total stars</span>
+        <span class="item"><a href="https://github.com/EduardoGarrido90" target="_blank" style="color: #60a5fa; text-decoration: none;">github.com/EduardoGarrido90 &rarr;</a></span>
+        <span class="counter">
+          <img src="https://hits.sh/eduardogarrido90.github.io/code.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
+        </span>
+      </div>
+    </header>
+
+    <section>
+
+      <h2 class="group-head">Bayesian Optimization &amp; Gaussian Processes <span class="small">research code</span></h2>
+      <div class="repos">
+
+        <a href="https://github.com/EduardoGarrido90/Spearmint" target="_blank" class="repo">
+          <div class="title-row"><h3>Spearmint</h3><span class="stars">&#9733; 8</span></div>
+          <p>Spearmint Bayesian optimization codebase &mdash; the canonical research implementation maintained for new acquisition functions and constraints.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">May 2020</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/spearmint_ppesmoc" target="_blank" class="repo">
+          <div class="title-row"><h3>spearmint_ppesmoc</h3><span class="stars">&#9733; 6</span></div>
+          <p>Parallel Predictive Entropy Search for Multi-objective Bayesian Optimization with Constraints (PPESMOC). Reference implementation for the 2020 paper.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Sep 2021</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/spearmint_many_obj" target="_blank" class="repo">
+          <div class="title-row"><h3>spearmint_many_obj</h3></div>
+          <p>Many-objective Bayesian optimization tools, extending Spearmint to handle problems with high-dimensional objective spaces.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Sep 2021</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/botorch" target="_blank" class="repo">
+          <div class="title-row"><h3>botorch</h3></div>
+          <p>Fork of BoTorch (Bayesian optimization in PyTorch) with experimental modifications for ongoing research.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Oct 2021</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/simplex_BO_transform_experiments" target="_blank" class="repo">
+          <div class="title-row"><h3>simplex_BO_transform_experiments</h3></div>
+          <p>Experiments on simplex transformations for Bayesian optimization implemented on top of PyTorch / BoTorch.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Oct 2022</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/GPInputNoise" target="_blank" class="repo">
+          <div class="title-row"><h3>GPInputNoise</h3><span class="stars">&#9733; 1</span></div>
+          <p>Multi-class Gaussian Process Classification with Noisy Inputs &mdash; reference code for the stat.ML paper applied to astronomical data.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Jul 2023</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/bopc" target="_blank" class="repo">
+          <div class="title-row"><h3>bopc</h3><span class="stars">&#9733; 3</span></div>
+          <p>Replication code for "Bayesian optimization of the PC algorithm for learning Gaussian Bayesian networks" (CAEPIA 2018, LNAI).</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Mar 2020</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/full_bio" target="_blank" class="repo">
+          <div class="title-row"><h3>full_bio</h3></div>
+          <p>BO full bio search optimization package &mdash; tooling around end-to-end pipelines combining BO and biological search problems.</p>
+          <div class="meta"><span class="lang shell">Shell</span><span class="updated">Dec 2018</span></div>
+        </a>
+
+      </div>
+
+      <h2 class="group-head">Reinforcement Learning <span class="small">DRL agents</span></h2>
+      <div class="repos">
+
+        <a href="https://github.com/EduardoGarrido90/micro_agents" target="_blank" class="repo">
+          <div class="title-row"><h3>micro_agents</h3><span class="stars">&#9733; 1</span></div>
+          <p>Microeconomic agents trained with Deep Reinforcement Learning on microeconomic market simulators. Companion code for the 2024 multi-agent RL paper.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Nov 2024</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/stable-baselines3" target="_blank" class="repo">
+          <div class="title-row"><h3>stable-baselines3</h3><span class="stars">&#9733; 1</span></div>
+          <p>PyTorch fork of Stable Baselines &mdash; reliable implementations of reinforcement learning algorithms used as the backbone in several research projects.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Nov 2024</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/rl-baselines3-zoo-botorch" target="_blank" class="repo">
+          <div class="title-row"><h3>rl-baselines3-zoo-botorch</h3></div>
+          <p>Training framework for Stable Baselines3 with hyperparameter optimization driven by BoTorch.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Mar 2023</span></div>
+        </a>
+
+      </div>
+
+      <h2 class="group-head">Causal &amp; Neurosymbolic AI <span class="small">PCGs &amp; Prolog</span></h2>
+      <div class="repos">
+
+        <a href="https://github.com/EduardoGarrido90/omnius" target="_blank" class="repo">
+          <div class="title-row"><h3>omnius</h3></div>
+          <p>Probabilistic Causal Graphs (PCGs) Python &harr; Prolog implementation, with a fake-news classifier built on top of uncertainty-weighted causal graphs.</p>
+          <div class="meta"><span class="lang prolog">Prolog</span><span class="updated">Apr 2021</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/iit_opt" target="_blank" class="repo">
+          <div class="title-row"><h3>iit_opt</h3></div>
+          <p>Optimization of &Phi; (phi) &mdash; experimental code for Integrated Information Theory metrics used in the 2022 IIT paper.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Sep 2022</span></div>
+        </a>
+
+      </div>
+
+      <h2 class="group-head">Teaching &amp; Tutorials <span class="small">notebooks &amp; courses</span></h2>
+      <div class="repos">
+
+        <a href="https://github.com/EduardoGarrido90/UPM_summer_school_GP_BO_course" target="_blank" class="repo">
+          <div class="title-row"><h3>UPM_summer_school_GP_BO_course</h3><span class="stars">&#9733; 28</span></div>
+          <p>Notebooks for the Gaussian Processes and Bayesian Optimization course at the UPM summer school. Hands-on material with derivations and code.</p>
+          <div class="meta"><span class="lang jupyter">Jupyter</span><span class="updated">Jun 2024</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/bo_tutorials_botorch" target="_blank" class="repo">
+          <div class="title-row"><h3>bo_tutorials_botorch</h3><span class="stars">&#9733; 10</span></div>
+          <p>BoTorch tutorials in Jupyter notebook format, ready to be launched on Google Colab. Practical entry point for new BO practitioners.</p>
+          <div class="meta"><span class="lang jupyter">Jupyter</span><span class="updated">Mar 2023</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/UPM_summer_schoo" target="_blank" class="repo">
+          <div class="title-row"><h3>UPM_summer_school (legacy)</h3></div>
+          <p>Earlier edition of the GP &amp; BO summer school notebooks &mdash; preserved for reference.</p>
+          <div class="meta"><span class="updated">Jun 2023</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/tutorials_data_science" target="_blank" class="repo">
+          <div class="title-row"><h3>tutorials_data_science</h3><span class="stars">&#9733; 2</span></div>
+          <p>Data science tutorials covering core ML concepts, used in undergraduate teaching at Comillas.</p>
+          <div class="meta"><span class="lang python">Python</span><span class="updated">Apr 2024</span></div>
+        </a>
+
+        <a href="https://github.com/EduardoGarrido90/ML_books" target="_blank" class="repo">
+          <div class="title-row"><h3>ML_books</h3><span class="stars">&#9733; 12</span></div>
+          <p>Curated list of links to high-quality machine learning books available freely online. A reading map for students.</p>
+          <div class="meta"><span class="updated">Oct 2024</span></div>
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a> &middot; <a href="https://github.com/EduardoGarrido90" target="_blank">github</a></p>
+    </div>
+  </footer>
+</body>
+</html>

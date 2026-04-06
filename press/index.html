@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Press &amp; Media &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Press articles, opinion pieces, radio and podcast appearances by Eduardo C. Garrido-Merch&aacute;n on AI, generative models, and the philosophy of mind.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 920px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .topnav a:hover { color: var(--text-bright); }
+
+    header.page { padding: 56px 0 24px; }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 10px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.4em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    header.page p.lead { color: var(--text-muted); font-size: 1em; max-width: 720px; }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 22px 0; }
+
+    .counter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78em;
+      color: var(--text-muted);
+    }
+    .counter-row img { height: 22px; opacity: 0.85; }
+
+    .group-head {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 18px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .group-head .small {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6em;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    /* ── Press item ── */
+    .press-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+    .press-item {
+      display: block;
+      padding: 22px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s;
+    }
+    .press-item:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    }
+    .press-item .top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .press-item .outlet {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    .press-item .outlet.tc { background: rgba(212,56,13,0.15); color: #fb923c; }
+    .press-item .outlet.elmundo { background: rgba(30,58,95,0.6); color: #93c5fd; }
+    .press-item .outlet.radio { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    .press-item .outlet.podcast { background: rgba(16,185,129,0.12); color: #34d399; }
+    .press-item .outlet.tv { background: rgba(12,74,110,0.6); color: #67e8f9; }
+    .press-item .date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      color: var(--text-muted);
+    }
+    .press-item .lang {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65em;
+      color: var(--text-muted);
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .press-item h3 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.1em;
+      color: var(--text-bright);
+      line-height: 1.35;
+      margin-bottom: 8px;
+      letter-spacing: -0.005em;
+    }
+    .press-item p {
+      font-size: 0.88em;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .press-item p.republished {
+      font-size: 0.78em;
+      color: var(--text-muted);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+      font-style: italic;
+    }
+
+    footer {
+      text-align: center;
+      padding: 36px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.7em; }
+      .press-item { padding: 18px 20px; }
+      .press-item h3 { font-size: 1em; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../papers/index.html">papers</a> &middot;
+        <a href="../code/index.html">code</a> &middot;
+        <a href="../blog/index.html">blog</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">Press &middot; Media &middot; Outreach</div>
+      <h1>Press &amp; Media</h1>
+      <p class="lead">Opinion pieces, expert commentary and broadcast appearances on artificial intelligence, generative models, deep learning, and the philosophy of mind. National press, radio, podcasts and academic outreach.</p>
+      <div class="sep"></div>
+      <div class="counter-row">
+        <img src="https://hits.sh/eduardogarrido90.github.io/press.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
+      </div>
+    </header>
+
+    <section>
+
+      <h2 class="group-head">The Conversation <span class="small">opinion &amp; analysis</span></h2>
+      <div class="press-list">
+
+        <a class="press-item" href="https://theconversation.com/como-sera-la-educacion-universitaria-en-la-era-de-la-inteligencia-artificial-253448" target="_blank">
+          <div class="top">
+            <span class="outlet tc">The Conversation</span>
+            <span class="date">13 Apr 2025</span>
+            <span class="lang">ES</span>
+          </div>
+          <h3>&iquest;C&oacute;mo ser&aacute; la educaci&oacute;n universitaria en la era de la inteligencia artificial?</h3>
+          <p>An&aacute;lisis sobre c&oacute;mo la generalizaci&oacute;n de la IA generativa entre los estudiantes universitarios redefine la integridad acad&eacute;mica, los m&eacute;todos docentes y el rol del profesor.</p>
+        </a>
+
+        <a class="press-item" href="https://theconversation.com/deepseek-todas-las-claves-de-la-bomba-china-que-tumba-a-chatgpt-nvidia-y-las-big-tech-norteamericanas-248458" target="_blank">
+          <div class="top">
+            <span class="outlet tc">The Conversation</span>
+            <span class="date">28 Jan 2025</span>
+            <span class="lang">ES</span>
+          </div>
+          <h3>DeepSeek: todas las claves de la bomba china que tumba a ChatGPT, NVIDIA y las Big Tech norteamericanas</h3>
+          <p>An&aacute;lisis t&eacute;cnico de DeepSeek-R1 y de su impacto en la valoraci&oacute;n de NVIDIA, la estrategia tecnol&oacute;gica USA&ndash;China y la econom&iacute;a del entrenamiento de LLMs.</p>
+          <p class="republished">Republicado en The Objective, El Observador (UY), El Mostrador (CL), CODDII y otros medios.</p>
+        </a>
+
+        <a class="press-item" href="https://theconversation.com/deepseek-tudo-sobre-a-bomba-chinesa-que-esta-derrubando-o-chatgpt-a-nvidia-e-as-grandes-empresas-de-tecnologia-dos-eua-248516" target="_blank">
+          <div class="top">
+            <span class="outlet tc">The Conversation</span>
+            <span class="date">28 Jan 2025</span>
+            <span class="lang">PT</span>
+          </div>
+          <h3>DeepSeek: tudo sobre a bomba chinesa que est&aacute; derrubando o ChatGPT, a NVIDIA e as grandes empresas de tecnologia dos EUA</h3>
+          <p>Vers&atilde;o en portugu&eacute;s del an&aacute;lisis sobre DeepSeek y su impacto disruptivo en el ecosistema global de IA.</p>
+        </a>
+
+      </div>
+
+      <h2 class="group-head">Prensa nacional <span class="small">national press</span></h2>
+      <div class="press-list">
+
+        <a class="press-item" href="https://losperiodistas.com.mx/portal/el-dia-en-que-las-maquinas-funden-su-propia-religion-computar-la-palabra-dios-no-es-ni-de-lejos-lo-mismo-que-buscar-a-dios-papel/" target="_blank">
+          <div class="top">
+            <span class="outlet elmundo">El Mundo &middot; PAPEL</span>
+            <span class="date">2025</span>
+            <span class="lang">ES</span>
+          </div>
+          <h3>El d&iacute;a en que las m&aacute;quinas funden su propia religi&oacute;n</h3>
+          <p>Entrevista como experto en IA en el suplemento PAPEL de El Mundo sobre el fen&oacute;meno Moltbook, los agentes de IA y los l&iacute;mites de la &laquo;teolog&iacute;a computacional&raquo;.</p>
+        </a>
+
+      </div>
+
+      <h2 class="group-head">Radio &amp; Podcasts <span class="small">audio</span></h2>
+      <div class="press-list">
+
+        <a class="press-item" href="https://podcasts.apple.com/pe/podcast/xhub-ai/id1576725819?l=en-GB" target="_blank">
+          <div class="top">
+            <span class="outlet podcast">xHUB Podcast</span>
+            <span class="date">2025</span>
+            <span class="lang">ES</span>
+          </div>
+          <h3>xHUB &mdash; Machine Consciousness as Pseudoscience</h3>
+          <p>Conversaci&oacute;n sobre por qu&eacute; la inteligencia computacional y la consciencia fenom&eacute;nica son independientes, y por qu&eacute; el hype sobre &laquo;IA sintiente&raquo; es enga&ntilde;oso.</p>
+        </a>
+
+        <div class="press-item" style="cursor: default;">
+          <div class="top">
+            <span class="outlet radio">Radio Intereconom&iacute;a</span>
+            <span class="date">2025</span>
+            <span class="lang">ES</span>
+          </div>
+          <h3>Visi&oacute;n Global &mdash; DeepSeek &amp; Agentic AI</h3>
+          <p>Dos intervenciones en el programa Visi&oacute;n Global discutiendo el impacto de DeepSeek en la industria de la IA y la emergencia de los sistemas de IA agencial en el entorno empresarial.</p>
+        </div>
+
+      </div>
+
+      <h2 class="group-head">Universidad &amp; divulgaci&oacute;n <span class="small">video</span></h2>
+      <div class="press-list">
+
+        <a class="press-item" href="https://www.comillas.edu/tv/microcredencial-ia-eduardo-garrido-el-modelo-gpt-1-1-r9y61zfz/" target="_blank">
+          <div class="top">
+            <span class="outlet tv">Comillas TV</span>
+            <span class="date">Microcredencial IA</span>
+            <span class="lang">ES</span>
+          </div>
+          <h3>Microcredencial IA &mdash; GPT-1 y sistemas de IA especializados</h3>
+          <p>Clases en v&iacute;deo sobre las arquitecturas GPT y los sistemas de IA especializados, dentro del programa de microcredenciales en IA de Universidad Pontificia Comillas.</p>
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a> &middot; <a href="https://theconversation.com/profiles/eduardo-cesar-garrido-merchan-2310200" target="_blank">the conversation</a></p>
+    </div>
+  </footer>
+</body>
+</html>

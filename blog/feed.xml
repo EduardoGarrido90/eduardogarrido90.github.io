@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Aceleracionismo Humanista</title>
+  <subtitle>Notas breves sobre IA, filosofía analítica, meta-ética y filosofía de la mente — Eduardo C. Garrido-Merchán</subtitle>
+  <link href="https://eduardogarrido90.github.io/blog/feed.xml" rel="self"/>
+  <link href="https://eduardogarrido90.github.io/blog/"/>
+  <updated>2026-04-06T18:00:00+02:00</updated>
+  <id>https://eduardogarrido90.github.io/blog/</id>
+  <author>
+    <name>Eduardo C. Garrido-Merchán</name>
+    <uri>https://eduardogarrido90.github.io/</uri>
+  </author>
+  <rights>© 2026 Eduardo C. Garrido-Merchán</rights>
+
+  <entry>
+    <title>Sobre la pretendida cuestionabilidad moral del uso de IA como apoyo en la redacción de manuscritos</title>
+    <link href="https://eduardogarrido90.github.io/blog/ia-apoyo-manuscrito.html"/>
+    <id>https://eduardogarrido90.github.io/blog/ia-apoyo-manuscrito.html</id>
+    <published>2026-04-06T12:00:00+02:00</published>
+    <updated>2026-04-06T18:00:00+02:00</updated>
+    <category term="Meta-ética"/>
+    <category term="IA"/>
+    <category term="Filosofía analítica"/>
+    <summary type="html">
+      Un silogismo breve, desde el realismo moral robusto, que muestra por qué emplear IA como herramienta editorial no solo no es moralmente cuestionable, sino un bien en sí mismo. Incluye versión en vídeo.
+    </summary>
+  </entry>
+
+</feed>
