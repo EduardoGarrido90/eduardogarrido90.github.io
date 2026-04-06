@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre la pretendida cuestionabilidad moral del uso de IA como apoyo en la redacci&oacute;n de manuscritos &mdash; Aceleracionismo Humanista</title>
+  <meta name="description" content="Un argumento breve, en clave de filosof&iacute;a anal&iacute;tica y realismo moral robusto, contra la falacia de que usar IA como apoyo editorial sea moralmente cuestionable.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Top nav ── */
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topnav a:hover { color: var(--text-bright); }
+    .topnav .crumbs a + a::before {
+      content: ' / ';
+      color: var(--border-hover);
+      margin: 0 6px;
+    }
+
+    /* ── Hero image ── */
+    .hero-image {
+      width: 100%;
+      max-width: 100%;
+      margin: 32px 0 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+      aspect-ratio: 16 / 7;
+    }
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.85) brightness(0.78) contrast(1.05);
+    }
+    .hero-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,15,26,0) 40%, rgba(10,15,26,0.55) 100%);
+      pointer-events: none;
+    }
+    .hero-credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      margin-top: 8px;
+      text-align: right;
+    }
+    .hero-credit a { color: var(--text-muted); text-decoration: underline; text-decoration-color: var(--border-hover); }
+    .hero-credit a:hover { color: var(--text-bright); }
+
+    /* ── Article header ── */
+    article header {
+      padding: 64px 0 36px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(139,92,246,0.12);
+      color: #a78bfa;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.72em;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    article h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2em;
+      color: var(--text-bright);
+      letter-spacing: -0.015em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .byline {
+      font-size: 0.88em;
+      color: var(--text-muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .byline strong { color: var(--text); font-weight: 500; }
+    .byline .dot { color: var(--border-hover); }
+
+    .sep {
+      width: 48px;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin: 28px 0 40px;
+    }
+
+    /* ── Article body ── */
+    article .body {
+      padding-bottom: 64px;
+      font-size: 1.02em;
+    }
+    article .body p {
+      margin-bottom: 22px;
+      color: var(--text);
+    }
+    article .body h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 40px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    article .body h2:first-child { margin-top: 0; }
+    article .body strong { color: var(--text-bright); font-weight: 600; }
+    article .body em { color: var(--text-bright); }
+
+    /* ── Syllogism block ── */
+    .syllogism {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-image: var(--gradient) 1;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 0.97em;
+    }
+    .syllogism .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #60a5fa;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .syllogism p { margin-bottom: 12px; }
+    .syllogism p:last-child { margin-bottom: 0; }
+    .syllogism .line-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      color: #a78bfa;
+      margin-right: 6px;
+    }
+    .syllogism hr {
+      border: none;
+      border-top: 1px solid var(--border-hover);
+      margin: 14px 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      article h1 { font-size: 1.55em; }
+      article .body { font-size: 0.98em; }
+      .syllogism { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div class="crumbs">
+        <a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a>
+        <a href="index.html">Aceleracionismo Humanista</a>
+      </div>
+      <div><a href="../index.html">home</a></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article>
+      <header>
+        <span class="badge">Nota &middot; Filosof&iacute;a anal&iacute;tica</span>
+        <h1>Sobre la pretendida cuestionabilidad moral del uso de IA como apoyo en la redacci&oacute;n de manuscritos</h1>
+        <div class="byline">
+          <span><strong>Eduardo C. Garrido-Merch&aacute;n</strong></span>
+          <span class="dot">&middot;</span>
+          <span>6 de abril de 2026</span>
+          <span class="dot">&middot;</span>
+          <span>Lectura: 3 min</span>
+        </div>
+        <figure class="hero-image">
+          <img src="../img/blog/header-aceleracionismo-humanista.jpg" alt="Salida de carretera abandonada y cubierta por kudzu, naturaleza reconquistando la infraestructura humana">
+        </figure>
+        <p class="hero-credit">Foto: trukdotcom &middot; <a href="https://commons.wikimedia.org/wiki/File:Abandoned_Exit_with_Kudzu_-_panoramio.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> &middot; CC BY-SA 3.0</p>
+        <div class="sep"></div>
+      </header>
+
+      <div class="body">
+
+        <p>Existe un prejuicio ampliamente extendido seg&uacute;n el cual servirse de sistemas de inteligencia artificial para apoyar la redacci&oacute;n de un art&iacute;culo o manuscrito constituye una pr&aacute;ctica moralmente cuestionable. Este texto sostiene, con los est&aacute;ndares argumentativos de la filosof&iacute;a anal&iacute;tica, que tal intuici&oacute;n es una falacia; y m&aacute;s a&uacute;n, que bajo compromisos meta-&eacute;ticos robustos &mdash;en concreto, el realismo moral fuerte&mdash; dicho uso resulta positivamente bueno.</p>
+
+        <h2>Desambiguaci&oacute;n previa</h2>
+
+        <p>Por <em>uso de IA como apoyo</em> entendemos aqu&iacute; todo empleo en el que (i) el autor conserva la agencia epist&eacute;mica &mdash;formula las tesis, dirige los argumentos y asume la responsabilidad del contenido&mdash;, y (ii) la herramienta opera como amplificador cognitivo: correcci&oacute;n, reformulaci&oacute;n, b&uacute;squeda, s&iacute;ntesis, verificaci&oacute;n. Queda excluida la suplantaci&oacute;n &iacute;ntegra del autor, que ser&iacute;a un problema distinto &mdash;de &iacute;ndole fraudulenta&mdash; y no el que aqu&iacute; se discute.</p>
+
+        <h2>El argumento</h2>
+
+        <p>Asumamos, en el marco del realismo moral robusto, la tesis de que existen <strong>bienes epist&eacute;micos objetivos</strong> &mdash;la verdad, la claridad, la difusi&oacute;n del conocimiento&mdash; y que toda acci&oacute;n que contribuya a ellos de manera no enga&ntilde;osa es, por ello mismo, moralmente buena. Sobre esa base, el razonamiento es el siguiente:</p>
+
+        <div class="syllogism">
+          <span class="label">Silogismo</span>
+          <p><span class="line-label">P1.</span> Si una acci&oacute;n contribuye de modo no enga&ntilde;oso a la realizaci&oacute;n de bienes epist&eacute;micos objetivos (verdad, claridad, accesibilidad del conocimiento), entonces esa acci&oacute;n es moralmente buena.</p>
+          <p><span class="line-label">P2.</span> El uso de la IA como apoyo en la redacci&oacute;n de un manuscrito &mdash;bajo las condiciones de agencia epist&eacute;mica y transparencia ya delimitadas&mdash; contribuye de modo no enga&ntilde;oso a la realizaci&oacute;n de dichos bienes epist&eacute;micos objetivos: reduce errores, mejora la claridad expositiva y ampl&iacute;a la capacidad del autor para comunicar proposiciones verdaderas.</p>
+          <hr>
+          <p><span class="line-label">&there4;</span> Por tanto, el uso de la IA como apoyo en la redacci&oacute;n de un manuscrito es moralmente bueno.</p>
+        </div>
+
+        <p>El argumento es un <em>modus ponens</em> impecable: si se aceptan P1 y P2, la conclusi&oacute;n se sigue con necesidad l&oacute;gica. Discutir la tesis obliga, por tanto, a impugnar alguna de las dos premisas.</p>
+
+        <h2>Por qu&eacute; el reparo com&uacute;n es falaz</h2>
+
+        <p>El rechazo habitual se apoya en dos l&iacute;neas, ambas defectuosas. La primera es una analog&iacute;a con el <em>plagio</em>: pero el plagio lesiona bienes epist&eacute;micos precisamente porque introduce enga&ntilde;o &mdash;atribuci&oacute;n falsa de autor&iacute;a&mdash;, mientras que el uso transparente de la IA como herramienta no lo introduce, igual que no lo hacen el corrector ortogr&aacute;fico, el buscador bibliogr&aacute;fico o el colega que lee un borrador. La segunda es una apelaci&oacute;n a la <em>autenticidad</em> del autor, pero la autenticidad no es un valor moral fundamental en ning&uacute;n sistema meta-&eacute;tico serio: es, a lo sumo, una preferencia est&eacute;tica, y una preferencia est&eacute;tica no puede sobreponerse a bienes objetivos como la verdad.</p>
+
+        <h2>Corolario</h2>
+
+        <p>La conclusi&oacute;n tiene consecuencias pr&aacute;cticas fuertes. Rechazar el uso de IA como apoyo editorial, cuando tal uso amplifica la claridad y el acierto del autor, no solo es injustificado: bajo un realismo moral robusto es <strong>contraproducente</strong>, porque priva al lector de un bien epist&eacute;mico genuino. Lo moralmente cuestionable no es usar la herramienta; lo cuestionable es <em>no usarla</em> cuando su empleo mejora la calidad del conocimiento comunicado.</p>
+
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="index.html">aceleracionismo humanista</a> &middot; <a href="../index.html">home</a></p>
+    </div>
+  </footer>
+</body>
+</html>

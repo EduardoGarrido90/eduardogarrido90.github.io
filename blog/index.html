@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aceleracionismo Humanista &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Aceleracionismo Humanista: notas breves sobre inteligencia artificial, filosof&iacute;a anal&iacute;tica, meta-&eacute;tica y filosof&iacute;a de la mente por Eduardo C. Garrido-Merch&aacute;n.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Top nav ── */
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topnav a:hover { color: var(--text-bright); }
+
+    /* ── Header ── */
+    header.page {
+      padding: 56px 0 32px;
+    }
+    .blog-hero {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 6;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .blog-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.85) brightness(0.7) contrast(1.05);
+    }
+    .blog-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,15,26,0.15) 0%, rgba(10,15,26,0.85) 100%);
+    }
+    .blog-hero .hero-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px 36px;
+      z-index: 2;
+    }
+    .blog-hero .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 8px;
+    }
+    .blog-hero h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.4em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.6);
+    }
+    .blog-hero .credit {
+      position: absolute;
+      bottom: 8px;
+      right: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62em;
+      color: rgba(255,255,255,0.55);
+      z-index: 3;
+    }
+    .blog-hero .credit a { color: inherit; text-decoration: underline; text-decoration-color: rgba(255,255,255,0.25); }
+    header.page p.lead {
+      color: var(--text-muted);
+      font-size: 1em;
+      max-width: 680px;
+    }
+    .sep {
+      width: 48px;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin: 22px 0 40px;
+    }
+
+    /* ── Post list ── */
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 64px;
+    }
+    .post-card {
+      display: block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+    }
+    .post-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.35);
+    }
+    .post-meta {
+      display: flex;
+      gap: 14px;
+      font-size: 0.72em;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .post-meta .tag {
+      color: #a78bfa;
+    }
+    .post-card h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.25em;
+      color: var(--text-bright);
+      line-height: 1.35;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .post-card p {
+      font-size: 0.9em;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      .blog-hero { aspect-ratio: 4 / 3; }
+      .blog-hero h1 { font-size: 1.6em; }
+      .blog-hero .hero-overlay { padding: 22px 22px; }
+      .post-card { padding: 20px 22px; }
+      .post-card h2 { font-size: 1.1em; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a></div>
+      <div><a href="../index.html">home</a></div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="blog-hero">
+        <img src="../img/blog/header-aceleracionismo-humanista.jpg" alt="Infraestructura humana abandonada y cubierta por vegetaci&oacute;n &mdash; naturaleza reconquistando la civilizaci&oacute;n">
+        <div class="hero-overlay">
+          <span class="kicker">Notas &middot; Eduardo C. Garrido-Merch&aacute;n</span>
+          <h1>Aceleracionismo Humanista</h1>
+        </div>
+        <div class="credit">Foto: trukdotcom &middot; <a href="https://commons.wikimedia.org/wiki/File:Abandoned_Exit_with_Kudzu_-_panoramio.jpg" target="_blank" rel="noopener">Wikimedia</a> &middot; CC BY-SA 3.0</div>
+      </div>
+      <p class="lead">Notas breves sobre inteligencia artificial, filosof&iacute;a anal&iacute;tica, meta-&eacute;tica y filosof&iacute;a de la mente. Formato conciso, argumentaci&oacute;n expl&iacute;cita: tecnolog&iacute;a al servicio del florecimiento humano.</p>
+      <div class="sep"></div>
+    </header>
+
+    <section class="posts">
+
+      <a href="ia-apoyo-manuscrito.html" class="post-card">
+        <div class="post-meta">
+          <span>6 Abr 2026</span>
+          <span class="tag">Meta-&eacute;tica &middot; IA</span>
+          <span>3 min</span>
+        </div>
+        <h2>Sobre la pretendida cuestionabilidad moral del uso de IA como apoyo en la redacci&oacute;n de manuscritos</h2>
+        <p>Un silogismo breve, desde el realismo moral robusto, que muestra por qu&eacute; emplear IA como herramienta editorial no solo no es moralmente cuestionable, sino positivamente bueno.</p>
+      </a>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a></p>
+    </div>
+  </footer>
+</body>
+</html>
