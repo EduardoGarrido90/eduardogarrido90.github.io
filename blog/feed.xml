@@ -4,13 +4,26 @@
   <subtitle>Notas breves sobre IA, filosofía analítica, meta-ética y filosofía de la mente — Eduardo C. Garrido-Merchán</subtitle>
   <link href="https://eduardogarrido90.github.io/blog/feed.xml" rel="self"/>
   <link href="https://eduardogarrido90.github.io/blog/"/>
-  <updated>2026-04-06T18:00:00+02:00</updated>
+  <updated>2026-04-07T12:00:00+02:00</updated>
   <id>https://eduardogarrido90.github.io/blog/</id>
   <author>
     <name>Eduardo C. Garrido-Merchán</name>
     <uri>https://eduardogarrido90.github.io/</uri>
   </author>
   <rights>© 2026 Eduardo C. Garrido-Merchán</rights>
+
+  <entry>
+    <title>El teorema de No Free Lunch para sistemas políticos: por qué la ideología óptima es una función del tiempo</title>
+    <link href="https://eduardogarrido90.github.io/blog/no-free-lunch-politica.html"/>
+    <id>https://eduardogarrido90.github.io/blog/no-free-lunch-politica.html</id>
+    <published>2026-04-07T12:00:00+02:00</published>
+    <updated>2026-04-07T12:00:00+02:00</updated>
+    <category term="Filosofía política"/>
+    <category term="Teoría de sistemas"/>
+    <summary type="html">
+      Ninguna ideología es universalmente óptima porque el espacio de problemas sociales no es estacionario. La prescripción política correcta es, formalmente, una función del estado histórico del sistema.
+    </summary>
+  </entry>
 
   <entry>
     <title>Sobre la pretendida cuestionabilidad moral del uso de IA como apoyo en la redacción de manuscritos</title>

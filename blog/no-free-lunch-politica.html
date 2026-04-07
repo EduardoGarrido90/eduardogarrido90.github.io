@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El teorema de No Free Lunch para sistemas pol&iacute;ticos &mdash; Aceleracionismo Humanista</title>
+  <meta name="description" content="Ninguna ideolog&iacute;a es universalmente &oacute;ptima porque el espacio de problemas sociales no es estacionario. La prescripci&oacute;n pol&iacute;tica correcta es, formalmente, una funci&oacute;n del estado hist&oacute;rico del sistema.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Top nav ── */
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topnav a:hover { color: var(--text-bright); }
+    .topnav .crumbs a + a::before {
+      content: ' / ';
+      color: var(--border-hover);
+      margin: 0 6px;
+    }
+
+    /* ── Hero image ── */
+    .hero-image {
+      width: 100%;
+      max-width: 100%;
+      margin: 32px 0 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+      aspect-ratio: 16 / 7;
+    }
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.85) brightness(0.78) contrast(1.05);
+    }
+    .hero-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,15,26,0) 40%, rgba(10,15,26,0.55) 100%);
+      pointer-events: none;
+    }
+    .hero-credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      margin-top: 8px;
+      text-align: right;
+    }
+    .hero-credit a { color: var(--text-muted); text-decoration: underline; text-decoration-color: var(--border-hover); }
+    .hero-credit a:hover { color: var(--text-bright); }
+
+    /* ── Article header ── */
+    article header {
+      padding: 64px 0 36px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(139,92,246,0.12);
+      color: #a78bfa;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.72em;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    article h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2em;
+      color: var(--text-bright);
+      letter-spacing: -0.015em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .byline {
+      font-size: 0.88em;
+      color: var(--text-muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .byline strong { color: var(--text); font-weight: 500; }
+    .byline .dot { color: var(--border-hover); }
+
+    .sep {
+      width: 48px;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin: 28px 0 40px;
+    }
+
+    /* ── Article body ── */
+    article .body {
+      padding-bottom: 64px;
+      font-size: 1.02em;
+    }
+    article .body p {
+      margin-bottom: 22px;
+      color: var(--text);
+    }
+    article .body h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 40px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    article .body h2:first-child { margin-top: 0; }
+    article .body strong { color: var(--text-bright); font-weight: 600; }
+    article .body em { color: var(--text-bright); }
+
+    /* ── Stats / counter row ── */
+    .post-stats {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .post-stats img { height: 22px; opacity: 0.85; transition: opacity 0.2s; }
+    .post-stats img:hover { opacity: 1; }
+
+    /* ── Comments ── */
+    .comments-section {
+      margin-top: 56px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+    }
+    .comments-section h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.25em;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .comments-section .comments-sub {
+      color: var(--text-muted);
+      font-size: 0.85em;
+      margin-bottom: 22px;
+    }
+    .giscus { margin-top: 8px; }
+
+    /* ── Callout block (teorema, distinci&oacute;n, etc.) ── */
+    .callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-image: var(--gradient) 1;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 0.97em;
+    }
+    .callout .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #60a5fa;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .callout p { margin-bottom: 12px; }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout .conclusion {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-hover);
+      font-style: italic;
+    }
+
+    /* ── Display math block ── */
+    .math-block {
+      overflow-x: auto;
+      padding: 6px 0;
+      margin: 18px 0 26px;
+      color: var(--text-bright);
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      border-left: 3px solid var(--border-hover);
+      padding: 6px 0 6px 22px;
+      margin: 32px 0 8px;
+      color: var(--text-muted);
+      font-style: italic;
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.02em;
+      line-height: 1.6;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      article h1 { font-size: 1.55em; }
+      article .body { font-size: 0.98em; }
+      .callout { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div class="crumbs">
+        <a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a>
+        <a href="index.html">Aceleracionismo Humanista</a>
+      </div>
+      <div><a href="../index.html">home</a></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article>
+      <header>
+        <span class="badge">Nota &middot; Filosof&iacute;a pol&iacute;tica</span>
+        <h1>El teorema de No Free Lunch para sistemas pol&iacute;ticos: por qu&eacute; la ideolog&iacute;a &oacute;ptima es una funci&oacute;n del tiempo</h1>
+        <div class="byline">
+          <span><strong>Eduardo C. Garrido-Merch&aacute;n</strong></span>
+          <span class="dot">&middot;</span>
+          <span>7 de abril de 2026</span>
+          <span class="dot">&middot;</span>
+          <span>Lectura: 6 min</span>
+        </div>
+        <div class="post-stats">
+          <img src="https://hits.sh/eduardogarrido90.github.io/blog/no-free-lunch-politica.html.svg?style=flat-square&label=visitas&color=8b5cf6&labelColor=111827" alt="Contador de visitas">
+        </div>
+        <figure class="hero-image">
+          <img src="../img/blog/header-aceleracionismo-humanista.jpg" alt="Salida de carretera abandonada y cubierta por kudzu, naturaleza reconquistando la infraestructura humana">
+        </figure>
+        <p class="hero-credit">Foto: trukdotcom &middot; <a href="https://commons.wikimedia.org/wiki/File:Abandoned_Exit_with_Kudzu_-_panoramio.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> &middot; CC BY-SA 3.0</p>
+        <div class="sep"></div>
+      </header>
+
+      <div class="body">
+
+        <p>Ning&uacute;n algoritmo de aprendizaje es universalmente &oacute;ptimo. Este resultado formal &mdash;el teorema de No Free Lunch&mdash; tiene un an&aacute;logo directo en filosof&iacute;a pol&iacute;tica que raramente se formula con precisi&oacute;n: ninguna ideolog&iacute;a es universalmente &oacute;ptima porque el espacio de problemas sociales no es estacionario. La prescripci&oacute;n pol&iacute;tica correcta es, formalmente, una funci&oacute;n del estado hist&oacute;rico del sistema. Este texto desarrolla ese argumento y extrae su corolario m&aacute;s inc&oacute;modo: que formular los propios ideales desde cero tiende a producir liberalismo procedimental, no por sesgo, sino por necesidad l&oacute;gica.</p>
+
+        <h2>1. El teorema</h2>
+
+        <p>En aprendizaje autom&aacute;tico, Wolpert y Macready (1997) demostraron que para cualquier par de algoritmos de optimizaci&oacute;n, sus rendimientos promediados sobre <em>todos los problemas posibles</em> son id&eacute;nticos. Un algoritmo que supera a otro en una clase de problemas lo hace a costa de rendir peor en otra. No existe el algoritmo universalmente superior: la ventaja es siempre relativa al problema.</p>
+
+        <p>La demostraci&oacute;n depende de una condici&oacute;n: que el espacio de problemas sea suficientemente heterog&eacute;neo. Si todos los problemas tuvieran la misma estructura, el NFL no se sostendr&iacute;a. La pregunta relevante es entonces si los problemas pol&iacute;ticos comparten estructura suficiente como para que una sola ideolog&iacute;a los resuelva todos. La respuesta es no, y no es dif&iacute;cil verlo.</p>
+
+        <h2>2. El espacio de problemas sociales no es estacionario</h2>
+
+        <p>Definamos formalmente. Sea $S_t$ el estado de una sociedad en el per&iacute;odo $t$, caracterizado por variables como desigualdad, concentraci&oacute;n de poder, capacidades institucionales, cohesi&oacute;n social, nivel de desarrollo econ&oacute;mico y trayectoria hist&oacute;rica reciente. Sea $I$ una ideolog&iacute;a, entendida como una funci&oacute;n de prescripci&oacute;n $I \colon \mathcal{S} \to \mathcal{A}$ que mapea estados del mundo a acciones pol&iacute;ticas. Sea $U(I, S_t)$ el bienestar producido por aplicar $I$ en el estado $S_t$.</p>
+
+        <p>La tesis del ide&oacute;logo es que existe $I^*$ tal que</p>
+
+        <div class="math-block">
+          $$\forall t \colon U(I^*, S_t) \geq U(I, S_t) \quad \text{para toda } I \text{ alternativa.}$$
+        </div>
+
+        <p>Es decir, que hay una ideolog&iacute;a &oacute;ptima con independencia del estado del sistema. Esta tesis falla por dos razones independientes.</p>
+
+        <p><strong>Primera</strong>: $S_t$ no es estacionario. Las sociedades atraviesan reg&iacute;menes distintos &mdash;per&iacute;odos de alta desigualdad, de concentraci&oacute;n autoritaria, de anomia institucional, de abundancia redistributiva&mdash; y las propiedades del problema cambian con el r&eacute;gimen. Una pol&iacute;tica &oacute;ptima bajo alta desigualdad puede ser sub&oacute;ptima bajo desigualdad baja, exactamente como un modelo entrenado en una distribuci&oacute;n falla bajo <em>distributional shift</em>.</p>
+
+        <p><strong>Segunda</strong>: los valores pol&iacute;ticos fundamentales son irreduciblemente plurales e incompatibles entre s&iacute;, como argument&oacute; Berlin. Libertad, igualdad, seguridad y comunidad no se maximizan simult&aacute;neamente. Cualquier ideolog&iacute;a que pretenda hacerlo est&aacute; resolviendo un problema mal especificado.</p>
+
+        <h2>3. La prescripci&oacute;n correcta como serie temporal</h2>
+
+        <p>Si la tesis anterior es correcta, la prescripci&oacute;n pol&iacute;tica &oacute;ptima no es una constante sino una funci&oacute;n:</p>
+
+        <div class="math-block">
+          $$I^*(t) = \arg\max_{I} \; U(I, S_t).$$
+        </div>
+
+        <p>La pregunta pol&iacute;ticamente relevante no es <em>&iquest;cu&aacute;l es la ideolog&iacute;a correcta?</em> sino <em>&iquest;en qu&eacute; punto de la serie estamos y qu&eacute; intervenci&oacute;n tiene rendimientos m&aacute;s altos dado ese punto?</em></p>
+
+        <p>Esta reformulaci&oacute;n recupera intuiciones dispersas en la literatura. La ingenier&iacute;a social fragmentaria de Popper es la versi&oacute;n procedimental: intervenir en problemas concretos, medir, corregir, sin pretender transformar el sistema completo de una vez. El enfoque de capacidades de Sen es la versi&oacute;n normativa: la pregunta relevante es qu&eacute; pueden hacer y ser las personas <em>en esta situaci&oacute;n concreta</em>, no qu&eacute; prescribe el sistema en abstracto. La teor&iacute;a del cambio institucional de North es la versi&oacute;n hist&oacute;rica: las instituciones son <em>path-dependent</em>, y la misma reforma produce resultados opuestos seg&uacute;n la trayectoria previa. Ninguno de los tres lo formul&oacute; como serie temporal con coeficientes variables. Pero es lo que los tres est&aacute;n describiendo.</p>
+
+        <p>Un corolario t&eacute;cnico importante: en sistemas din&aacute;micos, la varianza importa tanto como la media. Un sistema que produce buenos resultados promedio con alta volatilidad puede ser peor en t&eacute;rminos de bienestar que uno con resultados algo menores pero estables. Esto explica por qu&eacute; las sociedades eligen aparente ineficiencia a cambio de seguridad &mdash;no por irracionalidad, sino por aversi&oacute;n a la varianza perfectamente racional. Las instituciones liberales &mdash;constituciones, separaci&oacute;n de poderes, revisi&oacute;n judicial&mdash; operan formalmente como <strong>regularizaci&oacute;n</strong>: acotan el espacio de hip&oacute;tesis para evitar soluciones extremas que minimizan el error a corto plazo pero generalizan mal.</p>
+
+        <h2>4. Por qu&eacute; esto no es equidistancia</h2>
+
+        <p>El argumento anterior se confunde frecuentemente con relativismo pol&iacute;tico o equidistancia. Es un error categorial.</p>
+
+        <div class="callout">
+          <span class="label">Distinci&oacute;n clave</span>
+          <p>El relativismo dir&iacute;a que todas las ideolog&iacute;as son igualmente v&aacute;lidas. Este argumento dice lo contrario: que en cada estado $S_t$ hay prescripciones mejores y peores, y que la tarea intelectual seria es identificarlas.</p>
+          <p>Lo que niega es que esa identificaci&oacute;n pueda hacerse <em>a priori</em>, con independencia de los datos del sistema.</p>
+          <p class="conclusion">Que no exista un clasificador universalmente &oacute;ptimo no significa que todos los clasificadores sean iguales en un problema dado. Significa que la elecci&oacute;n debe estar informada por la estructura del problema, no por lealtad al algoritmo.</p>
+        </div>
+
+        <h2>5. Corolario: por qu&eacute; escribir los propios ideales produce liberalismo</h2>
+
+        <p>Queda una observaci&oacute;n que merece tratamiento expl&iacute;cito. Cuando se intenta formular desde cero qu&eacute; condiciones deber&iacute;an cumplirse para que una sociedad sea buena, el resultado tiende a converger en algo reconocible: que las personas sean respetadas, que tengan lo necesario para vivir, que puedan desarrollar sus capacidades, que nadie concentre poder suficiente para suprimir a otros. Esto no es liberalismo como ideolog&iacute;a de contenido. Es liberalismo como <strong>meta-marco procedimental</strong>.</p>
+
+        <p>La raz&oacute;n es formal. Los ideales enumerados son <em>condiciones de posibilidad</em> del propio proceso de deliberaci&oacute;n. No puedes razonar honestamente sobre qu&eacute; sistema pol&iacute;tico es mejor si los participantes en ese razonamiento no est&aacute;n protegidos, no tienen capacidades b&aacute;sicas cubiertas, o est&aacute;n sometidos a poder arbitrario. El liberalismo procedimental no emerge porque sea la conclusi&oacute;n favorita, sino porque es el conjunto m&iacute;nimo de condiciones bajo las cuales tiene sentido hacerse la pregunta en primer lugar.</p>
+
+        <p>En t&eacute;rminos formales: el liberalismo procedimental no es una ideolog&iacute;a entre otras en el espacio $\mathcal{I}$. Es la condici&oacute;n de posibilidad de que el proceso $\arg\max_I \, U(I, S_t)$ pueda ejecutarse sin estar predeterminado por quien concentra el poder de definir $U$.</p>
+
+        <p>Esto explica tambi&eacute;n por qu&eacute; el NFL pol&iacute;tico no produce par&aacute;lisis. No dice que no puedas elegir. Dice que la elecci&oacute;n debe ser informada, revisable y no estar blindada contra la evidencia. Que es, precisamente, lo que ninguna ideolog&iacute;a totalizante acepta.</p>
+
+        <div class="pull-quote">
+          Las ideolog&iacute;as prometen un modelo que generaliza a todos los datos futuros. La historia es el conjunto de test. Los resultados est&aacute;n publicados.
+        </div>
+
+      </div>
+
+      <!--
+        ── Comentarios (Giscus) ─────────────────────────────────────────────
+        Para activar los comentarios necesitas hacer 3 cosas (una sola vez):
+          1. Habilitar GitHub Discussions en el repo eduardogarrido90.github.io
+             (Settings → General → Features → Discussions ✓)
+          2. Instalar la GitHub App "giscus" en el repo:
+             https://github.com/apps/giscus
+          3. Ir a https://giscus.app, introducir el repo, y copiar los valores
+             data-repo-id y data-category-id que aparecen, sustituyendo
+             los placeholders REPO_ID_AQUI y CATEGORY_ID_AQUI más abajo.
+        Mientras esos placeholders estén ahí, el script no cargará.
+      -->
+      <section class="comments-section" id="comentarios">
+        <h2>Comentarios</h2>
+        <p class="comments-sub">Discusi&oacute;n p&uacute;blica v&iacute;a GitHub Discussions. Requiere cuenta de GitHub para comentar.</p>
+        <div class="giscus"></div>
+        <script>
+          (function() {
+            var REPO_ID = "REPO_ID_AQUI";
+            var CATEGORY_ID = "CATEGORY_ID_AQUI";
+            if (REPO_ID === "REPO_ID_AQUI") return;
+            var s = document.createElement('script');
+            s.src = "https://giscus.app/client.js";
+            s.setAttribute("data-repo", "EduardoGarrido90/eduardogarrido90.github.io");
+            s.setAttribute("data-repo-id", REPO_ID);
+            s.setAttribute("data-category", "Comentarios");
+            s.setAttribute("data-category-id", CATEGORY_ID);
+            s.setAttribute("data-mapping", "pathname");
+            s.setAttribute("data-strict", "1");
+            s.setAttribute("data-reactions-enabled", "1");
+            s.setAttribute("data-emit-metadata", "0");
+            s.setAttribute("data-input-position", "top");
+            s.setAttribute("data-theme", "dark_dimmed");
+            s.setAttribute("data-lang", "es");
+            s.setAttribute("crossorigin", "anonymous");
+            s.async = true;
+            document.querySelector('.giscus').appendChild(s);
+          })();
+        </script>
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="index.html">aceleracionismo humanista</a> &middot; <a href="../index.html">home</a></p>
+    </div>
+  </footer>
+</body>
+</html>
