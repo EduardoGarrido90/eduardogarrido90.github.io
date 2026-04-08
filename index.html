@@ -168,8 +168,43 @@
     .hero-counter { margin-top: 12px; }
     .hero-counter img { height: 22px; opacity: 0.85; }
 
+    /* ── Top nav ── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 15, 26, 0.88);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      border-bottom: 1px solid var(--border);
+    }
+    .top-nav .nav-inner {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 11px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .top-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78em;
+      padding: 6px 13px;
+      border-radius: 5px;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .top-nav a:hover {
+      color: var(--text-bright);
+      background: var(--bg-card-hover);
+    }
+
     /* ── Sections ── */
-    section { padding: 52px 0; }
+    section { padding: 52px 0; scroll-margin-top: 60px; }
     section h2 {
       font-family: 'IBM Plex Serif', serif;
       font-size: 1.6em;
@@ -366,6 +401,81 @@
       margin-top: 4px;
     }
 
+    /* ── Teaching ── */
+    .teaching-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    .teaching-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 26px 22px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .teaching-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--gradient);
+      opacity: 0.7;
+    }
+    .teaching-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+    }
+    .teaching-card .institution {
+      display: inline-block;
+      font-size: 0.66em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a78bfa;
+      background: rgba(139,92,246,0.10);
+      padding: 3px 9px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .teaching-card h3 {
+      font-size: 0.96em;
+      color: var(--text-bright);
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+    .teaching-card .school {
+      font-size: 0.78em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .teaching-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .teaching-card li {
+      font-size: 0.84em;
+      color: var(--text);
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .teaching-card li::before {
+      content: '\2192';
+      position: absolute;
+      left: 0;
+      color: #60a5fa;
+      font-weight: 600;
+    }
+
     /* ── Media Grid ── */
     .media-grid {
       display: grid;
@@ -534,6 +644,9 @@
       .research-grid { grid-template-columns: 1fr; }
       .media-grid { grid-template-columns: 1fr; }
       .hobbies-grid { grid-template-columns: 1fr; }
+      .teaching-grid { grid-template-columns: 1fr; }
+      .top-nav .nav-inner { gap: 0; padding: 9px 14px; }
+      .top-nav a { padding: 5px 9px; font-size: 0.72em; }
       section h2 { font-size: 1.4em; }
       .personal-card { flex-direction: column; }
       .personal-photo { width: 100%; height: 320px; }
@@ -554,6 +667,19 @@
     // Sync body class with the language already chosen in the head script
     document.body.className = 'lang-' + (document.documentElement.getAttribute('data-lang') || 'en');
   </script>
+
+  <!-- Top nav -->
+  <nav class="top-nav" aria-label="Section navigation">
+    <div class="nav-inner">
+      <a href="#research"><span class="lang-en">Research</span><span class="lang-es">Investigaci&oacute;n</span></a>
+      <a href="#education"><span class="lang-en">Education</span><span class="lang-es">Formaci&oacute;n</span></a>
+      <a href="#teaching"><span class="lang-en">Teaching</span><span class="lang-es">Docencia</span></a>
+      <a href="#press"><span class="lang-en">Press</span><span class="lang-es">Prensa</span></a>
+      <a href="#code"><span class="lang-en">Code</span><span class="lang-es">C&oacute;digo</span></a>
+      <a href="#blog">Blog</a>
+      <a href="#about"><span class="lang-en">About</span><span class="lang-es">Sobre m&iacute;</span></a>
+    </div>
+  </nav>
 
   <!-- Hero -->
   <header class="hero">
@@ -611,7 +737,7 @@
   <main class="container">
 
     <!-- Research -->
-    <section>
+    <section id="research">
       <h2><span class="lang-en">Research</span><span class="lang-es">Investigaci&oacute;n</span></h2>
       <div class="sep"></div>
       <p class="section-sub">
@@ -789,7 +915,7 @@
     </section>
 
     <!-- Education -->
-    <section>
+    <section id="education">
       <h2><span class="lang-en">Education</span><span class="lang-es">Formaci&oacute;n</span></h2>
       <div class="sep"></div>
       <div class="education-list">
@@ -820,8 +946,46 @@
       </div>
     </section>
 
+    <!-- Teaching -->
+    <section id="teaching">
+      <h2><span class="lang-en">Teaching</span><span class="lang-es">Docencia</span></h2>
+      <div class="sep"></div>
+      <p class="section-sub">
+        <span class="lang-en">Undergraduate and graduate courses I have taught at two leading universities in Madrid.</span>
+        <span class="lang-es">Asignaturas de grado y m&aacute;ster que he impartido en dos universidades de referencia en Madrid.</span>
+      </p>
+      <div class="teaching-grid">
+
+        <div class="teaching-card">
+          <span class="institution">EPS &middot; UAM</span>
+          <h3>Escuela Polit&eacute;cnica Superior</h3>
+          <p class="school">Universidad Aut&oacute;noma de Madrid</p>
+          <ul>
+            <li><span class="lang-en">Operating Systems</span><span class="lang-es">Sistemas Operativos</span></li>
+            <li><span class="lang-en">Artificial Intelligence</span><span class="lang-es">Inteligencia Artificial</span></li>
+            <li><span class="lang-en">Compilers</span><span class="lang-es">Compiladores</span></li>
+          </ul>
+        </div>
+
+        <div class="teaching-card">
+          <span class="institution">ICADE &middot; Comillas</span>
+          <h3>Universidad Pontificia Comillas</h3>
+          <p class="school">ICADE &mdash; Facultad de Ciencias Econ&oacute;micas y Empresariales</p>
+          <ul>
+            <li>Machine Learning I</li>
+            <li><span class="lang-en">Inference &amp; Regression</span><span class="lang-es">Inferencia y Regresi&oacute;n</span></li>
+            <li><span class="lang-en">Statistics</span><span class="lang-es">Estad&iacute;stica</span></li>
+            <li><span class="lang-en">Frontier AI</span><span class="lang-es">IA en la Frontera</span></li>
+            <li>Reinforcement Learning</li>
+            <li><span class="lang-en">Programming</span><span class="lang-es">Programaci&oacute;n</span></li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
     <!-- Media & Outreach -->
-    <section>
+    <section id="press">
       <h2><span class="lang-en">Media &amp; Outreach</span><span class="lang-es">Medios y divulgaci&oacute;n</span></h2>
       <div class="sep"></div>
       <p class="section-sub">
@@ -921,7 +1085,7 @@
     </section>
 
     <!-- Code & Projects -->
-    <section>
+    <section id="code">
       <h2><span class="lang-en">Code &amp; Projects</span><span class="lang-es">C&oacute;digo y proyectos</span></h2>
       <div class="sep"></div>
       <p class="section-sub">
@@ -1005,7 +1169,7 @@
     </section>
 
     <!-- Aceleracionismo Humanista (blog) -->
-    <section>
+    <section id="blog">
       <h2>Aceleracionismo Humanista</h2>
       <div class="sep"></div>
       <p class="section-sub">
@@ -1085,7 +1249,7 @@
     </section>
 
     <!-- Sobre m&iacute; / About me -->
-    <section>
+    <section id="about">
       <h2><span class="lang-en">About me</span><span class="lang-es">Sobre m&iacute;</span></h2>
       <div class="sep"></div>
       <div class="personal-card">
