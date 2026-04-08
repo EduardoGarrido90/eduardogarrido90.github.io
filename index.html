@@ -4,11 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eduardo C. Garrido-Merch&aacute;n — AI Researcher &amp; Engineer</title>
+  <script>
+    // Apply language class as early as possible to avoid FOUC
+    (function () {
+      try {
+        var saved = localStorage.getItem('site-lang');
+        var lang = (saved === 'es' || saved === 'en') ? saved : 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('data-lang', lang);
+      } catch (e) {}
+    })();
+  </script>
   <meta name="description" content="Eduardo C. Garrido-Merchán: AI researcher, engineer, and professor at Universidad Pontificia Comillas. 3,300+ citations, h-index 19. Bayesian Optimization, Reinforcement Learning, Generative AI, Neurosymbolic AI, and ESG Quantitative Finance.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── i18n: language toggle ── */
+    html body.lang-en .lang-es { display: none !important; }
+    html body.lang-es .lang-en { display: none !important; }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      padding: 0;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78em;
+      vertical-align: middle;
+    }
+    .lang-switch button {
+      background: transparent;
+      border: 0;
+      color: var(--text-muted);
+      padding: 5px 10px;
+      cursor: pointer;
+      font: inherit;
+      letter-spacing: 0.06em;
+      transition: all 0.2s;
+      line-height: 1.4;
+    }
+    .lang-switch button:hover { color: var(--text-bright); }
+    .lang-switch button.active {
+      background: var(--bg-card-hover);
+      color: var(--text-bright);
+    }
+    .lang-switch .sep-v {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
 
     :root {
       --primary: #3b82f6;
@@ -500,7 +549,11 @@
     }
   </style>
 </head>
-<body>
+<body class="lang-en">
+  <script>
+    // Sync body class with the language already chosen in the head script
+    document.body.className = 'lang-' + (document.documentElement.getAttribute('data-lang') || 'en');
+  </script>
 
   <!-- Hero -->
   <header class="hero">
@@ -512,34 +565,43 @@
         <div class="hero-text">
           <h1>Eduardo C. Garrido-Merch&aacute;n</h1>
           <p class="tagline">
-            Engineer, PhD in Machine Learning &amp; AI. Building intelligent systems that optimise under uncertainty.
+            <span class="lang-en">Engineer, PhD in Machine Learning &amp; AI. Building intelligent systems that optimise under uncertainty.</span>
+            <span class="lang-es">Ingeniero, doctor en Machine Learning e IA. Construyo sistemas inteligentes que optimizan bajo incertidumbre.</span>
           </p>
           <p class="affiliation">
-            <strong>Profesor Propio Adjunto</strong> &middot; Institute for Research in Technology (IIT) &middot; Universidad Pontificia Comillas, Madrid
+            <strong>Profesor Propio Adjunto</strong> &middot;
+            <span class="lang-en">Institute for Research in Technology (IIT)</span><span class="lang-es">Instituto de Investigaci&oacute;n Tecnol&oacute;gica (IIT)</span>
+            &middot; Universidad Pontificia Comillas, Madrid
           </p>
           <div class="stats-inline">
-            <span class="stat"><strong>3,300+</strong> citations</span>
+            <span class="stat"><strong>3,300+</strong> <span class="lang-en">citations</span><span class="lang-es">citas</span></span>
             <span class="stat"><strong>h-19</strong></span>
             <span class="stat"><strong>i10-29</strong></span>
-            <span class="stat"><strong>50+</strong> publications</span>
+            <span class="stat"><strong>50+</strong> <span class="lang-en">publications</span><span class="lang-es">publicaciones</span></span>
           </div>
           <div class="social-links">
             <a href="mailto:ecgarrido@comillas.edu">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
               email
             </a>
-            <a href="papers/index.html">papers</a>
-            <a href="code/index.html">code</a>
-            <a href="press/index.html">press</a>
+            <a href="papers/index.html"><span class="lang-en">papers</span><span class="lang-es">art&iacute;culos</span></a>
+            <a href="code/index.html"><span class="lang-en">code</span><span class="lang-es">c&oacute;digo</span></a>
+            <a href="press/index.html"><span class="lang-en">press</span><span class="lang-es">prensa</span></a>
             <a href="blog/index.html">blog</a>
             <a href="https://scholar.google.com/citations?user=CjCcb90AAAAJ" target="_blank">scholar</a>
             <a href="https://github.com/EduardoGarrido90" target="_blank">github</a>
             <a href="https://arxiv.org/a/garridomerchan_e_1.html" target="_blank">arxiv</a>
             <a href="https://www.researchgate.net/profile/Eduardo-Garrido-Merchan" target="_blank">researchgate</a>
             <a href="https://x.com/vedugarmer" target="_blank">@vedugarmer</a>
+            <span class="lang-switch" role="group" aria-label="Language switcher">
+              <button type="button" data-lang="en" class="active">EN</button>
+              <span class="sep-v"></span>
+              <button type="button" data-lang="es">ES</button>
+            </span>
           </div>
           <div class="hero-counter">
-            <img src="https://hits.sh/eduardogarrido90.github.io.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
+            <img class="lang-en" src="https://hits.sh/eduardogarrido90.github.io.svg?style=flat-square&label=visits&color=3b82f6&labelColor=111827" alt="Visit counter">
+            <img class="lang-es" src="https://hits.sh/eduardogarrido90.github.io.svg?style=flat-square&label=visitas&color=3b82f6&labelColor=111827" alt="Contador de visitas">
           </div>
         </div>
       </div>
@@ -550,9 +612,12 @@
 
     <!-- Research -->
     <section>
-      <h2>Research</h2>
+      <h2><span class="lang-en">Research</span><span class="lang-es">Investigaci&oacute;n</span></h2>
       <div class="sep"></div>
-      <p class="section-sub">Probabilistic machine learning, optimization under uncertainty, and applied AI across finance, symbolic reasoning, and generative models.</p>
+      <p class="section-sub">
+        <span class="lang-en">Probabilistic machine learning, optimization under uncertainty, and applied AI across finance, symbolic reasoning, and generative models.</span>
+        <span class="lang-es">Aprendizaje autom&aacute;tico probabil&iacute;stico, optimizaci&oacute;n bajo incertidumbre e IA aplicada a finanzas, razonamiento simb&oacute;lico y modelos generativos.</span>
+      </p>
       <div class="research-grid">
 
         <a href="https://arxiv.org/abs/2502.06789" target="_blank" class="research-card">
@@ -561,8 +626,11 @@
           </div>
           <div class="card-body">
             <h3>Bayesian Optimization</h3>
-            <p>Information-theoretic acquisition functions, multi-objective optimization, and optimization with constraints and noise.</p>
-            <span class="card-tag">Survey &middot; 2025</span>
+            <p>
+              <span class="lang-en">Information-theoretic acquisition functions, multi-objective optimization, and optimization with constraints and noise.</span>
+              <span class="lang-es">Funciones de adquisici&oacute;n basadas en teor&iacute;a de la informaci&oacute;n, optimizaci&oacute;n multiobjetivo y optimizaci&oacute;n con restricciones y ruido.</span>
+            </p>
+            <span class="card-tag"><span class="lang-en">Survey</span><span class="lang-es">Revisi&oacute;n</span> &middot; 2025</span>
           </div>
         </a>
 
@@ -571,9 +639,12 @@
             <img src="img/papers/2307.09631.png" alt="Reinforcement Learning paper">
           </div>
           <div class="card-body">
-            <h3>Reinforcement Learning</h3>
-            <p>Deep RL methodology: policy optimization, value function approximation, and explainability of learned policies for sequential decision-making.</p>
-            <span class="card-tag">Methodology &middot; XAI</span>
+            <h3><span class="lang-en">Reinforcement Learning</span><span class="lang-es">Aprendizaje por refuerzo</span></h3>
+            <p>
+              <span class="lang-en">Deep RL methodology: policy optimization, value function approximation, and explainability of learned policies for sequential decision-making.</span>
+              <span class="lang-es">Metodolog&iacute;a de RL profundo: optimizaci&oacute;n de pol&iacute;ticas, aproximaci&oacute;n de funciones de valor y explicabilidad de las pol&iacute;ticas aprendidas para la toma de decisiones secuencial.</span>
+            </p>
+            <span class="card-tag"><span class="lang-en">Methodology</span><span class="lang-es">Metodolog&iacute;a</span> &middot; XAI</span>
           </div>
         </a>
 
@@ -582,9 +653,12 @@
             <img src="img/papers/1805.03463.png" alt="Probabilistic Methods paper">
           </div>
           <div class="card-body">
-            <h3>Probabilistic Methods</h3>
-            <p>Gaussian processes, extreme value estimation, and probabilistic numerical methods for uncertainty quantification.</p>
-            <span class="card-tag">Gaussian Processes</span>
+            <h3><span class="lang-en">Probabilistic Methods</span><span class="lang-es">M&eacute;todos probabil&iacute;sticos</span></h3>
+            <p>
+              <span class="lang-en">Gaussian processes, extreme value estimation, and probabilistic numerical methods for uncertainty quantification.</span>
+              <span class="lang-es">Procesos gaussianos, estimaci&oacute;n de valores extremos y m&eacute;todos num&eacute;ricos probabil&iacute;sticos para la cuantificaci&oacute;n de la incertidumbre.</span>
+            </p>
+            <span class="card-tag"><span class="lang-en">Gaussian Processes</span><span class="lang-es">Procesos gaussianos</span></span>
           </div>
         </a>
 
@@ -593,9 +667,12 @@
             <img src="img/papers/genai.png" alt="Generative AI survey paper">
           </div>
           <div class="card-body">
-            <h3>Generative AI &amp; LLMs</h3>
-            <p>Large language model evaluation, automated survey generation, and applications across 15 industry sectors.</p>
-            <span class="card-tag">72 pp. &middot; 200+ refs</span>
+            <h3><span class="lang-en">Generative AI &amp; LLMs</span><span class="lang-es">IA generativa y LLMs</span></h3>
+            <p>
+              <span class="lang-en">Large language model evaluation, automated survey generation, and applications across 15 industry sectors.</span>
+              <span class="lang-es">Evaluaci&oacute;n de modelos de lenguaje, generaci&oacute;n automatizada de revisiones y aplicaciones en 15 sectores industriales.</span>
+            </p>
+            <span class="card-tag">72 pp. &middot; 200+ <span class="lang-en">refs</span><span class="lang-es">refs.</span></span>
           </div>
         </a>
 
@@ -604,9 +681,12 @@
             <img src="img/papers/2602.23918.png" alt="AI Ethics paper">
           </div>
           <div class="card-body">
-            <h3>AI Ethics &amp; Data Sovereignty</h3>
-            <p>Data sovereignty frameworks, intersectional bias analysis, and the technical dimensions of responsible AI deployment.</p>
-            <span class="card-tag">Data Personalism &middot; 2026</span>
+            <h3><span class="lang-en">AI Ethics &amp; Data Sovereignty</span><span class="lang-es">&Eacute;tica de la IA y soberan&iacute;a de datos</span></h3>
+            <p>
+              <span class="lang-en">Data sovereignty frameworks, intersectional bias analysis, and the technical dimensions of responsible AI deployment.</span>
+              <span class="lang-es">Marcos de soberan&iacute;a de datos, an&aacute;lisis interseccional de sesgos y las dimensiones t&eacute;cnicas del despliegue responsable de IA.</span>
+            </p>
+            <span class="card-tag"><span class="lang-en">Data Personalism</span><span class="lang-es">Personalismo de datos</span> &middot; 2026</span>
           </div>
         </a>
 
@@ -615,9 +695,12 @@
             <img src="img/papers/2405.07340.png" alt="Machine Consciousness paper">
           </div>
           <div class="card-body">
-            <h3>Machine Consciousness</h3>
-            <p>Why computational intelligence and phenomenal consciousness are independent. Bridging AI research with philosophy of mind.</p>
-            <span class="card-tag">Philosophy of AI</span>
+            <h3><span class="lang-en">Machine Consciousness</span><span class="lang-es">Conciencia artificial</span></h3>
+            <p>
+              <span class="lang-en">Why computational intelligence and phenomenal consciousness are independent. Bridging AI research with philosophy of mind.</span>
+              <span class="lang-es">Por qu&eacute; la inteligencia computacional y la conciencia fenom&eacute;nica son independientes. Un puente entre la IA y la filosof&iacute;a de la mente.</span>
+            </p>
+            <span class="card-tag"><span class="lang-en">Philosophy of AI</span><span class="lang-es">Filosof&iacute;a de la IA</span></span>
           </div>
         </a>
 
@@ -626,8 +709,11 @@
             <img src="img/papers/2507.13550.png" alt="Neurosymbolic AI paper">
           </div>
           <div class="card-body">
-            <h3>Neurosymbolic AI</h3>
-            <p>Bridging GOFAI and generative AI: expert systems development via large language models with symbolic knowledge representation in Prolog.</p>
+            <h3><span class="lang-en">Neurosymbolic AI</span><span class="lang-es">IA neurosimb&oacute;lica</span></h3>
+            <p>
+              <span class="lang-en">Bridging GOFAI and generative AI: expert systems development via large language models with symbolic knowledge representation in Prolog.</span>
+              <span class="lang-es">Tendiendo puentes entre la GOFAI y la IA generativa: desarrollo de sistemas expertos mediante modelos de lenguaje con representaci&oacute;n simb&oacute;lica del conocimiento en Prolog.</span>
+            </p>
             <span class="card-tag">GOFAI &middot; LLMs</span>
           </div>
         </a>
@@ -637,8 +723,11 @@
             <img src="img/papers/2602.08774.png" alt="Hyperparameter Optimization paper">
           </div>
           <div class="card-body">
-            <h3>Hyperparameter Optimization</h3>
-            <p>Automating model selection at scale with Bayesian optimization and principled uncertainty quantification.</p>
+            <h3><span class="lang-en">Hyperparameter Optimization</span><span class="lang-es">Optimizaci&oacute;n de hiperpar&aacute;metros</span></h3>
+            <p>
+              <span class="lang-en">Automating model selection at scale with Bayesian optimization and principled uncertainty quantification.</span>
+              <span class="lang-es">Automatizaci&oacute;n de la selecci&oacute;n de modelos a escala con optimizaci&oacute;n bayesiana y cuantificaci&oacute;n rigurosa de la incertidumbre.</span>
+            </p>
             <span class="card-tag">AutoML &middot; 2026</span>
           </div>
         </a>
@@ -648,39 +737,52 @@
             <img src="img/papers/2303.01485.png" alt="ESG Quantitative Finance paper">
           </div>
           <div class="card-body">
-            <h3>ESG Quantitative Finance</h3>
-            <p>Bayesian optimization and machine learning for ESG portfolio construction, climate risk analysis, and sustainable investment strategies.</p>
-            <span class="card-tag">ESG &middot; Portfolio Optimization</span>
+            <h3><span class="lang-en">ESG Quantitative Finance</span><span class="lang-es">Finanzas cuantitativas ESG</span></h3>
+            <p>
+              <span class="lang-en">Bayesian optimization and machine learning for ESG portfolio construction, climate risk analysis, and sustainable investment strategies.</span>
+              <span class="lang-es">Optimizaci&oacute;n bayesiana y aprendizaje autom&aacute;tico para la construcci&oacute;n de carteras ESG, an&aacute;lisis de riesgo clim&aacute;tico y estrategias de inversi&oacute;n sostenible.</span>
+            </p>
+            <span class="card-tag">ESG &middot; <span class="lang-en">Portfolio Optimization</span><span class="lang-es">Optimizaci&oacute;n de carteras</span></span>
           </div>
         </a>
 
       </div>
       <p style="text-align: right; margin-top: 22px;">
         <a href="papers/index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.82em; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s;" onmouseover="this.style.color='var(--text-bright)';this.style.borderColor='var(--border-hover)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
-          See all 41 publications &rarr;
+          <span class="lang-en">See all 41 publications &rarr;</span><span class="lang-es">Ver las 41 publicaciones &rarr;</span>
         </a>
       </p>
     </section>
 
     <!-- Featured Paper -->
     <section>
-      <h2>Featured Paper</h2>
+      <h2><span class="lang-en">Featured Paper</span><span class="lang-es">Art&iacute;culo destacado</span></h2>
       <div class="sep"></div>
       <div class="paper-highlight">
-        <span class="paper-badge">TECHNICAL REPORT &middot; MARCH 2026</span>
-        <h3><a href="papers/automated-survey-generative-ai.html">An Automated Survey of Generative Artificial Intelligence: Large Language Models, Architectures, Protocols, and Applications</a></h3>
-        <p class="paper-authors-line">Eduardo C. Garrido-Merch&aacute;n and &Aacute;lvaro L&oacute;pez L&oacute;pez</p>
+        <span class="paper-badge">
+          <span class="lang-en">TECHNICAL REPORT &middot; MARCH 2026</span>
+          <span class="lang-es">INFORME T&Eacute;CNICO &middot; MARZO 2026</span>
+        </span>
+        <h3><a href="papers/automated-survey-generative-ai.html">
+          <span class="lang-en">An Automated Survey of Generative Artificial Intelligence: Large Language Models, Architectures, Protocols, and Applications</span>
+          <span class="lang-es">Una revisi&oacute;n automatizada de la inteligencia artificial generativa: modelos de lenguaje, arquitecturas, protocolos y aplicaciones</span>
+        </a></h3>
+        <p class="paper-authors-line">
+          <span class="lang-en">Eduardo C. Garrido-Merch&aacute;n and &Aacute;lvaro L&oacute;pez L&oacute;pez</span>
+          <span class="lang-es">Eduardo C. Garrido-Merch&aacute;n y &Aacute;lvaro L&oacute;pez L&oacute;pez</span>
+        </p>
         <p class="paper-abstract">
-          Generative artificial intelligence, and large language models in particular, have emerged as one of the most transformative paradigms in modern computer science. This automated survey provides an accessible treatment of the field as of early 2026, covering frontier LLMs (GPT-5.4, Gemini 3.1, Claude Opus 4.6, DeepSeek, Qwen, GLM-5), deployment protocols (RAG, MCP, A2A), and real-world applications across 15 industry sectors. 72 pages, 200+ references.
+          <span class="lang-en">Generative artificial intelligence, and large language models in particular, have emerged as one of the most transformative paradigms in modern computer science. This automated survey provides an accessible treatment of the field as of early 2026, covering frontier LLMs (GPT-5.4, Gemini 3.1, Claude Opus 4.6, DeepSeek, Qwen, GLM-5), deployment protocols (RAG, MCP, A2A), and real-world applications across 15 industry sectors. 72 pages, 200+ references.</span>
+          <span class="lang-es">La inteligencia artificial generativa, y en particular los grandes modelos de lenguaje, se han consolidado como uno de los paradigmas m&aacute;s transformadores de la computaci&oacute;n moderna. Esta revisi&oacute;n automatizada ofrece un tratamiento accesible del campo a inicios de 2026, cubriendo los LLMs de frontera (GPT-5.4, Gemini 3.1, Claude Opus 4.6, DeepSeek, Qwen, GLM-5), los protocolos de despliegue (RAG, MCP, A2A) y aplicaciones reales en 15 sectores industriales. 72 p&aacute;ginas, m&aacute;s de 200 referencias.</span>
         </p>
         <div class="paper-links">
           <a href="papers/automated-survey-generative-ai.pdf" class="btn-primary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download PDF
+            <span class="lang-en">Download PDF</span><span class="lang-es">Descargar PDF</span>
           </a>
           <a href="papers/automated-survey-generative-ai.html" class="btn-outline">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            Details &amp; Charts
+            <span class="lang-en">Details &amp; Charts</span><span class="lang-es">Detalles y gr&aacute;ficos</span>
           </a>
         </div>
       </div>
@@ -688,13 +790,13 @@
 
     <!-- Education -->
     <section>
-      <h2>Education</h2>
+      <h2><span class="lang-en">Education</span><span class="lang-es">Formaci&oacute;n</span></h2>
       <div class="sep"></div>
       <div class="education-list">
         <div class="edu-item">
           <span class="edu-icon">&#x1F393;</span>
           <div>
-            <h3>PhD in Computer Science &amp; Telecommunications</h3>
+            <h3><span class="lang-en">PhD in Computer Science &amp; Telecommunications</span><span class="lang-es">Doctorado en Inform&aacute;tica y Telecomunicaciones</span></h3>
             <p>Universidad Aut&oacute;noma de Madrid</p>
             <span class="award">Cum Laude</span>
           </div>
@@ -702,17 +804,17 @@
         <div class="edu-item">
           <span class="edu-icon">&#x1F4D6;</span>
           <div>
-            <h3>MSc in Artificial Intelligence</h3>
+            <h3><span class="lang-en">MSc in Artificial Intelligence</span><span class="lang-es">M&aacute;ster en Inteligencia Artificial</span></h3>
             <p>Universidad Polit&eacute;cnica de Madrid</p>
-            <span class="award">Jos&eacute; Cuena Award</span>
+            <span class="award"><span class="lang-en">Jos&eacute; Cuena Award</span><span class="lang-es">Premio Jos&eacute; Cuena</span></span>
           </div>
         </div>
         <div class="edu-item">
           <span class="edu-icon">&#x1F4BB;</span>
           <div>
-            <h3>BSc in Computer Engineering</h3>
+            <h3><span class="lang-en">BSc in Computer Engineering</span><span class="lang-es">Grado en Ingenier&iacute;a Inform&aacute;tica</span></h3>
             <p>Universidad Pontificia Comillas (ICADE)</p>
-            <span class="award">Extraordinary Award</span>
+            <span class="award"><span class="lang-en">Extraordinary Award</span><span class="lang-es">Premio Extraordinario</span></span>
           </div>
         </div>
       </div>
@@ -720,27 +822,39 @@
 
     <!-- Media & Outreach -->
     <section>
-      <h2>Media &amp; Outreach</h2>
+      <h2><span class="lang-en">Media &amp; Outreach</span><span class="lang-es">Medios y divulgaci&oacute;n</span></h2>
       <div class="sep"></div>
-      <p class="section-sub">Commentary and analysis in national press, radio, and academic platforms.</p>
+      <p class="section-sub">
+        <span class="lang-en">Commentary and analysis in national press, radio, and academic platforms.</span>
+        <span class="lang-es">Comentarios y an&aacute;lisis en prensa nacional, radio y plataformas acad&eacute;micas.</span>
+      </p>
       <div class="media-grid">
 
         <div class="media-card">
           <div class="media-placeholder" style="background:linear-gradient(135deg,#d4380d,#cf1322);">The Conversation</div>
           <div class="media-body">
-            <div class="media-type">Analysis &middot; Jan 2025</div>
+            <div class="media-type"><span class="lang-en">Analysis &middot; Jan 2025</span><span class="lang-es">An&aacute;lisis &middot; Ene 2025</span></div>
             <h3><a href="https://theconversation.com/deepseek-todas-las-claves-de-la-bomba-china-que-tumba-a-chatgpt-nvidia-y-las-big-tech-norteamericanas-248458" target="_blank">DeepSeek: todas las claves de la bomba china que tumba a ChatGPT, NVIDIA y las Big Tech</a></h3>
-            <p>In-depth analysis of DeepSeek-R1 and its impact on the global AI industry, NVIDIA&rsquo;s valuation, and US&ndash;China technology strategy.</p>
-            <p class="republished">Republished in The Objective, El Observador (UY), El Mostrador (CL), CODDII, and 3 more outlets.</p>
+            <p>
+              <span class="lang-en">In-depth analysis of DeepSeek-R1 and its impact on the global AI industry, NVIDIA&rsquo;s valuation, and US&ndash;China technology strategy.</span>
+              <span class="lang-es">An&aacute;lisis en profundidad de DeepSeek-R1 y su impacto en la industria global de la IA, la valoraci&oacute;n de NVIDIA y la estrategia tecnol&oacute;gica EE.&nbsp;UU.&ndash;China.</span>
+            </p>
+            <p class="republished">
+              <span class="lang-en">Republished in The Objective, El Observador (UY), El Mostrador (CL), CODDII, and 3 more outlets.</span>
+              <span class="lang-es">Republicado en The Objective, El Observador (UY), El Mostrador (CL), CODDII y 3 medios m&aacute;s.</span>
+            </p>
           </div>
         </div>
 
         <div class="media-card">
           <div class="media-placeholder" style="background:linear-gradient(135deg,#1e3a5f,#0d2137);">El Mundo &middot; PAPEL</div>
           <div class="media-body">
-            <div class="media-type">National Press &middot; 2025</div>
+            <div class="media-type"><span class="lang-en">National Press &middot; 2025</span><span class="lang-es">Prensa nacional &middot; 2025</span></div>
             <h3><a href="https://losperiodistas.com.mx/portal/el-dia-en-que-las-maquinas-funden-su-propia-religion-computar-la-palabra-dios-no-es-ni-de-lejos-lo-mismo-que-buscar-a-dios-papel/" target="_blank">El d&iacute;a en que las m&aacute;quinas funden su propia religi&oacute;n</a></h3>
-            <p>Quoted as AI expert in El Mundo&rsquo;s PAPEL supplement on the Moltbook phenomenon &mdash; AI agents and the limits of computational theology.</p>
+            <p>
+              <span class="lang-en">Quoted as AI expert in El Mundo&rsquo;s PAPEL supplement on the Moltbook phenomenon &mdash; AI agents and the limits of computational theology.</span>
+              <span class="lang-es">Citado como experto en IA en el suplemento PAPEL de El Mundo sobre el fen&oacute;meno Moltbook &mdash; agentes de IA y los l&iacute;mites de la teolog&iacute;a computacional.</span>
+            </p>
           </div>
         </div>
 
@@ -748,17 +862,26 @@
           <img src="xhub.jpg" alt="xHUB podcast appearance">
           <div class="media-body">
             <div class="media-type">Podcast</div>
-            <h3><a href="https://podcasts.apple.com/pe/podcast/xhub-ai/id1576725819?l=en-GB" target="_blank">xHUB &mdash; Machine Consciousness as Pseudoscience</a></h3>
-            <p>Why computational intelligence and phenomenal consciousness are independent &mdash; and why the hype around &ldquo;sentient AI&rdquo; is misleading.</p>
+            <h3><a href="https://podcasts.apple.com/pe/podcast/xhub-ai/id1576725819?l=en-GB" target="_blank">
+              <span class="lang-en">xHUB &mdash; Machine Consciousness as Pseudoscience</span>
+              <span class="lang-es">xHUB &mdash; La conciencia artificial como pseudociencia</span>
+            </a></h3>
+            <p>
+              <span class="lang-en">Why computational intelligence and phenomenal consciousness are independent &mdash; and why the hype around &ldquo;sentient AI&rdquo; is misleading.</span>
+              <span class="lang-es">Por qu&eacute; la inteligencia computacional y la conciencia fenom&eacute;nica son independientes &mdash; y por qu&eacute; el bombo en torno a la &laquo;IA sintiente&raquo; es enga&ntilde;oso.</span>
+            </p>
           </div>
         </div>
 
         <div class="media-card">
           <div class="media-placeholder" style="background:linear-gradient(135deg,#d4380d,#cf1322);">The Conversation</div>
           <div class="media-body">
-            <div class="media-type">Analysis &middot; 2025</div>
+            <div class="media-type"><span class="lang-en">Analysis &middot; 2025</span><span class="lang-es">An&aacute;lisis &middot; 2025</span></div>
             <h3><a href="https://theconversation.com/como-sera-la-educacion-universitaria-en-la-era-de-la-inteligencia-artificial-253448" target="_blank">&iquest;C&oacute;mo ser&aacute; la educaci&oacute;n universitaria en la era de la inteligencia artificial?</a></h3>
-            <p>How generative AI is transforming university education &mdash; AI agents, academic integrity, and the future of teaching.</p>
+            <p>
+              <span class="lang-en">How generative AI is transforming university education &mdash; AI agents, academic integrity, and the future of teaching.</span>
+              <span class="lang-es">C&oacute;mo la IA generativa est&aacute; transformando la educaci&oacute;n universitaria &mdash; agentes de IA, integridad acad&eacute;mica y el futuro de la ense&ntilde;anza.</span>
+            </p>
           </div>
         </div>
 
@@ -766,39 +889,54 @@
           <div class="media-placeholder" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">Radio Intereconom&iacute;a</div>
           <div class="media-body">
             <div class="media-type">Radio &middot; 2025</div>
-            <h3>Visi&oacute;n Global &mdash; DeepSeek &amp; Agentic AI</h3>
-            <p>Two appearances discussing DeepSeek&rsquo;s impact on the AI industry and the rise of agentic AI systems in enterprise.</p>
+            <h3><span class="lang-en">Visi&oacute;n Global &mdash; DeepSeek &amp; Agentic AI</span><span class="lang-es">Visi&oacute;n Global &mdash; DeepSeek e IA agente</span></h3>
+            <p>
+              <span class="lang-en">Two appearances discussing DeepSeek&rsquo;s impact on the AI industry and the rise of agentic AI systems in enterprise.</span>
+              <span class="lang-es">Dos intervenciones sobre el impacto de DeepSeek en la industria de la IA y el auge de los sistemas de IA agente en la empresa.</span>
+            </p>
           </div>
         </div>
 
         <div class="media-card">
           <div class="media-placeholder" style="background:linear-gradient(135deg,#0c4a6e,#164e63);">Comillas TV</div>
           <div class="media-body">
-            <div class="media-type">Educational &middot; University</div>
-            <h3><a href="https://www.comillas.edu/tv/microcredencial-ia-eduardo-garrido-el-modelo-gpt-1-1-r9y61zfz/" target="_blank">Microcredencial IA &mdash; GPT-1 &amp; Specialised AI Systems</a></h3>
-            <p>Video lectures on GPT architectures and specialised AI systems for the Comillas AI Micro-credential programme.</p>
+            <div class="media-type"><span class="lang-en">Educational &middot; University</span><span class="lang-es">Educativo &middot; Universidad</span></div>
+            <h3><a href="https://www.comillas.edu/tv/microcredencial-ia-eduardo-garrido-el-modelo-gpt-1-1-r9y61zfz/" target="_blank">
+              <span class="lang-en">AI Microcredential &mdash; GPT-1 &amp; Specialised AI Systems</span>
+              <span class="lang-es">Microcredencial IA &mdash; GPT-1 y sistemas de IA especializados</span>
+            </a></h3>
+            <p>
+              <span class="lang-en">Video lectures on GPT architectures and specialised AI systems for the Comillas AI Micro-credential programme.</span>
+              <span class="lang-es">Videoclases sobre arquitecturas GPT y sistemas de IA especializados para el programa de Microcredencial en IA de Comillas.</span>
+            </p>
           </div>
         </div>
 
       </div>
       <p style="text-align: right; margin-top: 22px;">
         <a href="press/index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.82em; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s;" onmouseover="this.style.color='var(--text-bright)';this.style.borderColor='var(--border-hover)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
-          All press &amp; media &rarr;
+          <span class="lang-en">All press &amp; media &rarr;</span><span class="lang-es">Toda la prensa y medios &rarr;</span>
         </a>
       </p>
     </section>
 
     <!-- Code & Projects -->
     <section>
-      <h2>Code &amp; Projects</h2>
+      <h2><span class="lang-en">Code &amp; Projects</span><span class="lang-es">C&oacute;digo y proyectos</span></h2>
       <div class="sep"></div>
-      <p class="section-sub">Open-source research code, reference implementations, and tutorial notebooks. Bayesian optimization, Gaussian processes, deep RL and educational material.</p>
+      <p class="section-sub">
+        <span class="lang-en">Open-source research code, reference implementations, and tutorial notebooks. Bayesian optimization, Gaussian processes, deep RL and educational material.</span>
+        <span class="lang-es">C&oacute;digo de investigaci&oacute;n de c&oacute;digo abierto, implementaciones de referencia y notebooks de tutorial. Optimizaci&oacute;n bayesiana, procesos gaussianos, RL profundo y material educativo.</span>
+      </p>
       <div class="research-grid">
 
         <a href="https://github.com/EduardoGarrido90/UPM_summer_school_GP_BO_course" target="_blank" class="research-card">
           <div class="card-body" style="padding: 22px 24px;">
             <h3>UPM Summer School &mdash; GPs &amp; BO</h3>
-            <p>Course notebooks for the Gaussian Processes and Bayesian Optimization summer school at UPM.</p>
+            <p>
+              <span class="lang-en">Course notebooks for the Gaussian Processes and Bayesian Optimization summer school at UPM.</span>
+              <span class="lang-es">Notebooks del curso de procesos gaussianos y optimizaci&oacute;n bayesiana de la escuela de verano de la UPM.</span>
+            </p>
             <span class="card-tag">Jupyter &middot; &#9733; 28</span>
           </div>
         </a>
@@ -806,15 +944,21 @@
         <a href="https://github.com/EduardoGarrido90/ML_books" target="_blank" class="research-card">
           <div class="card-body" style="padding: 22px 24px;">
             <h3>ML Books</h3>
-            <p>Curated list of high-quality machine learning books available freely online &mdash; a reading map.</p>
-            <span class="card-tag">Reading list &middot; &#9733; 12</span>
+            <p>
+              <span class="lang-en">Curated list of high-quality machine learning books available freely online &mdash; a reading map.</span>
+              <span class="lang-es">Lista curada de libros de machine learning de alta calidad disponibles libremente en l&iacute;nea &mdash; un mapa de lectura.</span>
+            </p>
+            <span class="card-tag"><span class="lang-en">Reading list</span><span class="lang-es">Lista de lectura</span> &middot; &#9733; 12</span>
           </div>
         </a>
 
         <a href="https://github.com/EduardoGarrido90/bo_tutorials_botorch" target="_blank" class="research-card">
           <div class="card-body" style="padding: 22px 24px;">
             <h3>BoTorch Tutorials</h3>
-            <p>Bayesian optimization tutorials in Jupyter / Colab format using BoTorch.</p>
+            <p>
+              <span class="lang-en">Bayesian optimization tutorials in Jupyter / Colab format using BoTorch.</span>
+              <span class="lang-es">Tutoriales de optimizaci&oacute;n bayesiana en formato Jupyter / Colab usando BoTorch.</span>
+            </p>
             <span class="card-tag">Jupyter &middot; &#9733; 10</span>
           </div>
         </a>
@@ -822,7 +966,10 @@
         <a href="https://github.com/EduardoGarrido90/Spearmint" target="_blank" class="research-card">
           <div class="card-body" style="padding: 22px 24px;">
             <h3>Spearmint</h3>
-            <p>Bayesian optimization codebase used as the basis for several research papers and PESMOC variants.</p>
+            <p>
+              <span class="lang-en">Bayesian optimization codebase used as the basis for several research papers and PESMOC variants.</span>
+              <span class="lang-es">C&oacute;digo de optimizaci&oacute;n bayesiana usado como base para varios art&iacute;culos de investigaci&oacute;n y variantes de PESMOC.</span>
+            </p>
             <span class="card-tag">Python &middot; &#9733; 8</span>
           </div>
         </a>
@@ -830,15 +977,21 @@
         <a href="https://github.com/EduardoGarrido90/spearmint_ppesmoc" target="_blank" class="research-card">
           <div class="card-body" style="padding: 22px 24px;">
             <h3>Parallel PESMOC</h3>
-            <p>Parallel Predictive Entropy Search for Multi-objective BO with Constraints &mdash; reference implementation.</p>
+            <p>
+              <span class="lang-en">Parallel Predictive Entropy Search for Multi-objective BO with Constraints &mdash; reference implementation.</span>
+              <span class="lang-es">Parallel Predictive Entropy Search para optimizaci&oacute;n bayesiana multiobjetivo con restricciones &mdash; implementaci&oacute;n de referencia.</span>
+            </p>
             <span class="card-tag">Python &middot; &#9733; 6</span>
           </div>
         </a>
 
         <a href="https://github.com/EduardoGarrido90/micro_agents" target="_blank" class="research-card">
           <div class="card-body" style="padding: 22px 24px;">
-            <h3>Microeconomic DRL Agents</h3>
-            <p>Multi-agent deep reinforcement learning on microeconomic market simulators.</p>
+            <h3><span class="lang-en">Microeconomic DRL Agents</span><span class="lang-es">Agentes DRL microecon&oacute;micos</span></h3>
+            <p>
+              <span class="lang-en">Multi-agent deep reinforcement learning on microeconomic market simulators.</span>
+              <span class="lang-es">Aprendizaje por refuerzo profundo multiagente sobre simuladores de mercados microecon&oacute;micos.</span>
+            </p>
             <span class="card-tag">Python &middot; DRL</span>
           </div>
         </a>
@@ -846,7 +999,7 @@
       </div>
       <p style="text-align: right; margin-top: 22px;">
         <a href="code/index.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); text-decoration: none; font-size: 0.82em; font-family: 'IBM Plex Mono', monospace; transition: all 0.2s;" onmouseover="this.style.color='var(--text-bright)';this.style.borderColor='var(--border-hover)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">
-          All 19 repositories &rarr;
+          <span class="lang-en">All 19 repositories &rarr;</span><span class="lang-es">Los 19 repositorios &rarr;</span>
         </a>
       </p>
     </section>
@@ -855,32 +1008,43 @@
     <section>
       <h2>Aceleracionismo Humanista</h2>
       <div class="sep"></div>
-      <p class="section-sub">Notas breves sobre IA, filosof&iacute;a anal&iacute;tica, meta-&eacute;tica y filosof&iacute;a de la mente.</p>
+      <p class="section-sub">
+        <span class="lang-en">Brief notes on AI, analytic philosophy, meta-ethics, and philosophy of mind. <em>Original posts in Spanish.</em></span>
+        <span class="lang-es">Notas breves sobre IA, filosof&iacute;a anal&iacute;tica, meta-&eacute;tica y filosof&iacute;a de la mente.</span>
+      </p>
       <div class="media-grid">
 
         <a href="blog/ia-apoyo-manuscrito.html" class="media-card" style="text-decoration:none; color:inherit; display:block;">
           <img src="img/blog/header-aceleracionismo-humanista.jpg" alt="Aceleracionismo Humanista" style="filter: saturate(0.85) brightness(0.78) contrast(1.05);">
           <div class="media-body">
-            <div class="media-type">Nota &middot; 6 Abr 2026</div>
+            <div class="media-type"><span class="lang-en">Note &middot; Apr 6, 2026</span><span class="lang-es">Nota &middot; 6 Abr 2026</span></div>
             <h3>Sobre la pretendida cuestionabilidad moral del uso de IA como apoyo en la redacci&oacute;n de manuscritos</h3>
-            <p>Un silogismo breve, desde el realismo moral robusto, que muestra por qu&eacute; emplear IA como herramienta editorial no solo no es moralmente cuestionable, sino un bien en s&iacute; mismo.</p>
+            <p>
+              <span class="lang-en">A short syllogism, from robust moral realism, showing why using AI as an editorial tool is not only morally unobjectionable but a good in itself.</span>
+              <span class="lang-es">Un silogismo breve, desde el realismo moral robusto, que muestra por qu&eacute; emplear IA como herramienta editorial no solo no es moralmente cuestionable, sino un bien en s&iacute; mismo.</span>
+            </p>
           </div>
         </a>
 
         <a href="blog/no-free-lunch-politica.html" class="media-card" style="text-decoration:none; color:inherit; display:block;">
           <img src="img/blog/header-no-free-lunch-politica.jpg" alt="No Free Lunch para sistemas pol&iacute;ticos" style="filter: saturate(0.85) brightness(0.78) contrast(1.05);">
           <div class="media-body">
-            <div class="media-type">Nota &middot; 7 Abr 2026</div>
+            <div class="media-type"><span class="lang-en">Note &middot; Apr 7, 2026</span><span class="lang-es">Nota &middot; 7 Abr 2026</span></div>
             <h3>El teorema de No Free Lunch para sistemas pol&iacute;ticos: por qu&eacute; la ideolog&iacute;a &oacute;ptima es una funci&oacute;n del tiempo</h3>
-            <p>Ninguna ideolog&iacute;a es universalmente &oacute;ptima porque el espacio de problemas sociales no es estacionario. La prescripci&oacute;n pol&iacute;tica correcta es, formalmente, una funci&oacute;n del estado hist&oacute;rico del sistema.</p>
+            <p>
+              <span class="lang-en">No ideology is universally optimal because the space of social problems is not stationary. The correct political prescription is, formally, a function of the historical state of the system.</span>
+              <span class="lang-es">Ninguna ideolog&iacute;a es universalmente &oacute;ptima porque el espacio de problemas sociales no es estacionario. La prescripci&oacute;n pol&iacute;tica correcta es, formalmente, una funci&oacute;n del estado hist&oacute;rico del sistema.</span>
+            </p>
           </div>
         </a>
 
         <div class="media-card" style="display:flex; align-items:center; justify-content:center; min-height:240px;">
           <div style="text-align:center; padding: 24px;">
-            <div style="font-family:'IBM Plex Mono', monospace; font-size:0.72em; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px;">Todas las notas</div>
+            <div style="font-family:'IBM Plex Mono', monospace; font-size:0.72em; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px;">
+              <span class="lang-en">All notes</span><span class="lang-es">Todas las notas</span>
+            </div>
             <a href="blog/index.html" style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border:1px solid var(--border); border-radius:6px; color:var(--text-muted); text-decoration:none; font-size:0.85em; font-family:'IBM Plex Mono', monospace;">
-              Leer Aceleracionismo Humanista &rarr;
+              <span class="lang-en">Read Aceleracionismo Humanista &rarr;</span><span class="lang-es">Leer Aceleracionismo Humanista &rarr;</span>
             </a>
           </div>
         </div>
@@ -890,40 +1054,55 @@
 
     <!-- Beyond Research -->
     <section>
-      <h2>Beyond Research</h2>
+      <h2><span class="lang-en">Beyond Research</span><span class="lang-es">M&aacute;s all&aacute; de la investigaci&oacute;n</span></h2>
       <div class="sep"></div>
       <div class="hobbies-grid">
         <div class="hobby-card">
           <span class="hobby-icon">&#x2728;</span>
-          <h3>Artificial Intelligence</h3>
-          <p>A lifelong fascination with building intelligent systems and pushing the boundaries of what machines can learn.</p>
+          <h3><span class="lang-en">Artificial Intelligence</span><span class="lang-es">Inteligencia artificial</span></h3>
+          <p>
+            <span class="lang-en">A lifelong fascination with building intelligent systems and pushing the boundaries of what machines can learn.</span>
+            <span class="lang-es">Una fascinaci&oacute;n de toda la vida por construir sistemas inteligentes y empujar los l&iacute;mites de lo que las m&aacute;quinas pueden aprender.</span>
+          </p>
         </div>
         <div class="hobby-card">
           <span class="hobby-icon">&#x1F680;</span>
-          <h3>Science Fiction</h3>
-          <p>Greg Egan, Stephen Baxter, Asimov, Lem &mdash; stories that take physics seriously and ask what it means to be human.</p>
+          <h3><span class="lang-en">Science Fiction</span><span class="lang-es">Ciencia ficci&oacute;n</span></h3>
+          <p>
+            <span class="lang-en">Greg Egan, Stephen Baxter, Asimov, Lem &mdash; stories that take physics seriously and ask what it means to be human.</span>
+            <span class="lang-es">Greg Egan, Stephen Baxter, Asimov, Lem &mdash; historias que toman la f&iacute;sica en serio y se preguntan qu&eacute; significa ser humano.</span>
+          </p>
         </div>
         <div class="hobby-card">
           <span class="hobby-icon">&#x1F4AD;</span>
-          <h3>Philosophy</h3>
-          <p>Philosophy of mind, consciousness, metaphysics, and the foundations of artificial intelligence.</p>
+          <h3><span class="lang-en">Philosophy</span><span class="lang-es">Filosof&iacute;a</span></h3>
+          <p>
+            <span class="lang-en">Philosophy of mind, consciousness, metaphysics, and the foundations of artificial intelligence.</span>
+            <span class="lang-es">Filosof&iacute;a de la mente, conciencia, metaf&iacute;sica y los fundamentos de la inteligencia artificial.</span>
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- Sobre m&iacute; -->
+    <!-- Sobre m&iacute; / About me -->
     <section>
-      <h2>Sobre m&iacute;</h2>
+      <h2><span class="lang-en">About me</span><span class="lang-es">Sobre m&iacute;</span></h2>
       <div class="sep"></div>
       <div class="personal-card">
         <div class="personal-photo">
           <img src="foto2026fondochulo.png" alt="Eduardo C. Garrido-Merch&aacute;n">
         </div>
         <div class="personal-body">
-          <p>
+          <p class="lang-en">
+            I&rsquo;m <strong>36 years old</strong> and the father of two boys. One of them is <strong>severely non-verbal autistic</strong>, and living with him has made me think very seriously about what it means to do what is best for everyone &mdash; about vulnerability, about care, and about how to build a world in which every person, whatever their condition, has a place.
+          </p>
+          <p class="lang-es">
             Tengo <strong>36 a&ntilde;os</strong> y soy padre de dos hijos. Uno de ellos es <strong>aut&iacute;sta severo no verbal</strong>, y convivir con &eacute;l me ha hecho reflexionar muy en serio sobre qu&eacute; significa hacer lo mejor para todos &mdash; sobre la vulnerabilidad, sobre el cuidado, y sobre c&oacute;mo construir un mundo en el que cada persona, sea como sea, tenga un lugar.
           </p>
-          <p>
+          <p class="lang-en">
+            When I&rsquo;m not doing research, I love to <strong>read</strong>. I&rsquo;m especially fond of <strong>science fiction</strong> by <em>Peter Cawdron</em>, <em>Greg Egan</em>, <em>Arthur C. Clarke</em> and <em>Stephen Baxter</em>, and the <strong>horror novels</strong> of <em>Stephen King</em> and <em>H.&nbsp;P.&nbsp;Lovecraft</em>. I&rsquo;m also a fan of <strong>video games</strong>, with <em>NieR: Automata</em> among my favourites for how it weaves mechanics, narrative and philosophy together.
+          </p>
+          <p class="lang-es">
             Cuando no estoy investigando, me encanta <strong>leer</strong>. Disfruto especialmente la <strong>ciencia ficci&oacute;n</strong> de <em>Peter Cawdron</em>, <em>Greg Egan</em>, <em>Arthur C. Clarke</em> y <em>Stephen Baxter</em>, y la <strong>novela de terror</strong> de <em>Stephen King</em> y <em>H.&nbsp;P.&nbsp;Lovecraft</em>. Tambi&eacute;n soy aficionado a los <strong>videojuegos</strong>, con <em>NieR: Automata</em> entre mis favoritos por c&oacute;mo entrelaza mec&aacute;nica, narrativa y filosof&iacute;a.
           </p>
         </div>
@@ -934,8 +1113,29 @@
 
   <footer>
     <div class="container">
-      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; Universidad Pontificia Comillas &middot; Madrid, Spain</p>
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; Universidad Pontificia Comillas &middot; <span class="lang-en">Madrid, Spain</span><span class="lang-es">Madrid, Espa&ntilde;a</span></p>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      var buttons = document.querySelectorAll('.lang-switch button[data-lang]');
+      function setLang(lang) {
+        if (lang !== 'en' && lang !== 'es') lang = 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('data-lang', lang);
+        document.body.className = 'lang-' + lang;
+        buttons.forEach(function (b) {
+          b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+        });
+        try { localStorage.setItem('site-lang', lang); } catch (e) {}
+      }
+      // Initialise active state from current html lang
+      setLang(document.documentElement.getAttribute('data-lang') || 'en');
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
+      });
+    })();
+  </script>
 </body>
 </html>
