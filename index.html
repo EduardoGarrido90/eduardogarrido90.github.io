@@ -394,6 +394,74 @@
     .hobby-card h3 { font-size: 0.85em; color: var(--text-bright); margin-bottom: 4px; }
     .hobby-card p { font-size: 0.76em; color: var(--text-muted); line-height: 1.5; }
 
+    /* ── Personal / Sobre mí ── */
+    .personal-card {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .personal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--gradient);
+      z-index: 2;
+    }
+    .personal-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    .personal-photo {
+      flex-shrink: 0;
+      width: 300px;
+      background: #1a1a2e;
+      position: relative;
+      overflow: hidden;
+    }
+    .personal-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .personal-card:hover .personal-photo img {
+      transform: scale(1.03);
+    }
+    .personal-photo::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 60px;
+      background: linear-gradient(to right, transparent, var(--bg-card));
+      pointer-events: none;
+    }
+    .personal-body {
+      flex: 1;
+      padding: 30px 34px 30px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+    .personal-body p {
+      font-size: 0.92em;
+      color: var(--text);
+      line-height: 1.78;
+      margin-bottom: 14px;
+    }
+    .personal-body p:last-child { margin-bottom: 0; }
+    .personal-body strong { color: var(--text-bright); font-weight: 600; }
+    .personal-body em { color: #93c5fd; font-style: italic; }
+
     /* ── Footer ── */
     footer {
       text-align: center;
@@ -418,6 +486,14 @@
       .media-grid { grid-template-columns: 1fr; }
       .hobbies-grid { grid-template-columns: 1fr; }
       section h2 { font-size: 1.4em; }
+      .personal-card { flex-direction: column; }
+      .personal-photo { width: 100%; height: 320px; }
+      .personal-photo::after {
+        top: auto; right: 0; left: 0; bottom: 0;
+        width: 100%; height: 60px;
+        background: linear-gradient(to bottom, transparent, var(--bg-card));
+      }
+      .personal-body { padding: 24px 22px 26px; }
     }
     @media (min-width: 769px) and (max-width: 1024px) {
       .research-grid { grid-template-columns: repeat(2, 1fr); }
@@ -831,6 +907,25 @@
           <span class="hobby-icon">&#x1F4AD;</span>
           <h3>Philosophy</h3>
           <p>Philosophy of mind, consciousness, metaphysics, and the foundations of artificial intelligence.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sobre m&iacute; -->
+    <section>
+      <h2>Sobre m&iacute;</h2>
+      <div class="sep"></div>
+      <div class="personal-card">
+        <div class="personal-photo">
+          <img src="foto2026fondochulo.png" alt="Eduardo C. Garrido-Merch&aacute;n">
+        </div>
+        <div class="personal-body">
+          <p>
+            Tengo <strong>36 a&ntilde;os</strong> y soy padre de dos hijos. Uno de ellos es <strong>aut&iacute;sta severo no verbal</strong>, y convivir con &eacute;l me ha hecho reflexionar muy en serio sobre qu&eacute; significa hacer lo mejor para todos &mdash; sobre la vulnerabilidad, sobre el cuidado, y sobre c&oacute;mo construir un mundo en el que cada persona, sea como sea, tenga un lugar.
+          </p>
+          <p>
+            Cuando no estoy investigando, me encanta <strong>leer</strong>. Disfruto especialmente la <strong>ciencia ficci&oacute;n</strong> de <em>Peter Cawdron</em>, <em>Greg Egan</em>, <em>Arthur C. Clarke</em> y <em>Stephen Baxter</em>, y la <strong>novela de terror</strong> de <em>Stephen King</em> y <em>H.&nbsp;P.&nbsp;Lovecraft</em>. Tambi&eacute;n soy aficionado a los <strong>videojuegos</strong>, con <em>NieR: Automata</em> entre mis favoritos por c&oacute;mo entrelaza mec&aacute;nica, narrativa y filosof&iacute;a.
+          </p>
         </div>
       </div>
     </section>
