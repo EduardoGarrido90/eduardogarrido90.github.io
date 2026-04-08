@@ -563,8 +563,8 @@
     /* ── Top Philosophers ── */
     .philo-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
     }
     .philo-card {
       background: var(--bg-card);
@@ -738,6 +738,7 @@
     }
     @media (min-width: 769px) and (max-width: 1024px) {
       .research-grid { grid-template-columns: repeat(2, 1fr); }
+      .philo-grid { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -1380,32 +1381,12 @@
       <div class="philo-grid">
 
         <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/hume.jpg" alt="David Hume"></div>
-          <h3>David Hume</h3>
-          <div class="philo-dates">1711 &ndash; 1776</div>
+          <div class="philo-portrait"><img src="img/philosophers/socrates.jpg" alt="S&oacute;crates"></div>
+          <h3><span class="lang-en">Socrates</span><span class="lang-es">S&oacute;crates</span></h3>
+          <div class="philo-dates">470 &ndash; 399 BCE</div>
           <p>
-            <span class="lang-en">Empiricism, the problem of induction, and a moral philosophy grounded in human sentiment.</span>
-            <span class="lang-es">Empirismo, el problema de la inducci&oacute;n y una filosof&iacute;a moral anclada en el sentimiento humano.</span>
-          </p>
-        </div>
-
-        <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/rawls.jpg" alt="John Rawls"></div>
-          <h3>John Rawls</h3>
-          <div class="philo-dates">1921 &ndash; 2002</div>
-          <p>
-            <span class="lang-en">Justice as fairness and the original position &mdash; arguably the most influential political philosophy of the 20th century.</span>
-            <span class="lang-es">La justicia como equidad y la posici&oacute;n original &mdash; posiblemente la filosof&iacute;a pol&iacute;tica m&aacute;s influyente del siglo&nbsp;XX.</span>
-          </p>
-        </div>
-
-        <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/huemer.jpg" alt="Michael Huemer"></div>
-          <h3>Michael Huemer</h3>
-          <div class="philo-dates">1969 &ndash;</div>
-          <p>
-            <span class="lang-en">Robust moral realism via ethical intuitionism, and a sharp critique of political authority.</span>
-            <span class="lang-es">Realismo moral robusto desde el intuicionismo &eacute;tico y una cr&iacute;tica afilada a la autoridad pol&iacute;tica.</span>
+            <span class="lang-en">The original method: question everything, follow the argument wherever it leads, and never claim more than you know.</span>
+            <span class="lang-es">El m&eacute;todo original: cuestionarlo todo, seguir el argumento hasta donde lleve y no pretender saber m&aacute;s de lo que sabes.</span>
           </p>
         </div>
 
@@ -1420,32 +1401,62 @@
         </div>
 
         <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/chalmers.jpg" alt="David Chalmers"></div>
-          <h3>David Chalmers</h3>
-          <div class="philo-dates">1966 &ndash;</div>
+          <div class="philo-portrait"><img src="img/philosophers/hume.jpg" alt="David Hume"></div>
+          <h3>David Hume</h3>
+          <div class="philo-dates">1711 &ndash; 1776</div>
           <p>
-            <span class="lang-en">The hard problem of consciousness and the philosophy of mind that AI cannot afford to ignore.</span>
-            <span class="lang-es">El problema dif&iacute;cil de la conciencia y la filosof&iacute;a de la mente que la IA no puede permitirse ignorar.</span>
+            <span class="lang-en">Empiricism, the problem of induction, and a moral philosophy grounded in human sentiment.</span>
+            <span class="lang-es">Empirismo, el problema de la inducci&oacute;n y una filosof&iacute;a moral anclada en el sentimiento humano.</span>
           </p>
         </div>
 
         <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/socrates.jpg" alt="S&oacute;crates"></div>
-          <h3><span class="lang-en">Socrates</span><span class="lang-es">S&oacute;crates</span></h3>
-          <div class="philo-dates">470 &ndash; 399 BCE</div>
+          <div class="philo-portrait"><img src="img/philosophers/chardin.jpg" alt="Pierre Teilhard de Chardin"></div>
+          <h3>Teilhard de Chardin</h3>
+          <div class="philo-dates">1881 &ndash; 1955</div>
           <p>
-            <span class="lang-en">The original method: question everything, follow the argument wherever it leads, and never claim more than you know.</span>
-            <span class="lang-es">El m&eacute;todo original: cuestionarlo todo, seguir el argumento hasta donde lleve y no pretender saber m&aacute;s de lo que sabes.</span>
+            <span class="lang-en">The noosphere and the Omega Point: an evolutionary, cosmic view that anticipates much of today&rsquo;s thinking on AI and the future of mind.</span>
+            <span class="lang-es">La noosfera y el Punto Omega: una visi&oacute;n evolutiva y c&oacute;smica que anticipa buena parte del pensamiento actual sobre la IA y el futuro de la mente.</span>
           </p>
         </div>
 
         <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/bostrom.jpg" alt="Nick Bostrom"></div>
-          <h3>Nick Bostrom</h3>
-          <div class="philo-dates">1973 &ndash;</div>
+          <div class="philo-portrait"><img src="img/philosophers/stein.jpg" alt="Edith Stein"></div>
+          <h3>Edith Stein</h3>
+          <div class="philo-dates">1891 &ndash; 1942</div>
           <p>
-            <span class="lang-en">Existential risk, the simulation argument, and the philosophical foundations of long-term AI safety.</span>
-            <span class="lang-es">Riesgo existencial, el argumento de la simulaci&oacute;n y los fundamentos filos&oacute;ficos de la seguridad de la IA a largo plazo.</span>
+            <span class="lang-en">Phenomenology of empathy from a Catholic perspective: a rigorous Husserlian who became Saint Teresa Benedicta of the Cross.</span>
+            <span class="lang-es">Una fenomenolog&iacute;a de la empat&iacute;a desde la perspectiva cat&oacute;lica: una husserliana rigurosa que se convirti&oacute; en Santa Teresa Benedicta de la Cruz.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/rawls.jpg" alt="John Rawls"></div>
+          <h3>John Rawls</h3>
+          <div class="philo-dates">1921 &ndash; 2002</div>
+          <p>
+            <span class="lang-en">Justice as fairness and the original position &mdash; arguably the most influential political philosophy of the 20th century.</span>
+            <span class="lang-es">La justicia como equidad y la posici&oacute;n original &mdash; posiblemente la filosof&iacute;a pol&iacute;tica m&aacute;s influyente del siglo&nbsp;XX.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/haraway.jpg" alt="Donna Haraway"></div>
+          <h3>Donna Haraway</h3>
+          <div class="philo-dates">1944 &ndash;</div>
+          <p>
+            <span class="lang-en">A Cyborg Manifesto and the foundations of posthumanism: rethinking the human/machine boundary as a feminist project.</span>
+            <span class="lang-es">El Manifiesto cyborg y los cimientos del posthumanismo: repensar la frontera humano/m&aacute;quina como un proyecto feminista.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/nussbaum.jpg" alt="Martha Nussbaum"></div>
+          <h3>Martha Nussbaum</h3>
+          <div class="philo-dates">1947 &ndash;</div>
+          <p>
+            <span class="lang-en">The capabilities approach: a liberal political philosophy that takes human flourishing, vulnerability, and emotion seriously.</span>
+            <span class="lang-es">El enfoque de las capacidades: una filosof&iacute;a pol&iacute;tica liberal que se toma en serio el florecimiento humano, la vulnerabilidad y la emoci&oacute;n.</span>
           </p>
         </div>
 
@@ -1460,12 +1471,32 @@
         </div>
 
         <div class="philo-card">
-          <div class="philo-portrait"><img src="img/philosophers/chardin.jpg" alt="Pierre Teilhard de Chardin"></div>
-          <h3>Teilhard de Chardin</h3>
-          <div class="philo-dates">1881 &ndash; 1955</div>
+          <div class="philo-portrait"><img src="img/philosophers/chalmers.jpg" alt="David Chalmers"></div>
+          <h3>David Chalmers</h3>
+          <div class="philo-dates">1966 &ndash;</div>
           <p>
-            <span class="lang-en">The noosphere and the Omega Point: an evolutionary, cosmic view that anticipates much of today&rsquo;s thinking on AI and the future of mind.</span>
-            <span class="lang-es">La noosfera y el Punto Omega: una visi&oacute;n evolutiva y c&oacute;smica que anticipa buena parte del pensamiento actual sobre la IA y el futuro de la mente.</span>
+            <span class="lang-en">The hard problem of consciousness and the philosophy of mind that AI cannot afford to ignore.</span>
+            <span class="lang-es">El problema dif&iacute;cil de la conciencia y la filosof&iacute;a de la mente que la IA no puede permitirse ignorar.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/huemer.jpg" alt="Michael Huemer"></div>
+          <h3>Michael Huemer</h3>
+          <div class="philo-dates">1969 &ndash;</div>
+          <p>
+            <span class="lang-en">Robust moral realism via ethical intuitionism, and a sharp critique of political authority.</span>
+            <span class="lang-es">Realismo moral robusto desde el intuicionismo &eacute;tico y una cr&iacute;tica afilada a la autoridad pol&iacute;tica.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/bostrom.jpg" alt="Nick Bostrom"></div>
+          <h3>Nick Bostrom</h3>
+          <div class="philo-dates">1973 &ndash;</div>
+          <p>
+            <span class="lang-en">Existential risk, the simulation argument, and the philosophical foundations of long-term AI safety.</span>
+            <span class="lang-es">Riesgo existencial, el argumento de la simulaci&oacute;n y los fundamentos filos&oacute;ficos de la seguridad de la IA a largo plazo.</span>
           </p>
         </div>
 
