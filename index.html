@@ -560,6 +560,69 @@
     .hobby-card h3 { font-size: 0.85em; color: var(--text-bright); margin-bottom: 4px; }
     .hobby-card p { font-size: 0.76em; color: var(--text-muted); line-height: 1.5; }
 
+    /* ── Top Philosophers ── */
+    .philo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .philo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 20px 20px;
+      text-align: center;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .philo-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .philo-portrait {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 2px solid var(--border);
+      background: #1a1a2e;
+      flex-shrink: 0;
+      transition: border-color 0.3s;
+    }
+    .philo-card:hover .philo-portrait {
+      border-color: #60a5fa;
+    }
+    .philo-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .philo-card h3 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.02em;
+      color: var(--text-bright);
+      margin-bottom: 2px;
+      letter-spacing: -0.01em;
+    }
+    .philo-dates {
+      font-size: 0.72em;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+    .philo-card p {
+      font-size: 0.8em;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
     /* ── Personal / Sobre mí ── */
     .personal-card {
       display: flex;
@@ -652,6 +715,8 @@
       .media-grid { grid-template-columns: 1fr; }
       .hobbies-grid { grid-template-columns: 1fr; }
       .teaching-grid { grid-template-columns: 1fr; }
+      .philo-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .philo-portrait { width: 92px; height: 92px; }
       .top-nav .nav-inner { gap: 0; padding: 9px 14px 10px; }
       .top-nav a { padding: 5px 9px; font-size: 0.72em; }
       .top-nav .lang-switch {
@@ -692,6 +757,7 @@
       <a href="#code"><span class="lang-en">Code</span><span class="lang-es">C&oacute;digo</span></a>
       <a href="#blog">Blog</a>
       <a href="#about"><span class="lang-en">About</span><span class="lang-es">Sobre m&iacute;</span></a>
+      <a href="#philosophers"><span class="lang-en">Philosophers</span><span class="lang-es">Fil&oacute;sofos</span></a>
       <span class="lang-switch" role="group" aria-label="Language switcher">
         <button type="button" data-lang="en" class="active" aria-label="English" title="English">
           <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1300,6 +1366,109 @@
             Cuando no estoy investigando, me encanta <strong>leer</strong>. Disfruto especialmente la <strong>ciencia ficci&oacute;n</strong> de <em>Peter Cawdron</em>, <em>Greg Egan</em>, <em>Arthur C. Clarke</em> y <em>Stephen Baxter</em>, y la <strong>novela de terror</strong> de <em>Stephen King</em> y <em>H.&nbsp;P.&nbsp;Lovecraft</em>. Tambi&eacute;n soy aficionado a los <strong>videojuegos</strong>, con <em>NieR: Automata</em> entre mis favoritos por c&oacute;mo entrelaza mec&aacute;nica, narrativa y filosof&iacute;a.
           </p>
         </div>
+      </div>
+    </section>
+
+    <!-- Top Philosophers -->
+    <section id="philosophers">
+      <h2><span class="lang-en">Top Philosophers</span><span class="lang-es">Fil&oacute;sofos favoritos</span></h2>
+      <div class="sep"></div>
+      <p class="section-sub">
+        <span class="lang-en">A short list of the thinkers who have shaped how I see ethics, mind, freedom and the long-term future.</span>
+        <span class="lang-es">Una breve lista de los pensadores que m&aacute;s han marcado mi forma de entender la &eacute;tica, la mente, la libertad y el futuro a largo plazo.</span>
+      </p>
+      <div class="philo-grid">
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/hume.jpg" alt="David Hume"></div>
+          <h3>David Hume</h3>
+          <div class="philo-dates">1711 &ndash; 1776</div>
+          <p>
+            <span class="lang-en">Empiricism, the problem of induction, and a moral philosophy grounded in human sentiment.</span>
+            <span class="lang-es">Empirismo, el problema de la inducci&oacute;n y una filosof&iacute;a moral anclada en el sentimiento humano.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/rawls.jpg" alt="John Rawls"></div>
+          <h3>John Rawls</h3>
+          <div class="philo-dates">1921 &ndash; 2002</div>
+          <p>
+            <span class="lang-en">Justice as fairness and the original position &mdash; arguably the most influential political philosophy of the 20th century.</span>
+            <span class="lang-es">La justicia como equidad y la posici&oacute;n original &mdash; posiblemente la filosof&iacute;a pol&iacute;tica m&aacute;s influyente del siglo&nbsp;XX.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/huemer.jpg" alt="Michael Huemer"></div>
+          <h3>Michael Huemer</h3>
+          <div class="philo-dates">1969 &ndash;</div>
+          <p>
+            <span class="lang-en">Robust moral realism via ethical intuitionism, and a sharp critique of political authority.</span>
+            <span class="lang-es">Realismo moral robusto desde el intuicionismo &eacute;tico y una cr&iacute;tica afilada a la autoridad pol&iacute;tica.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/locke.jpg" alt="John Locke"></div>
+          <h3>John Locke</h3>
+          <div class="philo-dates">1632 &ndash; 1704</div>
+          <p>
+            <span class="lang-en">Natural rights, the social contract, and the foundations of liberal political philosophy.</span>
+            <span class="lang-es">Derechos naturales, contrato social y los cimientos de la filosof&iacute;a pol&iacute;tica liberal.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/chalmers.jpg" alt="David Chalmers"></div>
+          <h3>David Chalmers</h3>
+          <div class="philo-dates">1966 &ndash;</div>
+          <p>
+            <span class="lang-en">The hard problem of consciousness and the philosophy of mind that AI cannot afford to ignore.</span>
+            <span class="lang-es">El problema dif&iacute;cil de la conciencia y la filosof&iacute;a de la mente que la IA no puede permitirse ignorar.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/socrates.jpg" alt="S&oacute;crates"></div>
+          <h3><span class="lang-en">Socrates</span><span class="lang-es">S&oacute;crates</span></h3>
+          <div class="philo-dates">470 &ndash; 399 BCE</div>
+          <p>
+            <span class="lang-en">The original method: question everything, follow the argument wherever it leads, and never claim more than you know.</span>
+            <span class="lang-es">El m&eacute;todo original: cuestionarlo todo, seguir el argumento hasta donde lleve y no pretender saber m&aacute;s de lo que sabes.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/bostrom.jpg" alt="Nick Bostrom"></div>
+          <h3>Nick Bostrom</h3>
+          <div class="philo-dates">1973 &ndash;</div>
+          <p>
+            <span class="lang-en">Existential risk, the simulation argument, and the philosophical foundations of long-term AI safety.</span>
+            <span class="lang-es">Riesgo existencial, el argumento de la simulaci&oacute;n y los fundamentos filos&oacute;ficos de la seguridad de la IA a largo plazo.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/vita-more.jpg" alt="Natasha Vita-More"></div>
+          <h3>Natasha Vita-More</h3>
+          <div class="philo-dates">1950 &ndash;</div>
+          <p>
+            <span class="lang-en">Transhumanist thought as a humanist project: enhancement, longevity, and the deliberate design of human flourishing.</span>
+            <span class="lang-es">El pensamiento transhumanista como proyecto humanista: mejora, longevidad y el dise&ntilde;o deliberado del florecimiento humano.</span>
+          </p>
+        </div>
+
+        <div class="philo-card">
+          <div class="philo-portrait"><img src="img/philosophers/chardin.jpg" alt="Pierre Teilhard de Chardin"></div>
+          <h3>Teilhard de Chardin</h3>
+          <div class="philo-dates">1881 &ndash; 1955</div>
+          <p>
+            <span class="lang-en">The noosphere and the Omega Point: an evolutionary, cosmic view that anticipates much of today&rsquo;s thinking on AI and the future of mind.</span>
+            <span class="lang-es">La noosfera y el Punto Omega: una visi&oacute;n evolutiva y c&oacute;smica que anticipa buena parte del pensamiento actual sobre la IA y el futuro de la mente.</span>
+          </p>
+        </div>
+
       </div>
     </section>
 
