@@ -27,36 +27,36 @@
     .lang-switch {
       display: inline-flex;
       align-items: center;
-      gap: 0;
+      gap: 4px;
       padding: 0;
       background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.78em;
-      vertical-align: middle;
     }
     .lang-switch button {
       background: transparent;
-      border: 0;
-      color: var(--text-muted);
-      padding: 5px 10px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 3px;
       cursor: pointer;
-      font: inherit;
-      letter-spacing: 0.06em;
+      line-height: 0;
       transition: all 0.2s;
-      line-height: 1.4;
+      opacity: 0.55;
+      filter: saturate(0.7);
     }
-    .lang-switch button:hover { color: var(--text-bright); }
+    .lang-switch button:hover {
+      opacity: 0.95;
+      filter: saturate(1);
+    }
     .lang-switch button.active {
+      opacity: 1;
+      filter: saturate(1);
+      border-color: var(--border-hover);
       background: var(--bg-card-hover);
-      color: var(--text-bright);
     }
-    .lang-switch .sep-v {
-      width: 1px;
-      background: var(--border);
-      align-self: stretch;
+    .lang-switch button svg {
+      display: block;
+      width: 22px;
+      height: 15px;
+      border-radius: 2px;
     }
 
     :root {
@@ -187,6 +187,13 @@
       justify-content: center;
       gap: 4px;
       flex-wrap: wrap;
+      position: relative;
+    }
+    .top-nav .lang-switch {
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
     }
     .top-nav a {
       color: var(--text-muted);
@@ -645,8 +652,15 @@
       .media-grid { grid-template-columns: 1fr; }
       .hobbies-grid { grid-template-columns: 1fr; }
       .teaching-grid { grid-template-columns: 1fr; }
-      .top-nav .nav-inner { gap: 0; padding: 9px 14px; }
+      .top-nav .nav-inner { gap: 0; padding: 9px 14px 10px; }
       .top-nav a { padding: 5px 9px; font-size: 0.72em; }
+      .top-nav .lang-switch {
+        position: static;
+        transform: none;
+        margin: 6px 0 0;
+        width: 100%;
+        justify-content: center;
+      }
       section h2 { font-size: 1.4em; }
       .personal-card { flex-direction: column; }
       .personal-photo { width: 100%; height: 320px; }
@@ -678,6 +692,27 @@
       <a href="#code"><span class="lang-en">Code</span><span class="lang-es">C&oacute;digo</span></a>
       <a href="#blog">Blog</a>
       <a href="#about"><span class="lang-en">About</span><span class="lang-es">Sobre m&iacute;</span></a>
+      <span class="lang-switch" role="group" aria-label="Language switcher">
+        <button type="button" data-lang="en" class="active" aria-label="English" title="English">
+          <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <clipPath id="ukclip"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+            <clipPath id="ukt"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+            <g clip-path="url(#ukclip)">
+              <rect width="60" height="30" fill="#012169"/>
+              <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+              <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ukt)" stroke="#C8102E" stroke-width="4"/>
+              <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+              <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+            </g>
+          </svg>
+        </button>
+        <button type="button" data-lang="es" aria-label="Espa&ntilde;ol" title="Espa&ntilde;ol">
+          <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="60" height="30" fill="#c60b1e"/>
+            <rect y="7.5" width="60" height="15" fill="#ffc400"/>
+          </svg>
+        </button>
+      </span>
     </div>
   </nav>
 
@@ -719,11 +754,6 @@
             <a href="https://arxiv.org/a/garridomerchan_e_1.html" target="_blank">arxiv</a>
             <a href="https://www.researchgate.net/profile/Eduardo-Garrido-Merchan" target="_blank">researchgate</a>
             <a href="https://x.com/vedugarmer" target="_blank">@vedugarmer</a>
-            <span class="lang-switch" role="group" aria-label="Language switcher">
-              <button type="button" data-lang="en" class="active">EN</button>
-              <span class="sep-v"></span>
-              <button type="button" data-lang="es">ES</button>
-            </span>
           </div>
           <div class="hero-counter">
             <img class="lang-en" src="https://hits.sh/eduardogarrido90.github.io.svg?style=flat-square&label=visits&color=3b82f6&labelColor=111827" alt="Visit counter">
