@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Precision-Weighted Joint Entropy Search for Bayesian Optimization &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Invited seminar at the IIT (Instituto de Investigaci&oacute;n Tecnol&oacute;gica), Universidad Pontificia Comillas &mdash; ICAI, on Precision-Weighted Joint Entropy Search for Bayesian Optimization.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <meta property="og:title" content="Precision-Weighted Joint Entropy Search for Bayesian Optimization">
+  <meta property="og:description" content="IIT Modelling Seminars &middot; April 16, 2026 &middot; 12:30 &middot; Rey Francisco 4, 5th floor.">
+  <meta property="og:image" content="../img/talks/pwjes-iit.jpg">
+  <meta property="og:type" content="article">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Precision-Weighted Joint Entropy Search for Bayesian Optimization">
+  <meta name="twitter:description" content="IIT Modelling Seminars &middot; April 16, 2026 &middot; 12:30 &middot; Rey Francisco 4, 5th floor.">
+  <meta name="twitter:image" content="../img/talks/pwjes-iit.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .topnav a:hover { color: var(--text-bright); }
+
+    header.page { padding: 48px 0 20px; }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 12px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.2em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+      margin-bottom: 18px;
+    }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 22px 0; }
+
+    .hero-image {
+      width: 100%;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin: 6px 0 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    }
+    .hero-image img { width: 100%; height: auto; display: block; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 10px 0 28px;
+    }
+    .meta-card {
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .meta-card .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .meta-card .value {
+      color: var(--text-bright);
+      font-size: 0.95em;
+      line-height: 1.4;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 12px 0 32px;
+    }
+    .actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82em;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .actions a.primary {
+      background: var(--gradient);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+    .actions a.primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.35); }
+    .actions a.secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .actions a.secondary:hover { color: var(--text-bright); border-color: var(--border-hover); }
+
+    article.abstract {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 26px 30px;
+      margin-bottom: 32px;
+    }
+    article.abstract h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.2em;
+      color: var(--text-bright);
+      margin-bottom: 14px;
+    }
+    article.abstract p { color: var(--text); margin-bottom: 12px; font-size: 0.96em; }
+    article.abstract p:last-child { margin-bottom: 0; }
+
+    footer {
+      text-align: center;
+      padding: 36px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.55em; }
+      article.abstract { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="index.html">&larr; Technical Talks</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../papers/index.html">papers</a> &middot;
+        <a href="../press/index.html">press</a> &middot;
+        <a href="../code/index.html">code</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">IIT Modelling Seminars &middot; Invited Talk</div>
+      <h1>Precision-Weighted Joint Entropy Search for Bayesian Optimization</h1>
+    </header>
+
+    <div class="hero-image">
+      <img src="../img/talks/pwjes-iit.jpg" alt="Precision-Weighted Joint Entropy Search for Bayesian Optimization &mdash; title slide">
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="label">Speaker</div>
+        <div class="value">Eduardo C&eacute;sar Garrido-Merch&aacute;n</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Date &amp; time</div>
+        <div class="value">April 16, 2026 &middot; 12:30</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Venue</div>
+        <div class="value">Rey Francisco 4 &middot; 5th floor</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Host</div>
+        <div class="value">IIT &middot; Universidad Pontificia Comillas &mdash; ICAI</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="primary" href="precision-weighted-joint-entropy-search-iit.pdf" target="_blank">Download slides (PDF)</a>
+      <a class="secondary" href="index.html">All technical talks</a>
+    </div>
+
+    <article class="abstract">
+      <h2>Abstract</h2>
+      <p>Bayesian optimization (BO) is the method of choice for optimizing expensive black-box functions. At its core, an acquisition function decides where to query next by trading off exploration and exploitation. Information-theoretic acquisitions &mdash; such as Predictive Entropy Search and Joint Entropy Search &mdash; frame this decision as maximising the mutual information between the next query and the optimum.</p>
+      <p>In this talk I introduce <em>Precision-Weighted Joint Entropy Search</em> (PWJES), a new acquisition function that weights the joint entropy of the optimum location and its value by the precision of the posterior predictive distribution of the surrogate Gaussian Process. This yields an acquisition that is both more robust in regions of high epistemic uncertainty and more sample-efficient in well-explored regions, with favourable empirical behaviour across standard synthetic benchmarks and hyperparameter-tuning tasks.</p>
+      <p>The talk covers the derivation of the acquisition, its approximation via expectation propagation, and experimental comparisons with JES, MES and PES on both single- and multi-objective problems.</p>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a> &middot; <a href="index.html">all talks</a></p>
+    </div>
+  </footer>
+</body>
+</html>
