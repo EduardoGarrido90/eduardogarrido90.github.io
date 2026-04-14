@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutoriales &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Tutoriales y material educativo sobre Machine Learning, matem&aacute;ticas y optimizaci&oacute;n bayesiana.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 920px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .topnav a:hover { color: var(--text-bright); }
+
+    header.page { padding: 56px 0 24px; }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 10px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.4em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    header.page p.lead { color: var(--text-muted); font-size: 1em; max-width: 720px; }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 22px 0; }
+
+    .group-head {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 18px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .group-head .small {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6em;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .tutorial-list { display: flex; flex-direction: column; gap: 20px; margin-bottom: 40px; }
+    .tutorial-item {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 22px;
+      padding: 22px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s;
+      align-items: start;
+    }
+    .tutorial-item:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    }
+    .tutorial-item .thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .tutorial-item .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tutorial-item .body { display: flex; flex-direction: column; }
+    .tutorial-item .top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .tutorial-item .topic {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: rgba(59,130,246,0.12);
+      color: #93c5fd;
+    }
+    .tutorial-item .format {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      color: var(--text-muted);
+    }
+    .tutorial-item h3 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.15em;
+      color: var(--text-bright);
+      line-height: 1.35;
+      margin-bottom: 8px;
+      letter-spacing: -0.005em;
+    }
+    .tutorial-item p {
+      font-size: 0.88em;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .tutorial-item .meta {
+      margin-top: 10px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.74em;
+      color: var(--text-muted);
+    }
+    .tutorial-item .meta .pill {
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 36px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.7em; }
+      .tutorial-item { grid-template-columns: 1fr; padding: 18px 20px; }
+      .tutorial-item h3 { font-size: 1.02em; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../papers/index.html">papers</a> &middot;
+        <a href="../press/index.html">press</a> &middot;
+        <a href="../code/index.html">code</a> &middot;
+        <a href="../blog/index.html">blog</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">Material educativo &middot; Slides &middot; Notas</div>
+      <h1>Tutoriales</h1>
+      <p class="lead">Material educativo y recorridos visuales por los fundamentos del Machine Learning, las matem&aacute;ticas que lo sostienen y la optimizaci&oacute;n bayesiana.</p>
+      <div class="sep"></div>
+    </header>
+
+    <section>
+
+      <h2 class="group-head">2026 <span class="small">recientes</span></h2>
+      <div class="tutorial-list">
+
+        <a class="tutorial-item" href="ml-math-dibujos.html">
+          <div class="thumb"><img src="../img/tutorials/ml-math-gradientes.png" alt="Las matem&aacute;ticas del Machine Learning, explicadas con dibujos"></div>
+          <div class="body">
+            <div class="top">
+              <span class="topic">Matem&aacute;ticas del ML</span>
+              <span class="format">Slides (PDF) &middot; 51 p.</span>
+            </div>
+            <h3>Las matem&aacute;ticas del Machine Learning, explicadas con dibujos</h3>
+            <p>De los sumatorios a la forma de Jordan. Un recorrido visual por las matem&aacute;ticas que sostienen el ML: funciones, derivadas, gradiente, &aacute;lgebra lineal, autovalores y descomposiciones.</p>
+            <div class="meta">
+              <span class="pill">Introductorio</span>
+              <span class="pill">Visual</span>
+              <span class="pill">Castellano</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a></p>
+    </div>
+  </footer>
+</body>
+</html>

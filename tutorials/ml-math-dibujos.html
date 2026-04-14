@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Las matem&aacute;ticas del Machine Learning, explicadas con dibujos &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="Tutorial visual: de los sumatorios a la forma de Jordan. Las matem&aacute;ticas del Machine Learning explicadas con dibujos.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <meta property="og:title" content="Las matem&aacute;ticas del Machine Learning, explicadas con dibujos">
+  <meta property="og:description" content="De los sumatorios a la forma de Jordan &mdash; un recorrido visual por las matem&aacute;ticas del ML.">
+  <meta property="og:image" content="../img/tutorials/ml-math-gradientes.png">
+  <meta property="og:type" content="article">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Las matem&aacute;ticas del Machine Learning, explicadas con dibujos">
+  <meta name="twitter:description" content="De los sumatorios a la forma de Jordan &mdash; un recorrido visual por las matem&aacute;ticas del ML.">
+  <meta name="twitter:image" content="../img/tutorials/ml-math-gradientes.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .topnav a:hover { color: var(--text-bright); }
+
+    header.page { padding: 48px 0 20px; }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 12px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.2em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+      margin-bottom: 18px;
+    }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 22px 0; }
+
+    .hero-image {
+      width: 100%;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin: 6px 0 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    }
+    .hero-image img { width: 100%; height: auto; display: block; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 10px 0 28px;
+    }
+    .meta-card {
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .meta-card .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .meta-card .value {
+      color: var(--text-bright);
+      font-size: 0.95em;
+      line-height: 1.4;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 12px 0 32px;
+    }
+    .actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82em;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .actions a.primary {
+      background: var(--gradient);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+    .actions a.primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.35); }
+    .actions a.secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .actions a.secondary:hover { color: var(--text-bright); border-color: var(--border-hover); }
+
+    article.abstract {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 26px 30px;
+      margin-bottom: 32px;
+    }
+    article.abstract h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.2em;
+      color: var(--text-bright);
+      margin-bottom: 14px;
+    }
+    article.abstract p { color: var(--text); margin-bottom: 12px; font-size: 0.96em; }
+    article.abstract p:last-child { margin-bottom: 0; }
+
+    article.abstract ul {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+    }
+    article.abstract ul li {
+      padding: 6px 0 6px 22px;
+      position: relative;
+      color: var(--text);
+      font-size: 0.94em;
+    }
+    article.abstract ul li::before {
+      content: "\203A";
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      color: #a78bfa;
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      padding: 36px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.55em; }
+      article.abstract { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="index.html">&larr; Tutoriales</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../papers/index.html">papers</a> &middot;
+        <a href="../press/index.html">press</a> &middot;
+        <a href="../code/index.html">code</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">Tutorial &middot; Matem&aacute;ticas del ML</div>
+      <h1>Las matem&aacute;ticas del Machine Learning, explicadas con dibujos</h1>
+    </header>
+
+    <div class="hero-image">
+      <img src="../img/tutorials/ml-math-gradientes.png" alt="Funciones, derivadas y gradiente &mdash; diapositiva del tutorial">
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="label">Autor</div>
+        <div class="value">Eduardo C&eacute;sar Garrido-Merch&aacute;n</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Formato</div>
+        <div class="value">Slides (PDF) &middot; 51 p&aacute;ginas</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Recorrido</div>
+        <div class="value">De los sumatorios a la forma de Jordan</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Nivel</div>
+        <div class="value">Introductorio &middot; visual</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="primary" href="slides.pdf" target="_blank">Descargar PDF</a>
+      <a class="secondary" href="index.html">Todos los tutoriales</a>
+    </div>
+
+    <article class="abstract">
+      <h2>Resumen</h2>
+      <p>Un recorrido visual por las matem&aacute;ticas que sostienen el Machine Learning, pensado para quien quiere entender el porqu&eacute; antes que el c&oacute;mo. Cada concepto se construye con dibujos antes de formalizarse, para que la intuici&oacute;n geom&eacute;trica preceda a la notaci&oacute;n.</p>
+      <p>Arranca en lo m&aacute;s elemental &mdash; sumatorios, funciones, derivadas &mdash; y avanza progresivamente hacia el &aacute;lgebra lineal y la descomposici&oacute;n espectral, cerrando con la forma can&oacute;nica de Jordan. Es el tipo de material que me habr&iacute;a gustado tener a mano cuando empec&eacute;.</p>
+      <h2 style="margin-top: 18px;">Contenido</h2>
+      <ul>
+        <li>Sumatorios, productos y notaci&oacute;n</li>
+        <li>Funciones, derivadas y gradiente</li>
+        <li>Vectores, matrices y transformaciones lineales</li>
+        <li>Autovalores, autovectores y diagonalizaci&oacute;n</li>
+        <li>Forma can&oacute;nica de Jordan</li>
+      </ul>
+    </article>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a> &middot; <a href="index.html">todos los tutoriales</a></p>
+    </div>
+  </footer>
+</body>
+</html>
