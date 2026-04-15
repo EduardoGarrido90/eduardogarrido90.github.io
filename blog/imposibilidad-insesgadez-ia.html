@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La imposibilidad de la insesgadez: el sesgo de ignorar el sesgo en IA &mdash; Aceleracionismo Humanista</title>
+  <meta name="description" content="El conjunto de sesgos sociales es combinatorio y los criterios de equidad son mutuamente incompatibles. Una IA sin sesgo es l&oacute;gicamente imposible: lo &uacute;nico decidible es qu&eacute; sesgos se hacen expl&iacute;citos.">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topnav a:hover { color: var(--text-bright); }
+    .topnav .crumbs a + a::before {
+      content: ' / ';
+      color: var(--border-hover);
+      margin: 0 6px;
+    }
+
+    .hero-image {
+      width: 100%;
+      max-width: 100%;
+      margin: 32px 0 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+      aspect-ratio: 16 / 7;
+    }
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.85) brightness(0.78) contrast(1.05);
+    }
+    .hero-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,15,26,0) 40%, rgba(10,15,26,0.55) 100%);
+      pointer-events: none;
+    }
+    .hero-credit {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7em;
+      color: var(--text-muted);
+      margin-top: 8px;
+      text-align: right;
+    }
+    .hero-credit a { color: var(--text-muted); text-decoration: underline; text-decoration-color: var(--border-hover); }
+    .hero-credit a:hover { color: var(--text-bright); }
+
+    article header {
+      padding: 64px 0 36px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(139,92,246,0.12);
+      color: #a78bfa;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.72em;
+      font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    article h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2em;
+      color: var(--text-bright);
+      letter-spacing: -0.015em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .byline {
+      font-size: 0.88em;
+      color: var(--text-muted);
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .byline strong { color: var(--text); font-weight: 500; }
+    .byline .dot { color: var(--border-hover); }
+
+    .sep {
+      width: 48px;
+      height: 2px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin: 28px 0 40px;
+    }
+
+    article .body {
+      padding-bottom: 64px;
+      font-size: 1.02em;
+    }
+    article .body p {
+      margin-bottom: 22px;
+      color: var(--text);
+    }
+    article .body h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 40px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    article .body h2:first-child { margin-top: 0; }
+    article .body strong { color: var(--text-bright); font-weight: 600; }
+    article .body em { color: var(--text-bright); }
+
+    .post-stats {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .post-stats img { height: 22px; opacity: 0.85; transition: opacity 0.2s; }
+    .post-stats img:hover { opacity: 1; }
+
+    .comments-section {
+      margin-top: 56px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border);
+    }
+    .comments-section h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.25em;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .comments-section .comments-sub {
+      color: var(--text-muted);
+      font-size: 0.85em;
+      margin-bottom: 22px;
+    }
+    .giscus { margin-top: 8px; }
+
+    .callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-image: var(--gradient) 1;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 0.97em;
+    }
+    .callout .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #60a5fa;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .callout p { margin-bottom: 12px; }
+    .callout p:last-child { margin-bottom: 0; }
+    .callout .conclusion {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-hover);
+      font-style: italic;
+    }
+
+    .math-block {
+      overflow-x: auto;
+      padding: 6px 0;
+      margin: 18px 0 26px;
+      color: var(--text-bright);
+    }
+
+    .pull-quote {
+      border-left: 3px solid var(--border-hover);
+      padding: 6px 0 6px 22px;
+      margin: 32px 0 8px;
+      color: var(--text-muted);
+      font-style: italic;
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.02em;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 0;
+      color: var(--text-muted);
+      font-size: 0.78em;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      article h1 { font-size: 1.55em; }
+      article .body { font-size: 0.98em; }
+      .callout { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div class="crumbs">
+        <a href="../index.html">&larr; Eduardo C. Garrido-Merch&aacute;n</a>
+        <a href="index.html">Aceleracionismo Humanista</a>
+      </div>
+      <div><a href="../index.html">home</a></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article>
+      <header>
+        <span class="badge">Nota &middot; &Eacute;tica de la IA</span>
+        <h1>La imposibilidad de la insesgadez: el sesgo de ignorar el sesgo en IA</h1>
+        <div class="byline">
+          <span><strong>Eduardo C. Garrido-Merch&aacute;n</strong></span>
+          <span class="dot">&middot;</span>
+          <span>15 de abril de 2026</span>
+          <span class="dot">&middot;</span>
+          <span>Lectura: 4 min</span>
+        </div>
+        <div class="post-stats">
+          <img src="https://hits.sh/eduardogarrido90.github.io/blog/imposibilidad-insesgadez-ia.html.svg?style=flat-square&label=visitas&color=8b5cf6&labelColor=111827" alt="Contador de visitas">
+        </div>
+        <figure class="hero-image">
+          <img src="../img/blog/header-aceleracionismo-humanista.jpg" alt="Imagen de cabecera del art&iacute;culo">
+        </figure>
+        <p class="hero-credit">Foto: trukdotcom &middot; <a href="https://commons.wikimedia.org/wiki/File:Abandoned_Exit_with_Kudzu_-_panoramio.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> &middot; CC BY-SA 3.0</p>
+        <div class="sep"></div>
+      </header>
+
+      <div class="body">
+
+        <p>El discurso p&uacute;blico sobre sesgos en IA opera bajo una asunci&oacute;n no examinada: que existe un estado de equilibrio &mdash;la <em>insesgadez</em>&mdash; al que un sistema bien dise&ntilde;ado podr&iacute;a converger. Esa asunci&oacute;n es falsa por razones formales, no pol&iacute;ticas. El espacio de sesgos sociales es combinatorio, los criterios de equidad son mutuamente incompatibles, y omitir una dimensi&oacute;n del an&aacute;lisis es una toma de posici&oacute;n sobre ella. Lo &uacute;nico decidible es qu&eacute; sesgos se hacen expl&iacute;citos.</p>
+
+        <h2>1. El espacio de sesgos es combinatorio</h2>
+
+        <p>Sea $\mathcal{A} = \{a_1, a_2, \dots, a_n\}$ el conjunto de atributos socialmente relevantes &mdash;edad, g&eacute;nero, etnia, clase, discapacidad, orientaci&oacute;n, religi&oacute;n, nacionalidad, lengua, c&oacute;digo postal, formaci&oacute;n, estado de salud, situaci&oacute;n migratoria, estructura familiar, ocupaci&oacute;n, y un largo etc&eacute;tera. El conjunto de sesgos potencialmente atribuibles a un sistema no es $\mathcal{A}$, sino el <em>conjunto potencia</em> $2^{\mathcal{A}}$ enriquecido con interacciones, porque la discriminaci&oacute;n interseccional es real: el trato a una mujer mayor migrante no se reduce a la suma de los tres ejes.</p>
+
+        <p>Para $|\mathcal{A}| = 30$ &mdash;una estimaci&oacute;n conservadora&mdash; el espacio de configuraciones evaluables supera $10^9$. Ning&uacute;n procedimiento de auditor&iacute;a, presupuesto regulatorio o conjunto de datos puede cubrirlo. Toda evaluaci&oacute;n de sesgo es necesariamente una proyecci&oacute;n sobre un subespacio. Esa proyecci&oacute;n &mdash;<em>qu&eacute; ejes se miden y cu&aacute;les no</em>&mdash; constituye ya una decisi&oacute;n normativa.</p>
+
+        <h2>2. Los criterios de equidad son incompatibles</h2>
+
+        <p>El resultado de Kleinberg, Mullainathan y Raghavan (2016), reforzado por Chouldechova (2017), establece que tres criterios razonables de equidad &mdash;calibraci&oacute;n entre grupos, igualdad de tasas de falsos positivos e igualdad de tasas de falsos negativos&mdash; <em>no pueden satisfacerse simult&aacute;neamente</em> salvo en el caso degenerado en el que la prevalencia de la base sea id&eacute;ntica entre grupos o el clasificador sea perfecto. Es un teorema, no una limitaci&oacute;n de ingenier&iacute;a.</p>
+
+        <p>Cualquier sistema que opere sobre poblaciones con prevalencias distintas y emita predicciones imperfectas &mdash;es decir, todo sistema real&mdash; viola al menos uno de los tres criterios. Optimizar uno empuja a los dem&aacute;s. La elecci&oacute;n de qu&eacute; criterio sacrificar es irreductiblemente normativa.</p>
+
+        <h2>3. La asignaci&oacute;n bajo restricci&oacute;n produce asimetr&iacute;a</h2>
+
+        <p>Consid&eacute;rese un agente que distribuye un presupuesto fijo $B$ entre $k$ poblaciones $P_1, \dots, P_k$, cada una asociada a un atributo de $\mathcal{A}$. Sea $x_i \geq 0$ la asignaci&oacute;n a $P_i$, sujeta a $\sum_i x_i = B$.</p>
+
+        <div class="math-block">
+          $$\nexists\, (x_1,\dots,x_k) \;:\; \forall i,j \;\; \frac{x_i}{|P_i|} = \frac{x_j}{|P_j|} \;\land\; \forall i \;\; x_i \geq u_i,$$
+        </div>
+
+        <p>donde $u_i$ es el umbral m&iacute;nimo de necesidad para $P_i$. Cuando $\sum_i u_i > B$ &mdash;la condici&oacute;n t&iacute;pica de la pol&iacute;tica social real&mdash; <strong>ninguna distribuci&oacute;n satisface todos los principios razonables de equidad</strong>. Cualquier asignaci&oacute;n es vulnerable a la acusaci&oacute;n de discriminaci&oacute;n desde alg&uacute;n eje. Gastar en discapacidad y no en mayores es edadista; lo inverso, capacitista. Repartir uniformemente ignora intensidad de necesidad. Repartir por necesidad introduce evaluaciones impugnables. La estructura matem&aacute;tica del problema garantiza que <em>algo</em> ser&aacute; etiquetable como sesgo.</p>
+
+        <h2>4. El meta-sesgo: ignorar el sesgo es sesgar</h2>
+
+        <p>De lo anterior se sigue una observaci&oacute;n estructural raramente formulada. Sea $M$ el conjunto de dimensiones $a_i$ que un equipo de desarrollo decide auditar y mitigar; sea $\bar{M} = \mathcal{A} \setminus M$ el complementario. La pretensi&oacute;n de neutralidad respecto a $\bar{M}$ es incoherente: <em>no medir</em> equivale a aceptar la distribuci&oacute;n inducida por los datos sobre esa dimensi&oacute;n, que casi nunca es la distribuci&oacute;n moralmente neutra.</p>
+
+        <p>El acto mismo de seleccionar $M$ &mdash;qu&eacute; sesgos cuentan como sesgos&mdash; es una prescripci&oacute;n normativa de orden superior. Llam&eacute;moslo <strong>meta-sesgo</strong>: el sesgo introducido por la elecci&oacute;n del conjunto de sesgos a corregir. Toda IA opera bajo alg&uacute;n $M$, expl&iacute;cito o impl&iacute;cito. Una IA &laquo;sin sesgos&raquo; ser&iacute;a una IA con $M = \mathcal{A}$, lo cual es operativamente imposible (apartado 1) y l&oacute;gicamente imposible (apartado 2).</p>
+
+        <div class="callout">
+          <span class="label">Distinci&oacute;n clave</span>
+          <p>El relativismo dir&iacute;a que todos los sesgos son equivalentes y la elecci&oacute;n da igual. Este argumento dice lo contrario: que hay elecciones de $M$ mejor justificadas que otras, y que la tarea seria es defenderlas expl&iacute;citamente.</p>
+          <p>Lo que niega es que exista una elecci&oacute;n <em>vac&iacute;a</em>, que no sea ya una posici&oacute;n. La supuesta neutralidad es siempre alguna posici&oacute;n disfrazada de no posici&oacute;n.</p>
+          <p class="conclusion">No es que la IA pueda ser sesgada o insesgada. Es que solo puede ser sesgada de un modo expl&iacute;cito y defendible, o de un modo impl&iacute;cito e impugnable.</p>
+        </div>
+
+        <h2>5. Consecuencia operativa</h2>
+
+        <p>La pregunta &laquo;&iquest;es esta IA insesgada?&raquo; est&aacute; mal planteada. Las preguntas bien planteadas son tres: <em>&iquest;qu&eacute; subconjunto $M$ de dimensiones se ha auditado?</em>, <em>&iquest;qu&eacute; criterio del trilema de Kleinberg-Chouldechova se ha priorizado y por qu&eacute;?</em>, y <em>&iquest;qu&eacute; reglas de asignaci&oacute;n bajo restricci&oacute;n se asumen y bajo qu&eacute; justificaci&oacute;n &eacute;tica?</em> Solo una IA capaz de responder esas tres preguntas con argumentos puede aspirar a ser <em>defendiblemente sesgada</em>, que es lo m&aacute;ximo a lo que cualquier sistema decisional &mdash;humano o artificial&mdash; puede aspirar.</p>
+
+        <p>El objetivo regulatorio sensato no es la insesgadez, que es incoherente, sino la <strong>trazabilidad del sesgo</strong>: que cada elecci&oacute;n normativa incorporada al sistema sea identificable, justificable y revisable. Es la traducci&oacute;n al dominio algor&iacute;tmico de la misma exigencia que se aplica al juez, al legislador y al m&eacute;dico. No se les pide ausencia de criterio. Se les pide criterio expl&iacute;cito.</p>
+
+        <div class="pull-quote">
+          Una IA insesgada no es un objetivo dif&iacute;cil. Es un objeto inexistente. Lo que existe son sistemas con sesgos declarados y sistemas con sesgos ocultos.
+        </div>
+
+      </div>
+
+      <section class="comments-section" id="comentarios">
+        <h2>Comentarios</h2>
+        <p class="comments-sub">Discusi&oacute;n p&uacute;blica v&iacute;a GitHub Discussions. Requiere cuenta de GitHub para comentar.</p>
+        <div class="giscus"></div>
+        <script>
+          (function() {
+            var REPO_ID = "REPO_ID_AQUI";
+            var CATEGORY_ID = "CATEGORY_ID_AQUI";
+            if (REPO_ID === "REPO_ID_AQUI") return;
+            var s = document.createElement('script');
+            s.src = "https://giscus.app/client.js";
+            s.setAttribute("data-repo", "EduardoGarrido90/eduardogarrido90.github.io");
+            s.setAttribute("data-repo-id", REPO_ID);
+            s.setAttribute("data-category", "Comentarios");
+            s.setAttribute("data-category-id", CATEGORY_ID);
+            s.setAttribute("data-mapping", "pathname");
+            s.setAttribute("data-strict", "1");
+            s.setAttribute("data-reactions-enabled", "1");
+            s.setAttribute("data-emit-metadata", "0");
+            s.setAttribute("data-input-position", "top");
+            s.setAttribute("data-theme", "dark_dimmed");
+            s.setAttribute("data-lang", "es");
+            s.setAttribute("crossorigin", "anonymous");
+            s.async = true;
+            document.querySelector('.giscus').appendChild(s);
+          })();
+        </script>
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="index.html">aceleracionismo humanista</a> &middot; <a href="../index.html">home</a></p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -4,13 +4,26 @@
   <subtitle>Notas breves sobre IA, filosofía analítica, meta-ética y filosofía de la mente — Eduardo C. Garrido-Merchán</subtitle>
   <link href="https://eduardogarrido90.github.io/blog/feed.xml" rel="self"/>
   <link href="https://eduardogarrido90.github.io/blog/"/>
-  <updated>2026-04-07T12:00:00+02:00</updated>
+  <updated>2026-04-15T12:00:00+02:00</updated>
   <id>https://eduardogarrido90.github.io/blog/</id>
   <author>
     <name>Eduardo C. Garrido-Merchán</name>
     <uri>https://eduardogarrido90.github.io/</uri>
   </author>
   <rights>© 2026 Eduardo C. Garrido-Merchán</rights>
+
+  <entry>
+    <title>La imposibilidad de la insesgadez: el sesgo de ignorar el sesgo en IA</title>
+    <link href="https://eduardogarrido90.github.io/blog/imposibilidad-insesgadez-ia.html"/>
+    <id>https://eduardogarrido90.github.io/blog/imposibilidad-insesgadez-ia.html</id>
+    <published>2026-04-15T12:00:00+02:00</published>
+    <updated>2026-04-15T12:00:00+02:00</updated>
+    <category term="Ética de la IA"/>
+    <category term="Equidad algorítmica"/>
+    <summary type="html">
+      El conjunto de sesgos sociales es combinatorio y los criterios de equidad son mutuamente incompatibles. Una IA sin sesgo es lógicamente imposible: lo único decidible es qué sesgos se hacen explícitos.
+    </summary>
+  </entry>
 
   <entry>
     <title>El teorema de No Free Lunch para sistemas políticos: por qué la ideología óptima es una función del tiempo</title>
