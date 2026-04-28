@@ -1,0 +1,21 @@
+Buenas tardes, Raquel
+
+ 
+
+Te dejo mis comentarios. Todos están supeditados a lo que hemos hablado, sin convenio firmado, no debería haber ninguna referencia concreta al centro en la web, ni a la participación de la Caixa.
+
+
+A nivel de arquitectura web, tenéis que confirmar con STIC que es viable alojarla en la web de la universidad, y en qué términos. Tiene que estar en nuestro dominio.
+
+ 
+
+Aquí lo que he identificado de marca e imagen:
+
+ 
+
+La marca de la universidad está mal aplicada, os dejo la que debe ser.
+Este logo no debe aparece en ningún sitio
+
+Ponentes: como hemos hablado, no se debe publicar hasta que esté confirmados, y si no lo están, retirarlos.
+La foto del rector no es adecuada, os dejo otra.
+Las menciones a las facultades de la universidad deben hacerse correctamente, he identificado que está mal en el apartado de co-dirección la Escuela Técnica Superior de Ingeniería (Comillas ICAI),
