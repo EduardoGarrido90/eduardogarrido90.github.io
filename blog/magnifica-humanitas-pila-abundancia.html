@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lo que la enc&iacute;clica de Le&oacute;n XIV dice sobre qui&eacute;n debe controlar la IA &mdash; Aceleracionismo Humanista</title>
-  <meta name="description" content="Magnifica Humanitas extiende el destino universal de los bienes a algoritmos y datos. Eso tiene consecuencias concretas para qui&eacute;n dise&ntilde;a la IA y para qui&eacute;n.">
+  <title>Magnifica Humanitas y el aceleracionismo libre &mdash; Aceleracionismo Humanista</title>
+  <meta name="description" content="La enc&iacute;clica de Le&oacute;n XIV dice en lenguaje pastoral lo que el aceleracionismo libre formaliza en lenguaje de protocolo: IA como commons seg&uacute;n los principios de Ostrom.">
   <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,160 +45,64 @@
       font-family: 'IBM Plex Mono', monospace;
     }
     .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .topnav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
     .topnav a:hover { color: var(--text-bright); }
-    .topnav .crumbs a + a::before {
-      content: ' / ';
-      color: var(--border-hover);
-      margin: 0 6px;
-    }
+    .topnav .crumbs a + a::before { content: ' / '; color: var(--border-hover); margin: 0 6px; }
 
     .hero-image {
-      width: 100%;
-      max-width: 100%;
-      margin: 32px 0 0;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      position: relative;
-      aspect-ratio: 16 / 7;
+      width: 100%; max-width: 100%; margin: 32px 0 0;
+      border-radius: 12px; overflow: hidden; border: 1px solid var(--border);
+      position: relative; aspect-ratio: 16 / 7;
     }
-    .hero-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      filter: saturate(0.85) brightness(0.78) contrast(1.05);
-    }
-    .hero-image::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(10,15,26,0) 40%, rgba(10,15,26,0.55) 100%);
-      pointer-events: none;
-    }
-    .hero-credit {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 0.7em;
-      color: var(--text-muted);
-      margin-top: 8px;
-      text-align: right;
-    }
+    .hero-image img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.85) brightness(0.78) contrast(1.05); }
+    .hero-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,26,0) 40%, rgba(10,15,26,0.55) 100%); pointer-events: none; }
+    .hero-credit { font-family: 'IBM Plex Mono', monospace; font-size: 0.7em; color: var(--text-muted); margin-top: 8px; text-align: right; }
     .hero-credit a { color: var(--text-muted); text-decoration: underline; text-decoration-color: var(--border-hover); }
     .hero-credit a:hover { color: var(--text-bright); }
 
-    article header {
-      padding: 64px 0 36px;
-    }
+    article header { padding: 64px 0 36px; }
     .badge {
-      display: inline-block;
-      background: rgba(139,92,246,0.12);
-      color: #a78bfa;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 0.72em;
-      font-weight: 500;
-      font-family: 'IBM Plex Mono', monospace;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 18px;
+      display: inline-block; background: rgba(139,92,246,0.12); color: #a78bfa;
+      padding: 4px 12px; border-radius: 6px; font-size: 0.72em; font-weight: 500;
+      font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 18px;
     }
     article h1 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 2em;
-      color: var(--text-bright);
-      letter-spacing: -0.015em;
-      line-height: 1.25;
-      margin-bottom: 16px;
+      font-family: 'IBM Plex Serif', serif; font-size: 2em; color: var(--text-bright);
+      letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 16px;
     }
-    .byline {
-      font-size: 0.88em;
-      color: var(--text-muted);
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    .byline { font-size: 0.88em; color: var(--text-muted); display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
     .byline strong { color: var(--text); font-weight: 500; }
     .byline .dot { color: var(--border-hover); }
 
-    .sep {
-      width: 48px;
-      height: 2px;
-      background: var(--gradient);
-      border-radius: 2px;
-      margin: 28px 0 40px;
-    }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 28px 0 40px; }
 
-    article .body {
-      padding-bottom: 64px;
-      font-size: 1.02em;
-    }
-    article .body p {
-      margin-bottom: 22px;
-      color: var(--text);
-    }
+    article .body { padding-bottom: 64px; font-size: 1.02em; }
+    article .body p { margin-bottom: 22px; color: var(--text); }
     article .body h2 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 1.35em;
-      color: var(--text-bright);
-      margin: 40px 0 14px;
-      letter-spacing: -0.01em;
+      font-family: 'IBM Plex Serif', serif; font-size: 1.35em; color: var(--text-bright);
+      margin: 40px 0 14px; letter-spacing: -0.01em;
     }
     article .body h2:first-child { margin-top: 0; }
     article .body strong { color: var(--text-bright); font-weight: 600; }
     article .body em { color: var(--text-bright); }
 
-    .post-stats {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
+    .post-stats { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
     .post-stats img { height: 22px; opacity: 0.85; transition: opacity 0.2s; }
     .post-stats img:hover { opacity: 1; }
 
-    .comments-section {
-      margin-top: 56px;
-      padding-top: 36px;
-      border-top: 1px solid var(--border);
+    .pull-quote {
+      border-left: 3px solid var(--border-hover); padding: 6px 0 6px 22px; margin: 32px 0 8px;
+      color: var(--text-muted); font-style: italic; font-family: 'IBM Plex Serif', serif;
+      font-size: 1.02em; line-height: 1.6;
     }
-    .comments-section h2 {
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 1.25em;
-      color: var(--text-bright);
-      margin-bottom: 6px;
-    }
-    .comments-section .comments-sub {
-      color: var(--text-muted);
-      font-size: 0.85em;
-      margin-bottom: 22px;
-    }
+
+    .comments-section { margin-top: 56px; padding-top: 36px; border-top: 1px solid var(--border); }
+    .comments-section h2 { font-family: 'IBM Plex Serif', serif; font-size: 1.25em; color: var(--text-bright); margin-bottom: 6px; }
+    .comments-section .comments-sub { color: var(--text-muted); font-size: 0.85em; margin-bottom: 22px; }
     .giscus { margin-top: 8px; }
 
-    .pull-quote {
-      border-left: 3px solid var(--border-hover);
-      padding: 6px 0 6px 22px;
-      margin: 32px 0 8px;
-      color: var(--text-muted);
-      font-style: italic;
-      font-family: 'IBM Plex Serif', serif;
-      font-size: 1.02em;
-      line-height: 1.6;
-    }
-
-    footer {
-      text-align: center;
-      padding: 28px 0;
-      color: var(--text-muted);
-      font-size: 0.78em;
-      border-top: 1px solid var(--border);
-    }
+    footer { text-align: center; padding: 28px 0; color: var(--text-muted); font-size: 0.78em; border-top: 1px solid var(--border); }
     footer a { color: var(--text-muted); text-decoration: none; }
     footer a:hover { color: var(--text-bright); }
 
@@ -224,7 +128,7 @@
     <article>
       <header>
         <span class="badge">Nota &middot; IA y bien com&uacute;n</span>
-        <h1>Lo que la enc&iacute;clica de Le&oacute;n&nbsp;XIV dice sobre qui&eacute;n debe controlar la IA.</h1>
+        <h1><em>Magnifica Humanitas</em> dice en lenguaje pastoral lo que el aceleracionismo libre y anarquista formaliza en lenguaje de protocolo: IA como <em>commons</em>.</h1>
         <div class="byline">
           <span><strong>Eduardo C. Garrido-Merch&aacute;n</strong></span>
           <span class="dot">&middot;</span>
@@ -244,43 +148,47 @@
 
       <div class="body">
 
-        <p>Le&oacute;n&nbsp;XIV ha firmado hoy su primera enc&iacute;clica, <em>Magnifica Humanitas</em>, el d&iacute;a del aniversario 135 de la <em>Rerum Novarum</em>. La fecha no es casual: as&iacute; como aquella respondi&oacute; a la revoluci&oacute;n industrial, esta responde a la revoluci&oacute;n de la inteligencia artificial. En mis investigaciones sobre c&oacute;mo dise&ntilde;ar infraestructura tecnol&oacute;gica orientada al bien com&uacute;n, he encontrado varias convergencias que vale la pena se&ntilde;alar.</p>
+        <p>&iquest;Ut&oacute;pico? S&iacute;. &iquest;Posible? Si la gente lo quisiera, tambi&eacute;n.</p>
 
-        <h2>Los algoritmos como bienes universales</h2>
+        <p>Le&oacute;n&nbsp;XIV firma hoy su primera enc&iacute;clica el aniversario 135 de la <em>Rerum Novarum</em>. Aquella respondi&oacute; a la revoluci&oacute;n industrial. Esta responde a la IA. Y dice, en esencia, algo que ya est&aacute; formalizado en el lenguaje t&eacute;cnico de la gobernanza de comunes: que los algoritmos, los datos y las plataformas son bienes destinados a todos, y que concentrarlos en pocas manos contradice la justicia.</p>
 
-        <p>La aportaci&oacute;n m&aacute;s novedosa de la enc&iacute;clica es extender el principio del destino universal de los bienes al dominio digital:</p>
+        <h2>La misma idea, dos idiomas</h2>
+
+        <p>Ostrom demostr&oacute; que las comunidades pueden gobernar recursos compartidos sin privatizarlos ni estatizarlos, si cumplen ocho principios de dise&ntilde;o: l&iacute;mites claros, reglas proporcionales, participaci&oacute;n en la modificaci&oacute;n de normas, monitoreo, sanciones graduales, resoluci&oacute;n de conflictos barata, autonom&iacute;a reconocida, y organizaci&oacute;n anidada. Linux, Wikipedia, Mondragon, guifi.net llevan d&eacute;cadas demostrando que eso escala.</p>
+
+        <p>Le&oacute;n&nbsp;XIV dice lo mismo pero en otro registro:</p>
 
         <div class="pull-quote">
           Hoy, entre los bienes universalmente destinados a todos, debemos incluir tambi&eacute;n nuevas formas de propiedad, como las patentes, los algoritmos, las plataformas digitales, la infraestructura tecnol&oacute;gica y los datos.
         </div>
 
-        <p>Esto tiene consecuencias concretas. Si los algoritmos y los datos son bienes destinados a todos, entonces la interoperabilidad, la portabilidad y la apertura de est&aacute;ndares no son caprichos t&eacute;cnicos sino exigencias morales. Quien dise&ntilde;a un sistema cerrado que impide la salida de sus usuarios no est&aacute; cometiendo solo un error de ingenier&iacute;a: est&aacute; contradiciendo un principio de justicia.</p>
+        <p>Es el destino universal de los bienes aplicado a lo digital. En lenguaje de protocolo: interoperabilidad obligatoria, portabilidad de datos, est&aacute;ndares abiertos. No como capricho t&eacute;cnico sino como exigencia de justicia. El aceleracionismo libre lo especifica capa por capa (energ&iacute;a, fabricaci&oacute;n, alimento, comunicaci&oacute;n, conocimiento, gobernanza) siguiendo exactamente los principios de Ostrom. La enc&iacute;clica lo proclama como mandato moral. El contenido es el mismo.</p>
 
-        <h2>El dise&ntilde;o no es neutro</h2>
+        <h2>El dise&ntilde;o ya es pol&iacute;tica</h2>
 
-        <p>La enc&iacute;clica rechaza la idea de que la tecnolog&iacute;a es una herramienta neutra que depende de c&oacute;mo se use:</p>
+        <p>La enc&iacute;clica rompe con la idea de que la tecnolog&iacute;a es neutra:</p>
 
         <div class="pull-quote">
-          Si un sistema est&aacute; dise&ntilde;ado de un modo que trata algunas vidas como menos dignas, o las excluye sin posibilidad de apelaci&oacute;n, entonces no es simplemente una herramienta &laquo;que hay que usar bien&raquo;, puesto que ya ha introducido criterios que contradicen la dignidad inalienable de la persona humana.
+          Si un sistema est&aacute; dise&ntilde;ado de un modo que trata algunas vidas como menos dignas, o las excluye sin posibilidad de apelaci&oacute;n, entonces no es simplemente una herramienta &laquo;que hay que usar bien&raquo;.
         </div>
 
-        <p>Esta formulaci&oacute;n es importante porque desplaza la responsabilidad del usuario al dise&ntilde;ador. La pregunta no es &laquo;&iquest;c&oacute;mo usamos bien la IA?&raquo; sino &laquo;&iquest;qu&eacute; propiedades debe tener el dise&ntilde;o para que la exclusi&oacute;n sea imposible?&raquo;. En mi trabajo, eso se traduce en especificaciones concretas: que ning&uacute;n operador pueda impedir la salida de los participantes, que las reglas sean p&uacute;blicas, que los datos sean portables. La enc&iacute;clica da el mandato moral; la ingenier&iacute;a da la implementaci&oacute;n.</p>
+        <p>Esto es exactamente lo que formalizamos como especificaciones de ingenier&iacute;a: que ning&uacute;n operador pueda impedir la salida de los usuarios (no dominaci&oacute;n), que las reglas sean p&uacute;blicas (transparencia), que cualquiera pueda migrar a un proveedor alternativo (sustituibilidad). No son valores abstractos: son propiedades verificables de un sistema. Si tu plataforma las cumple, la exclusi&oacute;n es arquitect&oacute;nicamente imposible. Si no las cumple, da igual cu&aacute;nta &eacute;tica declares en tu p&aacute;gina web.</p>
 
-        <h2>&laquo;Desarmar&raquo; la IA</h2>
+        <h2>&laquo;Desarmar&raquo; la IA como se hizo con la energ&iacute;a nuclear</h2>
 
-        <p>Le&oacute;n&nbsp;XIV usa una met&aacute;fora reveladora: &laquo;desarmar&raquo; la IA, liberarla de la l&oacute;gica de competici&oacute;n armada, como se hizo (parcialmente) con la energ&iacute;a nuclear. La energ&iacute;a nuclear tambi&eacute;n era de doble uso: bomba o reactor. Se construyeron instituciones para separar ambos usos. La IA necesita algo equivalente.</p>
+        <p>El Papa usa una met&aacute;fora potente: desarmar la IA, liberarla de la l&oacute;gica de competici&oacute;n armada. La energ&iacute;a nuclear tambi&eacute;n era de doble uso y se construyeron instituciones para separar la bomba del reactor. La IA necesita algo equivalente: infraestructura abierta y federada donde ning&uacute;n actor pueda cercar el acceso. Eso no es una utop&iacute;a: es c&oacute;mo funciona internet, c&oacute;mo funciona el correo electr&oacute;nico, c&oacute;mo funciona Linux. Es una decisi&oacute;n de dise&ntilde;o, no un sue&ntilde;o.</p>
 
-        <p>&iquest;Qu&eacute; significar&iacute;a eso en t&eacute;rminos concretos? Que ning&uacute;n actor pueda cercar el acceso a modelos fundamentales. Que el c&oacute;digo y las reglas est&eacute;n abiertos a inspecci&oacute;n. Que la huella ecol&oacute;gica se reporte a nivel de cadena de suministro. Que cualquier usuario pueda migrar sus datos a un proveedor alternativo. Son cl&aacute;usulas t&eacute;cnicas, pero responden a un mandato &eacute;tico.</p>
+        <h2>El trabajo con sentido viene despu&eacute;s de la libertad material</h2>
 
-        <h2>Trabajo y automatizaci&oacute;n: el matiz necesario</h2>
+        <p>Le&oacute;n&nbsp;XIV advierte que sacrificar empleos por beneficios es tratar a la persona como medio. De acuerdo. Pero la mayor parte del trabajo remunerado actual no es actividad con sentido: es necesidad impuesta por la escasez. Si la automatizaci&oacute;n se gobernara como <em>commons</em>, no producir&iacute;a desempleo sino tiempo. Quien es libre de la precariedad es libre <em>para</em> el trabajo con sentido, el cuidado, la creatividad, la contemplaci&oacute;n. No libre <em>del</em> trabajo, sino libre <em>para</em> elegirlo.</p>
 
-        <p>La enc&iacute;clica, citando a Juan Pablo&nbsp;II, advierte que &laquo;la b&uacute;squeda de mayores beneficios no puede justificar decisiones que sacrifican sistem&aacute;ticamente empleos&raquo;. Aqu&iacute; coincido en lo esencial pero a&ntilde;ado una distinci&oacute;n: no todo empleo es actividad con sentido. La mayor parte del trabajo remunerado actual es necesidad impuesta por la escasez, no vocaci&oacute;n. Si la automatizaci&oacute;n se gobernara como un bien com&uacute;n, no producir&iacute;a desempleo sino tiempo: tiempo para el cuidado, la creatividad, la contemplaci&oacute;n, la vida comunitaria. La persona libre de precariedad es libre <em>para</em> el trabajo con sentido, no <em>del</em> trabajo con sentido.</p>
+        <h2>Convergencia, no fusi&oacute;n</h2>
 
-        <h2>Por qu&eacute; importa esta convergencia</h2>
+        <p>La enc&iacute;clica se present&oacute; junto a Christopher Olah, cofundador de Anthropic. Un Papa y un ingeniero de IA ateo, juntos en el estrado. Eso materializa algo que venimos diciendo: un marco que pueda hablar al hacker y a la parroquia, a la cooperativa y a la congregaci&oacute;n, tiene mucho m&aacute;s alcance que uno que exija pureza ideol&oacute;gica.</p>
 
-        <p>La enc&iacute;clica fue presentada junto a Christopher Olah, cofundador de Anthropic. El gesto importa: una tradici&oacute;n de dos mil a&ntilde;os y una empresa de IA fundada hace cuatro coinciden en que la dignidad de la persona es el criterio de dise&ntilde;o, no un a&ntilde;adido posterior. Esa misma convergencia aparece en la econom&iacute;a isl&aacute;mica, en las cosmovisiones ind&iacute;genas, en la tradici&oacute;n cooperativista, en el movimiento del software libre. Cuando tradiciones tan distintas llegan a conclusiones tan parecidas, probablemente est&eacute;n se&ntilde;alando algo real.</p>
+        <p>No se trata de que la Iglesia se haga anarquista ni de que el anarquismo se haga cat&oacute;lico. Se trata de que cualquier tradici&oacute;n que ponga la dignidad como criterio no negociable llega, por caminos distintos, a la misma conclusi&oacute;n: la IA o se gobierna como bien com&uacute;n o concentra poder. No hay tercera opci&oacute;n.</p>
 
-        <p>La pregunta ya no es si la IA debe estar al servicio de todos. Eso lo dicen el Papa, los ingenieros, los cooperativistas y los hackers. La pregunta es c&oacute;mo se dise&ntilde;a la infraestructura para que eso sea verdad.</p>
+        <p>&iquest;Ut&oacute;pico? S&iacute;. &iquest;Posible? Si la gente lo quisiera, tambi&eacute;n.</p>
 
       </div>
 
