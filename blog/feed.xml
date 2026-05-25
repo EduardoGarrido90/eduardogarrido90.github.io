@@ -4,13 +4,27 @@
   <subtitle>Notas breves sobre IA, filosofía analítica, meta-ética y filosofía de la mente — Eduardo C. Garrido-Merchán</subtitle>
   <link href="https://eduardogarrido90.github.io/blog/feed.xml" rel="self"/>
   <link href="https://eduardogarrido90.github.io/blog/"/>
-  <updated>2026-04-15T12:00:00+02:00</updated>
+  <updated>2026-05-25T12:00:00+02:00</updated>
   <id>https://eduardogarrido90.github.io/blog/</id>
   <author>
     <name>Eduardo C. Garrido-Merchán</name>
     <uri>https://eduardogarrido90.github.io/</uri>
   </author>
   <rights>© 2026 Eduardo C. Garrido-Merchán</rights>
+
+  <entry>
+    <title>Magnifica Humanitas y la Pila de Abundancia: convergencias entre la encíclica de León XIV y la arquitectura de automatización para el bien común</title>
+    <link href="https://eduardogarrido90.github.io/blog/magnifica-humanitas-pila-abundancia.html"/>
+    <id>https://eduardogarrido90.github.io/blog/magnifica-humanitas-pila-abundancia.html</id>
+    <published>2026-05-25T12:00:00+02:00</published>
+    <updated>2026-05-25T12:00:00+02:00</updated>
+    <category term="Doctrina Social"/>
+    <category term="IA"/>
+    <category term="Bien común"/>
+    <summary type="html">
+      Siete ejes donde la primera encíclica del Papa sobre IA y nuestra especificación de arquitectura sociotécnica llegan, por caminos distintos, a la misma conclusión: la dignidad de la persona como criterio de diseño no negociable.
+    </summary>
+  </entry>
 
   <entry>
     <title>La imposibilidad de la insesgadez: el sesgo de ignorar el sesgo en IA</title>
