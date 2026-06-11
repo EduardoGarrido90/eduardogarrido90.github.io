@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Día 03 — Regularización, LR schedules y dashboards — slides interactivas</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
+  .slide{display:none;padding:14px 24px 64px 24px;
+    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin-bottom:10px;
+    border:1px solid #eee;border-radius:2px}
+  .txtcol{font-size:0.9em;line-height:1.4}
+  .txtcol p{margin:0 0 9px 0}
+  .txtcol .hd{font-weight:bold}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 12px;margin-bottom:12px}
+  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
+  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
+  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
+    margin-right:6px}
+  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
+  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
+    font-size:0.9em;margin:4px 0}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
+  .mut{color:var(--mute)}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
+    font-size:0.84em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
+  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
+    font-weight:bold}
+  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
+    font-variant-numeric:tabular-nums}
+  table.live th:first-child,table.live td:first-child{text-align:left}
+  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 14px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
+    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
+  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
+  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
+  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
+  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
+  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
+    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
+  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
+  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
+  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
+  .eqread b{color:var(--goldDeep)}
+  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
+    font-size:0.93em}
+  .frac .num,.frac .den{display:block;padding:0 4px}
+  .frac .den{border-top:1.1px solid var(--ink)}
+  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:9px 13px;margin:10px 0;font-size:0.88em}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
+  .guide ol{margin:4px 0 4px 18px;padding:0}
+  .guide li{margin:0 0 7px 0;line-height:1.4}
+  .guide .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:6px}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
+    border-left:3px solid var(--gold);line-height:1.4}
+  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
+  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
+    grid-template-columns:30% 70%}
+  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
+</style>
+</head>
+<body>
+
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 0 : overfitting visible ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <canvas id="cv0a" data-aspect="1.95"></canvas>
+    <canvas id="cv0b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">L<sub>data</sub>(w) = <span class="frac"><span class="num">1</span><span class="den">n</span></span> <big>&Sigma;</big><sub>i=1..n</sub>&nbsp;(y<sub>i</sub> &minus; f<sub>w</sub>(x<sub>i</sub>))<sup>2</sup>,&nbsp;&nbsp;&nbsp; f<sub>w</sub>(x) = w<sub>0</sub> + w<sub>1</sub>t + &hellip; + w<sub>d</sub>t<sup>d</sup><span class="eqn">(t = 2x&minus;1)</span></div>
+      <div class="eqread">el error cuadrático medio sobre los n datos y el modelo: un
+        <b>polinomio de grado d</b>. El grado d es el "tamaño" del modelo: d = 1 es una
+        recta; d = 12 puede pasar por casi todos los puntos. El reescalado t = 2x&minus;1
+        solo mejora el condicionamiento numérico.</div>
+      <div class="eq">w<sup>*</sup> = (X<sup>&#8868;</sup>X)<sup>&minus;1</sup>X<sup>&#8868;</sup>y<span class="eqn">(ecuaciones normales)</span></div>
+      <div class="eqread">el ajuste de mínimos cuadrados tiene <b>solución cerrada</b>: X es
+        la matriz n&times;(d+1) cuya fila i es (1, t<sub>i</sub>, &hellip;, t<sub>i</sub><sup>d</sup>).
+        El JS de esta slide resuelve este sistema de verdad (eliminación gaussiana) cada
+        vez que mueves el slider.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>grado del polinomio, d = <b id="r0d"></b></label>
+      <input type="range" id="sl0d" min="1" max="12" step="1" value="3">
+      <button id="bt0">nueva muestra (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro0"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon d = 1 y mira las dos curvas de error del panel inferior.
+        <span class="obs">Train y test son parecidos y ambos altos: el modelo es
+        demasiado simple (infraajuste); ni siquiera memoriza.</span></li>
+      <li>Sube despacio hasta d = 3&ndash;4. <span class="obs">Los dos errores bajan a la
+        vez: el modelo está capturando estructura real (el precio importa y hay una
+        curvatura).</span></li>
+      <li>Sigue hasta d = 12 mirando el panel superior. <span class="obs">La curva dorada
+        serpentea para pasar por cada punto de train; el error de train sigue cayendo
+        pero el de test se dispara órdenes de magnitud: pura memorización del
+        ruido.</span></li>
+      <li>Pulsa "nueva muestra" tres veces con d = 12. <span class="obs">La forma de los
+        zigzags cambia por completo con cada muestra: lo que el modelo "aprendió" era el
+        ruido de ESA muestra, no una regularidad del negocio.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el error de train
+        NUNCA sube al aumentar d?</summary><div class="ans">Porque cada grado añade un
+        parámetro y el ajuste es de mínimos cuadrados exactos: el polinomio de grado
+        d+1 contiene al de grado d como caso particular (w<sub>d+1</sub> = 0), así que
+        su mínimo de L<sub>data</sub> no puede ser peor. El train mide flexibilidad, no
+        calidad. Por eso el test (datos que el ajuste no vio) es el único juez honesto
+        &mdash; y por eso la curva de test tiene forma de U: primero baja (estructura) y
+        luego sube (ruido memorizado).</div></details></div>
+    <p><span class="hd">Setup.</span> Una cadena de retail tipo Inditex quiere predecir
+      <span class="gold">unidades vendidas</span> (miles) en función del
+      <span class="deep">precio</span> (10&ndash;40&euro;) de un artículo. La relación
+      verdadera (línea discontinua) es suave: las ventas caen con el precio con una
+      pequeña ondulación estacional. Tienes 18 observaciones de train (puntos tinta) y 12
+      de test (puntos grises), ambas con ruido de demanda. Arriba: el ajuste polinómico de
+      grado d por ecuaciones normales. Abajo: el error de train y de test para TODOS los
+      grados de 1 a 12, con tu grado marcado.</p>
+    <p><span class="hd">Juega.</span> El slider de grado es el dial de "capacidad" del
+      modelo. Con d pequeño, sesgo: la recta no puede representar la ondulación. Con d
+      grande, varianza: el polinomio persigue el ruido. La zona útil (d &asymp; 3&ndash;5)
+      es estrecha, y nada en el train te avisa de cuándo la abandonas.</p>
+    <p><span class="hd">Lee así.</span> El lector numérico da los dos errores y su
+      cociente. Un cociente test/train que crece sin parar es la firma del overfitting:
+      es exactamente lo que le pasó al modelo de fraude de BBVA del deck del día (98% en
+      train, 72% en producción).</p>
+    <p><span class="hd">Mensaje.</span> El overfitting no es un concepto abstracto: es la
+      brecha entre estas dos curvas, y cuesta dinero real cuando el modelo sale a
+      producción. Todo el resto del día (weight decay, dropout, early stopping) son formas
+      distintas de cerrar esa brecha.</p>
+    <p class="miniglos"><b>Términos.</b> <b>train/test</b>: datos usados para ajustar vs
+      datos reservados para evaluar. <b>capacidad</b>: cuántas formas distintas puede
+      representar el modelo (aquí, el grado d). <b>MSE</b>: error cuadrático medio.
+      <b>infra/sobreajuste</b>: errores altos en ambos / brecha grande entre ambos.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 1 : weight decay ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <canvas id="cv1a" data-aspect="1.95"></canvas>
+    <canvas id="cv1b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">L<sub>total</sub>(w) = L<sub>data</sub>(w) + <span class="gold">&lambda;</span>&thinsp;&#8214;w&#8214;<sub>2</sub><sup>2</sup><span class="eqn">(Ec. 3 del día)</span></div>
+      <div class="eqread">la pérdida del día: al error de datos se le suma un <b>coste por
+        pesos grandes</b>. &#8214;w&#8214;<sub>2</sub><sup>2</sup> = &Sigma;<sub>j</sub>w<sub>j</sub><sup>2</sup>
+        es la suma de cuadrados de todos los pesos y <b>&lambda;</b> decide cuánto pesa
+        ese coste frente a ajustar los datos. Equivale a un prior gaussiano sobre w.</div>
+      <div class="eq">w<sub>&lambda;</sub> = (X<sup>&#8868;</sup>X + n&lambda;I)<sup>&minus;1</sup>X<sup>&#8868;</sup>y<span class="eqn">(ridge, solución cerrada)</span></div>
+      <div class="eqread">para regresión lineal el mínimo de L<sub>total</sub> también es
+        cerrado: basta <b>sumar n&lambda; a la diagonal</b> de X<sup>&#8868;</sup>X. Eso
+        encoge los pesos hacia 0 (aquí no se penaliza el término independiente
+        w<sub>0</sub>, para no encoger la media de ventas).</div>
+      <div class="eq">AdamW:&nbsp;&nbsp; &theta; &larr; &theta; &minus; &eta;&thinsp;<span class="gold">&lambda;</span>&thinsp;&theta;<span class="eqn">(decaimiento directo)</span></div>
+      <div class="eqread">en redes no hay solución cerrada y el decay se aplica como
+        <b>encogimiento directo</b> en cada paso, sin pasar por el gradiente: así no
+        interfiere con las medias móviles (m<sub>t</sub>, v<sub>t</sub>) de Adam. Es la W
+        de Adam<b>W</b>: <code>weight_decay=1e-4</code>.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>intensidad de la penalización, &lambda; = 10^<b id="r1l"></b></label>
+      <input type="range" id="sl1l" min="-7" max="1" step="0.1" value="-7">
+      <button id="bt1">nueva muestra (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro1"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Parte de &lambda; = 10<sup>&minus;7</sup> (casi cero) y mira la curva gris del
+        panel superior. <span class="obs">Es el polinomio de grado 10 sin regularizar:
+        serpentea entre los puntos y &#8214;w&#8214; vale decenas. Es la slide anterior
+        con d alto.</span></li>
+      <li>Sube &lambda; despacio hasta 10<sup>&minus;2</sup>.
+        <span class="obs">La curva dorada se alisa, &#8214;w&#8214; cae en picado y el
+        error de test baja aunque el de train sube un poco: estás comprando
+        generalización pagando ajuste.</span></li>
+      <li>Sigue hasta &lambda; = 10. <span class="obs">Demasiado: la curva se aplana
+        hacia la media y ambos errores suben. Sobre-regularizar es infraajustar.</span></li>
+      <li>Localiza en el panel inferior el mínimo de la curva de test y lee el &lambda;
+        óptimo. Pulsa "nueva muestra" y repite. <span class="obs">El óptimo ronda
+        siempre 10<sup>&minus;3</sup>&ndash;10<sup>&minus;1</sup>: por eso la receta del
+        curso usa un valor por defecto en ese rango (10<sup>&minus;4</sup> para redes) y
+        lo afina con validación.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: el modelo sigue teniendo 11
+        parámetros con &lambda; alto. ¿Por qué se comporta como uno simple?</summary>
+        <div class="ans">Porque la capacidad efectiva no la da el número de parámetros
+        sino cuánto pueden moverse. Con &lambda; grande, los coeficientes de los términos
+        de grado alto (los que generan los zigzags y necesitan valores enormes para
+        compensarse entre sí) son los primeros en encogerse hacia 0, y el polinomio queda
+        prácticamente reducido a sus términos suaves. Por eso &#8214;w&#8214; es el
+        termómetro correcto de la complejidad: mismo modelo, distinta libertad. En redes
+        ocurre igual: weight decay no quita neuronas, les quita margen para
+        memorizar.</div></details></div>
+    <p><span class="hd">Setup.</span> Mismos datos de ventas vs precio que la slide
+      anterior, pero el grado queda fijo en d = 10 (un modelo deliberadamente
+      sobredimensionado, como casi todas las redes que entrenarás) y el dial pasa a ser
+      <span class="gold">&lambda;</span>, en escala logarítmica. Arriba: el ajuste ridge
+      (dorado) frente al ajuste sin regularizar (gris discontinuo) y la verdad (tinta
+      discontinua). Abajo: error de train, error de test y la norma
+      &#8214;w&#8214;<sub>2</sub> en función de &lambda;, con tu valor marcado.</p>
+    <p><span class="hd">Juega.</span> El recorrido completo del slider cuenta la historia
+      entera de la regularización: con &lambda; &asymp; 0 dominan los datos (varianza);
+      con &lambda; enorme domina la penalización (sesgo); en medio hay un valle donde el
+      test es mínimo. Fíjate en que la curva de &#8214;w&#8214; cae de forma monótona:
+      ese es el mecanismo, no el objetivo. El objetivo es el valle del test.</p>
+    <p><span class="hd">Lee así.</span> El lector da &#8214;w&#8214;<sub>2</sub> y los dos
+      errores. Compara mentalmente con la slide anterior: allí cambiabas la capacidad a
+      saltos discretos (grado); aquí la encoges de forma continua. Por eso weight decay es
+      el regularizador universal: funciona en cualquier modelo con pesos.</p>
+    <p><span class="hd">Mensaje.</span> En PyTorch toda esta slide es un argumento:
+      <code>AdamW(params, lr=1e-3, weight_decay=1e-4)</code>. Detrás de ese argumento está
+      exactamente esta geometría: sumar &lambda; a la diagonal, encoger los pesos,
+      cambiar un poco de train por mucho de test.</p>
+    <p class="miniglos"><b>Términos.</b> <b>&lambda;</b>: coeficiente de la penalización,
+      típicamente 10<sup>&minus;5</sup>&ndash;10<sup>&minus;3</sup> en redes.
+      <b>&#8214;w&#8214;<sub>2</sub></b>: norma euclídea de los pesos, el termómetro de
+      complejidad efectiva. <b>ridge</b>: nombre clásico de la regresión con penalización
+      L2. <b>AdamW</b>: Adam con el decay aplicado fuera del gradiente.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : dropout ============ -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <canvas id="cv2a" data-aspect="2.3"></canvas>
+    <canvas id="cv2b" data-aspect="2.1"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">&atilde;<sub>&ell;</sub> = <span class="frac"><span class="num">1</span><span class="den">1&minus;p</span></span>&thinsp;m &odot; a<sub>&ell;</sub>,&nbsp;&nbsp;&nbsp; m<sub>i</sub> &sim; Bernoulli(1&minus;p)<span class="eqn">(Ec. 1 del día)</span></div>
+      <div class="eqread">en cada minibatch se sortea una <b>máscara binaria</b> m: cada
+        neurona oculta sigue viva con probabilidad 1&minus;p y se apaga (se multiplica
+        por 0) con probabilidad p. El símbolo &odot; es producto componente a componente.
+        El factor 1/(1&minus;p) re-escala las que sobreviven.</div>
+      <div class="eq">E<sub>m</sub>[&atilde;<sub>&ell;</sub>] = a<sub>&ell;</sub>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp; en inferencia: p = 0, m &equiv; 1</div>
+      <div class="eqread">gracias al re-escalado, la activación esperada bajo máscaras
+        aleatorias coincide con la activación sin dropout: E[m<sub>i</sub>/(1&minus;p)] =
+        (1&minus;p)/(1&minus;p) = 1. Por eso en test se apagan las máscaras y la red
+        queda <b>calibrada igual</b>: predecir con todas las neuronas equivale a promediar
+        el ensemble.</div>
+      <div class="eq">n&ordm; de sub-redes = 2<sup>H</sup><span class="eqn">(aquí 2&#8312; = 256)</span></div>
+      <div class="eqread">cada máscara define una sub-red distinta; entrenar con dropout
+        es entrenar implícitamente las 2<sup>H</sup> a la vez, compartiendo pesos: el
+        ensemble más barato que existe.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>probabilidad de apagar cada neurona, p = <b id="r2p"></b></label>
+      <input type="range" id="sl2p" min="0" max="0.8" step="0.05" value="0.3">
+      <button id="bt2">nueva máscara (otro minibatch)</button>
+    </div>
+    <div class="readout" id="ro2"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con p = 0.3, pulsa "nueva máscara" cinco veces mirando la red de arriba y la
+        curva dorada de abajo. <span class="obs">Cada vez se apagan neuronas distintas y
+        la predicción de la sub-red cambia de forma visible: cada minibatch entrena un
+        modelo diferente.</span></li>
+      <li>Mira la curva discontinua (media de 300 máscaras) contra la curva tinta (red
+        completa). <span class="obs">Casi coinciden, y el lector confirma que su
+        distancia media es de centésimas: es la identidad
+        E[&atilde;] = a en acción.</span></li>
+      <li>Sube p a 0.7. <span class="obs">La banda dorada (&plusmn;1 desviación del
+        ensemble) se ensancha mucho: con pocas neuronas vivas por máscara, cada sub-red
+        opina distinto. Más regularización, pero también más ruido de
+        entrenamiento.</span></li>
+      <li>Pon p = 0. <span class="obs">Máscara siempre completa, banda de anchura cero,
+        las tres curvas coinciden: sin dropout no hay ensemble.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué hace falta el
+        factor 1/(1&minus;p)?</summary><div class="ans">Sin él, la suma que llega a la
+        capa de salida tendría en media solo una fracción 1&minus;p de su tamaño normal:
+        con p = 0.5, la red "entrenada" vería señales de la mitad de amplitud que la red
+        de inferencia, y las predicciones de test estarían descalibradas (todas
+        encogidas). Re-escalando por 1/(1&minus;p) en entrenamiento, la media se conserva
+        (E[m<sub>i</sub>/(1&minus;p)] = 1) y puedes apagar el dropout en test sin tocar
+        nada más. Puedes verificarlo aquí: la media del ensemble coincide con la red
+        completa para cualquier p.</div></details></div>
+    <p><span class="hd">Setup.</span> Una red pequeña ya entrenada para un scoring de
+      churn telco: 1 entrada (gasto mensual normalizado), H = 8 neuronas ocultas tanh, 1
+      salida (propensión a la baja, en unidades de score). Arriba: la red dibujada; las
+      neuronas vivas de la máscara actual van en dorado y las apagadas en gris tachado;
+      el grosor de cada conexión es proporcional a |peso|. Abajo: la predicción de la red
+      completa (tinta), la de la sub-red de la máscara actual re-escalada por
+      1/(1&minus;p) (dorado), la media Monte Carlo sobre 300 máscaras (discontinua) y la
+      banda &plusmn;1 desviación típica del ensemble (sombreado).</p>
+    <p><span class="hd">Juega.</span> Todo lo que ves es el forward pass real: el JS
+      calcula h<sub>j</sub> = tanh(w<sub>j</sub>x + b<sub>j</sub>), aplica la máscara con
+      su re-escalado y suma la capa de salida; las 300 máscaras del ensemble se muestrean
+      con mulberry32, así que el experimento es reproducible. El slider p controla la
+      Bernoulli; el botón sortea la máscara del "minibatch actual".</p>
+    <p><span class="hd">Lee así.</span> La banda dorada es la <i>varianza del ensemble</i>:
+      mide cuánto discrepan las sub-redes. Que la media del ensemble clave la curva tinta
+      mientras la banda se ensancha es el resumen completo de dropout: en media no
+      distorsiona, en varianza obliga a la red a no depender de ninguna neurona concreta
+      (representaciones redundantes, menos co-adaptación).</p>
+    <p><span class="hd">Mensaje.</span> Dropout es estudiar tapándose apuntes al azar: si
+      ninguna neurona puede "cargar" sola con la señal del churn, el conocimiento queda
+      repartido y robusto. Valores típicos: p = 0.2 en MLP, p = 0.1 en CNN; en
+      inferencia, siempre apagado.</p>
+    <p class="miniglos"><b>Términos.</b> <b>m</b>: máscara binaria, una nueva por
+      minibatch. <b>p</b>: probabilidad de apagar (0.1&ndash;0.5 en la práctica).
+      <b>&odot;</b>: producto elemento a elemento. <b>co-adaptación</b>: neuronas que
+      solo funcionan en presencia de otras concretas; dropout la rompe.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : batchnorm ============ -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <canvas id="cv3a" data-aspect="1.95"></canvas>
+    <canvas id="cv3b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">&mu;<sub>B</sub> = <span class="frac"><span class="num">1</span><span class="den">B</span></span><big>&Sigma;</big><sub>i</sub>&nbsp;a<sub>i</sub>,&nbsp;&nbsp;&nbsp; &sigma;<sub>B</sub><sup>2</sup> = <span class="frac"><span class="num">1</span><span class="den">B</span></span><big>&Sigma;</big><sub>i</sub>&nbsp;(a<sub>i</sub>&minus;&mu;<sub>B</sub>)<sup>2</sup></div>
+      <div class="eqread">media y varianza calculadas <b>en el minibatch</b>, no en todo el
+        dataset: son estimaciones ruidosas cuya calidad depende de B (panel inferior).</div>
+      <div class="eq">&acirc;<sub>i</sub> = <span class="frac"><span class="num">a<sub>i</sub> &minus; &mu;<sub>B</sub></span><span class="den">&radic;(&sigma;<sub>B</sub><sup>2</sup>+&epsilon;)</span></span>,&nbsp;&nbsp;&nbsp; y<sub>i</sub> = <span class="gold">&gamma;</span>&thinsp;&acirc;<sub>i</sub> + <span class="deep">&beta;</span><span class="eqn">(Ec. 2 del día)</span></div>
+      <div class="eqread">primero <b>normalizar</b> (media 0, varianza 1; &epsilon; =
+        10<sup>&minus;5</sup> evita dividir por cero), después <b>re-escalar y
+        desplazar</b> con dos parámetros aprendibles por canal. Ejemplo del deck: con
+        a = (2, 4, 6, 8) sale &mu;<sub>B</sub> = 5, &sigma;<sub>B</sub><sup>2</sup> = 5,
+        &acirc; &asymp; (&minus;1.34, &minus;0.45, 0.45, 1.34) y con &gamma; = 1.5,
+        &beta; = 0.5: y &asymp; (&minus;1.51, &minus;0.17, 1.17, 2.51).</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>tamaño del minibatch, B = <b id="r3B"></b></label>
+      <input type="range" id="sl3B" min="2" max="8" step="1" value="5">
+      <label>escala aprendible &gamma; = <b id="r3g"></b></label>
+      <input type="range" id="sl3g" min="0.2" max="3" step="0.05" value="1.5">
+      <label>desplazamiento aprendible &beta; = <b id="r3b"></b></label>
+      <input type="range" id="sl3b" min="-2" max="2" step="0.1" value="0.5">
+      <button id="bt3">nuevo minibatch</button>
+    </div>
+    <div class="readout" id="ro3"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con B = 32, pulsa "nuevo minibatch" varias veces mirando el histograma dorado.
+        <span class="obs">El histograma normalizado apenas se mueve: media(&acirc;)
+        &asymp; 0.000 y var(&acirc;) &asymp; 1.000 en el lector, minibatch tras
+        minibatch.</span></li>
+      <li>Mueve &gamma; y &beta;. <span class="obs">El bloque dorado se estira
+        (&gamma;) y se desplaza (&beta;) en bloque, sin deformarse: la red puede
+        recolocar la distribución donde le convenga, incluso deshacer la normalización
+        si aprende &gamma; = &sigma;, &beta; = &mu;.</span></li>
+      <li>Baja B a 4 y pulsa "nuevo minibatch" cinco veces mirando el panel inferior.
+        <span class="obs">Las estimaciones &mu;<sub>B</sub> de minibatches distintos
+        bailan dentro de una banda ancha (&plusmn;1.96&sigma;/&radic;B): con batch
+        pequeño, BatchNorm normaliza con una media equivocada distinta cada
+        vez.</span></li>
+      <li>Sube B a 256. <span class="obs">La banda se vuelve finísima: la estadística de
+        minibatch ya casi es la del dataset. Esta es la razón de la regla del deck:
+        con B &le; 4, usa LayerNorm.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: si BatchNorm normaliza a
+        media 0 y varianza 1, ¿para qué sirven &gamma; y &beta;?</summary><div class="ans">
+        Sin ellos, BatchNorm impondría que TODAS las capas tengan activaciones
+        estandarizadas, lo cual es una restricción arbitraria: quizá la mejor
+        representación para la capa siguiente necesita otra escala u otro centro (una
+        sigmoide, por ejemplo, trabaja distinto centrada en 0 que en 2). &gamma; y &beta;
+        devuelven esos dos grados de libertad <i>como parámetros aprendibles</i>: la red
+        conserva la estabilidad del paso de normalización (gradientes bien escalados,
+        menos sensibilidad a la inicialización) sin perder expresividad. En el límite,
+        &gamma; = &radic;&sigma;<sub>B</sub><sup>2</sup> y &beta; = &mu;<sub>B</sub>
+        recuperan la identidad.</div></details></div>
+    <p><span class="hd">Setup.</span> Estás dentro de una capa oculta del modelo de
+      fraude de BBVA. Las pre-activaciones a<sub>i</sub> de esa capa llegan con media
+      &asymp; 3 y desviación &asymp; 1.8 (histograma gris): descentradas y anchas, como
+      casi siempre tras unas cuantas capas. BatchNorm toma el minibatch de B valores,
+      calcula &mu;<sub>B</sub> y &sigma;<sub>B</sub><sup>2</sup> <i>de ese minibatch</i>,
+      normaliza y aplica (&gamma;, &beta;). Arriba: histograma antes (gris) y después
+      (dorado), con &mu;<sub>B</sub> y &beta; marcadas. Abajo: la media &mu;<sub>B</sub>
+      estimada por 40 minibatches independientes del tamaño B elegido, contra la media
+      verdadera y su banda teórica &plusmn;1.96&sigma;/&radic;B.</p>
+    <p><span class="hd">Juega.</span> Los números del lector son cálculos reales sobre el
+      minibatch: comprueba que media(&acirc;) = 0.000 y var(&acirc;) = 1.000 exactos (es
+      una identidad algebraica, no una aproximación), y que media(y) &asymp; &beta; y
+      sd(y) &asymp; &gamma;. Después juega con B: el panel inferior es el compromiso
+      central de BatchNorm, estadísticas por minibatch = ruido &prop; 1/&radic;B.</p>
+    <p><span class="hd">Lee así.</span> BatchNorm estabiliza la distribución que ve cada
+      capa: permite lr más alto, acelera y suaviza la pérdida. Su talón de Aquiles es
+      exactamente el panel inferior: con B pequeño las estadísticas son ruido, y por eso
+      en Transformers (y siempre que B &le; 4) se usa LayerNorm, que normaliza sobre la
+      dimensión de features y no depende del batch.</p>
+    <p><span class="hd">Mensaje.</span> Por defecto: BatchNorm en CNN y MLP densos,
+      LayerNorm en Transformers. Y recuerda que (&gamma;, &beta;) se aprenden: BatchNorm
+      no impone una distribución, ofrece una re-parametrización estable.</p>
+    <p class="miniglos"><b>Términos.</b> <b>&mu;<sub>B</sub>, &sigma;<sub>B</sub><sup>2</sup></b>:
+      estadísticas del minibatch. <b>&epsilon;</b>: 10<sup>&minus;5</sup>, estabilidad
+      numérica. <b>&gamma;, &beta;</b>: escala y desplazamiento aprendibles, uno por
+      canal. <b>LayerNorm</b>: normaliza sobre features, no sobre el batch; estándar en
+      Transformers.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : early stopping ============ -->
+<section class="slide" id="s4">
+  <div class="figcol">
+    <canvas id="cv4a" data-aspect="1.95"></canvas>
+    <canvas id="cv4b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">t<sup>&#9733;</sup> = min<big>{</big> t : V(t) &gt; min<sub>t'&le;t</sub>&thinsp;V(t') &nbsp;durante&nbsp; P &nbsp;épocas <big>}</big><span class="eqn">(Ec. 4 del día)</span></div>
+      <div class="eqread">el criterio de parada con <b>patience</b>: V(t) es la pérdida de
+        validación en la época t; si lleva P épocas seguidas sin mejorar su propio mínimo
+        histórico, se para. P absorbe el ruido: una época mala aislada no debe abortar el
+        entrenamiento.</div>
+      <div class="eq">checkpoint devuelto:&nbsp; w<big>(</big>argmin<sub>t'&le;t<sup>&#9733;</sup></sub>&thinsp;V(t')<big>)</big></div>
+      <div class="eqread">no se devuelve el modelo del momento de parar, sino el de la
+        <b>mejor época de validación</b> vista hasta entonces: parar tarde solo cuesta
+        cómputo, no calidad, siempre que guardes checkpoints.</div>
+      <div class="eq">w<sub>t+1</sub> = w<sub>t</sub> &minus; &eta;&thinsp;&nabla;L<sub>train</sub>(w<sub>t</sub>)</div>
+      <div class="eqread">el entrenamiento de esta demo es descenso por gradiente real
+        sobre un modelo polinómico con datos ruidosos: cada época da un paso, y el JS
+        guarda w en cada una para poder enseñarte el ajuste en el momento exacto en que
+        decidas parar.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>época en la que paras, t = <b id="r4t"></b></label>
+      <input type="range" id="sl4t" min="1" max="599" step="1" value="450">
+      <label>patience P = <b id="r4P"></b> épocas</label>
+      <input type="range" id="sl4P" min="5" max="60" step="5" value="10">
+      <button id="bt4">nueva muestra (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro4"></div>
+    <div id="badge4"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Arrastra t desde 1 hacia delante mirando las dos curvas.
+        <span class="obs">El train (tinta) baja siempre; el val (dorado) baja, toca
+        fondo y vuelve a subir: a partir de ahí cada época adicional es memorización
+        del ruido del train.</span></li>
+      <li>Para t en tres sitios: muy pronto, en el mínimo del val, y al final. Mira el
+        panel inferior en cada parada. <span class="obs">Pronto: curva sosa que no sigue
+        los datos (infraajuste). En el mínimo: curva suave y fiel. Tarde: zigzags entre
+        los puntos de train, badge en rojo.</span></li>
+      <li>Sube P de 10 a 60 y mira el marcador t<sup>&#9733;</sup> del panel superior.
+        <span class="obs">Con más patience, la regla espera más antes de declarar que
+        el val ya no mejora: t<sup>&#9733;</sup> se desplaza a la derecha, pero el
+        checkpoint devuelto sigue siendo el mínimo, así que solo pagas
+        cómputo.</span></li>
+      <li>Pulsa "nueva muestra" y repite. <span class="obs">La época óptima cambia de
+        muestra a muestra (a veces 30, a veces 150): por eso se automatiza con la regla
+        de patience en vez de fijar el número de épocas a mano.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué "más épocas" se
+        comporta como "más capacidad"?</summary><div class="ans">Partiendo de w = 0, el
+        descenso por gradiente ajusta primero las direcciones de la solución con más
+        señal (las componentes suaves, que reducen mucho la pérdida) y solo después,
+        lentamente, las direcciones que requieren coeficientes grandes y delicados (los
+        zigzags que encajan el ruido punto a punto). Parar pronto equivale entonces a
+        impedir que esos coeficientes crezcan, igual que hacía weight decay: es una
+        regularización implícita. Por eso la curva de val tiene la misma forma de U que
+        tenía frente al grado del polinomio o frente a &lambda;: épocas, grado y
+        1/&lambda; son tres diales de la misma capacidad efectiva.</div></details></div>
+    <p><span class="hd">Setup.</span> Entrenamos de verdad (descenso por gradiente, 600
+      épocas, lr = 0.4) un modelo polinómico de grado 11 sobre 12 observaciones ruidosas
+      de la curva de demanda, con 60 puntos de validación apartados. Es el modelo de
+      churn/demanda de juguete del día: sobredimensionado a propósito, como tu primer MLP.
+      Arriba: pérdida de train (tinta) y de validación (dorado) por época, en escala
+      logarítmica; la vertical discontinua marca el mínimo de validación, el punto dorado
+      tu época de parada t, y el rombo el t<sup>&#9733;</sup> que dispararía la regla de
+      patience. Abajo: el ajuste que tendrías si te quedas con el checkpoint de la época
+      t.</p>
+    <p><span class="hd">Juega.</span> El slider t es tu dedo sobre el botón de parar; el
+      badge se pone verde si tu V(t) está a menos de un 5% del mínimo alcanzable y rojo
+      si paraste demasiado pronto o seguiste de largo. El slider P controla la regla
+      automática de la Ec. 4: comprueba que para P razonable, el checkpoint que devuelve
+      coincide con (o queda muy cerca de) tu mejor parada manual.</p>
+    <p><span class="hd">Lee así.</span> El gap creciente entre train y val a la derecha
+      del mínimo es el overfitting de la slide 1, ahora desplegado en el tiempo de
+      entrenamiento. Early stopping es el regularizador de coste cero: no toca el modelo
+      ni la pérdida, solo elige el instante de la trayectoria donde la generalización era
+      máxima.</p>
+    <p><span class="hd">Mensaje.</span> En la práctica: <code>patience=10</code> sobre la
+      pérdida de validación, guardando el mejor checkpoint. Cuesta cero, previene la
+      mitad del overfitting, y es la quinta línea de la receta exprés del día.</p>
+    <p class="miniglos"><b>Términos.</b> <b>V(t)</b>: pérdida de validación en la época t.
+      <b>patience P</b>: épocas seguidas sin mejorar que se toleran antes de parar.
+      <b>checkpoint</b>: copia de los pesos guardada en una época concreta.
+      <b>t<sup>&#9733;</sup></b>: época en la que la regla decide parar.</p>
+  </div>
+</section>
+<!-- ============ SLIDE 5 : LR schedules ============ -->
+<section class="slide" id="s5">
+  <div class="figcol">
+    <canvas id="cv5a" data-aspect="2.3"></canvas>
+    <canvas id="cv5b" data-aspect="2.1"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">&theta;<sub>t+1</sub> = &theta;<sub>t</sub> &minus; <span class="gold">&eta;<sub>t</sub></span>&thinsp;g<sub>t</sub>,&nbsp;&nbsp;&nbsp; step:&nbsp; &eta;<sub>t</sub> = &eta;<sub>0</sub>&thinsp;&gamma;<sup>&lfloor;t/T<sub>s</sub>&rfloor;</sup><span class="eqn">(&gamma; = 0.1)</span></div>
+      <div class="eqread">la regla de actualización admite un lr <b>variable por
+        iteración</b>; step decay lo divide por 10 cada T<sub>s</sub> pasos (aquí
+        T<sub>s</sub> = T/3): la receta histórica de las CNN sobre ImageNet.</div>
+      <div class="eq">cosine:&nbsp; &eta;<sub>t</sub> = &eta;<sub>min</sub> + <span class="frac"><span class="num">1</span><span class="den">2</span></span>(&eta;<sub>max</sub>&minus;&eta;<sub>min</sub>)<big>(</big>1+cos&thinsp;<span class="frac"><span class="num">&pi;t</span><span class="den">T</span></span><big>)</big><span class="eqn">(Ec. 5 del día)</span></div>
+      <div class="eqread">medio coseno de &eta;<sub>max</sub> a &eta;<sub>min</sub>:
+        decae despacio al principio (explora), rápido en el medio y muy despacio al final
+        (afina). Es el <b>defecto moderno</b> con AdamW:
+        <code>CosineAnnealingLR(opt, T_max=epochs)</code>.</div>
+      <div class="eq">warmup+cosine:&nbsp; &eta;<sub>t</sub> = &eta;<sub>max</sub>&thinsp;<span class="frac"><span class="num">t</span><span class="den">T<sub>w</sub></span></span> &nbsp;si t &lt; T<sub>w</sub>,&nbsp; luego cosine en T&minus;T<sub>w</sub> pasos</div>
+      <div class="eqread">subida lineal de 0 a &eta;<sub>max</sub> en T<sub>w</sub> pasos
+        y después el coseno. El warmup evita pasos gigantes al inicio, cuando los
+        momentos de Adam y las estadísticas de BatchNorm aún no están estabilizados:
+        obligatorio en modelos grandes.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>lr máximo, &eta;<sub>max</sub> = 10^<b id="r5e"></b></label>
+      <input type="range" id="sl5e" min="-2.3" max="-0.66" step="0.02" value="-1.3">
+      <label>horizonte total T = <b id="r5T"></b> iteraciones</label>
+      <input type="range" id="sl5T" min="60" max="400" step="20" value="200">
+      <label>warmup T<sub>w</sub> = <b id="r5w"></b>% de T</label>
+      <input type="range" id="sl5w" min="0" max="30" step="1" value="10">
+      <button id="bt5">nuevo ruido (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro5"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con los valores por defecto, compara en el panel inferior la curva del lr
+        constante (gris) con la del cosine (dorado). <span class="obs">La constante baja
+        rápido y se atasca en una meseta ruidosa; el cosine la sigue al principio y
+        después sigue bajando órdenes de magnitud: bajar &eta; apaga el ruido del
+        gradiente.</span></li>
+      <li>Sube &eta;<sub>max</sub> hasta 10<sup>&minus;0.7</sup>.
+        <span class="obs">La meseta de la constante sube (el suelo de ruido crece con
+        &eta;) mientras los schedules que decaen siguen llegando abajo: con lr agresivo,
+        decaer no es opcional.</span></li>
+      <li>Compara step (tinta) con cosine (dorado). <span class="obs">Step baja a saltos:
+        cada división por 10 desbloquea un escalón de pérdida. Cosine hace lo mismo sin
+        elegir cuándo saltar: por eso es el defecto cuando no sabes dónde poner los
+        escalones.</span></li>
+      <li>Alarga T de 200 a 400. <span class="obs">El cosine reparte el mismo descenso en
+        más pasos y el suelo final baja: el lr final pequeño es quien pule los últimos
+        decimales.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué con lr constante
+        la pérdida se queda en una meseta y no sigue bajando?</summary><div class="ans">
+        Cerca del mínimo, el gradiente verdadero es casi cero y el paso queda dominado
+        por el ruido: &theta; da saltos aleatorios de tamaño &asymp; &eta;&sigma;
+        alrededor del óptimo, y la pérdida media de esos saltos es proporcional a &eta;.
+        Es un equilibrio, no una convergencia: para romperlo hay que reducir &eta;, y
+        eso es exactamente lo que hace un schedule. La intuición exploración-explotación
+        del deck es esta misma frase: paso grande para llegar a la zona buena, paso
+        pequeño para instalarse en ella.</div></details></div>
+    <p><span class="hd">Setup.</span> Para aislar el efecto del schedule, optimizamos un
+      problema donde todo lo demás es conocido: una cuadrática mal condicionada
+      (curvatura 1 en una dirección, 8 en la otra: la "hondonada alargada" típica de las
+      pérdidas reales) con <i>gradiente ruidoso</i>, como el que produce un minibatch en
+      el forecast de demanda de Inditex. Arriba: &eta;(t) para los cuatro schedules del
+      día, calculados con sus fórmulas exactas: constante (gris), step decay (tinta),
+      cosine (dorado) y warmup+cosine (dorado oscuro). Abajo: la pérdida que consigue
+      cada uno optimizando la MISMA cuadrática con el MISMO ruido (misma semilla), en
+      escala logarítmica.</p>
+    <p><span class="hd">Juega.</span> Los tres sliders son los tres números que fijarás
+      en PyTorch: &eta;<sub>max</sub> (el lr del optimizador), T (T_max del scheduler) y
+      el warmup. El botón cambia la semilla del ruido: comprueba que el orden de los
+      schedules apenas cambia (la comparación es justa porque comparten ruido).</p>
+    <p><span class="hd">Lee así.</span> El lector da la pérdida final de cada schedule.
+      En este juguete convexo el warmup apenas mejora (no hay BatchNorm ni momentos de
+      Adam que estabilizar): su papel aparece en redes grandes, donde los primeros pasos
+      con lr alto pueden romper el entrenamiento. Lo que sí es general es la meseta de la
+      constante: suelo de ruido &prop; &eta;.</p>
+    <p><span class="hd">Mensaje.</span> Si te bloqueas con el lr: cosine. Cinco líneas de
+      PyTorch (<code>CosineAnnealingLR</code> + <code>sched.step()</code> por época) que
+      en la práctica del curso suben la AUC de validación un 2&ndash;5% sin tocar el
+      modelo.</p>
+    <p class="miniglos"><b>Términos.</b> <b>&eta;<sub>max</sub>, &eta;<sub>min</sub></b>:
+      lr inicial y final de la trayectoria (aquí &eta;<sub>min</sub> = 0).
+      <b>T</b>: horizonte total en iteraciones o épocas. <b>T<sub>w</sub></b>: duración
+      del warmup. <b>suelo de ruido</b>: pérdida residual &prop; &eta; al optimizar con
+      gradiente ruidoso y lr fijo.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : batch size ============ -->
+<section class="slide" id="s6">
+  <div class="figcol">
+    <canvas id="cv6a" data-aspect="1.85"></canvas>
+    <canvas id="cv6b" data-aspect="2.3"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">g<sub>B</sub> = <span class="frac"><span class="num">1</span><span class="den">B</span></span><big>&Sigma;</big><sub>i&isin;batch</sub>&nbsp;&nabla;&ell;<sub>i</sub>(&theta;),&nbsp;&nbsp;&nbsp; Var[g<sub>B</sub>] = <span class="frac"><span class="num">&sigma;<sup>2</sup></span><span class="den">B</span></span></div>
+      <div class="eqread">el gradiente de minibatch es una <b>media de B gradientes
+        individuales</b>: insesgado (en media apunta como el gradiente completo) pero con
+        una varianza que cae como 1/B. Duplicar el batch divide el ruido por &radic;2,
+        no por 2.</div>
+      <div class="eq">&theta;<sub>t+1</sub> = &theta;<sub>t</sub> &minus; &eta;&thinsp;g<sub>B</sub> = &theta;<sub>t</sub> &minus; &eta;<big>(</big>&nabla;L(&theta;<sub>t</sub>) + <span class="frac"><span class="num">&sigma;</span><span class="den">&radic;B</span></span>&thinsp;&xi;<sub>t</sub><big>)</big></div>
+      <div class="eqread">cada paso de SGD es el paso "ideal" más un empujón aleatorio de
+        tamaño &sigma;/&radic;B: exactamente lo que simula esta slide. El ruido no es
+        solo un estorbo: zarandea la trayectoria fuera de mínimos estrechos y actúa como
+        regularización implícita.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>tamaño de batch, B = <b id="r6B"></b></label>
+      <input type="range" id="sl6B" min="0" max="8" step="1" value="3">
+      <label>learning rate &eta; = <b id="r6e"></b></label>
+      <input type="range" id="sl6e" min="0.01" max="0.2" step="0.005" value="0.08">
+      <button id="bt6">nuevas trayectorias</button>
+    </div>
+    <div class="readout" id="ro6"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con B = 8, sigue las tres trayectorias sobre las curvas de nivel.
+        <span class="obs">Bajan hacia el centro pero con tembleque permanente; al llegar
+        a la zona del óptimo no se posan: orbitan en una nube cuyo radio fija
+        &sigma;/&radic;B.</span></li>
+      <li>Baja B a 1. <span class="obs">SGD puro: trayectorias borrachas que a veces
+        suben de nivel. Aun así progresan en media: el gradiente de un solo ejemplo es
+        ruidosísimo pero insesgado.</span></li>
+      <li>Sube B a 256. <span class="obs">Las tres trayectorias se vuelven casi
+        idénticas y limpias: ya casi es descenso por gradiente exacto. Pero mira el
+        lector: cada paso ahora procesa 256 ejemplos, 256 veces más cómputo por
+        paso que B = 1.</span></li>
+      <li>Con B = 4, baja &eta; a la mitad. <span class="obs">La nube final se encoge:
+        el radio del merodeo escala con &eta;&middot;&sigma;/&radic;B. Batch y lr son
+        dos diales del mismo ruido efectivo: por eso al escalar B se suele escalar
+        también el lr.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: si B grande es "más
+        limpio", ¿por qué no entrenar siempre con el batch más grande que quepa?</summary>
+        <div class="ans">Tres razones. Coste: cada paso procesa B ejemplos; con B = 256
+        haces 1 paso por el precio de 256 de B = 1, y en pasos (no en ejemplos) el
+        progreso inicial por ejemplo procesado suele ser peor. Memoria: las activaciones
+        de todo el batch viven a la vez en la GPU. Y generalización: el ruido de batch
+        pequeño zarandea la trayectoria fuera de mínimos estrechos y afilados, que
+        suelen generalizar peor; entrenamientos con batch enorme a menudo necesitan
+        warmup y lr re-escalado para igualar la calidad de val. El batch es un
+        hiperparámetro de compromiso, no un "más es mejor".</div></details></div>
+    <p><span class="hd">Setup.</span> El recomendador de Netflix no calcula el gradiente
+      sobre los millones de interacciones de su dataset: muestrea un minibatch de B y usa
+      su media. Aquí simulamos exactamente ese proceso sobre la cuadrática mal
+      condicionada de la slide anterior: en cada paso, el JS calcula el gradiente
+      verdadero A&theta; y le suma ruido gaussiano de desviación &sigma;/&radic;B por
+      componente (&sigma; = 3, el "ruido de un ejemplo"). Arriba: las curvas de nivel de
+      la pérdida y tres trayectorias con semillas distintas partiendo del mismo punto.
+      Abajo: la pérdida de cada trayectoria por iteración (log) y su media (dorado
+      grueso).</p>
+    <p><span class="hd">Juega.</span> El slider de B recorre potencias de 2 de 1 a 256:
+      el rango real que manejarás (8&ndash;128 en tabular, 32&ndash;256 en imágenes).
+      Observa que el efecto sobre el ruido es &radic;B, no B: de 1 a 4 se nota muchísimo,
+      de 64 a 256 casi nada &mdash; los retornos del batch grande son decrecientes
+      mientras su coste crece lineal.</p>
+    <p><span class="hd">Lee así.</span> El lector da el ruido por paso &sigma;/&radic;B,
+      la pérdida final media y el total de ejemplos procesados (B&times;T): la métrica
+      honesta de coste. Compara configuraciones a ejemplos iguales, no a pasos
+      iguales.</p>
+    <p><span class="hd">Mensaje.</span> El batch fija el punto de la balanza
+      ruido-coste: pequeño = barato por paso, ruidoso, regularizante; grande = limpio,
+      caro, y con riesgo de generalizar peor. Defecto razonable del curso: 32&ndash;64, y
+      si lo subes mucho, sube también el lr y añade warmup.</p>
+    <p class="miniglos"><b>Términos.</b> <b>g<sub>B</sub></b>: gradiente medio del
+      minibatch. <b>&sigma;<sup>2</sup></b>: varianza del gradiente de un ejemplo
+      individual. <b>&xi;<sub>t</sub></b>: ruido gaussiano estándar. <b>mínimos planos vs
+      afilados</b>: cuencas anchas/estrechas de la pérdida; las anchas suelen generalizar
+      mejor.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : dashboard ============ -->
+<section class="slide" id="s7">
+  <div class="figcol">
+    <canvas id="cv7a" data-aspect="2.3"></canvas>
+    <canvas id="cv7b" data-aspect="2.3"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">los 4 paneles:&nbsp; L<sub>train</sub>/L<sub>val</sub>,&nbsp;&nbsp; &#8214;g<sub>t</sub>&#8214;<sub>2</sub>,&nbsp;&nbsp; métrica de negocio (R<sup>2</sup>),&nbsp;&nbsp; &eta;<sub>t</sub></div>
+      <div class="eqread">los cuatro imprescindibles de la nota técnica: pérdidas (¿hay
+        overfitting?), norma del gradiente (¿explota?), la métrica que mira el cliente
+        (¿mejora lo que importa?) y el lr efectivo (¿el schedule se está ejecutando de
+        verdad? los typos rompen schedules en silencio).</div>
+      <div class="eq">clipping:&nbsp; g &larr; g &middot; min<big>(</big>1,&thinsp;<span class="frac"><span class="num">c</span><span class="den">&#8214;g&#8214;<sub>2</sub></span></span><big>)</big></div>
+      <div class="eqread">si la norma del gradiente supera el tope c, se re-escala el
+        vector entero (misma dirección, longitud c). Es el airbag estándar contra
+        explosiones de gradiente.</div>
+      <div class="eq">R<sup>2</sup> = 1 &minus; <span class="frac"><span class="num">MSE<sub>val</sub></span><span class="den">Var(y<sub>val</sub>)</span></span></div>
+      <div class="eqread">la métrica de negocio de esta demo: fracción de la varianza de
+        la demanda explicada por el modelo. Correlaciona con la pérdida pero <b>no
+        coincide</b>: el cliente no factura en MSE.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>lr máximo del cosine, &eta;<sub>max</sub> = 10^<b id="r7e"></b></label>
+      <input type="range" id="sl7e" min="-2.5" max="0.5" step="0.05" value="-0.7">
+      <label><input type="checkbox" id="ck7"> activar gradient clipping con tope c = <b id="r7c"></b></label>
+      <input type="range" id="sl7c" min="0.5" max="10" step="0.5" value="2">
+    </div>
+    <div class="readout" id="ro7"></div>
+    <div id="badge7"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con &eta;<sub>max</sub> = 10<sup>&minus;0.7</sup>, lee los cuatro paneles en
+        orden. <span class="obs">Pérdidas que bajan y se separan al final (overfitting
+        suave), &#8214;g&#8214; decreciente, R<sup>2</sup> subiendo hacia &asymp;0.8 y el
+        medio coseno del lr: un run sano se reconoce de un vistazo.</span></li>
+      <li>Sube &eta;<sub>max</sub> a 10<sup>0.3</sup>. <span class="obs">El panel de
+        &#8214;g&#8214; se dispara verticalmente y las pérdidas se van a infinito en
+        pocas épocas: badge "run roto". El panel del gradiente avisa ANTES de que la
+        pérdida sea NaN.</span></li>
+      <li>Sin bajar el lr, activa el clipping con c = 2. <span class="obs">El
+        entrenamiento sobrevive: la norma queda serrada en c (el lector te dice qué % de
+        épocas recortó) y la pérdida vuelve a bajar. Mismo lr, airbag puesto.</span></li>
+      <li>Mira siempre el cuarto panel. <span class="obs">El lr dibuja exactamente el
+        medio coseno de la Ec. 5; si un día ese panel sale plano, tu
+        <code>sched.step()</code> no se está ejecutando: ese typo silencioso se caza
+        aquí y solo aquí.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el panel de
+        métrica de negocio no puede sustituirse por el de pérdida?</summary><div class="ans">
+        Porque optimizas una y facturas con la otra. La pérdida (MSE, cross-entropy) es
+        diferenciable y por eso se entrena con ella, pero el cliente decide con AUC, MAPE
+        o R<sup>2</sup>, y la relación entre ambas no es monótona en general: una mejora
+        de 0.01 en pérdida puede no mover el R<sup>2</sup>, y dos runs con la misma
+        pérdida pueden diferir en métrica. Si solo registras la pérdida, no puedes
+        defender el modelo ante negocio; si solo registras la métrica, no puedes
+        diagnosticar el entrenamiento. Por eso son paneles separados y obligatorios los
+        dos.</div></details></div>
+    <p><span class="hd">Setup.</span> El dashboard de un run real, como lo verías en
+      W&amp;B o TensorBoard monitorizando el modelo de demanda: el JS entrena por
+      descenso de gradiente (400 épocas, schedule cosine, weight decay 10<sup>&minus;4</sup>)
+      el modelo polinómico del día sobre los datos ruidosos de ventas, y registra en cada
+      época las cuatro series de la nota técnica. Panel 1: L<sub>train</sub> y
+      L<sub>val</sub> (log). Panel 2: &#8214;g<sub>t</sub>&#8214;<sub>2</sub> antes del
+      clipping (log), con el tope c marcado. Panel 3: R<sup>2</sup> de validación. Panel
+      4: &eta;<sub>t</sub>, el lr efectivo.</p>
+    <p><span class="hd">Juega.</span> Esta slide es un simulador de averías: el slider de
+      lr te deja cruzar la frontera de estabilidad y ver cómo se manifiesta la avería en
+      cada panel (el gradiente la anuncia, la pérdida la confirma, la métrica la paga, el
+      lr la explica). El clipping es la reparación de urgencia; bajar &eta;<sub>max</sub>
+      es la de fondo.</p>
+    <p><span class="hd">Lee así.</span> El badge resume el run (sano/roto) y el lector da
+      la mejor época de val, el máximo de &#8214;g&#8214;, el % de épocas recortadas y el
+      R<sup>2</sup> final. Si los cuatro paneles no están registrados, nada de esto se
+      puede reconstruir: el experimento es <i>irreproducible</i>, que es la palabra exacta
+      de la nota técnica del día.</p>
+    <p><span class="hd">Mensaje.</span> No se entrena sin dashboard. Cuatro series, coste
+      de logging cero, y la diferencia entre "creo que el modelo va bien" y "puedo
+      enseñarte exactamente qué pasó en la época 173".</p>
+    <p class="miniglos"><b>Términos.</b> <b>&#8214;g&#8214;<sub>2</sub></b>: norma
+      euclídea del gradiente; su explosión es el síntoma más temprano de un lr excesivo.
+      <b>c</b>: tope de clipping (0.5&ndash;5 típico). <b>R<sup>2</sup></b>: varianza
+      explicada en validación. <b>lr efectivo</b>: el &eta;<sub>t</sub> que de verdad usó
+      cada paso, no el que crees haber configurado.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 : tracker de experimentos ============ -->
+<section class="slide" id="s8">
+  <div class="figcol">
+    <canvas id="cv8a" data-aspect="2.3"></canvas>
+    <canvas id="cv8b" data-aspect="2.6"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">p&#770; = &sigma;(w&middot;x + b),&nbsp;&nbsp;&nbsp; &sigma;(z) = <span class="frac"><span class="num">1</span><span class="den">1+e<sup>&minus;z</sup></span></span></div>
+      <div class="eqread">el modelo de cada run: regresión logística sobre dos variables
+        del cliente (minutos de uso y antigüedad, estandarizadas). &sigma; aplasta la
+        puntuación lineal a una probabilidad de churn en (0,1).</div>
+      <div class="eq">L<sub>val</sub> = &minus;<span class="frac"><span class="num">1</span><span class="den">n</span></span><big>&Sigma;</big><sub>i</sub><big>[</big>y<sub>i</sub>&thinsp;log&thinsp;p&#770;<sub>i</sub> + (1&minus;y<sub>i</sub>)&thinsp;log(1&minus;p&#770;<sub>i</sub>)<big>]</big><span class="eqn">(log-loss)</span></div>
+      <div class="eqread">la columna que ordena la tabla: la <b>log-loss de validación</b>
+        del run. En entrenamiento se minimiza esta misma pérdida sobre train más el
+        término &lambda;&#8214;w&#8214;<sub>2</sub><sup>2</sup> del día, con minibatch SGD
+        de tamaño B y lr &eta;: los tres hiperparámetros de tus sliders.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>learning rate del run, &eta; = 10^<b id="r8e"></b></label>
+      <input type="range" id="sl8e" min="-2.5" max="0.5" step="0.05" value="-0.7">
+      <label>weight decay del run, &lambda; = 10^<b id="r8l"></b></label>
+      <input type="range" id="sl8l" min="-5" max="-1" step="0.1" value="-4">
+      <label>batch del run, B = <b id="r8B"></b></label>
+      <input type="range" id="sl8B" min="3" max="7" step="1" value="5">
+      <label><input type="checkbox" id="ck8" checked> semilla fija (42) &mdash; desmárcala para ver el problema</label>
+      <button id="bt8">&#9654; lanzar run</button>
+      <button id="bt8r">borrar tabla</button>
+    </div>
+    <div class="readout" id="ro8"></div>
+    <table class="live" id="tbl8"></table>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Lanza un run con los valores por defecto y vuelve a lanzarlo SIN tocar nada.
+        <span class="obs">Dos filas idénticas dígito a dígito: con semilla fija, mismo
+        config = mismo número. Eso es reproducibilidad.</span></li>
+      <li>Desmarca "semilla fija" y lanza el mismo config tres veces.
+        <span class="obs">Tres val-loss distintas para el MISMO config: ese baile es la
+        varianza de la semilla, y es más grande que muchas "mejoras" que verás
+        publicadas en tablas internas.</span></li>
+      <li>Vuelve a semilla fija y barre &eta; en tres runs: 10<sup>&minus;2</sup>,
+        10<sup>&minus;0.7</sup>, 10<sup>0.3</sup>. <span class="obs">La tabla los
+        registra y la fila dorada (mejor val-loss) identifica el ganador; el panel
+        superior dibuja su frontera de decisión sobre los clientes de
+        validación.</span></li>
+      <li>Cambia ahora solo &lambda;, luego solo B. <span class="obs">Un hiperparámetro
+        por vez, todo registrado: en tres minutos has hecho una búsqueda defendible. Eso
+        que acabas de sentir es lo contrario del random search de las 03:14.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué comparar dos
+        configs con semillas distintas es trampa?</summary><div class="ans">Porque la
+        diferencia observada mezcla dos efectos: el del hiperparámetro y el del azar
+        (inicialización, orden de los minibatches). Si config A con semilla 7 bate a
+        config B con semilla 13, no sabes cuánto del margen es mérito de A. Acabas de
+        medir en el paso 2 que el efecto semilla puede ser comparable al efecto
+        hiperparámetro. El protocolo correcto: misma semilla para comparar configs (o
+        mejor, varias semillas por config y comparar medias). Un tracker hace esto
+        trivial porque la semilla es un campo más del registro de cada run.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Eres el equipo de datos de una telco con un modelo
+      de churn, y esta slide es tu W&amp;B / MLflow de bolsillo. Cada vez que pulsas
+      "lanzar run", el JS entrena DE VERDAD una regresión logística con minibatch SGD (6
+      épocas, deliberadamente pocas para que el efecto de la inicialización y del orden
+      de los datos sea visible) sobre 250 clientes sintéticos y evalúa en 150 de
+      validación; la fila que se
+      añade a la tabla registra exactamente lo que registraría un tracker: config
+      completo (&eta;, &lambda;, B, semilla) y resultados (val-loss, accuracy). La mejor
+      fila queda resaltada en dorado. Arriba: los clientes de validación (dorado = churn,
+      tinta = se queda) con la frontera de decisión del último run (continua) y la del
+      mejor run (discontinua). Abajo: la val-loss de cada run lanzado, en orden.</p>
+    <p><span class="hd">Juega.</span> El checkbox de la semilla es el corazón de la
+      slide: con él marcado, el experimento es una función determinista del config; sin
+      él, cada run lleva ruido de inicialización y de orden de datos. Haz la secuencia
+      del guion y decide tú cuántas de tus comparaciones pasadas eran ruido.</p>
+    <p><span class="hd">Lee así.</span> La tabla ES el argumento del día sobre trackers:
+      sin ella no recuerdas qué probaste, no puedes reproducir el mejor run y no puedes
+      defender la elección ante el equipo. TensorBoard para logging local, W&amp;B para
+      equipo y barridos, MLflow para producción self-hosted: cualquiera vale, ninguno es
+      opcional.</p>
+    <p><span class="hd">Mensaje.</span> La regla del deck: antes de barrer, fija modelo,
+      pérdida, optimizador y schedule; luego mueve UN hiperparámetro por vez, con semilla
+      fija, y registra todo. Cada hora invertida en el tracker ahorra una semana de
+      búsqueda ciega.</p>
+    <p class="miniglos"><b>Términos.</b> <b>run</b>: un entrenamiento completo con su
+      config y sus resultados. <b>semilla</b>: estado inicial del generador aleatorio;
+      fija = experimento repetible. <b>val-loss</b>: log-loss en validación, el criterio
+      de la tabla. <b>frontera de decisión</b>: la recta w&middot;x+b = 0 donde el modelo
+      cambia de opinión.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 : glosario ============ -->
+<section class="slide" id="s9">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="glosgrid" id="glos"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 : síntesis ============ -->
+<section class="slide" id="s10">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="pipe">
+      <div class="pipebox"><div><div class="pname">1 &mdash; Diagnostica antes de medicar</div>
+          <div class="pmap">Slides: Overfitting &middot; Dashboard</div></div>
+        <div class="pq">"La brecha train&ndash;test es el síntoma; las curvas por época son el electrocardiograma. Sin medir la brecha (y sin los cuatro paneles registrados) cualquier regularización es un disparo a ciegas."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">2 &mdash; AdamW con weight decay 10<sup>&minus;4</sup></div>
+          <div class="pmap">Slides: Weight decay</div></div>
+        <div class="pq">"&lambda;&#8214;w&#8214;<sub>2</sub><sup>2</sup> encoge los pesos y la capacidad efectiva: mismo modelo, menos margen para memorizar. En AdamW el decay se aplica directo (&theta; &larr; &theta; &minus; &eta;&lambda;&theta;), sin contaminar los momentos de Adam."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">3 &mdash; Cosine annealing del lr (+ warmup si el modelo es grande)</div>
+          <div class="pmap">Slides: Schedules &middot; Batch size</div></div>
+        <div class="pq">"lr alto al inicio para explorar, decaimiento en medio coseno para apagar el suelo de ruido &prop; &eta; y afinar al final. El batch fija el otro dial del mismo ruido: Var[g<sub>B</sub>] = &sigma;<sup>2</sup>/B."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">4 &mdash; Dropout 0.1&ndash;0.3 y BatchNorm tras cada Linear</div>
+          <div class="pmap">Slides: Dropout &middot; BatchNorm</div></div>
+        <div class="pq">"Dropout entrena 2<sup>H</sup> sub-redes que comparten pesos (E[&atilde;] = a: en test, apagado y calibrado); BatchNorm re-centra cada capa con (&gamma;, &beta;) aprendibles. Con batch &le; 4, LayerNorm."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">5 &mdash; Early stopping con patience 10</div>
+          <div class="pmap">Slides: Early stop</div></div>
+        <div class="pq">"t<sup>&#9733;</sup> = primera época con P sin mejorar el mínimo de V(t); se devuelve el checkpoint del argmin. Regularización de coste cero: elige el punto de la trayectoria donde la generalización era máxima."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">6 &mdash; Tracker con semilla fija y un hiperparámetro por vez</div>
+          <div class="pmap">Slides: Dashboard &middot; Tracker</div></div>
+        <div class="pq">"Cada run registrado con su config y su semilla; comparaciones solo a semilla igual (el efecto semilla compite con el efecto hiperparámetro). W&amp;B / MLflow / TensorBoard: cualquiera, pero uno."</div></div>
+    </div>
+    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
+      La receta exprés del primer prototipo correcto &mdash; AdamW(lr = 10<sup>&minus;3</sup>,
+      weight_decay = 10<sup>&minus;4</sup>) + CosineAnnealingLR + Dropout/BatchNorm +
+      early stopping(patience = 10) + tracking de los cuatro paneles + validación 5-fold
+      &mdash; no es una superstición: cada ingrediente cierra una de las brechas que has
+      manipulado hoy con tus propias manos.</p>
+  </div>
+</section>
+
+<div id="footerL">Garrido-Merch&aacute;n &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; D&iacute;a 03 &middot; Regularizaci&oacute;n, LR schedules y dashboards</div>
+<div id="footer"></div>
+<div id="arrows">
+  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
+</div>
+<script>
+"use strict";
+/* ================= PALETTE ================= */
+const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
+      MUTE="#8A8A8A", RULE="#D9C28A";
+
+/* ================= MATH CORE (DOM-free) ================= */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296;};}
+function randn(rng){let u=0;while(u===0)u=rng();const v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function linfit(xs,ys){const n=xs.length;let sx=0,sy=0,sxx=0,sxy=0;
+  for(let i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxx+=xs[i]*xs[i];sxy+=xs[i]*ys[i];}
+  const b=(n*sxy-sx*sy)/(n*sxx-sx*sx);return {a:(sy-b*sx)/n,b:b};}
+function solveLin(A,b){ /* Gaussian elimination with partial pivoting */
+  const n=b.length,M=A.map((row,i)=>row.concat([b[i]]));
+  for(let c=0;c<n;c++){
+    let piv=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[piv][c]))piv=r;
+    const tmp=M[c];M[c]=M[piv];M[piv]=tmp;
+    const d=M[c][c];if(Math.abs(d)<1e-300)return null;
+    for(let r=c+1;r<n;r++){const f=M[r][c]/d;
+      for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k];}}
+  const x=new Array(n).fill(0);
+  for(let r=n-1;r>=0;r--){let s=M[r][n];
+    for(let k=r+1;k<n;k++)s-=M[r][k]*x[k];x[r]=s/M[r][r];}
+  return x;}
+/* --- shared regression machinery (slides 0,1,4,7) --- */
+function ftrue(x){return 1.5-1.2*x+0.35*Math.sin(6*x);} // miles de uds vs precio norm.
+function buildX(ts,d){return ts.map(t=>{const row=new Array(d+1);let p=1;
+  for(let j=0;j<=d;j++){row[j]=p;p*=t;}return row;});}
+function ridgeFit(X,y,lam){ // w = (XᵀX/n + λ·I[skip w0])⁻¹ Xᵀy/n
+  const n=X.length,m=X[0].length;
+  const A=Array.from({length:m},()=>new Array(m).fill(0));
+  const b=new Array(m).fill(0);
+  for(let i=0;i<n;i++)for(let j=0;j<m;j++){b[j]+=X[i][j]*y[i]/n;
+    for(let k=0;k<m;k++)A[j][k]+=X[i][j]*X[i][k]/n;}
+  for(let j=0;j<m;j++){A[j][j]+=1e-12;if(j>0)A[j][j]+=lam;}
+  return solveLin(A,b);}
+function polyEval(w,t){let s=0;for(let j=w.length-1;j>=0;j--)s=s*t+w[j];return s;}
+function mseP(w,ts,ys){let s=0;
+  for(let i=0;i<ts.length;i++){const e=polyEval(w,ts[i])-ys[i];s+=e*e;}
+  return s/ts.length;}
+function normW(w){let s=0;for(const v of w)s+=v*v;return Math.sqrt(s);}
+function genSales(seed,ntr,nte,noise){const rng=mulberry32(seed);
+  const xtr=[],xte=[];for(let i=0;i<ntr;i++)xtr.push(rng());
+  for(let i=0;i<nte;i++)xte.push(rng());
+  xtr.sort((a,b)=>a-b);xte.sort((a,b)=>a-b);
+  const ytr=xtr.map(x=>ftrue(x)+noise*randn(rng));
+  const yte=xte.map(x=>ftrue(x)+noise*randn(rng));
+  return {xtr:xtr,ytr:ytr,xte:xte,yte:yte};}
+function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
+/* ================= END MATH CORE ================= */
+
+/* ================= plotting helpers ================= */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const wCss=cv.parentElement.clientWidth;
+  const asp=parseFloat(cv.dataset.aspect)||1.8;
+  const hCss=wCss/asp;
+  cv.style.height=hCss+"px";
+  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx:ctx,W:wCss,H:hCss};
+}
+function axes(ctx,fr,opt){
+  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
+  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
+  ctx.save();
+  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
+  ctx.font="11px Georgia, serif";
+  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
+  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
+  ctx.textAlign="center";ctx.textBaseline="top";
+  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
+    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
+    ctx.fillText(lb,fr.x0-6,Y(v));});
+  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
+  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
+    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText(opt.ylab,0,0);ctx.restore();}
+  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
+    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
+  ctx.restore();
+  return {X:X,Y:Y};
+}
+function polyline(ctx,pts,color,lw,dash){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
+  if(dash)ctx.setLineDash(dash);
+  ctx.beginPath();let first=true;
+  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
+  ctx.stroke();ctx.restore();
+}
+function rampColor(t){
+  t=Math.max(0,Math.min(1,t));
+  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
+  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
+  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+/* ================= navigation ================= */
+const SECTIONS=["Overfitting","Weight decay","Dropout","BatchNorm","Early stop",
+  "Schedules","Batch size","Dashboard","Tracker","Glosario","Síntesis"];
+const TITLES=[
+ "El mismo modelo que clava el train puede arruinar el test: el overfitting se ve a simple vista.",
+ "Weight decay encoge los pesos: pagar un poco de train para comprar mucho test.",
+ "Dropout entrena 2 elevado a H sub-redes a la vez y en inferencia te regala su promedio.",
+ "BatchNorm recoloca cada activación: media cero, varianza uno, y luego γ y β deciden.",
+ "Early stopping convierte la curva de validación en un freno automático contra la memorización.",
+ "Bajar el learning rate a tiempo apaga el ruido: el schedule decide cuándo explorar y cuándo afinar.",
+ "El tamaño de batch fija el ruido del gradiente: varianza proporcional a 1/B.",
+ "Cuatro paneles bastan para saber si tu entrenamiento está sano: pérdidas, gradiente, métrica y lr.",
+ "Sin tracker no hay ciencia: cada run queda registrado y se compara con semillas fijas.",
+ "Glosario: todos los símbolos del día, en una página y en cristiano.",
+ "La receta exprés encadena las seis decisiones del primer prototipo correcto."];
+let cur=0;const N=11;
+const nav=document.getElementById("navstrip");
+SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
+  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
+function go(i){
+  cur=(i+N)%N;
+  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
+  document.getElementById("slidetitle").textContent=TITLES[cur];
+  document.getElementById("footer").textContent=(cur+1)+" / "+N;
+  window.scrollTo(0,0);
+  if(updaters[cur])updaters[cur](true);
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
+window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
+const updaters={};
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 0 : overfitting visible ================= */
+(function(){
+  const NTR=18,NTE=12,NOISE=0.12,DMAX=12;
+  let seed=7,D=null;
+  function resample(){
+    const g=genSales(seed,NTR,NTE,NOISE);
+    const ttr=g.xtr.map(x=>2*x-1),tte=g.xte.map(x=>2*x-1);
+    const ws=[null],etr=[NaN],ete=[NaN];
+    for(let d=1;d<=DMAX;d++){
+      const w=ridgeFit(buildX(ttr,d),g.ytr,1e-10);
+      ws.push(w);etr.push(mseP(w,ttr,g.ytr));ete.push(mseP(w,tte,g.yte));}
+    D={g:g,ttr:ttr,tte:tte,ws:ws,etr:etr,ete:ete};
+  }
+  resample();
+  const sld=document.getElementById("sl0d");
+  document.getElementById("bt0").onclick=()=>{seed+=1;resample();upd();};
+  sld.oninput=upd;
+  function upd(){
+    const d=+sld.value;
+    document.getElementById("r0d").textContent=d;
+    const w=D.ws[d];
+    document.getElementById("ro0").innerHTML=
+      "MSE train = "+fmtG(D.etr[d],3)+" &nbsp;&middot;&nbsp; "+
+      "<span class='gold'>MSE test = "+fmtG(D.ete[d],3)+"</span> &nbsp;&middot;&nbsp; "+
+      "cociente test/train = "+fmtG(D.ete[d]/D.etr[d],3)+
+      "<br>&#8214;w&#8214;<sub>2</sub> = "+fmtG(normW(w),3)+
+      " &nbsp;&middot;&nbsp; par&aacute;metros: "+(d+1)+" &nbsp;&middot;&nbsp; datos de train: "+NTR;
+    /* top: data + fit */
+    let c=fitCanvas(document.getElementById("cv0a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:-0.2,ymax:2.3,
+      xticks:[[0,"10€"],[1/3,"20€"],[2/3,"30€"],[1,"40€"]],
+      yticks:[[0,"0"],[1,"1"],[2,"2"]],
+      xlab:"precio del artículo",ylab:"ventas (miles uds)",
+      title:"Ajuste polinómico de grado d a las ventas observadas"});
+    const tr=[];for(let i=0;i<=240;i++){const x=i/240;
+      tr.push([ax.X(x),ax.Y(Math.max(-0.2,Math.min(2.3,ftrue(x))))]);}
+    polyline(c.ctx,tr,INK,1.2,[5,4]);
+    const fit=[];for(let i=0;i<=240;i++){const x=i/240;
+      const y=polyEval(w,2*x-1);
+      fit.push([ax.X(x),ax.Y(Math.max(-0.2,Math.min(2.3,y)))]);}
+    polyline(c.ctx,fit,GOLD,2.4);
+    c.ctx.fillStyle=INK;
+    D.g.xtr.forEach((x,i)=>{c.ctx.beginPath();
+      c.ctx.arc(ax.X(x),ax.Y(Math.max(-0.2,Math.min(2.3,D.g.ytr[i]))),3.5,0,7);c.ctx.fill();});
+    c.ctx.strokeStyle=MUTE;c.ctx.lineWidth=1.6;
+    D.g.xte.forEach((x,i)=>{c.ctx.beginPath();
+      c.ctx.arc(ax.X(x),ax.Y(Math.max(-0.2,Math.min(2.3,D.g.yte[i]))),3.5,0,7);c.ctx.stroke();});
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillStyle=INK;c.ctx.fillText("● train   ○ test (gris)   ‒ ‒ verdad",fr.x0+8,fr.y0+12);
+    /* bottom: error vs degree */
+    c=fitCanvas(document.getElementById("cv0b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    let lo=1e9,hi=-1e9;
+    for(let d2=1;d2<=DMAX;d2++){lo=Math.min(lo,D.etr[d2],D.ete[d2]);
+      hi=Math.max(hi,D.etr[d2],D.ete[d2]);}
+    const ymin=Math.floor(Math.log10(lo)),ymax=Math.ceil(Math.log10(hi));
+    const yt=[];for(let e=ymin;e<=ymax;e++)yt.push([e,"10"+(e<0?"⁻":"")+
+      String(Math.abs(e)).split("").map(ch=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]).join("")]);
+    const ax2=axes(c.ctx,fr2,{xmin:1,xmax:DMAX,ymin:ymin,ymax:ymax,
+      xticks:[1,3,5,7,9,12],yticks:yt,
+      xlab:"grado del polinomio d",ylab:"MSE (escala log)",
+      title:"Curvas de error train (tinta) y test (dorado) según el grado"});
+    const ptr=[],pte=[];
+    for(let d2=1;d2<=DMAX;d2++){ptr.push([ax2.X(d2),ax2.Y(Math.log10(D.etr[d2]))]);
+      pte.push([ax2.X(d2),ax2.Y(Math.log10(D.ete[d2]))]);}
+    polyline(c.ctx,ptr,INK,1.8);
+    polyline(c.ctx,pte,GOLD,2.2);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax2.X(d),ax2.Y(Math.log10(D.ete[d])),5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=INK;c.ctx.beginPath();
+    c.ctx.arc(ax2.X(d),ax2.Y(Math.log10(D.etr[d])),4,0,7);c.ctx.fill();
+  }
+  updaters[0]=upd;
+})();
+
+/* ================= SLIDE 1 : weight decay (ridge) ================= */
+(function(){
+  const NTR=18,NTE=12,NOISE=0.12,DEG=10;
+  let seed=7,D=null;
+  function resample(){
+    const g=genSales(seed,NTR,NTE,NOISE);
+    const ttr=g.xtr.map(x=>2*x-1),tte=g.xte.map(x=>2*x-1);
+    const Xtr=buildX(ttr,DEG);
+    const lls=[],etr=[],ete=[],nws=[];
+    for(let ll=-7;ll<=1.0001;ll+=0.2){
+      const w=ridgeFit(Xtr,g.ytr,Math.pow(10,ll));
+      lls.push(ll);etr.push(mseP(w,ttr,g.ytr));ete.push(mseP(w,tte,g.yte));
+      nws.push(normW(w));}
+    const wRaw=ridgeFit(Xtr,g.ytr,1e-10);
+    D={g:g,ttr:ttr,tte:tte,Xtr:Xtr,lls:lls,etr:etr,ete:ete,nws:nws,wRaw:wRaw};
+  }
+  resample();
+  const sll=document.getElementById("sl1l");
+  document.getElementById("bt1").onclick=()=>{seed+=1;resample();upd();};
+  sll.oninput=upd;
+  function upd(){
+    const ll=+sll.value,lam=Math.pow(10,ll);
+    document.getElementById("r1l").textContent=ll.toFixed(1);
+    const w=ridgeFit(D.Xtr,D.g.ytr,lam);
+    const etr=mseP(w,D.ttr,D.g.ytr),ete=mseP(w,D.tte,D.g.yte);
+    document.getElementById("ro1").innerHTML=
+      "&lambda; = "+fmtG(lam,2)+" &nbsp;&middot;&nbsp; "+
+      "<span class='gold'>&#8214;w&#8214;<sub>2</sub> = "+fmtG(normW(w),3)+"</span>"+
+      " (sin regularizar: "+fmtG(normW(D.wRaw),3)+")"+
+      "<br>MSE train = "+fmtG(etr,3)+" &nbsp;&middot;&nbsp; "+
+      "<span class='gold'>MSE test = "+fmtG(ete,3)+"</span>";
+    /* top: fits */
+    let c=fitCanvas(document.getElementById("cv1a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:-0.2,ymax:2.3,
+      xticks:[[0,"10€"],[1/3,"20€"],[2/3,"30€"],[1,"40€"]],
+      yticks:[[0,"0"],[1,"1"],[2,"2"]],
+      xlab:"precio del artículo",ylab:"ventas (miles uds)",
+      title:"Grado 10 fijo: ajuste ridge (dorado) vs sin regularizar (gris)"});
+    const clamp=y=>Math.max(-0.2,Math.min(2.3,y));
+    const tr=[],raw=[],rid=[];
+    for(let i=0;i<=240;i++){const x=i/240,t=2*x-1;
+      tr.push([ax.X(x),ax.Y(clamp(ftrue(x)))]);
+      raw.push([ax.X(x),ax.Y(clamp(polyEval(D.wRaw,t)))]);
+      rid.push([ax.X(x),ax.Y(clamp(polyEval(w,t)))]);}
+    polyline(c.ctx,tr,INK,1.2,[5,4]);
+    polyline(c.ctx,raw,MUTE,1.4,[3,3]);
+    polyline(c.ctx,rid,GOLD,2.4);
+    c.ctx.fillStyle=INK;
+    D.g.xtr.forEach((x,i)=>{c.ctx.beginPath();
+      c.ctx.arc(ax.X(x),ax.Y(clamp(D.g.ytr[i])),3.5,0,7);c.ctx.fill();});
+    c.ctx.strokeStyle=MUTE;c.ctx.lineWidth=1.6;
+    D.g.xte.forEach((x,i)=>{c.ctx.beginPath();
+      c.ctx.arc(ax.X(x),ax.Y(clamp(D.g.yte[i])),3.5,0,7);c.ctx.stroke();});
+    /* bottom: paths vs lambda */
+    c=fitCanvas(document.getElementById("cv1b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    let lo=1e9,hi=-1e9;
+    D.lls.forEach((_,i)=>{lo=Math.min(lo,D.etr[i],D.ete[i]);
+      hi=Math.max(hi,D.etr[i],D.ete[i],D.nws[i]);});
+    const ymin=Math.floor(Math.log10(lo)),ymax=Math.ceil(Math.log10(hi));
+    const yt=[];for(let e=ymin;e<=ymax;e++)yt.push([e,"10"+(e<0?"⁻":"")+
+      String(Math.abs(e)).split("").map(ch=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]).join("")]);
+    const ax2=axes(c.ctx,fr2,{xmin:-7,xmax:1,ymin:ymin,ymax:ymax,
+      xticks:[[-7,"10⁻⁷"],[-5,"10⁻⁵"],[-3,"10⁻³"],[-1,"10⁻¹"],[1,"10"]],
+      yticks:yt,xlab:"λ (escala log)",ylab:"escala log",
+      title:"MSE train (tinta), MSE test (dorado) y ‖w‖₂ (dorado oscuro) según λ"});
+    polyline(c.ctx,D.lls.map((l,i)=>[ax2.X(l),ax2.Y(Math.log10(D.etr[i]))]),INK,1.8);
+    polyline(c.ctx,D.lls.map((l,i)=>[ax2.X(l),ax2.Y(Math.log10(D.ete[i]))]),GOLD,2.2);
+    polyline(c.ctx,D.lls.map((l,i)=>[ax2.X(l),ax2.Y(Math.log10(D.nws[i]))]),GOLDD,1.5,[6,3]);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax2.X(ll),ax2.Y(Math.log10(ete)),5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=GOLDD;c.ctx.beginPath();
+    c.ctx.arc(ax2.X(ll),ax2.Y(Math.log10(normW(w))),4,0,7);c.ctx.fill();
+  }
+  updaters[1]=upd;
+})();
+
+/* ================= SLIDE 2 : dropout ================= */
+(function(){
+  const H=8,NM=300,NG=90;
+  const rgw=mulberry32(2024);
+  const w1=[],b1=[],v=[];let c0;
+  for(let j=0;j<H;j++)w1.push(2.2*randn(rgw));
+  for(let j=0;j<H;j++)b1.push(1.2*randn(rgw));
+  for(let j=0;j<H;j++)v.push(0.9*randn(rgw));
+  c0=0.2*randn(rgw);
+  const xs=[],Hg=[]; // Hg[i][j]=tanh activation of hidden j at grid point i
+  for(let i=0;i<NG;i++){const x=i/(NG-1);xs.push(x);
+    const t=2*x-1,row=[];
+    for(let j=0;j<H;j++)row.push(Math.tanh(w1[j]*t+b1[j]));
+    Hg.push(row);}
+  function predMask(i,m,scale){let s=c0;
+    for(let j=0;j<H;j++)if(m[j])s+=scale*v[j]*Hg[i][j];return s;}
+  const full=[];for(let i=0;i<NG;i++){let s=c0;
+    for(let j=0;j<H;j++)s+=v[j]*Hg[i][j];full.push(s);}
+  let maskSeed=1;
+  const slp=document.getElementById("sl2p");
+  document.getElementById("bt2").onclick=()=>{maskSeed+=1;upd();};
+  slp.oninput=upd;
+  function upd(){
+    const p=+slp.value,keep=1-p,scale=p<1?1/keep:1;
+    document.getElementById("r2p").textContent=p.toFixed(2);
+    const rm=mulberry32(7000+maskSeed);
+    const mCur=[];for(let j=0;j<H;j++)mCur.push(rm()<keep?1:0);
+    const nAct=mCur.reduce((a,b)=>a+b,0);
+    /* MC ensemble over NM masks (fixed seed: reproducible) */
+    const re=mulberry32(999);
+    const sum=new Array(NG).fill(0),sq=new Array(NG).fill(0);
+    for(let k=0;k<NM;k++){const m=[];
+      for(let j=0;j<H;j++)m.push(re()<keep?1:0);
+      for(let i=0;i<NG;i++){const f=predMask(i,m,scale);
+        sum[i]+=f;sq[i]+=f*f;}}
+    const mean=sum.map(s=>s/NM);
+    const sd=sq.map((s,i)=>Math.sqrt(Math.max(0,s/NM-mean[i]*mean[i])));
+    let maxDiff=0,sdAvg=0;
+    for(let i=0;i<NG;i++){maxDiff=Math.max(maxDiff,Math.abs(mean[i]-full[i]));
+      sdAvg+=sd[i]/NG;}
+    document.getElementById("ro2").innerHTML=
+      "m&aacute;scara actual: <span class='gold'>"+nAct+"/"+H+" neuronas vivas</span>"+
+      " &nbsp;&middot;&nbsp; sub-redes posibles: 2&#8312; = 256"+
+      "<br>m&aacute;x |media MC &minus; red completa| = "+fmtG(maxDiff,2)+
+      " (&rarr; 0 con m&aacute;s m&aacute;scaras) &nbsp;&middot;&nbsp; "+
+      "<span class='deep'>sd media del ensemble = "+fmtG(sdAvg,2)+"</span>";
+    /* top: network */
+    let c=fitCanvas(document.getElementById("cv2a"));
+    const ctx=c.ctx;
+    const xIn=c.W*0.12,xHid=c.W*0.5,xOut=c.W*0.88,cy=c.H*0.52;
+    const yH=j=>c.H*0.10+ (c.H*0.82)*j/(H-1);
+    const maxw1=Math.max(...w1.map(Math.abs)),maxv=Math.max(...v.map(Math.abs));
+    for(let j=0;j<H;j++){
+      ctx.save();
+      ctx.globalAlpha=mCur[j]?0.85:0.18;
+      ctx.strokeStyle=mCur[j]?GOLDD:MUTE;
+      ctx.lineWidth=0.5+2.2*Math.abs(w1[j])/maxw1;
+      ctx.beginPath();ctx.moveTo(xIn+11,cy);ctx.lineTo(xHid-11,yH(j));ctx.stroke();
+      ctx.lineWidth=0.5+2.2*Math.abs(v[j])/maxv;
+      ctx.beginPath();ctx.moveTo(xHid+11,yH(j));ctx.lineTo(xOut-11,cy);ctx.stroke();
+      ctx.restore();}
+    ctx.fillStyle="#fff";ctx.strokeStyle=INK;ctx.lineWidth=1.4;
+    ctx.beginPath();ctx.arc(xIn,cy,11,0,7);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(xOut,cy,11,0,7);ctx.fill();ctx.stroke();
+    for(let j=0;j<H;j++){
+      ctx.fillStyle=mCur[j]?GOLD:"#f2f2f2";
+      ctx.strokeStyle=mCur[j]?GOLDD:MUTE;ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.arc(xHid,yH(j),11,0,7);ctx.fill();ctx.stroke();
+      if(!mCur[j]){ctx.strokeStyle=MUTE;ctx.lineWidth=1.6;
+        ctx.beginPath();ctx.moveTo(xHid-6,yH(j)-6);ctx.lineTo(xHid+6,yH(j)+6);
+        ctx.moveTo(xHid+6,yH(j)-6);ctx.lineTo(xHid-6,yH(j)+6);ctx.stroke();}}
+    ctx.fillStyle=INK;ctx.font="11px Georgia,serif";ctx.textAlign="center";
+    ctx.fillText("x (gasto)",xIn,cy+26);
+    ctx.fillText("score churn",xOut,cy+26);
+    ctx.textAlign="left";ctx.font="bold 12px Georgia,serif";
+    ctx.fillText("la sub-red del minibatch actual ("+nAct+"/"+H+" vivas)",10,16);
+    /* bottom: prediction curves */
+    c=fitCanvas(document.getElementById("cv2b"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    let lo=1e9,hi=-1e9;
+    for(let i=0;i<NG;i++){lo=Math.min(lo,full[i],mean[i]-sd[i]);
+      hi=Math.max(hi,full[i],mean[i]+sd[i]);}
+    const pad=0.15*(hi-lo)+0.1;lo-=pad;hi+=pad;
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:lo,ymax:hi,
+      xticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      yticks:[[Math.round(lo*10)/10,fmtG(Math.round(lo*10)/10,2)],[0,"0"],
+              [Math.round(hi*10)/10,fmtG(Math.round(hi*10)/10,2)]],
+      xlab:"gasto mensual (normalizado)",ylab:"score",
+      title:"Red completa (tinta) · sub-red actual (dorado) · media±sd de 300 máscaras"});
+    c.ctx.save();c.ctx.globalAlpha=0.18;c.ctx.fillStyle=GOLD;
+    c.ctx.beginPath();
+    for(let i=0;i<NG;i++){const X=ax.X(xs[i]),Y=ax.Y(mean[i]+sd[i]);
+      if(i===0)c.ctx.moveTo(X,Y);else c.ctx.lineTo(X,Y);}
+    for(let i=NG-1;i>=0;i--)c.ctx.lineTo(ax.X(xs[i]),ax.Y(mean[i]-sd[i]));
+    c.ctx.closePath();c.ctx.fill();c.ctx.restore();
+    const cm=[];for(let i=0;i<NG;i++)cm.push([ax.X(xs[i]),ax.Y(predMask(i,mCur,scale))]);
+    polyline(c.ctx,cm,GOLD,2.2);
+    polyline(c.ctx,xs.map((x,i)=>[ax.X(x),ax.Y(full[i])]),INK,2);
+    polyline(c.ctx,xs.map((x,i)=>[ax.X(x),ax.Y(mean[i])]),GOLDD,1.6,[6,4]);
+  }
+  updaters[2]=upd;
+})();
+
+/* ================= SLIDE 3 : batchnorm ================= */
+(function(){
+  const MU=3,SD=1.8,EPSBN=1e-5;
+  let seed=1;
+  const slB=document.getElementById("sl3B"),slg=document.getElementById("sl3g"),
+        slb=document.getElementById("sl3b");
+  document.getElementById("bt3").onclick=()=>{seed+=1;upd();};
+  slB.oninput=upd;slg.oninput=upd;slb.oninput=upd;
+  function upd(){
+    const B=Math.pow(2,+slB.value),gam=+slg.value,bet=+slb.value;
+    document.getElementById("r3B").textContent=B;
+    document.getElementById("r3g").textContent=gam.toFixed(2);
+    document.getElementById("r3b").textContent=bet.toFixed(1);
+    const rng=mulberry32(300+seed);
+    const a=[];for(let i=0;i<B;i++)a.push(MU+SD*randn(rng));
+    let muB=0;for(const x of a)muB+=x/B;
+    let s2B=0;for(const x of a)s2B+=(x-muB)*(x-muB)/B;
+    const ah=a.map(x=>(x-muB)/Math.sqrt(s2B+EPSBN));
+    const y=ah.map(z=>gam*z+bet);
+    let mAh=0,vAh=0,mY=0,vY=0;
+    for(const z of ah)mAh+=z/B;
+    for(const z of ah)vAh+=(z-mAh)*(z-mAh)/B;
+    for(const z of y)mY+=z/B;
+    for(const z of y)vY+=(z-mY)*(z-mY)/B;
+    document.getElementById("ro3").innerHTML=
+      "&mu;<sub>B</sub> = "+muB.toFixed(3)+" &nbsp;&middot;&nbsp; &sigma;<sub>B</sub><sup>2</sup> = "+s2B.toFixed(3)+
+      "<br>media(&acirc;) = "+mAh.toFixed(3)+" &nbsp;&middot;&nbsp; var(&acirc;) = "+vAh.toFixed(3)+
+      " (identidad exacta)"+
+      "<br><span class='gold'>media(y) = "+mY.toFixed(3)+" &asymp; &beta;</span> &nbsp;&middot;&nbsp; "+
+      "<span class='deep'>sd(y) = "+Math.sqrt(vY).toFixed(3)+" &asymp; &gamma;</span>";
+    /* top: histograms before/after */
+    let c=fitCanvas(document.getElementById("cv3a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const NB=36,xlo=-7,xhi=11,bw=(xhi-xlo)/NB;
+    const h1=new Array(NB).fill(0),h2=new Array(NB).fill(0);
+    a.forEach(x=>{const b=Math.floor((x-xlo)/bw);if(b>=0&&b<NB)h1[b]+=1/(B*bw);});
+    y.forEach(x=>{const b=Math.floor((x-xlo)/bw);if(b>=0&&b<NB)h2[b]+=1/(B*bw);});
+    const dmax=Math.max(...h1,...h2)*1.15+1e-9;
+    const ax=axes(c.ctx,fr,{xmin:xlo,xmax:xhi,ymin:0,ymax:dmax,
+      xticks:[[-4,"-4"],[0,"0"],[4,"4"],[8,"8"]],yticks:[],
+      xlab:"valor de la activación",ylab:"densidad",
+      title:"Antes (gris): media≈3, sd≈1.8 · Después de BN (dorado): γ·N(0,1)+β"});
+    c.ctx.fillStyle="#dcdcdc";
+    for(let b=0;b<NB;b++)if(h1[b]>0)
+      c.ctx.fillRect(ax.X(xlo+b*bw),ax.Y(h1[b]),ax.X(xlo+(b+1)*bw)-ax.X(xlo+b*bw)-1,
+        ax.Y(0)-ax.Y(h1[b]));
+    c.ctx.save();c.ctx.globalAlpha=0.62;c.ctx.fillStyle=GOLD;
+    for(let b=0;b<NB;b++)if(h2[b]>0)
+      c.ctx.fillRect(ax.X(xlo+b*bw),ax.Y(h2[b]),ax.X(xlo+(b+1)*bw)-ax.X(xlo+b*bw)-1,
+        ax.Y(0)-ax.Y(h2[b]));
+    c.ctx.restore();
+    polyline(c.ctx,[[ax.X(muB),fr.y0],[ax.X(muB),fr.y0+fr.h]],MUTE,1.2,[5,3]);
+    polyline(c.ctx,[[ax.X(bet),fr.y0],[ax.X(bet),fr.y0+fr.h]],GOLDD,1.2,[5,3]);
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillStyle=MUTE;c.ctx.fillText("μ_B",ax.X(muB)+3,fr.y0+12);
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("β",ax.X(bet)+3,fr.y0+24);
+    /* bottom: noise of mu_B across minibatches */
+    c=fitCanvas(document.getElementById("cv3b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const NREP=40,rng2=mulberry32(8000+seed);
+    const mus=[];
+    for(let r=0;r<NREP;r++){let m=0;
+      for(let i=0;i<B;i++)m+=(MU+SD*randn(rng2))/B;mus.push(m);}
+    const band=1.96*SD/Math.sqrt(B);
+    const ylo=MU-Math.max(2.2,band*1.3),yhi=MU+Math.max(2.2,band*1.3);
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:NREP+1,ymin:ylo,ymax:yhi,
+      xticks:[[10,"10"],[20,"20"],[30,"30"],[40,"40"]],
+      yticks:[[MU-2,fmtG(MU-2,2)],[MU,fmtG(MU,2)],[MU+2,fmtG(MU+2,2)]],
+      xlab:"minibatch n.º",ylab:"μ_B estimada",
+      title:"40 minibatches de tamaño B: el ruido de μ_B cae como 1/√B"});
+    c.ctx.save();c.ctx.globalAlpha=0.16;c.ctx.fillStyle=GOLD;
+    c.ctx.fillRect(fr2.x0,ax2.Y(MU+band),fr2.w,ax2.Y(MU-band)-ax2.Y(MU+band));
+    c.ctx.restore();
+    polyline(c.ctx,[[ax2.X(0),ax2.Y(MU)],[ax2.X(NREP+1),ax2.Y(MU)]],INK,1.2,[5,4]);
+    c.ctx.fillStyle=GOLD;
+    mus.forEach((m,r)=>{c.ctx.beginPath();
+      c.ctx.arc(ax2.X(r+1),ax2.Y(Math.max(ylo,Math.min(yhi,m))),3.5,0,7);c.ctx.fill();});
+    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("μ verdadera = 3   banda ±1.96σ/√B = ±"+fmtG(band,2),fr2.x0+8,fr2.y0+12);
+  }
+  updaters[3]=upd;
+})();
+
+/* ================= SLIDE 4 : early stopping ================= */
+(function(){
+  const DEG=11,NTR2=12,NVA=60,NOISE=0.35,LR=0.4,T=600;
+  function trainES(seed){
+    const rng=mulberry32(11+seed*17);
+    const xtr=[],xv=[];
+    for(let i=0;i<NTR2;i++)xtr.push(rng());
+    for(let i=0;i<NVA;i++)xv.push(rng());
+    xtr.sort((a,b)=>a-b);xv.sort((a,b)=>a-b);
+    const ytr=xtr.map(x=>ftrue(x)+NOISE*randn(rng));
+    const yv=xv.map(x=>ftrue(x)+NOISE*randn(rng));
+    const Xt=buildX(xtr.map(x=>2*x-1),DEG),Xv=buildX(xv.map(x=>2*x-1),DEG);
+    const m=DEG+1;let w=new Array(m).fill(0);
+    const tr=[],va=[],snap=[];
+    for(let t=0;t<T;t++){
+      const res=new Array(NTR2);
+      for(let i=0;i<NTR2;i++){let p=0;
+        for(let j=0;j<m;j++)p+=Xt[i][j]*w[j];res[i]=p-ytr[i];}
+      const g=new Array(m).fill(0);
+      for(let i=0;i<NTR2;i++)for(let j=0;j<m;j++)g[j]+=2*Xt[i][j]*res[i]/NTR2;
+      for(let j=0;j<m;j++)w[j]-=LR*g[j];
+      let et=0;for(let i=0;i<NTR2;i++){let p=0;
+        for(let j=0;j<m;j++)p+=Xt[i][j]*w[j];et+=(p-ytr[i])*(p-ytr[i])/NTR2;}
+      let ev=0;for(let i=0;i<NVA;i++){let p=0;
+        for(let j=0;j<m;j++)p+=Xv[i][j]*w[j];ev+=(p-yv[i])*(p-yv[i])/NVA;}
+      if(!isFinite(et)||!isFinite(ev))return null;
+      tr.push(et);va.push(ev);snap.push(w.slice());}
+    return {xtr:xtr,ytr:ytr,tr:tr,va:va,snap:snap};
+  }
+  function accept(r){if(!r)return false;
+    let vmin=1e18,am=0;
+    r.va.forEach((v,t)=>{if(v<vmin){vmin=v;am=t;}});
+    return r.va[T-1]/vmin>1.8 && am>=8 && am<=250;}
+  function findSeed(start){
+    let last=null;
+    for(let s=start;s<start+500;s++){const r=trainES(s);
+      if(r){last={seed:s,res:r};if(accept(r))return last;}}
+    return last;}
+  let cur=findSeed(0);
+  const slt=document.getElementById("sl4t"),slP=document.getElementById("sl4P");
+  document.getElementById("bt4").onclick=()=>{cur=findSeed(cur.seed+1);upd();};
+  slt.oninput=upd;slP.oninput=upd;
+  function upd(){
+    const t0=Math.min(+slt.value,T-1),P=+slP.value,R=cur.res;
+    document.getElementById("r4t").textContent=t0;
+    document.getElementById("r4P").textContent=P;
+    let vmin=1e18,am=0;
+    R.va.forEach((v,t)=>{if(v<vmin){vmin=v;am=t;}});
+    /* patience rule */
+    let best=R.va[0],cnt=0,tstar=T-1;
+    for(let t=1;t<T;t++){
+      if(R.va[t]<best){best=R.va[t];cnt=0;}
+      else{cnt++;if(cnt>=P){tstar=t;break;}}}
+    let ck=0,bv=1e18;
+    for(let t=0;t<=tstar;t++)if(R.va[t]<bv){bv=R.va[t];ck=t;}
+    const vt=R.va[t0],ok=vt<=1.05*vmin;
+    document.getElementById("ro4").innerHTML=
+      "V(t = "+t0+") = "+fmtG(vt,3)+" &nbsp;&middot;&nbsp; "+
+      "<span class='gold'>m&iacute;nimo de validaci&oacute;n: "+fmtG(vmin,3)+
+      " en la &eacute;poca "+am+"</span>"+
+      "<br>regla de patience (P = "+P+"): para en t<sup>&#9733;</sup> = "+tstar+
+      " y devuelve el checkpoint de la &eacute;poca "+ck+
+      " (V = "+fmtG(bv,3)+")";
+    document.getElementById("badge4").innerHTML= ok?
+      "<span class='badge ok'>parada buena: a "+fmtG(100*(vt/vmin-1),2)+
+      "% del m&iacute;nimo alcanzable</span>":
+      (t0<am?"<span class='badge bad'>demasiado pronto: el modelo a&uacute;n estaba aprendiendo (infraajuste)</span>"
+            :"<span class='badge bad'>demasiado tarde: llevas "+(t0-am)+
+             " &eacute;pocas memorizando ruido</span>");
+    /* top: loss curves */
+    let c=fitCanvas(document.getElementById("cv4a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    let lo=1e9,hi=-1e9;
+    for(let t=0;t<T;t++){lo=Math.min(lo,R.tr[t],R.va[t]);hi=Math.max(hi,R.tr[t],R.va[t]);}
+    const ymin=Math.floor(Math.log10(lo)),ymax=Math.ceil(Math.log10(hi));
+    const yt=[];for(let e=ymin;e<=ymax;e++)yt.push([e,"10"+(e<0?"⁻":"")+
+      String(Math.abs(e)).split("").map(ch=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]).join("")]);
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:T,ymin:ymin,ymax:ymax,
+      xticks:[100,200,300,400,500,600],yticks:yt,
+      xlab:"época",ylab:"pérdida (log)",
+      title:"Train (tinta) baja siempre; validación (dorado) hace su U"});
+    polyline(c.ctx,[[ax.X(am),fr.y0],[ax.X(am),fr.y0+fr.h]],GOLDD,1.2,[5,3]);
+    polyline(c.ctx,R.tr.map((v,t)=>[ax.X(t),ax.Y(Math.log10(v))]),INK,1.7);
+    polyline(c.ctx,R.va.map((v,t)=>[ax.X(t),ax.Y(Math.log10(v))]),GOLD,2.2);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(t0),ax.Y(Math.log10(vt)),5.5,0,7);c.ctx.fill();
+    /* patience marker: diamond */
+    c.ctx.fillStyle=GOLDD;c.ctx.save();
+    c.ctx.translate(ax.X(tstar),ax.Y(Math.log10(R.va[tstar])));
+    c.ctx.rotate(Math.PI/4);c.ctx.fillRect(-4.5,-4.5,9,9);c.ctx.restore();
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("mín. val",ax.X(am)+4,fr.y0+12);
+    c.ctx.fillText("◆ t* (patience)",fr.x0+fr.w-92,fr.y0+12);
+    /* bottom: fit at chosen epoch */
+    c=fitCanvas(document.getElementById("cv4b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:1,ymin:-0.6,ymax:2.6,
+      xticks:[[0,"10€"],[1/3,"20€"],[2/3,"30€"],[1,"40€"]],
+      yticks:[[0,"0"],[1,"1"],[2,"2"]],
+      xlab:"precio del artículo",ylab:"ventas (miles uds)",
+      title:"El modelo que tendrías parando en la época "+t0});
+    const clamp=y=>Math.max(-0.6,Math.min(2.6,y));
+    const tr2=[],fit=[];
+    for(let i=0;i<=240;i++){const x=i/240;
+      tr2.push([ax2.X(x),ax2.Y(clamp(ftrue(x)))]);
+      fit.push([ax2.X(x),ax2.Y(clamp(polyEval(R.snap[t0],2*x-1)))]);}
+    polyline(c.ctx,tr2,INK,1.2,[5,4]);
+    polyline(c.ctx,fit,GOLD,2.4);
+    c.ctx.fillStyle=INK;
+    R.xtr.forEach((x,i)=>{c.ctx.beginPath();
+      c.ctx.arc(ax2.X(x),ax2.Y(clamp(R.ytr[i])),3.5,0,7);c.ctx.fill();});
+  }
+  updaters[4]=upd;
+})();
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 5 : LR schedules ================= */
+(function(){
+  const A1=1,A2=8,TH0=[2.5,1.2],SIGN=0.35;
+  let noiseSeed=1;
+  const sle=document.getElementById("sl5e"),slT=document.getElementById("sl5T"),
+        slw=document.getElementById("sl5w");
+  document.getElementById("bt5").onclick=()=>{noiseSeed+=1;upd();};
+  sle.oninput=upd;slT.oninput=upd;slw.oninput=upd;
+  function schedEta(kind,t,T,e0,Tw){
+    if(kind===0)return e0;
+    if(kind===1)return e0*Math.pow(0.1,Math.floor(3*t/T));
+    if(kind===2)return 0.5*e0*(1+Math.cos(Math.PI*t/T));
+    if(t<Tw)return Tw>0?e0*t/Tw:e0;
+    return 0.5*e0*(1+Math.cos(Math.PI*(t-Tw)/(T-Tw)));
+  }
+  function runSched(kind,T,e0,Tw){
+    const rng=mulberry32(600+noiseSeed);
+    const th=[TH0[0],TH0[1]],L=[];
+    for(let t=0;t<T;t++){
+      const eta=schedEta(kind,t,T,e0,Tw);
+      const g1=A1*th[0]+SIGN*randn(rng),g2=A2*th[1]+SIGN*randn(rng);
+      th[0]-=eta*g1;th[1]-=eta*g2;
+      let l=0.5*(A1*th[0]*th[0]+A2*th[1]*th[1]);
+      if(!isFinite(l))l=1e8;
+      L.push(Math.max(l,1e-9));}
+    return L;
+  }
+  function upd(){
+    const le=+sle.value,e0=Math.pow(10,le),T=+slT.value,
+          wp=+slw.value,Tw=Math.round(T*wp/100);
+    document.getElementById("r5e").textContent=le.toFixed(2);
+    document.getElementById("r5T").textContent=T;
+    document.getElementById("r5w").textContent=wp;
+    const names=["constante","step","cosine","warmup+cos"],
+          cols=[MUTE,INK,GOLD,GOLDD],
+          dashes=[[5,4],null,null,[7,3]];
+    const Ls=[0,1,2,3].map(k=>runSched(k,T,e0,Tw));
+    let html="p&eacute;rdida final &mdash; ";
+    let bestK=0;for(let k=1;k<4;k++)if(Ls[k][T-1]<Ls[bestK][T-1])bestK=k;
+    [0,1,2,3].forEach(k=>{
+      const v=fmtG(Ls[k][T-1],2);
+      html+=(k===bestK?"<span class='gold'>"+names[k]+": "+v+" &#9733;</span>"
+                      :names[k]+": "+v)+(k<3?" &nbsp;&middot;&nbsp; ":"");});
+    html+="<br>&eta;<sub>max</sub> = "+fmtG(e0,2)+" &nbsp;&middot;&nbsp; T<sub>w</sub> = "+
+      Tw+" iteraciones &nbsp;&middot;&nbsp; misma semilla de ruido para los cuatro";
+    document.getElementById("ro5").innerHTML=html;
+    /* top: eta(t) */
+    let c=fitCanvas(document.getElementById("cv5a"));
+    const fr={x0:56,y0:24,w:c.W-74,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:T,ymin:0,ymax:e0*1.1,
+      xticks:[[Math.round(T/4),String(Math.round(T/4))],
+              [Math.round(T/2),String(Math.round(T/2))],
+              [Math.round(3*T/4),String(Math.round(3*T/4))],[T,String(T)]],
+      yticks:[[0,"0"],[e0/2,fmtG(e0/2,2)],[e0,fmtG(e0,2)]],
+      xlab:"iteración t",ylab:"η(t)",
+      title:"Los cuatro schedules, con sus fórmulas exactas"});
+    [0,1,2,3].forEach(k=>{
+      const pts=[];for(let t=0;t<T;t++)
+        pts.push([ax.X(t),ax.Y(schedEta(k,t,T,e0,Tw))]);
+      polyline(c.ctx,pts,cols[k],k===2?2.4:1.7,dashes[k]);});
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    [0,1,2,3].forEach(k=>{c.ctx.fillStyle=cols[k];
+      c.ctx.fillText(names[k],fr.x0+fr.w-86,fr.y0+14+13*k);});
+    /* bottom: losses */
+    c=fitCanvas(document.getElementById("cv5b"));
+    const fr2={x0:56,y0:24,w:c.W-74,h:c.H-62};
+    let lo=1e9,hi=-1e9;
+    Ls.forEach(L=>L.forEach(v=>{lo=Math.min(lo,v);hi=Math.max(hi,v);}));
+    const ymin=Math.floor(Math.log10(lo)),ymax=Math.ceil(Math.log10(hi));
+    const yt=[];for(let e=ymin;e<=ymax;e+=Math.max(1,Math.round((ymax-ymin)/5)))
+      yt.push([e,"10"+(e<0?"⁻":"")+
+      String(Math.abs(e)).split("").map(ch=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]).join("")]);
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:T,ymin:ymin,ymax:ymax,
+      xticks:[[Math.round(T/2),String(Math.round(T/2))],[T,String(T)]],
+      yticks:yt,xlab:"iteración t",ylab:"pérdida (log)",
+      title:"Misma cuadrática, mismo ruido: la pérdida que logra cada schedule"});
+    [0,1,2,3].forEach(k=>{
+      polyline(c.ctx,Ls[k].map((v,t)=>[ax2.X(t),ax2.Y(Math.log10(v))]),
+        cols[k],k===2?2.4:1.7,dashes[k]);});
+  }
+  updaters[5]=upd;
+})();
+
+/* ================= SLIDE 6 : batch size ================= */
+(function(){
+  const A1=1,A2=6,SIG=3,T=120,TH0=[2.4,1.5];
+  let trajSeed=1;
+  const slB=document.getElementById("sl6B"),sle=document.getElementById("sl6e");
+  document.getElementById("bt6").onclick=()=>{trajSeed+=1;upd();};
+  slB.oninput=upd;sle.oninput=upd;
+  function runTraj(k,B,eta){
+    const rng=mulberry32(1700+trajSeed*31+k);
+    const sd=SIG/Math.sqrt(B);
+    const th=[TH0[0],TH0[1]],pts=[[th[0],th[1]]],L=[];
+    for(let t=0;t<T;t++){
+      const g1=A1*th[0]+sd*randn(rng),g2=A2*th[1]+sd*randn(rng);
+      th[0]-=eta*g1;th[1]-=eta*g2;
+      pts.push([th[0],th[1]]);
+      L.push(Math.max(0.5*(A1*th[0]*th[0]+A2*th[1]*th[1]),1e-7));}
+    return {pts:pts,L:L};
+  }
+  function upd(){
+    const B=Math.pow(2,+slB.value),eta=+sle.value;
+    document.getElementById("r6B").textContent=B;
+    document.getElementById("r6e").textContent=eta.toFixed(3);
+    const cols=[GOLD,GOLDD,MUTE];
+    const runs=[0,1,2].map(k=>runTraj(k,B,eta));
+    const Lmean=[];for(let t=0;t<T;t++)
+      Lmean.push((runs[0].L[t]+runs[1].L[t]+runs[2].L[t])/3);
+    document.getElementById("ro6").innerHTML=
+      "ruido por paso y componente: &sigma;/&radic;B = "+fmtG(SIG/Math.sqrt(B),3)+
+      " &nbsp;&middot;&nbsp; <span class='gold'>p&eacute;rdida final media = "+
+      fmtG(Lmean[T-1],2)+"</span>"+
+      "<br>coste del run: B&times;T = "+(B*T)+" ejemplos procesados en "+T+" pasos";
+    /* top: contours + trajectories */
+    let c=fitCanvas(document.getElementById("cv6a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-58};
+    const ax=axes(c.ctx,fr,{xmin:-3.2,xmax:3.2,ymin:-2.1,ymax:2.1,
+      xticks:[[-2,"-2"],[0,"0"],[2,"2"]],yticks:[[-1,"-1"],[0,"0"],[1,"1"]],
+      xlab:"θ₁",ylab:"θ₂",
+      title:"Curvas de nivel de la pérdida y 3 trayectorias SGD (semillas distintas)"});
+    c.ctx.save();
+    [0.1,0.3,0.8,2,4,7].forEach((L,i)=>{
+      const rx=Math.sqrt(2*L/A1),ry=Math.sqrt(2*L/A2);
+      c.ctx.strokeStyle=rampColor(0.12+0.07*i);c.ctx.lineWidth=1;
+      c.ctx.beginPath();
+      c.ctx.ellipse(ax.X(0),ax.Y(0),ax.X(rx)-ax.X(0),ax.Y(0)-ax.Y(ry),0,0,7);
+      c.ctx.stroke();});
+    c.ctx.restore();
+    runs.forEach((r,k)=>{
+      polyline(c.ctx,r.pts.map(p=>[ax.X(Math.max(-3.2,Math.min(3.2,p[0]))),
+        ax.Y(Math.max(-2.1,Math.min(2.1,p[1])))]),cols[k],1.4);
+      const last=r.pts[r.pts.length-1];
+      c.ctx.fillStyle=cols[k];c.ctx.beginPath();
+      c.ctx.arc(ax.X(Math.max(-3.2,Math.min(3.2,last[0]))),
+        ax.Y(Math.max(-2.1,Math.min(2.1,last[1]))),4,0,7);c.ctx.fill();});
+    c.ctx.fillStyle=INK;c.ctx.beginPath();
+    c.ctx.arc(ax.X(TH0[0]),ax.Y(TH0[1]),4.5,0,7);c.ctx.fill();
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("inicio",ax.X(TH0[0])+6,ax.Y(TH0[1])-6);
+    c.ctx.fillText("óptimo (0,0)",ax.X(0)+6,ax.Y(0)+14);
+    /* bottom: loss curves */
+    c=fitCanvas(document.getElementById("cv6b"));
+    const fr2={x0:56,y0:24,w:c.W-74,h:c.H-62};
+    let lo=1e9,hi=-1e9;
+    runs.forEach(r=>r.L.forEach(v=>{lo=Math.min(lo,v);hi=Math.max(hi,v);}));
+    const ymin=Math.floor(Math.log10(lo)),ymax=Math.ceil(Math.log10(hi));
+    const yt=[];for(let e=ymin;e<=ymax;e+=Math.max(1,Math.round((ymax-ymin)/4)))
+      yt.push([e,"10"+(e<0?"⁻":"")+
+      String(Math.abs(e)).split("").map(ch=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]).join("")]);
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:T,ymin:ymin,ymax:ymax,
+      xticks:[[40,"40"],[80,"80"],[120,"120"]],yticks:yt,
+      xlab:"iteración t",ylab:"pérdida (log)",
+      title:"La pérdida de cada trayectoria y su media (dorado grueso)"});
+    runs.forEach((r,k)=>{
+      polyline(c.ctx,r.L.map((v,t)=>[ax2.X(t),ax2.Y(Math.log10(v))]),cols[k],1);});
+    polyline(c.ctx,Lmean.map((v,t)=>[ax2.X(t),ax2.Y(Math.log10(v))]),GOLD,2.6);
+  }
+  updaters[6]=upd;
+})();
+
+/* ================= SLIDE 7 : dashboard ================= */
+(function(){
+  const DEG=11,NTR2=14,NVA=60,NOISE=0.3,T=400,WD=1e-4;
+  /* fixed dataset (seed chosen so the default run is healthy) */
+  const rng0=mulberry32(905);
+  const xtr=[],xv=[];
+  for(let i=0;i<NTR2;i++)xtr.push(rng0());
+  for(let i=0;i<NVA;i++)xv.push(rng0());
+  xtr.sort((a,b)=>a-b);xv.sort((a,b)=>a-b);
+  const ytr=xtr.map(x=>ftrue(x)+NOISE*randn(rng0));
+  const yv=xv.map(x=>ftrue(x)+NOISE*randn(rng0));
+  const Xt=buildX(xtr.map(x=>2*x-1),DEG),Xv=buildX(xv.map(x=>2*x-1),DEG);
+  let mv=0;for(const y of yv)mv+=y/NVA;
+  let varYv=0;for(const y of yv)varYv+=(y-mv)*(y-mv)/NVA;
+  function trainDash(etamax,clipOn,cClip){
+    const m=DEG+1;let w=new Array(m).fill(0);
+    const tr=[],va=[],gn=[],lr=[],r2=[];let broken=-1,nclip=0;
+    for(let t=0;t<T;t++){
+      const eta=0.5*etamax*(1+Math.cos(Math.PI*t/T));
+      const res=new Array(NTR2);
+      for(let i=0;i<NTR2;i++){let p=0;
+        for(let j=0;j<m;j++)p+=Xt[i][j]*w[j];res[i]=p-ytr[i];}
+      const g=new Array(m).fill(0);
+      for(let i=0;i<NTR2;i++)for(let j=0;j<m;j++)g[j]+=2*Xt[i][j]*res[i]/NTR2;
+      for(let j=1;j<m;j++)g[j]+=2*WD*w[j];
+      let gnorm=0;for(const v of g)gnorm+=v*v;gnorm=Math.sqrt(gnorm);
+      if(!isFinite(gnorm)){broken=t;break;}
+      gn.push(gnorm);lr.push(eta);
+      if(clipOn&&gnorm>cClip){const f=cClip/gnorm;
+        for(let j=0;j<m;j++)g[j]*=f;nclip++;}
+      for(let j=0;j<m;j++)w[j]-=eta*g[j];
+      let et=0;for(let i=0;i<NTR2;i++){let p=0;
+        for(let j=0;j<m;j++)p+=Xt[i][j]*w[j];et+=(p-ytr[i])*(p-ytr[i])/NTR2;}
+      let ev=0;for(let i=0;i<NVA;i++){let p=0;
+        for(let j=0;j<m;j++)p+=Xv[i][j]*w[j];ev+=(p-yv[i])*(p-yv[i])/NVA;}
+      if(!isFinite(et)||!isFinite(ev)||et>1e12){broken=t;break;}
+      tr.push(Math.max(et,1e-9));va.push(Math.max(ev,1e-9));
+      r2.push(1-ev/varYv);}
+    return {tr:tr,va:va,gn:gn,lr:lr,r2:r2,broken:broken,nclip:nclip};
+  }
+  const sle=document.getElementById("sl7e"),slc=document.getElementById("sl7c"),
+        ck=document.getElementById("ck7");
+  sle.oninput=upd;slc.oninput=upd;ck.onchange=upd;
+  function panel(ctx,fr,opt){return axes(ctx,fr,opt);}
+  function upd(){
+    const le=+sle.value,etamax=Math.pow(10,le),cClip=+slc.value,clipOn=ck.checked;
+    document.getElementById("r7e").textContent=le.toFixed(2);
+    document.getElementById("r7c").textContent=cClip.toFixed(1);
+    const R=trainDash(etamax,clipOn,cClip);
+    const nEp=R.tr.length;
+    const healthy=R.broken<0&&nEp>0;
+    let bestEp=0,bestV=1e18;
+    R.va.forEach((v,t)=>{if(v<bestV){bestV=v;bestEp=t;}});
+    const gmax=R.gn.length?Math.max(...R.gn):NaN;
+    document.getElementById("ro7").innerHTML= nEp>0?
+      "mejor val: &eacute;poca "+bestEp+" (L<sub>val</sub> = "+fmtG(bestV,3)+")"+
+      " &nbsp;&middot;&nbsp; m&aacute;x &#8214;g&#8214; = "+fmtG(gmax,3)+
+      "<br>&eacute;pocas con recorte: "+fmtG(100*R.nclip/Math.max(1,R.gn.length),2)+
+      "% &nbsp;&middot;&nbsp; <span class='gold'>R<sup>2</sup> final = "+
+      (healthy?fmtG(R.r2[nEp-1],3):"&mdash;")+"</span>":
+      "divergencia inmediata: ninguna &eacute;poca v&aacute;lida";
+    document.getElementById("badge7").innerHTML= healthy?
+      "<span class='badge ok'>run sano: "+T+" &eacute;pocas completadas</span>":
+      "<span class='badge bad'>run roto: divergencia en la &eacute;poca "+
+      Math.max(0,R.broken)+"</span>";
+    const logTicks=(ymin,ymax,step)=>{const yt=[];
+      for(let e=ymin;e<=ymax;e+=step)yt.push([e,"10"+(e<0?"⁻":"")+
+        String(Math.abs(e)).split("").map(ch=>"⁰¹²³⁴⁵⁶⁷⁸⁹"[+ch]).join("")]);
+      return yt;};
+    /* canvas A: losses + grad norm */
+    let c=fitCanvas(document.getElementById("cv7a"));
+    const wHalf=(c.W-30)/2;
+    const frL={x0:50,y0:24,w:wHalf-56,h:c.H-60};
+    const frG={x0:wHalf+44,y0:24,w:wHalf-56,h:c.H-60};
+    if(nEp>0){
+      let lo=1e9,hi=-1e9;
+      for(let t=0;t<nEp;t++){lo=Math.min(lo,R.tr[t],R.va[t]);
+        hi=Math.max(hi,R.tr[t],R.va[t]);}
+      const y0=Math.floor(Math.log10(lo)),y1=Math.ceil(Math.log10(hi));
+      const axL=panel(c.ctx,frL,{xmin:0,xmax:T,ymin:y0,ymax:y1,
+        xticks:[[200,"200"],[400,"400"]],
+        yticks:logTicks(y0,y1,Math.max(1,Math.round((y1-y0)/4))),
+        xlab:"época",title:"1 · L_train (tinta) y L_val (dorado)"});
+      polyline(c.ctx,R.tr.map((v,t)=>[axL.X(t),axL.Y(Math.log10(v))]),INK,1.5);
+      polyline(c.ctx,R.va.map((v,t)=>[axL.X(t),axL.Y(Math.log10(v))]),GOLD,2);
+      if(R.broken>=0)polyline(c.ctx,[[axL.X(R.broken),frL.y0],
+        [axL.X(R.broken),frL.y0+frL.h]],INK,1.2,[3,3]);
+    }else{
+      panel(c.ctx,frL,{xmin:0,xmax:T,ymin:0,ymax:1,xticks:[],yticks:[],
+        xlab:"época",title:"1 · L_train y L_val — sin datos (divergencia)"});}
+    if(R.gn.length>0){
+      let lo=Math.min(...R.gn,cClip),hi=Math.max(...R.gn,cClip);
+      const y0=Math.floor(Math.log10(Math.max(lo,1e-9))),
+            y1=Math.ceil(Math.log10(hi));
+      const axG=panel(c.ctx,frG,{xmin:0,xmax:T,ymin:y0,ymax:Math.max(y1,y0+1),
+        xticks:[[200,"200"],[400,"400"]],
+        yticks:logTicks(y0,Math.max(y1,y0+1),Math.max(1,Math.round((y1-y0)/4))),
+        xlab:"época",title:"2 · ‖g‖₂ pre-clip (log) y tope c"});
+      if(clipOn)polyline(c.ctx,[[axG.X(0),axG.Y(Math.log10(cClip))],
+        [axG.X(T),axG.Y(Math.log10(cClip))]],GOLDD,1.4,[6,3]);
+      polyline(c.ctx,R.gn.map((v,t)=>[axG.X(t),axG.Y(Math.log10(Math.max(v,1e-9)))]),
+        GOLD,1.8);
+    }else{
+      panel(c.ctx,frG,{xmin:0,xmax:T,ymin:0,ymax:1,xticks:[],yticks:[],
+        xlab:"época",title:"2 · ‖g‖₂ — sin datos"});}
+    /* canvas B: R2 + lr */
+    c=fitCanvas(document.getElementById("cv7b"));
+    const frR={x0:50,y0:24,w:wHalf-56,h:c.H-60};
+    const frE={x0:wHalf+44,y0:24,w:wHalf-56,h:c.H-60};
+    const axR=panel(c.ctx,frR,{xmin:0,xmax:T,ymin:-0.2,ymax:1,
+      xticks:[[200,"200"],[400,"400"]],
+      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      xlab:"época",title:"3 · métrica de negocio: R² val"});
+    if(nEp>0)polyline(c.ctx,R.r2.map((v,t)=>[axR.X(t),
+      axR.Y(Math.max(-0.2,Math.min(1,v)))]),GOLD,2);
+    polyline(c.ctx,[[axR.X(0),axR.Y(0)],[axR.X(T),axR.Y(0)]],MUTE,1,[4,3]);
+    const axE=panel(c.ctx,frE,{xmin:0,xmax:T,ymin:0,ymax:etamax*1.1,
+      xticks:[[200,"200"],[400,"400"]],
+      yticks:[[0,"0"],[etamax,fmtG(etamax,2)]],
+      xlab:"época",title:"4 · lr efectivo η_t (medio coseno)"});
+    if(R.lr.length>0)polyline(c.ctx,R.lr.map((v,t)=>[axE.X(t),axE.Y(v)]),GOLD,2);
+  }
+  updaters[7]=upd;
+})();
+
+/* ================= SLIDE 8 : tracker ================= */
+(function(){
+  const NTRC=250,NVAC=150,EPOCHS=6; /* pocas épocas a propósito: el efecto semilla queda visible */
+  /* fixed synthetic churn dataset */
+  const rgd=mulberry32(31);
+  function genSet(n){const X=[],Y=[];
+    for(let i=0;i<n;i++){const churn=i%2===0?1:0;
+      const cx=churn?-0.9:0.9,cy=churn?-0.7:0.8;
+      X.push([cx+randn(rgd),cy+randn(rgd)]);Y.push(churn);}
+    return {X:X,Y:Y};}
+  const TR=genSet(NTRC),VA=genSet(NVAC);
+  const sig=z=>1/(1+Math.exp(-z));
+  function trainRun(eta,lam,B,seed){
+    const rng=mulberry32(seed);
+    let w=[2.0*randn(rng),2.0*randn(rng)],b=0;
+    const idx=[];for(let i=0;i<NTRC;i++)idx.push(i);
+    for(let ep=0;ep<EPOCHS;ep++){
+      for(let i=NTRC-1;i>0;i--){const j=Math.floor(rng()*(i+1));
+        const t=idx[i];idx[i]=idx[j];idx[j]=t;}
+      for(let s=0;s<NTRC;s+=B){
+        const end=Math.min(s+B,NTRC),nb=end-s;
+        let g0=0,g1=0,gb=0;
+        for(let q=s;q<end;q++){const i=idx[q];
+          const e=sig(w[0]*TR.X[i][0]+w[1]*TR.X[i][1]+b)-TR.Y[i];
+          g0+=e*TR.X[i][0]/nb;g1+=e*TR.X[i][1]/nb;gb+=e/nb;}
+        g0+=2*lam*w[0];g1+=2*lam*w[1];
+        w[0]-=eta*g0;w[1]-=eta*g1;b-=eta*gb;}}
+    let ll=0,acc=0;
+    for(let i=0;i<NVAC;i++){
+      let p=sig(w[0]*VA.X[i][0]+w[1]*VA.X[i][1]+b);
+      p=Math.min(1-1e-12,Math.max(1e-12,p));
+      ll-=(VA.Y[i]*Math.log(p)+(1-VA.Y[i])*Math.log(1-p))/NVAC;
+      if((p>0.5?1:0)===VA.Y[i])acc+=1/NVAC;}
+    return {w:w,b:b,loss:ll,acc:acc};
+  }
+  const runs=[];
+  const rgSeed=mulberry32(777);
+  const sle=document.getElementById("sl8e"),sll=document.getElementById("sl8l"),
+        slB=document.getElementById("sl8B"),ck=document.getElementById("ck8");
+  let runCount=0;
+  function launch(){
+    const le=+sle.value,llam=+sll.value,B=Math.pow(2,+slB.value);
+    const eta=Math.pow(10,le),lam=Math.pow(10,llam);
+    const seed=ck.checked?42:(1+Math.floor(rgSeed()*100000));
+    runCount+=1;
+    const r=trainRun(eta,lam,B,seed);
+    runs.push({id:runCount,eta:eta,lam:lam,B:B,seed:seed,
+               loss:r.loss,acc:r.acc,w:r.w,b:r.b});
+    if(runs.length>14)runs.shift();
+    upd();
+  }
+  document.getElementById("bt8").onclick=launch;
+  document.getElementById("bt8r").onclick=()=>{runs.length=0;upd();};
+  sle.oninput=showCfg;sll.oninput=showCfg;slB.oninput=showCfg;ck.onchange=showCfg;
+  function showCfg(){
+    document.getElementById("r8e").textContent=(+sle.value).toFixed(2);
+    document.getElementById("r8l").textContent=(+sll.value).toFixed(1);
+    document.getElementById("r8B").textContent=Math.pow(2,+slB.value);
+    if(updaters[8]&&cur===8)drawOnly();
+  }
+  function bestIdx(){let bi=-1,bv=1e18;
+    runs.forEach((r,i)=>{if(r.loss<bv){bv=r.loss;bi=i;}});return bi;}
+  function drawOnly(){
+    const bi=bestIdx();
+    /* table */
+    const tbl=document.getElementById("tbl8");
+    let html="<tr><th>run</th><th>&eta;</th><th>&lambda;</th><th>B</th>"+
+      "<th>semilla</th><th>val-loss</th><th>val-acc</th></tr>";
+    runs.forEach((r,i)=>{
+      html+="<tr"+(i===bi?" style='background:var(--goldPale)'":"")+">"+
+        "<td>#"+r.id+(i===bi?" &#9733;":"")+"</td>"+
+        "<td>"+fmtG(r.eta,2)+"</td><td>"+fmtG(r.lam,1)+"</td><td>"+r.B+"</td>"+
+        "<td>"+r.seed+"</td><td>"+r.loss.toFixed(4)+"</td>"+
+        "<td>"+(100*r.acc).toFixed(1)+"%</td></tr>";});
+    tbl.innerHTML=html;
+    const last=runs[runs.length-1];
+    document.getElementById("ro8").innerHTML= runs.length?
+      "&uacute;ltimo run #"+last.id+": val-loss = "+last.loss.toFixed(4)+
+      ", acc = "+(100*last.acc).toFixed(1)+"%"+
+      " &nbsp;&middot;&nbsp; <span class='gold'>mejor: run #"+runs[bi].id+
+      " (val-loss "+runs[bi].loss.toFixed(4)+")</span>"+
+      (runs.length>=14?"<br><span class='mut'>tabla limitada a los 14 runs m&aacute;s recientes</span>":""):
+      "tabla vac&iacute;a: configura los sliders y pulsa &laquo;lanzar run&raquo;";
+    /* canvas A: validation scatter + boundaries */
+    let c=fitCanvas(document.getElementById("cv8a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-58};
+    const ax=axes(c.ctx,fr,{xmin:-3.6,xmax:3.6,ymin:-3.4,ymax:3.4,
+      xticks:[[-2,"-2"],[0,"0"],[2,"2"]],yticks:[[-2,"-2"],[0,"0"],[2,"2"]],
+      xlab:"minutos de uso (estandarizado)",ylab:"antigüedad (est.)",
+      title:"Clientes de validación: churn (dorado) vs se queda (tinta)"});
+    for(let i=0;i<NVAC;i++){
+      const px=ax.X(Math.max(-3.6,Math.min(3.6,VA.X[i][0]))),
+            py=ax.Y(Math.max(-3.4,Math.min(3.4,VA.X[i][1])));
+      if(VA.Y[i]===1){c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+        c.ctx.arc(px,py,3,0,7);c.ctx.fill();}
+      else{c.ctx.strokeStyle=INK;c.ctx.lineWidth=1.1;c.ctx.beginPath();
+        c.ctx.arc(px,py,3,0,7);c.ctx.stroke();}}
+    function boundary(r,col,dash,lw){
+      if(Math.abs(r.w[1])<1e-9)return;
+      const pts=[];
+      for(let i=0;i<=80;i++){const x1=-3.6+7.2*i/80;
+        const x2=-(r.b+r.w[0]*x1)/r.w[1];
+        pts.push([ax.X(x1),x2>=-3.4&&x2<=3.4?ax.Y(x2):NaN]);}
+      polyline(c.ctx,pts,col,lw,dash);}
+    if(runs.length){boundary(runs[runs.length-1],GOLD,null,2.2);
+      if(bi>=0&&bi!==runs.length-1)boundary(runs[bi],GOLDD,[6,4],1.6);}
+    /* canvas B: loss per run */
+    c=fitCanvas(document.getElementById("cv8b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-60};
+    let hi=0.8;runs.forEach(r=>{hi=Math.max(hi,Math.min(r.loss,3));});
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:Math.max(8,runs.length+1),ymin:0,ymax:hi*1.1,
+      xticks:runs.map((r,i)=>[i+1,"#"+r.id]).filter((_,i)=>i%2===(runs.length%2===0?1:0)),
+      yticks:[[0,"0"],[Math.round(hi*0.5*100)/100,fmtG(hi*0.5,2)],
+              [Math.round(hi*100)/100,fmtG(hi,2)]],
+      xlab:"run lanzado",ylab:"val-loss",
+      title:"La vista de tracker: val-loss de cada run, mejor marcado"});
+    if(bi>=0)polyline(c.ctx,[[ax2.X(0),ax2.Y(runs[bi].loss)],
+      [ax2.X(Math.max(8,runs.length+1)),ax2.Y(runs[bi].loss)]],RULE,1.2,[4,3]);
+    runs.forEach((r,i)=>{
+      c.ctx.fillStyle=i===bi?GOLD:MUTE;c.ctx.beginPath();
+      c.ctx.arc(ax2.X(i+1),ax2.Y(Math.min(r.loss,hi)),i===bi?5.5:4,0,7);c.ctx.fill();});
+  }
+  function upd(){showCfg();drawOnly();}
+  /* one default run so the slide never starts empty */
+  launch();
+  updaters[8]=upd;
+})();
+
+/* ================= SLIDE 9 : glosario ================= */
+(function(){
+  const G=[
+   ["overfitting","memorizar el ruido del train: error de train bajo, error de test alto. La brecha entre ambas curvas es su medida."],
+   ["capacidad efectiva","cuánto puede realmente flexionarse el modelo: crece con el grado/neuronas y decrece con λ, dropout y menos épocas."],
+   ["p","probabilidad de apagar cada neurona en dropout; típica 0.1–0.5 (0.2 en MLP, 0.1 en CNN)."],
+   ["m, ⊙","máscara binaria Bernoulli(1−p), una nueva por minibatch, y producto componente a componente: ã = m⊙a/(1−p) (Ec. 1)."],
+   ["1/(1−p)","re-escalado que conserva la media: E[ã] = a, así la red queda calibrada al apagar dropout en inferencia."],
+   ["2^H","número de sub-redes que dropout entrena implícitamente compartiendo pesos: el ensemble más barato que existe."],
+   ["μ_B, σ²_B","media y varianza calculadas en el minibatch (no en el dataset): estimaciones con ruido ∝ 1/√B."],
+   ["â, ε","activación normalizada (a−μ_B)/√(σ²_B+ε); ε = 10⁻⁵ evita dividir por cero (Ec. 2)."],
+   ["γ, β","escala y desplazamiento aprendibles de BatchNorm, uno por canal: pueden deshacer la normalización si conviene."],
+   ["LayerNorm","normaliza sobre la dimensión de features, no sobre el batch; el sustituto cuando B ≤ 4 y el estándar en Transformers."],
+   ["λ","coeficiente del weight decay: L_total = L_data + λ‖w‖₂² (Ec. 3); típico 10⁻⁵–10⁻³."],
+   ["‖w‖₂","norma euclídea de los pesos: el termómetro de la complejidad efectiva; weight decay la encoge."],
+   ["ridge","regresión con penalización L2: solución cerrada w = (XᵀX+nλI)⁻¹Xᵀy; sumar a la diagonal = encoger pesos."],
+   ["AdamW","Adam con el decay aplicado directo (θ ← θ−ηλθ), sin contaminar las medias móviles m_t, v_t del gradiente."],
+   ["V(t)","pérdida de validación en la época t: la curva en U cuyo mínimo busca early stopping."],
+   ["patience P","épocas seguidas sin mejorar el mínimo histórico de V que se toleran antes de parar (Ec. 4); típico P = 10."],
+   ["t*, checkpoint","época en que se dispara la parada, y copia de pesos devuelta: la del argmin de V hasta t* (no la última)."],
+   ["η_t","learning rate de la iteración t: la regla θ_{t+1} = θ_t − η_t g_t admite η variable, y eso es un schedule."],
+   ["step decay","η_t = η₀·γ^⌊t/T_s⌋ con γ = 0.1: dividir por 10 cada T_s épocas; la receta histórica de ImageNet."],
+   ["cosine annealing","η_t = η_min + ½(η_max−η_min)(1+cos(πt/T)) (Ec. 5): el defecto moderno; CosineAnnealingLR(opt, T_max=epochs)."],
+   ["warmup T_w","subida lineal de 0 a η_max en T_w pasos antes de decaer: evita pasos gigantes con estadísticas aún sin estabilizar; obligatorio en modelos grandes."],
+   ["suelo de ruido","pérdida residual ∝ η al optimizar con gradiente ruidoso y lr constante: el motivo por el que hay que decaer η."],
+   ["B, g_B","tamaño de minibatch y su gradiente medio: insesgado con Var[g_B] = σ²/B; duplicar B divide el ruido por √2."],
+   ["‖g‖₂ y clipping","norma del gradiente (el síntoma más temprano de divergencia) y su airbag: g ← g·min(1, c/‖g‖₂)."],
+   ["los 4 paneles","L_train/L_val, ‖g_t‖₂, métrica de negocio y η_t efectivo: sin ellos el experimento es irreproducible."],
+   ["R², AUC, MAPE","métricas de negocio: lo que mira el cliente; correlacionan con la pérdida pero no coinciden con ella."],
+   ["tracker","W&B / MLflow / TensorBoard: registro de config + semilla + resultados de cada run; la base de toda comparación honesta."],
+   ["semilla","estado inicial del generador aleatorio: fija = run repetible; comparar configs exige misma semilla (o varias por config)."],
+   ["log-loss","−(1/n)Σ[y log p̂+(1−y)log(1−p̂)]: la pérdida de clasificación binaria que ordena la tabla de runs."],
+   ["receta exprés","AdamW(10⁻³, wd 10⁻⁴) + cosine + dropout/BN + early stopping(10) + tracking + 5-fold: el primer prototipo correcto del Bloque I."]];
+  const div=document.getElementById("glos");
+  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
+    "</div><div>"+e[1]+"</div></div>").join("");
+  updaters[9]=function(){};
+})();
+
+updaters[10]=function(){};
+
+/* ================= boot ================= */
+function fromHash(){const m=location.hash.match(/^#(\d+)$/);
+  return m?Math.max(0,Math.min(10,+m[1])):0;}
+window.addEventListener("hashchange",()=>go(fromHash()));
+go(fromHash());
+</script>
+</body>
+</html>

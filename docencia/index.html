@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Learning para Business Analytics — slides interactivas del curso</title>
+<style>
+  :root{--ink:#1A1A1A;--gold:#B8860B;--goldDeep:#8C6508;--goldPale:#F5EBD3;
+    --mute:#8A8A8A;--rule:#D9C28A}
+  *{box-sizing:border-box}
+  body{margin:0;padding:34px 7vw 60px 7vw;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16.5px;line-height:1.45}
+  h1{font-size:1.55em;margin:0 0 2px 0}
+  .sub{font-style:italic;color:var(--mute);margin:0 0 10px 0}
+  hr{border:none;border-top:1.4px solid var(--gold);margin:10px 0 24px 0}
+  .bloque{font-variant:small-caps;letter-spacing:0.06em;color:var(--goldDeep);
+    font-weight:bold;margin:26px 0 8px 0;border-bottom:1px solid var(--rule);
+    padding-bottom:3px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  a.card{display:block;border:1.2px solid var(--rule);border-radius:5px;
+    padding:12px 16px;text-decoration:none;color:var(--ink);background:#fffdf7}
+  a.card:hover{border-color:var(--gold);background:var(--goldPale)}
+  a.card .dia{font-weight:bold;color:var(--goldDeep);font-size:0.86em;
+    letter-spacing:0.04em}
+  a.card .tit{font-weight:bold;margin:2px 0 3px 0}
+  a.card .desc{font-size:0.86em;color:#444}
+  .nota{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:11px 15px;font-size:0.9em;margin:22px 0 0 0}
+  .pie{margin-top:34px;font-size:0.8em;color:var(--mute);font-style:italic}
+</style>
+</head>
+<body>
+<h1>Slides interactivas del curso</h1>
+<p class="sub">Deep Learning para Business Analytics &middot; ICADE &middot; 2026&ndash;2027.
+Cada deck explica las ecuaciones del d&iacute;a con simulaciones manipulables: mueve los
+sliders, sigue el guion paso a paso y comprueba que entiendes.</p>
+<hr>
+
+<div class="bloque">Tema 1 &mdash; Fundamentos</div>
+<div class="grid">
+<a class="card" href="dia_02_tema_1/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 02</div><div class="tit">La neurona, el MLP y backpropagation</div>
+  <div class="desc">Frontera de decisi&oacute;n en vivo, forward y backward a mano, superficie de p&eacute;rdida, SGD vs momentum vs Adam, churn telco en euros.</div></a>
+<a class="card" href="dia_03_tema_1/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 03</div><div class="tit">Regularizaci&oacute;n y learning rate schedules</div>
+  <div class="desc">Overfitting polin&oacute;mico, weight decay, dropout, early stopping, cosine y warmup, dashboard del experimentador.</div></a>
+</div>
+
+<div class="bloque">Tema 2 &mdash; Visi&oacute;n y secuencias</div>
+<div class="grid">
+<a class="card" href="dia_04_tema_2/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 04</div><div class="tit">La convoluci&oacute;n, a mano</div>
+  <div class="desc">Kernel 3&times;3 sobre p&iacute;xeles editables, padding/stride, pooling, campo receptivo, ResNet y caso retail con coste de error.</div></a>
+<a class="card" href="dia_05_tema_2/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 05</div><div class="tit">Transfer learning con cabeza fr&iacute;a</div>
+  <div class="desc">Curvas con y sin pretraining, congelar capas, catastrophic forgetting medible, coste-beneficio frente a API y desde-cero.</div></a>
+<a class="card" href="dia_06_tema_2/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 06</div><div class="tit">RNN, LSTM y GRU para forecasting</div>
+  <div class="desc">Recurrencia en vivo, gradientes que explotan o se desvanecen, las puertas del LSTM paso a paso, forecast de demanda en euros.</div></a>
+<a class="card" href="dia_07_tema_2/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 07</div><div class="tit">La atenci&oacute;n como media ponderada</div>
+  <div class="desc">El cuello de botella de la RNN, scores y softmax manipulables, temperatura, alineamiento de traducci&oacute;n, atenci&oacute;n sobre el historial de un cliente.</div></a>
+</div>
+
+<div class="bloque">Tema 3 &mdash; El Transformer y sus rivales</div>
+<div class="grid">
+<a class="card" href="dia_08_tema_3/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 08</div><div class="tit">Embeddings y similitud coseno</div>
+  <div class="desc">De one-hot a denso, coseno manipulable, aritm&eacute;tica de vectores, skip-gram entrenado en vivo, buscador sem&aacute;ntico vs l&eacute;xico.</div></a>
+<a class="card" href="dia_09_tema_3/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 09</div><div class="tit">Self-attention y el bloque Transformer</div>
+  <div class="desc">Q, K, V con n&uacute;meros, softmax(QK&#7488;/&radic;d)V completo, m&aacute;scara causal, multi-head, positional encoding, residual + LayerNorm, leyes de escala.</div></a>
+<a class="card" href="dia_10_tema_3/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 10</div><div class="tit">Mamba, MoE y el muro cuadr&aacute;tico</div>
+  <div class="desc">FLOPs n&sup2; vs n, KV-cache en GB, la recurrencia SSM y su dualidad convolucional, routing top-k de expertos, balanceo de carga.</div></a>
+</div>
+
+<div class="bloque">Tema 4 &mdash; LLMs y multimodal</div>
+<div class="grid">
+<a class="card" href="dia_11_tema_4/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 11</div><div class="tit">El LLM por dentro: muestreo, contexto y coste</div>
+  <div class="desc">Next-token con softmax real, temperatura, top-k/top-p, generaci&oacute;n autorregresiva, calculadora de coste, lost in the middle, elecci&oacute;n de modelo.</div></a>
+<a class="card" href="dia_12_tema_4/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 12</div><div class="tit">Difusi&oacute;n: de la imagen al ruido y de vuelta</div>
+  <div class="desc">Forward noising p&iacute;xel a p&iacute;xel, schedules &beta;, reverse denoising real en 2D, classifier-free guidance, difusi&oacute;n latente y coste por imagen.</div></a>
+</div>
+
+<div class="bloque">Tema 6 &mdash; Sistemas en producci&oacute;n</div>
+<div class="grid">
+<a class="card" href="dia_15_tema_6/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 15</div><div class="tit">RAG corporativo, pieza a pieza</div>
+  <div class="desc">Chunking con trade-off medible, retrieval por coseno, recall@k, b&uacute;squeda h&iacute;brida BM25+denso, re-ranking, presupuesto de contexto, caso BBVA dimensionado.</div></a>
+<a class="card" href="dia_16_tema_6/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 16</div><div class="tit">LoRA, SFT, RLHF y DPO</div>
+  <div class="desc">&Delta;W = BA con SVD real, memoria GPU, Bradley&ndash;Terry con tus propios votos, reward hacking con &beta; bajo, la p&eacute;rdida DPO optimizada en vivo.</div></a>
+<a class="card" href="dia_17_tema_6/slides_interactivas/index.html">
+  <div class="dia">D&iacute;a 17</div><div class="tit">Multi-agente en producci&oacute;n: coste, latencia, robustez</div>
+  <div class="desc">Cascada de modelos, percentiles de latencia, paralelo vs secuencial, reintentos con backoff, colas M/M/1, cach&eacute; y observabilidad.</div></a>
+</div>
+
+<div class="nota"><b>C&oacute;mo usarlas.</b> Abre el deck del d&iacute;a en cualquier navegador
+(doble clic basta: no necesitan internet ni instalaci&oacute;n). Navega con las flechas
+del teclado. En cada slide: mueve los controles del panel dorado, sigue el
+<i>guion paso a paso</i> y, antes de pasar de slide, responde la pregunta de
+<i>&laquo;Comprueba que entiendes&raquo;</i>. Los d&iacute;as 01, 13, 14 y 18 no tienen deck
+interactivo porque su contenido no es ecuacional (presentaci&oacute;n, agentes y regulaci&oacute;n).</div>
+
+<p class="pie">Eduardo C. Garrido-Merch&aacute;n &middot; ecgarrido@comillas.edu &middot;
+Universidad Pontificia Comillas (ICADE) &middot; Deep Learning para Business Analytics 2026&ndash;2027</p>
+</body>
+</html>

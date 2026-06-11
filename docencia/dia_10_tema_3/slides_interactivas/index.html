@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Día 10 — Alternativas al Transformer (Mamba, SSM, MoE) — slides interactivas</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
+  .slide{display:none;padding:14px 24px 64px 24px;
+    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin-bottom:10px;
+    border:1px solid #eee;border-radius:2px}
+  .txtcol{font-size:0.9em;line-height:1.4}
+  .txtcol p{margin:0 0 9px 0}
+  .txtcol .hd{font-weight:bold}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 12px;margin-bottom:12px}
+  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
+  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
+  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
+    margin-right:6px}
+  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
+  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
+    font-size:0.9em;margin:4px 0}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
+  .mut{color:var(--mute)}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
+    font-size:0.84em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
+  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
+    font-weight:bold}
+  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
+    font-variant-numeric:tabular-nums}
+  table.live th:first-child,table.live td:first-child{text-align:left}
+  table.live td.win{color:var(--gold);font-weight:bold}
+  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 14px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
+    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
+  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
+  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
+  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
+  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
+  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
+    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
+  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
+  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
+  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
+  .eqread b{color:var(--goldDeep)}
+  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
+    font-size:0.93em}
+  .frac .num,.frac .den{display:block;padding:0 4px}
+  .frac .den{border-top:1.1px solid var(--ink)}
+  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:9px 13px;margin:10px 0;font-size:0.88em}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
+  .guide ol{margin:4px 0 4px 18px;padding:0}
+  .guide li{margin:0 0 7px 0;line-height:1.4}
+  .guide .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:6px}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
+    border-left:3px solid var(--gold);line-height:1.4}
+  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
+  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
+    grid-template-columns:30% 70%}
+  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
+</style>
+</head>
+<body>
+
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 0 : el muro cuadrático ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <canvas id="cv0a" data-aspect="1.95"></canvas>
+    <canvas id="cv0b" data-aspect="2.6"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">Att(Q,K,V) = softmax<big>(</big><span class="frac"><span class="num">QK<sup>&#8868;</sup></span><span class="den">&radic;d</span></span><big>)</big>&thinsp;V,&nbsp;&nbsp; A = QK<sup>&#8868;</sup> &isin; &#8477;<sup>T&times;T</sup><span class="eqn">(atención escalada)</span></div>
+      <div class="eqread">cada token (fila de Q) se compara con <b>todos</b> los tokens
+        (columnas de K<sup>&#8868;</sup>): la matriz intermedia A tiene T&middot;T entradas.
+        Con T = 10<sup>5</sup> son 10<sup>10</sup> números: 40&nbsp;GB en FP32 solo para
+        UNA capa y UNA cabeza, antes de multiplicar por V.</div>
+      <div class="eq">FLOPs<sub>atención</sub> &asymp; 4&middot;L&middot;T<sup>2</sup>&middot;d&nbsp;&nbsp;&nbsp;vs&nbsp;&nbsp;&nbsp;FLOPs<sub>proyecciones+MLP</sub> &asymp; 8&middot;L&middot;T&middot;d<sup>2</sup><span class="eqn">(cruce en T = 2d)</span></div>
+      <div class="eqread">el término <b>cuadrático en T</b> (construir A y aplicarla a V)
+        contra el término <b>lineal en T</b> (proyecciones Q,K,V,O y el MLP, que son
+        matrices d&times;d por token). Igualando: 4LT&sup2;d = 8LTd&sup2; &hArr;
+        <b>T = 2d</b>. Por debajo del cruce la atención es barata; por encima, domina
+        todo el cómputo y crece sin freno.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>longitud de contexto T = <b id="r0n"></b> tokens (escala log)</label>
+      <input type="range" id="sl0n" min="2" max="6" step="0.02" value="4">
+      <label>dimensión del modelo d = <b id="r0d"></b></label>
+      <input type="range" id="sl0d" min="256" max="16384" step="256" value="4096">
+      <label>número de capas L = <b id="r0L"></b></label>
+      <input type="range" id="sl0L" min="4" max="96" step="4" value="32">
+    </div>
+    <div class="readout" id="ro0"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con d = 4096, mueve T desde 100 hasta 1M mirando el panel superior.
+        <span class="obs">La curva dorada (atención, pendiente 2 en log&ndash;log) cruza a
+        la curva tinta (resto, pendiente 1) exactamente en T = 2d = 8192: ahí empieza el
+        muro.</span></li>
+      <li>Pon T = 100&thinsp;000 y lee el reparto en el panel inferior.
+        <span class="obs">La atención ya se come m&aacute;s del 80% de los FLOPs: estás
+        pagando casi todo el cómputo en comparar tokens entre sí.</span></li>
+      <li>Sube d a 16384 sin tocar T. <span class="obs">El cruce se desplaza a la derecha
+        (T = 32768): un modelo más ancho "aguanta" contextos mayores antes de que lo
+        cuadrático domine, pero paga más por token siempre.</span></li>
+      <li>Lleva T a 1M y mira el euro del lector. <span class="obs">Una sola pasada
+        completa sobre el contexto cuesta del orden de 1&nbsp;&euro; de GPU. Procesar
+        1000 contratos así al día son ~1000&nbsp;&euro;/día solo en prefill.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué duplicar T
+        multiplica el coste de atención por 4 y el del MLP solo por 2?</summary>
+        <div class="ans">Porque la atención compara <i>pares</i> de tokens: con el doble
+        de tokens hay 2&times;2 = 4 veces más pares (T&sup2;). El MLP procesa cada token
+        por separado: el doble de tokens, el doble de trabajo (T). Toda la motivación del
+        día cabe en esa diferencia de exponente: cualquier arquitectura que procese
+        tokens "de uno en uno" con estado compacto hereda la pendiente 1, no la 2.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> El panel superior pinta, en log&ndash;log, los FLOPs
+      de una pasada hacia delante de un Transformer de L capas y dimensión d sobre un
+      contexto de T tokens, separados en sus dos términos: el cuadrático de la atención
+      (dorado) y el lineal de proyecciones y MLP (tinta). La línea gris es el total. El
+      panel inferior muestra qué fracción del cómputo se lleva la atención según T. El
+      lector traduce a tiempo y a euros en una H100 (4&middot;10<sup>14</sup> FLOP/s
+      útiles, 3&nbsp;&euro;/h).</p>
+    <p><span class="hd">Juega.</span> Piensa en un caso BBVA: pasar contratos hipotecarios
+      enteros (T &asymp; 60k tokens) por un modelo de d = 4096. Mira dónde cae respecto
+      del cruce. Luego piensa en historiales clínicos de años o en logs de transacciones:
+      T &asymp; 10<sup>6</sup>. Ningún ajuste de d razonable te salva de la pendiente 2.</p>
+    <p><span class="hd">Lee así.</span> En log&ndash;log las potencias son rectas y el
+      exponente es la pendiente: la atención sube 2 décadas de coste por década de
+      contexto; el resto, 1. Toda recta de pendiente 2 acaba cruzando a cualquier recta
+      de pendiente 1: la única pregunta es dónde, y la respuesta es T = 2d.</p>
+    <p><span class="hd">Mensaje.</span> El Transformer no "falla" en contextos largos:
+      se vuelve económicamente inviable. Las tres rutas del día (atención lineal, SSM y
+      MoE) atacan este coste desde ángulos distintos sin renunciar a la calidad.</p>
+    <p class="miniglos"><b>Términos.</b> <b>T</b>: longitud de la secuencia en tokens.
+      <b>d</b>: dimensión interna del modelo. <b>L</b>: número de capas. <b>FLOP</b>:
+      operación de coma flotante; una multiplicación+suma son 2 FLOPs.
+      <b>prefill</b>: procesar el contexto completo antes de generar el primer token.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 1 : KV-cache ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <canvas id="cv1a" data-aspect="1.75"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">M<sub>KV</sub> = 2 &middot; L &middot; T &middot; d &middot; bytes<span class="eqn">(memoria del KV-cache)</span></div>
+      <div class="eqread">para generar el token T+1 sin recomputar nada, cada capa guarda
+        los vectores K y V de <b>todos</b> los tokens anteriores: el 2 es "K y V", L capas,
+        T tokens, d números por token, y <b>bytes</b> por número (2 en FP16, 4 en FP32).
+        Crece linealmente con T y vive en la VRAM mientras dure la conversación.</div>
+      <div class="eq">T<sub>máx</sub> = <span class="frac"><span class="num">M<sub>GPU</sub> &minus; M<sub>pesos</sub></span><span class="den">2 &middot; L &middot; d &middot; bytes</span></span><span class="eqn">(contexto máximo por GPU)</span></div>
+      <div class="eqread">despejando T: el contexto máximo que cabe es la memoria libre
+        dividida por el coste por token. Es la fórmula con la que un equipo de plataforma
+        dimensiona cuántas conversaciones simultáneas soporta cada GPU.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>longitud de contexto T = <b id="r1n"></b> tokens (escala log)</label>
+      <input type="range" id="sl1n" min="2" max="6" step="0.02" value="5">
+      <label>número de capas L = <b id="r1L"></b></label>
+      <input type="range" id="sl1L" min="12" max="96" step="4" value="32">
+      <label>dimensión del modelo d = <b id="r1d"></b></label>
+      <input type="range" id="sl1d" min="1024" max="16384" step="512" value="4096">
+      <label><input type="checkbox" id="ck1"> precisión FP32 (4 bytes) en vez de FP16 (2 bytes)</label>
+    </div>
+    <div class="readout" id="ro1"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con L = 32 y d = 4096 en FP16, sube T hasta que el badge se ponga en rojo.
+        <span class="obs">Alrededor de T &asymp; 153&thinsp;000 tokens el KV-cache solo
+        ya desborda los 80&nbsp;GB de una H100 &mdash; sin contar los pesos del
+        modelo.</span></li>
+      <li>Activa FP32. <span class="obs">La recta entera sube un factor 2 (media década
+        no: exactamente &times;2) y el contexto máximo cae a la mitad: la precisión es un
+        multiplicador directo de la factura de memoria.</span></li>
+      <li>Configura un modelo grande: L = 80, d = 8192 (tamaño Llama-3-70B sin GQA).
+        <span class="obs">A 100k tokens el cache pide ~262&nbsp;GB: por eso los modelos
+        reales usan GQA, que comparte K,V entre cabezas y divide esa cifra por
+        8.</span></li>
+      <li>Vuelve a FP16 y lee T<sub>máx</sub> en el lector para tu configuración.
+        <span class="obs">Esa es la cifra que decide cuántos usuarios concurrentes
+        soporta tu despliegue: memoria, no FLOPs, es el cuello de la inferencia.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el KV-cache crece
+        con T si la atención lineal y los SSM no lo necesitan?</summary><div class="ans">
+        Porque la atención exacta debe poder mirar <i>cualquier</i> token pasado con su
+        K y V originales: no hay forma de comprimirlos sin perder la garantía de
+        recuperación exacta. Un SSM renuncia a esa garantía: comprime toda la historia en
+        un estado h<sub>t</sub> de tamaño fijo N&middot;d, que no crece con T. Es
+        exactamente el trade-off memoria perfecta vs memoria comprimida que verás en las
+        slides de Mamba.</div></details></div>
+    <p><span class="hd">Setup.</span> El canvas pinta, en log&ndash;log, la memoria del
+      KV-cache en GB según el contexto T, para tu configuración (L, d, precisión). La
+      línea discontinua horizontal son los 80&nbsp;GB de una NVIDIA H100; la línea fina
+      gris es la otra precisión, para comparar. El punto dorado es tu T actual y el
+      lector da los GB exactos, el badge de si cabe, y el T<sub>máx</sub> despejado.</p>
+    <p><span class="hd">Juega.</span> Caso Netflix: un asistente que mantiene en contexto
+      el historial completo de visionado y soporte de un usuario (T &asymp; 200k). Caso
+      Inditex: pasar todas las incidencias logísticas de una temporada (T &asymp; 500k).
+      Comprueba cuántas GPUs de 80&nbsp;GB exige cada escenario solo en cache, por
+      usuario activo.</p>
+    <p><span class="hd">Lee así.</span> La pendiente de la recta es 1 (lineal en T): no
+      es el muro cuadrático de la slide anterior, pero es un coste que <i>persiste</i>
+      durante toda la generación y se multiplica por cada conversación abierta. El
+      prefill paga FLOPs una vez; el KV-cache paga VRAM todo el rato.</p>
+    <p><span class="hd">Mensaje.</span> En producción, el coste de servir LLMs es tanto
+      memoria como cómputo. Mamba ataca exactamente este frente: su "KV-cache" es un
+      estado de tamaño constante, independiente de T.</p>
+    <p class="miniglos"><b>Términos.</b> <b>KV-cache</b>: almacén de los vectores K y V
+      ya calculados, para no recomputarlos al generar cada token. <b>VRAM</b>: memoria
+      de la GPU. <b>FP16/FP32</b>: números de 2 o 4 bytes. <b>GQA</b>: grouped-query
+      attention, varias cabezas de Q comparten un mismo par K,V.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : atención lineal ============ -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <canvas id="cv2a" data-aspect="2.5"></canvas>
+    <canvas id="cv2b" data-aspect="2.5"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">Att<sub>lin</sub>(Q,K,V) &asymp; &phi;(Q)&thinsp;<big>(</big>&phi;(K)<sup>&#8868;</sup>V<big>)</big><span class="eqn">(atención lineal)</span></div>
+      <div class="eqread">se sustituye el softmax por una <b>feature map</b> &phi; (aquí
+        ELU+1, la del Linear Transformer) y se usa la <b>asociatividad</b>: en vez de
+        construir la matriz T&times;T de &phi;(Q)&phi;(K)<sup>&#8868;</sup> y aplicarla a
+        V, se computa primero &phi;(K)<sup>&#8868;</sup>V, que es d&times;d e
+        <b>independiente de T</b>. La misma operación, en otro orden, con otro coste.</div>
+      <div class="eq">coste: 2&middot;T<sup>2</sup>&middot;d &nbsp;&rarr;&nbsp; 2&middot;T&middot;d<sup>2</sup>&nbsp;&nbsp;&nbsp;(ahorro &times;<span class="frac"><span class="num">T</span><span class="den">d</span></span>)<span class="eqn">(el truco del orden)</span></div>
+      <div class="eqread">el orden estándar paga T&sup2; (todas las parejas); el orden
+        lineal paga d&sup2; por token. Como en contextos largos T &raquo; d, el ahorro
+        es el cociente T/d: con T = 100k y d = 4096, &times;24. El precio: &phi; solo
+        <b>aproxima</b> el softmax.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>longitud de la secuencia de juguete T = <b id="r2T"></b></label>
+      <input type="range" id="sl2T" min="8" max="40" step="2" value="16">
+      <label>dimensión por cabeza d = <b id="r2d"></b></label>
+      <input type="range" id="sl2d" min="2" max="10" step="1" value="4">
+      <button id="bt2">nueva muestra (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro2"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Compara los dos heatmaps con T = 16, d = 4. <span class="obs">El patrón general
+        de la atención (qué filas miran a qué columnas) se conserva, pero la versión
+        lineal es más "borrosa": los picos nítidos del softmax se aplanan.</span></li>
+      <li>Sube T a 40 dejando d = 4 y mira el lector. <span class="obs">El cociente de
+        multiplicaciones llega a T/d = 10: la exacta paga 10 veces más, y la brecha crece
+        linealmente con T.</span></li>
+      <li>Sube d a 10 con T = 16. <span class="obs">Ahora 2Td&sup2; &gt; 2T&sup2;d: con
+        secuencias cortas y d grande, ¡el orden lineal es PEOR! El truco solo gana cuando
+        T &gt; d.</span></li>
+      <li>Pulsa "nueva muestra" varias veces observando el error.
+        <span class="obs">El error de aproximación cambia con los datos pero no con T ni
+        con d de forma sistemática: es el precio fijo de cambiar softmax por
+        &phi;.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: si el resultado es "casi
+        el mismo", ¿por qué no usamos siempre atención lineal?</summary><div class="ans">
+        Porque "casi" importa en las tareas de recuperación precisa: copiar un número de
+        póliza exacto de la página 3, comparar dos cláusulas lejanas. El softmax puede
+        concentrar casi toda la probabilidad en UN token (pico nítido); la versión
+        &phi;(Q)&phi;(K)<sup>&#8868;</sup> es de rango &le; d y no puede formar picos tan
+        selectivos: difumina. En generación fluida apenas se nota; en "needle in a
+        haystack" se nota mucho. Por eso conviven ambas y por eso los híbridos tipo Jamba
+        mezclan capas de los dos tipos.</div></details></div>
+    <p><span class="hd">Setup.</span> Genero Q, K, V gaussianos para una secuencia de
+      juguete de T tokens con dimensión d y calculo la atención <i>de verdad</i> de las
+      dos maneras: arriba, la matriz softmax(QK<sup>&#8868;</sup>/&radic;d) exacta; abajo,
+      la matriz implícita normalizada
+      &phi;(Q<sub>i</sub>)&middot;&phi;(K<sub>j</sub>)/z<sub>i</sub> del orden lineal con
+      &phi; = ELU+1. Ambas filas suman 1 (compruébalo en el lector). El color usa la
+      rampa dorada: más oscuro = más atención.</p>
+    <p><span class="hd">Juega.</span> El lector cuenta las multiplicaciones reales de cada
+      orden (2T&sup2;d vs 2Td&sup2;) y mide el error entre las salidas O = AV de ambos
+      métodos. Busca el régimen donde el ahorro es grande y el error tolerable: ese es el
+      nicho de Performer, Linear Transformer y RetNet (streaming en edge, poca VRAM,
+      tokens/seg en CPU como KPI).</p>
+    <p><span class="hd">Lee así.</span> La asociatividad (AB)C = A(BC) no cambia el
+      resultado cuando no hay softmax en medio; el softmax es lo único que obliga a
+      materializar la matriz T&times;T. Quitarlo (aproximarlo con &phi;) es comprar
+      libertad de orden a cambio de capacidad de foco.</p>
+    <p><span class="hd">Mensaje.</span> La atención lineal es la primera de las tres rutas
+      del día: misma interfaz que la atención, coste lineal en T, y un trade-off de
+      precisión explícito y medible &mdash; lo acabas de medir tú.</p>
+    <p class="miniglos"><b>Términos.</b> <b>&phi; (feature map)</b>: transformación de
+      q y k tal que &phi;(q)&middot;&phi;(k) &asymp; exp(q&middot;k/&radic;d).
+      <b>ELU+1</b>: x+1 si x&gt;0, e<sup>x</sup> si x&le;0; garantiza positividad.
+      <b>rango</b>: la matriz lineal implícita tiene rango &le; d, el softmax no tiene
+      esa restricción. <b>RetNet/Performer</b>: variantes con decaimiento exponencial y
+      kernels aleatorios.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : la recurrencia SSM ============ -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <canvas id="cv3a" data-aspect="2.5"></canvas>
+    <canvas id="cv3b" data-aspect="2.5"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">h<sub>t</sub> = &Abar;&thinsp;h<sub>t&minus;1</sub> + &Bbar;&thinsp;x<sub>t</sub>,&nbsp;&nbsp;&nbsp; y<sub>t</sub> = C&thinsp;h<sub>t</sub><span class="eqn">(SSM discreto, Ec. 1 de la nota)</span></div>
+      <div class="eqread">el <b>estado</b> h<sub>t</sub> &isin; &#8477;<sup>N</sup> resume
+        toda la historia: en cada paso se atenúa por &Abar; (cuánto se recuerda), se le
+        suma la entrada escalada por &Bbar; (cuánto entra lo nuevo) y se lee con C. Aquí
+        lo ejecutamos en el caso escalar: &Abar; = a&#772; &isin; (0,1),
+        &Bbar; = b&#772; = 0.5, C = 1. Es estructuralmente una RNN <b>lineal</b>.</div>
+      <div class="eq">h<sub>t</sub> = <big>&Sigma;</big><sub>k=0..t&minus;1</sub>&nbsp;a&#772;<sup>k</sup>&thinsp;b&#772;&thinsp;x<sub>t&minus;k</sub><span class="eqn">(desenrollada: memoria exponencial)</span></div>
+      <div class="eqread">desenrollando la recurrencia: la entrada de hace k pasos
+        sobrevive en el estado con factor <b>a&#772;<sup>k</sup></b>. Memoria geométrica:
+        con a&#772; = 0.9, lo de hace 22 pasos pesa un 10%; con a&#772; = 0.99, hace falta
+        retroceder 229 pasos para caer al 10%. La semivida es t<sub>&frac12;</sub> =
+        ln 2 / ln(1/a&#772;).</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>canal 1 (dorado): a&#772;&#8321; = <b id="r3a"></b></label>
+      <input type="range" id="sl3a" min="0.50" max="0.99" step="0.01" value="0.90">
+      <label>canal 2 (tinta): a&#772;&#8322; = <b id="r3c"></b></label>
+      <input type="range" id="sl3c" min="0.50" max="0.99" step="0.01" value="0.60">
+    </div>
+    <div class="readout" id="ro3"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Deja a&#772;&#8321; = 0.90 y lee h&#8321;, h&#8322;, h&#8323; en el lector.
+        <span class="obs">Salen exactamente 1.00, 1.40 y 2.76: los tres pasos del ejemplo
+        del deck (x = 2, 1, 3 con b&#772; = 0.5), calculados aquí en vivo.</span></li>
+      <li>Mira la respuesta al impulso (panel superior). <span class="obs">Es una
+        exponencial a&#772;<sup>k</sup>: el "recuerdo" de un token decae geométricamente.
+        El canal con a&#772; mayor tiene cola más larga.</span></li>
+      <li>Sube a&#772;&#8321; a 0.99. <span class="obs">La semivida pasa de ~6.6 a ~69
+        pasos: el canal se vuelve "memoria a largo plazo". Pero fíjate en la trayectoria:
+        también olvida más despacio el ruido.</span></li>
+      <li>Baja a&#772;&#8322; a 0.50. <span class="obs">Ese canal solo "ve" los últimos
+        2&ndash;3 tokens: es un detector de presente. Un SSM real apila N canales con
+        a&#772; distintos: un banco de memorias a distintas escalas.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el coste por token
+        es O(N), independiente de T?</summary><div class="ans">Porque para producir
+        h<sub>t</sub> solo hacen falta h<sub>t&minus;1</sub> y x<sub>t</sub>: una
+        multiplicación por canal y una suma, N operaciones, da igual que lleves 100 o un
+        millón de tokens. La historia entera está comprimida en N números. La atención,
+        en cambio, debe releer los T tokens pasados (su KV-cache) en cada paso. Esa es la
+        diferencia estructural: memoria comprimida O(N) contra memoria literal
+        O(T).</div></details></div>
+    <p><span class="hd">Setup.</span> Ejecuto la recurrencia de verdad para dos canales
+      escalares con a&#772; distintos, b&#772; = 0.5, C = 1. Panel superior: la
+      <i>respuesta al impulso</i> k&#8342; = C&thinsp;a&#772;<sup>k</sup>b&#772;, es decir,
+      cuánto pesa en el estado un token de hace k pasos. Panel inferior: la trayectoria
+      h<sub>t</sub> sobre la secuencia del ejemplo del deck (x&#8321; = 2, x&#8322; = 1,
+      x&#8323; = 3, después silencio): se ve cómo el estado absorbe cada entrada y luego
+      se desvanece geométricamente.</p>
+    <p><span class="hd">Juega.</span> Forecast de demanda Inditex: un canal con
+      a&#772; &asymp; 0.99 captura la tendencia de temporada (memoria larga); otro con
+      a&#772; &asymp; 0.6 captura el pico de esta semana (memoria corta). El slider te
+      deja sentir ese dial: a&#772; ES el dial de memoria del modelo.</p>
+    <p><span class="hd">Lee así.</span> La contribución de x&#8321; = 2 a h&#8323; es
+      b&#772;&middot;x&#8321;&middot;a&#772;&sup2; = 0.5&middot;2&middot;0.81 = 0.81 (con
+      a&#772; = 0.9): el lector la calcula para tu a&#772; actual. Esa cifra es el deck
+      hecho slider: el estado comprime toda la historia con decaimiento exponencial
+      a&#772;<sup>k</sup>.</p>
+    <p><span class="hd">Mensaje.</span> Un SSM es una RNN lineal con estado de tamaño
+      fijo N: coste O(T&middot;N) en tiempo y O(N) en memoria. Para T = 10<sup>6</sup> y
+      N = 16 son 1.6&middot;10<sup>7</sup> operaciones, contra 10<sup>12</sup> del
+      Transformer denso. Lo que le falta &mdash; decidir QUÉ recordar &mdash; es
+      exactamente lo que añade Mamba en la siguiente slide.</p>
+    <p class="miniglos"><b>Términos.</b> <b>h<sub>t</sub></b>: estado oculto, N números
+      que resumen la historia. <b>&Abar;, &Bbar;, C</b>: transición, entrada y lectura
+      (discretizadas). <b>N</b>: tamaño del estado, fijo (16&ndash;64), independiente
+      de T. <b>respuesta al impulso</b>: peso de un token según su antigüedad.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : selectividad de Mamba ============ -->
+<section class="slide" id="s4">
+  <div class="figcol">
+    <canvas id="cv4a" data-aspect="2.6"></canvas>
+    <canvas id="cv4b" data-aspect="2.2"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">&Delta;<sub>t</sub> = &Delta;(x<sub>t</sub>),&nbsp;&nbsp; a&#772;<sub>t</sub> = e<sup>&minus;&Delta;<sub>t</sub></sup>,&nbsp;&nbsp; b&#772;<sub>t</sub> = 1 &minus; e<sup>&minus;&Delta;<sub>t</sub></sup><span class="eqn">(discretización selectiva)</span></div>
+      <div class="eqread">la novedad de Mamba (Gu &amp; Dao, 2023): el paso de
+        discretización <b>&Delta; depende de la entrada</b>. &Delta; pequeño &rArr;
+        a&#772; &asymp; 1, b&#772; &asymp; 0: la puerta se cierra, el estado se conserva
+        y la entrada se ignora. &Delta; grande &rArr; a&#772; &asymp; 0, b&#772; &asymp;
+        1: la puerta se abre, el estado se reescribe con la entrada. El modelo decide
+        token a token qué guardar y qué olvidar.</div>
+      <div class="eq">h<sub>t</sub> = a&#772;<sub>t</sub>&thinsp;h<sub>t&minus;1</sub> + b&#772;<sub>t</sub>&thinsp;x<sub>t</sub><span class="eqn">(la misma recurrencia, con puertas)</span></div>
+      <div class="eqread">idéntica estructura que la slide anterior, pero ahora los
+        coeficientes cambian con cada token. Ya no es LTI (invariante en el tiempo): se
+        pierde el modo convolución, pero el scan paralelo asociativo mantiene el
+        entrenamiento eficiente. Aquí &Delta;(x) = 0.02 + 3&middot;&sigma;(s&middot;(|x|&minus;1.5)),
+        con &sigma; la sigmoide y s la sensibilidad del slider.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>amplitud del ruido &sigma;<sub>ruido</sub> = <b id="r4n"></b></label>
+      <input type="range" id="sl4n" min="0.1" max="1.2" step="0.05" value="0.4">
+      <label>&Delta; fijo del SSM no selectivo = <b id="r4D"></b></label>
+      <input type="range" id="sl4D" min="0.05" max="1.5" step="0.05" value="0.5">
+      <label><input type="checkbox" id="ck4" checked> superponer el SSM selectivo (Mamba, dorado)</label>
+      <button id="bt4">nuevo ruido (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro4"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con todo por defecto, compara las dos trayectorias del panel inferior.
+        <span class="obs">La dorada (selectiva) salta al llegar cada token importante y
+        luego se queda plana: la puerta se cierra y lo retiene. La tinta (Δ fijo) decae
+        y se contamina con cada token de ruido.</span></li>
+      <li>Lee el reparto de autoría en el lector. <span class="obs">En el SSM selectivo
+        más del 90% del estado final procede de los tokens importantes; en el fijo, el
+        ruido reciente pesa tanto o más que la señal antigua.</span></li>
+      <li>Sube el ruido a 1.0. <span class="obs">El fijo se degrada aún más; el selectivo
+        apenas se inmuta mientras el ruido no cruce el umbral de |x| = 1.5 que abre la
+        puerta.</span></li>
+      <li>Baja Δ fijo a 0.05 y luego súbelo a 1.5. <span class="obs">Con Δ pequeño el
+        fijo recuerda mucho pero apenas escribe (también ignora lo importante); con Δ
+        grande escribe todo y olvida todo. Sin selectividad, recordar e ignorar son el
+        MISMO dial: no puedes tener ambos.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿qué pierde Mamba al hacer
+        &Delta; dependiente de la entrada?</summary><div class="ans">La invariancia
+        temporal (LTI). Con coeficientes constantes la recurrencia equivale a una
+        convolución con kernel fijo (siguiente slide) y se entrena en paralelo vía FFT.
+        Con coeficientes que dependen de x<sub>t</sub> ese kernel ya no existe: cada
+        secuencia tiene sus propias puertas. Mamba lo resuelve con un <i>scan asociativo</i>
+        en GPU: el producto de mapas afines h &rarr; a&#772;h + b&#772;x es asociativo, y
+        eso basta para paralelizar con coste O(T log T). Selectividad sin renunciar al
+        entrenamiento paralelo: esa es la contribución técnica del paper.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Secuencia de juguete de 28 tokens: ruido gaussiano
+      de amplitud &sigma;<sub>ruido</sub> con DOS tokens importantes (valor 3, barras
+      doradas en el panel superior) en las posiciones 7 y 20. Pienso en churn telco: la
+      "señal" son dos eventos críticos (una reclamación grave, una bajada de consumo) en
+      medio de semanas de actividad anodina. Ejecuto en vivo dos recurrencias: el SSM de
+      &Delta; fijo (tinta) y el selectivo con &Delta;(x<sub>t</sub>) (dorado), y
+      descompongo el estado final en la autoría exacta de cada token
+      (w<sub>i</sub> = b&#772;<sub>i</sub>x<sub>i</sub>&prod;<sub>j&gt;i</sub>a&#772;<sub>j</sub>).</p>
+    <p><span class="hd">Juega.</span> El experimento clave es el paso 4 del guion: con
+      &Delta; fijo, memoria larga implica sordera y escritura ávida implica amnesia.
+      La selectividad rompe ese acoplamiento porque el dial se mueve token a token.</p>
+    <p><span class="hd">Lee así.</span> El panel superior también pinta &Delta;<sub>t</sub>
+      (puntos sobre cada token, eje derecho implícito): verás que solo se dispara en los
+      tokens importantes. Eso ES la selectividad: B y &Delta; como funciones de la
+      entrada, igual que las matrices A<sub>t</sub>, B<sub>t</sub>, C<sub>t</sub> del
+      deck.</p>
+    <p><span class="hd">Mensaje.</span> Mamba escala a contextos de 10<sup>6</sup> tokens
+      (genoma, libros, registros médicos) porque une el coste O(N) del SSM con la
+      capacidad de decidir qué guardar. Pierde, en cambio, cuando hay que comparar dos
+      posiciones lejanas con precisión quirúrgica: ahí la memoria literal del Transformer
+      sigue mandando.</p>
+    <p class="miniglos"><b>Términos.</b> <b>&Delta;<sub>t</sub></b>: paso de
+      discretización por token; la "apertura de puerta". <b>selectividad</b>:
+      &Abar;<sub>t</sub>, &Bbar;<sub>t</sub>, C<sub>t</sub> funciones de x<sub>t</sub>.
+      <b>LTI</b>: sistema lineal invariante en el tiempo. <b>scan asociativo</b>:
+      paralelización del prefijo acumulado en GPU.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : la convolución equivalente ============ -->
+<section class="slide" id="s5">
+  <div class="figcol">
+    <canvas id="cv5a" data-aspect="2.5"></canvas>
+    <canvas id="cv5b" data-aspect="2.5"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">y<sub>t</sub> = <big>&Sigma;</big><sub>j=0..t&minus;1</sub>&nbsp;k<sub>j</sub>&thinsp;x<sub>t&minus;j</sub>,&nbsp;&nbsp;&nbsp; k<sub>j</sub> = C&thinsp;&Abar;<sup>j</sup>&thinsp;&Bbar;<span class="eqn">(el SSM como convolución global)</span></div>
+      <div class="eqread">desenrollar la recurrencia LTI da una <b>convolución causal</b>
+        de la entrada con un kernel implícito de longitud T cuyo j-ésimo coeficiente es
+        C&Abar;<sup>j</sup>&Bbar;: el mismo decaimiento geométrico de la respuesta al
+        impulso. El kernel no se almacena como parámetros: se <b>genera</b> desde tres
+        números (aquí) o tres matrices pequeñas (en general).</div>
+      <div class="eq">entrenar: convolución paralela (FFT, O(T&thinsp;log&thinsp;T))&nbsp;&nbsp;&middot;&nbsp;&nbsp;inferir: recurrencia (O(N) por token)<span class="eqn">(la dualidad)</span></div>
+      <div class="eqread">la <b>misma función matemática</b> tiene dos algoritmos: en
+        entrenamiento conviene la vista convolución (toda la secuencia disponible,
+        paraleliza en GPU); en inferencia conviene la vista recurrencia (un token cada
+        vez, estado constante, sin cache creciente). Esta dualidad es el corazón de S4 y
+        de toda la familia SSM.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>decaimiento a&#772; = <b id="r5a"></b> (b&#772; = 0.5, C = 1)</label>
+      <input type="range" id="sl5a" min="0.50" max="0.99" step="0.01" value="0.90">
+      <button id="bt5">nueva secuencia de entrada</button>
+    </div>
+    <div class="readout" id="ro5"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Mueve a&#772; de 0.5 a 0.99 mirando el kernel (panel superior).
+        <span class="obs">El kernel implícito se alarga: de un filtro de 2&ndash;3 taps a
+        uno que abarca toda la secuencia. Un solo escalar controla un kernel de longitud
+        ilimitada.</span></li>
+      <li>Mira el panel inferior. <span class="obs">La línea tinta (recurrencia, token a
+        token) y los puntos dorados (convolución, todo de golpe) coinciden SIEMPRE: son
+        el mismo objeto matemático.</span></li>
+      <li>Lee el error máximo en el lector. <span class="obs">Del orden de
+        10<sup>&minus;15</sup>: precisión máquina. No es una aproximación, es una
+        identidad algebraica.</span></li>
+      <li>Pulsa "nueva secuencia" y repite. <span class="obs">La coincidencia es exacta
+        para cualquier entrada: la dualidad no depende de los datos, solo de que los
+        coeficientes sean constantes (LTI).</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué Mamba (selectivo)
+        ya no puede usar la vista convolución?</summary><div class="ans">Porque
+        k<sub>j</sub> = C&Abar;<sup>j</sup>&Bbar; exige que &Abar; y &Bbar; sean los
+        MISMOS en todos los pasos: solo así "lo que pesa un token de hace j pasos" es una
+        función fija de j. Si a&#772;<sub>t</sub> cambia con la entrada, el peso de
+        x<sub>i</sub> en y<sub>t</sub> es &prod;<sub>j=i+1..t</sub> a&#772;<sub>j</sub>,
+        que depende de la secuencia concreta: no hay kernel universal que precomputar.
+        Mamba sustituye la FFT por el scan asociativo paralelo, pagando algo de eficiencia
+        a cambio de la selectividad.</div></details></div>
+    <p><span class="hd">Setup.</span> Genero una entrada aleatoria de T = 60 tokens y
+      calculo y<sub>t</sub> de las dos maneras: ejecutando la recurrencia
+      h<sub>t</sub> = a&#772;h<sub>t&minus;1</sub> + b&#772;x<sub>t</sub> paso a paso
+      (línea tinta) y aplicando la convolución con el kernel implícito
+      k<sub>j</sub> = a&#772;<sup>j</sup>b&#772; (puntos dorados). El panel superior
+      muestra ese kernel y su "memoria efectiva" 1/(1&minus;a&#772;) pasos.</p>
+    <p><span class="hd">Juega.</span> El slider de a&#772; es el mismo de la slide SSM,
+      pero ahora lo ves como diseñador de filtros: a&#772; cerca de 1 = filtro de
+      tendencia (forecast de demanda mensual); a&#772; bajo = filtro de novedad
+      (detección de picos en transacciones). Dos lecturas del mismo escalar.</p>
+    <p><span class="hd">Lee así.</span> El lector compara costes reales: la recurrencia
+      hace 2 multiplicaciones por token (O(N) con N = 1 aquí); la convolución ingenua
+      haría ~T/2 por token, pero en entrenamiento se hace UNA vez para toda la secuencia
+      vía FFT en O(T log T), que en GPU es masivamente paralelo. Por eso S4 entrena como
+      una CNN e infiere como una RNN.</p>
+    <p><span class="hd">Mensaje.</span> Recurrencia y convolución son dos algoritmos para
+      la misma función. Esa dualidad da a los SSM lo mejor de ambos mundos: entrenamiento
+      paralelo (como el Transformer) e inferencia con estado constante (como una RNN),
+      sin KV-cache que crezca.</p>
+    <p class="miniglos"><b>Términos.</b> <b>kernel implícito</b>: filtro
+      k<sub>j</sub> = C&Abar;<sup>j</sup>&Bbar; generado por los parámetros, no
+      almacenado. <b>convolución causal</b>: y<sub>t</sub> solo usa entradas pasadas.
+      <b>FFT</b>: transformada rápida de Fourier, convoluciona en O(T log T).
+      <b>memoria efectiva</b>: 1/(1&minus;a&#772;), escala temporal del filtro.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : MoE routing ============ -->
+<section class="slide" id="s6">
+  <div class="figcol">
+    <canvas id="cv6a" data-aspect="1.75"></canvas>
+    <canvas id="cv6b" data-aspect="3.2"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">MoE(x) = <big>&Sigma;</big><sub>k=1..K</sub>&nbsp;g<sub>k</sub>(x)&thinsp;E<sub>k</sub>(x),&nbsp;&nbsp;&nbsp; g(x) = softmax(W<sub>g</sub>&thinsp;x)&nbsp;con top-r<span class="eqn">(Ec. 2 de la nota)</span></div>
+      <div class="eqread">K <b>expertos</b> E<sub>k</sub> (MLPs independientes) y un
+        <b>router</b>: una capa lineal W<sub>g</sub> seguida de softmax que produce un
+        peso por experto. Solo los r mayores se activan (los demás g<sub>k</sub> = 0, sus
+        expertos ni se evalúan); los r pesos supervivientes se renormalizan para sumar 1.
+        El router se entrena end-to-end con el modelo.</div>
+      <div class="eq">softmax(z)<sub>k</sub> = <span class="frac"><span class="num">e<sup>z<sub>k</sub></sup></span><span class="den">&Sigma;<sub>j</sub> e<sup>z<sub>j</sub></sup></span></span>,&nbsp;&nbsp;&nbsp; z = W<sub>g</sub>&thinsp;x<span class="eqn">(el triaje del hospital)</span></div>
+      <div class="eqread">la metáfora del deck: el token es un paciente, el router es el
+        triaje, los expertos son los especialistas. El triaje (softmax sobre K logits)
+        decide qué r de los K especialistas ven al paciente; los otros K&minus;r
+        descansan y no cuestan FLOPs.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>token x&#8321; = <b id="r6x"></b></label>
+      <input type="range" id="sl6x" min="-3" max="3" step="0.05" value="1.2">
+      <label>token x&#8322; = <b id="r6y"></b></label>
+      <input type="range" id="sl6y" min="-3" max="3" step="0.05" value="0.6">
+      <label>número de expertos K = <b id="r6E"></b></label>
+      <input type="range" id="sl6E" min="3" max="8" step="1" value="6">
+      <label>expertos activos por token r = <b id="r6k"></b></label>
+      <input type="range" id="sl6k" min="1" max="4" step="1" value="2">
+      <button id="bt6">otro router (otra semilla de W<sub>g</sub>)</button>
+    </div>
+    <div class="readout" id="ro6"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Mueve x&#8321; y x&#8322; despacio por el mapa. <span class="obs">El punto
+        dorado cruza fronteras entre regiones: cada región es el territorio de un experto
+        (su color = su índice). Las fronteras son rectas porque el router es
+        lineal.</span></li>
+      <li>Observa las barras al cruzar una frontera. <span class="obs">Cerca de la
+        frontera dos expertos tienen gates parecidos (reparto ~50/50); lejos, uno domina.
+        El softmax hace el triaje GRADUAL, el top-r lo hace DISCRETO.</span></li>
+      <li>Sube r de 2 a 4 con K = 8. <span class="obs">Se activan más barras doradas y
+        cada una pesa menos; la suma sigue siendo 1.000 (lo verifica el lector). Más
+        expertos activos = más calidad potencial y más coste por token.</span></li>
+      <li>Pulsa "otro router". <span class="obs">Las regiones cambian por completo: el
+        mapa de especialización no está prefijado, lo aprende W<sub>g</sub> durante el
+        entrenamiento.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el coste por token
+        no depende de K sino de r?</summary><div class="ans">Porque los K&minus;r expertos
+        no seleccionados ni se evalúan: su g<sub>k</sub> es exactamente 0 tras el top-r,
+        así que su MLP nunca se ejecuta. El router sí evalúa los K logits, pero eso es una
+        matriz K&times;d minúscula comparada con un experto. K solo aparece en la factura
+        de MEMORIA (hay que tener los K expertos cargados en VRAM por si acaso) &mdash;
+        ese es el trade-off de la slide siguiente.</div></details></div>
+    <p><span class="hd">Setup.</span> Un token de juguete x &isin; &#8477;&sup2; (en un
+      modelo real sería el vector de dimensión d del token) y un router real:
+      z = W<sub>g</sub>x con W<sub>g</sub> &isin; &#8477;<sup>K&times;2</sup> aleatoria,
+      softmax encima, top-r y renormalización &mdash; todo calculado en vivo. El mapa
+      pinta, para cada punto del plano, qué experto ganaría (rampa dorada por índice);
+      las barras de abajo muestran el softmax completo (contorno gris) y los gates
+      finales tras top-r (relleno dorado).</p>
+    <p><span class="hd">Juega.</span> Versión negocio del mapa: en un asistente bancario,
+      unos expertos acaban especializados en lenguaje jurídico, otros en números y tablas,
+      otros en conversación general. El token "EURIBOR" cae en una región; el token
+      "hola" en otra. Tú estás moviendo el token por el espacio de representaciones.</p>
+    <p><span class="hd">Lee así.</span> El lector muestra los dos invariantes que el
+      cálculo debe cumplir: el softmax completo suma 1.000 y los gates renormalizados tras
+      top-r también. Si r = 1 (Switch Transformer), el ganador se lleva gate = 1 y la
+      frontera entre regiones es una decisión dura.</p>
+    <p><span class="hd">Mensaje.</span> MoE no elimina parámetros: los organiza para que
+      trabajen por turnos. El router es la pieza que convierte un modelo enorme en uno
+      barato por token &mdash; y también la pieza frágil que hay que vigilar (slide de
+      balanceo).</p>
+    <p class="miniglos"><b>Términos.</b> <b>E<sub>k</sub></b>: experto, un MLP
+      independiente. <b>g<sub>k</sub>(x)</b>: peso de routing (0 si no está en el top-r).
+      <b>W<sub>g</sub></b>: matriz del router. <b>K</b>: expertos totales (8&ndash;256).
+      <b>r</b>: activos por token (típicamente 2). <b>Switch</b>: la variante r = 1.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : totales vs activos ============ -->
+<section class="slide" id="s7">
+  <div class="figcol">
+    <canvas id="cv7a" data-aspect="1.75"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">P<sub>total</sub> &asymp; K&middot;|E|&nbsp;&nbsp;&nbsp;&nbsp;P<sub>activos</sub> &asymp; r&middot;|E|<span class="eqn">(la aritmética de MoE)</span></div>
+      <div class="eqread">con K expertos de |E| parámetros cada uno y r activos por
+        token: la <b>capacidad</b> (lo que el modelo sabe) escala con los totales; el
+        <b>coste por token</b> (FLOPs &asymp; 2&middot;P<sub>activos</sub>) escala con los
+        activos. Mixtral 8&times;7B: K = 8, |E| = 7B, r = 2 &rArr; 56B totales, 14B
+        activos. DeepSeek-V3: K = 256, r = 8 &rArr; 671B totales, 37B activos.</div>
+      <div class="eq">VRAM &asymp; 2&middot;P<sub>total</sub> bytes (FP16)&nbsp;&nbsp;&middot;&nbsp;&nbsp;&euro;/token &prop; 2&middot;P<sub>activos</sub> FLOPs<span class="eqn">(memoria vs latencia)</span></div>
+      <div class="eqread">la letra pequeña: TODOS los expertos deben estar cargados en
+        VRAM (no sabes a cuál enrutará el siguiente token), así que la memoria paga los
+        totales aunque la latencia pague los activos. MoE es para servidores con mucha
+        VRAM; en un portátil no hay milagro.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>número de expertos K = 2<sup>v</sup> = <b id="r7K"></b></label>
+      <input type="range" id="sl7K" min="1" max="8" step="1" value="3">
+      <label>expertos activos por token r = <b id="r7r"></b></label>
+      <input type="range" id="sl7r" min="1" max="8" step="1" value="2">
+      <label>tamaño de cada experto |E| = <b id="r7s"></b> B parámetros</label>
+      <input type="range" id="sl7s" min="0.5" max="20" step="0.5" value="7">
+    </div>
+    <div class="readout" id="ro7"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Configura Mixtral: K = 8, r = 2, |E| = 7. <span class="obs">El punto dorado cae
+        encima de la referencia Mixtral (56B totales, 14B activos): pagas inferencia de
+        14B con capacidad de 56B.</span></li>
+      <li>Sube K a 256 dejando r y |E|. <span class="obs">Los totales se disparan
+        (&times;32) pero los activos NO se mueven: el coste por token es exactamente el
+        mismo. Esa es la palanca que explota DeepSeek.</span></li>
+      <li>Mira la VRAM en el lector con K = 256. <span class="obs">~3.6&nbsp;TB en FP16:
+        hacen falta decenas de GPUs solo para tener el modelo cargado. La capacidad
+        gratis en FLOPs se paga en memoria.</span></li>
+      <li>Compara con la diagonal del canvas. <span class="obs">Los modelos densos
+        (Llama-3-405B) viven en la diagonal activos = totales; todo MoE vive por debajo.
+        La distancia vertical a la diagonal es el descuento de inferencia.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué DeepSeek-V3 pudo
+        entrenar un modelo de 671B por ~5.5 M$ cuando GPT-4 costó ~100 M$?</summary>
+        <div class="ans">Porque el coste de entrenamiento también escala con los
+        parámetros ACTIVOS, no con los totales: cada token de entrenamiento solo
+        atraviesa r expertos (37B efectivos), no los 671B. A eso se suman precisión FP8 y
+        optimizaciones de comunicación, pero la palanca dominante es MoE: separar
+        capacidad de coste por token vale tanto para entrenar como para servir. Es la
+        razón por la que MoE es la receta de los modelos punteros cerrados (GPT-4) y
+        abiertos (Mixtral, DeepSeek).</div></details></div>
+    <p><span class="hd">Setup.</span> El canvas es un mapa log&ndash;log de parámetros
+      totales (eje x) contra activos por token (eje y). La diagonal discontinua es el
+      mundo denso (activos = totales); cada punto gris es un modelo real con cifras
+      públicas: Mixtral 8&times;7B (56B/14B), DeepSeek-V3 (671B/37B), Llama-3-405B denso
+      (405B/405B) y la estimación filtrada de GPT-4 (~1.8T/~280B, no confirmada). El
+      punto dorado es TU configuración de los sliders, con la fórmula
+      P<sub>total</sub> = K|E|, P<sub>activos</sub> = r|E| calculada en vivo (los modelos
+      reales añaden además parámetros compartidos de atención, por eso sus activos no son
+      exactamente r|E|).</p>
+    <p><span class="hd">Juega.</span> El lector traduce a dinero: FLOPs por token
+      generado (&asymp; 2P<sub>activos</sub>), euros por millón de tokens en una H100 a
+      3&nbsp;&euro;/h, y la VRAM mínima para tener el modelo cargado. Diseña el MoE que
+      tu presupuesto cloud soporta y mira qué capacidad total te llevas a cambio.</p>
+    <p><span class="hd">Lee así.</span> Moverse en horizontal (más K) es comprar
+      conocimiento pagando solo VRAM; moverse en vertical (más r) es comprar calidad por
+      token pagando FLOPs. Los diseñadores de Mixtral y DeepSeek eligieron puntos muy
+      distintos del mismo plano.</p>
+    <p><span class="hd">Mensaje.</span> MoE separa el número total de parámetros del
+      coste por token: la clave de la eficiencia moderna. Democratiza el entrenamiento de
+      modelos gigantes &mdash; ya no hace falta presupuesto de big tech para competir.</p>
+    <p class="miniglos"><b>Términos.</b> <b>P<sub>total</sub></b>: parámetros cargados en
+      memoria. <b>P<sub>activos</sub></b>: parámetros que procesan cada token concreto.
+      <b>|E|</b>: tamaño de un experto. <b>FP8/FP16</b>: precisiones de entrenamiento e
+      inferencia. <b>denso</b>: modelo donde activos = totales.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 : balanceo de carga ============ -->
+<section class="slide" id="s8">
+  <div class="figcol">
+    <canvas id="cv8a" data-aspect="2.5"></canvas>
+    <canvas id="cv8b" data-aspect="2.5"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">L<sub>aux</sub> = &lambda; &middot; K &middot; <big>&Sigma;</big><sub>e=1..K</sub>&nbsp;f<sub>e</sub> &middot; P<sub>e</sub><span class="eqn">(pérdida de balanceo, Switch Transformer)</span></div>
+      <div class="eqread">f<sub>e</sub> = fracción de tokens cuyo top-1 es el experto e
+        (con stop-gradient); P<sub>e</sub> = probabilidad media que el router asigna a e.
+        Si el reparto es uniforme, f<sub>e</sub> = P<sub>e</sub> = 1/K y L<sub>aux</sub> =
+        &lambda;: su mínimo. Si un experto acapara, su producto f&middot;P crece y el
+        gradiente empuja sus logits hacia abajo en los tokens que acapara.</div>
+      <div class="eq"><span class="frac"><span class="num">&part;L<sub>aux</sub></span><span class="den">&part;z<sub>i,e</sub></span></span> = <span class="frac"><span class="num">&lambda;K</span><span class="den">n</span></span> &middot; p<sub>i,e</sub><big>(</big>f<sub>e</sub> &minus; <big>&Sigma;</big><sub>e'</sub>f<sub>e'</sub>p<sub>i,e'</sub><big>)</big><span class="eqn">(el gradiente que ejecuta esta slide)</span></div>
+      <div class="eqread">el gradiente exacto a través del softmax: para cada token i,
+        baja el logit de los expertos sobre-usados (f<sub>e</sub> mayor que la media
+        ponderada) y sube el de los infra-usados. Es lo que el botón "entrenar" aplica de
+        verdad, paso a paso, sobre W<sub>g</sub>.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>número de expertos K = <b id="r8E"></b></label>
+      <input type="range" id="sl8E" min="4" max="8" step="1" value="6">
+      <label>peso del balanceo &lambda; = <b id="r8l"></b> (la simulación tinta usa siempre &lambda; = 0)</label>
+      <input type="range" id="sl8l" min="0" max="2" step="0.1" value="1">
+      <button id="bt8a">entrenar 50 pasos</button>
+      <button id="bt8r">reiniciar (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro8"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pulsa "entrenar 50 pasos" tres o cuatro veces con &lambda; = 1.
+        <span class="obs">El histograma tinta (sin balanceo) se concentra en unos pocos
+        expertos y aparecen barras a cero: expertos muertos. El dorado (con balanceo) se
+        mantiene cerca de la línea uniforme 1/K.</span></li>
+      <li>Mira el badge de expertos muertos. <span class="obs">Sin balanceo suele haber
+        varios; con balanceo, ninguno o casi ninguno. Un experto muerto es VRAM ocupada
+        que no aporta nada.</span></li>
+      <li>Reinicia, pon &lambda; = 0 y entrena. <span class="obs">Ahora las DOS
+        simulaciones colapsan igual: sin el término auxiliar, el rico se hace más rico
+        &mdash; el experto que gana un token se especializa, gana más tokens, y los demás
+        nunca aprenden.</span></li>
+      <li>Reinicia con &lambda; = 2 y entrena mirando el scatter.
+        <span class="obs">El plano queda repartido en territorios de tamaño parecido:
+        balanceo fuerte = reparto equitativo, aunque a veces fuerza divisiones poco
+        naturales de un mismo cluster (el precio de &lambda; alto).</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el routing colapsa
+        sin ayuda, si nadie "quiere" matar expertos?</summary><div class="ans">Es un
+        bucle de retroalimentación: el experto que por azar inicial gana los tokens de un
+        cluster se entrena con ellos y mejora en ellos; al mejorar, el router le asigna
+        aún más tokens parecidos. Los expertos que no ganan nada no reciben gradiente y
+        no mejoran nunca: ricos más ricos, muertos para siempre. Es el mismo fenómeno que
+        el "winner-take-all" en k-means con mala inicialización. La pérdida auxiliar
+        rompe el bucle penalizando la concentración mientras los expertos aún están a
+        tiempo de especializarse en otra cosa.</div></details></div>
+    <p><span class="hd">Setup.</span> 360 tokens sintéticos en 2D (tres clusters: piensa
+      en consultas de banca, jurídico y conversación general llegando a un MoE de BBVA) y
+      dos routers idénticos al inicio que entreno en vivo con la MISMA dinámica
+      (especialización winner-take-all tipo k-means online sobre W<sub>g</sub>): la
+      simulación tinta sin pérdida de balanceo y la dorada añadiendo el gradiente exacto
+      de L<sub>aux</sub> con tu &lambda;. Arriba: histograma de uso f<sub>e</sub> de cada
+      experto en ambas simulaciones, con la línea uniforme 1/K. Abajo: los tokens
+      coloreados por el experto que se los queda en la simulación dorada, con los
+      vectores W<sub>e</sub> marcados.</p>
+    <p><span class="hd">Juega.</span> El botón "entrenar" ejecuta 50 pasos reales de la
+      dinámica (asignación top-1, actualización del ganador, gradiente de balanceo). No
+      hay curvas precocinadas: cada reinicio con otra semilla produce otra historia de
+      colapso.</p>
+    <p><span class="hd">Lee así.</span> El lector da el uso máximo y mínimo, el recuento
+      de expertos muertos (f<sub>e</sub> &lt; 2%) en cada simulación y el valor actual de
+      K&middot;&Sigma;f<sub>e</sub>P<sub>e</sub> (que vale 1 en el reparto perfecto).
+      Verás que el dorado se acerca a 1 y el tinta se aleja.</p>
+    <p><span class="hd">Mensaje.</span> El router es la pieza frágil de MoE: sin un
+      término de balanceo, parte de la capacidad que pagas en VRAM muere. Todo MoE serio
+      (Switch, Mixtral, DeepSeek) entrena con una L<sub>aux</sub> de este tipo, y
+      DeepSeek-V3 llegó a sustituirla por sesgos ajustados dinámicamente: balancear sin
+      contaminar el gradiente principal.</p>
+    <p class="miniglos"><b>Términos.</b> <b>f<sub>e</sub></b>: fracción de tokens
+      enrutados a e. <b>P<sub>e</sub></b>: probabilidad media del router hacia e.
+      <b>experto muerto</b>: f<sub>e</sub> &asymp; 0 de forma persistente.
+      <b>&lambda;</b>: peso de la pérdida auxiliar frente a la de la tarea.
+      <b>winner-take-all</b>: dinámica donde el ganador refuerza su ventaja.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 : comparativa final ============ -->
+<section class="slide" id="s9">
+  <div class="figcol">
+    <canvas id="cv9a" data-aspect="2.1"></canvas>
+    <table class="live">
+      <thead><tr><th>familia</th><th>FLOPs/token</th><th>cache/estado</th>
+        <th>VRAM total</th><th>GPUs 80&nbsp;GB</th><th>&euro;/1M tok</th><th>tokens/mes</th></tr></thead>
+      <tbody id="tb9"></tbody>
+    </table>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">FLOPs/token &asymp; 2&middot;P<sub>act</sub> + 4&middot;L&middot;T&middot;d&nbsp;&nbsp;(atención)&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;&asymp; 2&middot;P&nbsp;&nbsp;(SSM)<span class="eqn">(coste de generación)</span></div>
+      <div class="eqread">generar un token cuesta dos veces los parámetros activos
+        (multiplicar-acumular por cada peso) más, si hay atención, releer el KV-cache:
+        4&middot;L&middot;T&middot;d FLOPs que crecen con el contexto T. El SSM no tiene
+        ese segundo término: su estado no crece. Memoria: KV = 2LTd&middot;bytes
+        (Transformer/MoE) contra 2LdN&middot;bytes constante (Mamba).</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>longitud de contexto T = <b id="r9n"></b> tokens (escala log)</label>
+      <input type="range" id="sl9n" min="3" max="6" step="0.05" value="4">
+      <label>presupuesto mensual de inferencia = <b id="r9b"></b> &euro;/mes (escala log)</label>
+      <input type="range" id="sl9b" min="2" max="5" step="0.1" value="3.5">
+    </div>
+    <div class="readout" id="ro9"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con T = 10k, lee la tabla. <span class="obs">El denso 70B y el MoE están
+        parejos en &euro;/1M tokens; Mamba es el más barato pero con menos capacidad. A
+        contexto corto, el Transformer denso es perfectamente competitivo.</span></li>
+      <li>Sube T a 1M. <span class="obs">Las curvas del Transformer y del MoE despegan
+        (el término 4LTd domina) mientras Mamba sigue plana: a contexto extremo el coste
+        por token del denso se multiplica por ~20 y el de Mamba no se mueve.</span></li>
+      <li>Mira la columna de GPUs a T = 1M. <span class="obs">El KV-cache añade cientos
+        de GB: el denso 70B pasa de 2 a 9 GPUs por réplica. Mamba sigue cabiendo en
+        1.</span></li>
+      <li>Fija tu presupuesto (p. ej. 3000 &euro;/mes) y compara tokens/mes.
+        <span class="obs">La última columna es la decisión de negocio: cuántos tokens
+        sirves al mes con cada familia, en TU contexto típico.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué no hay una
+        columna "calidad" calculada con fórmula?</summary><div class="ans">Porque la
+        calidad no se deduce de la aritmética: depende de la tarea. La evidencia
+        empírica (2024&ndash;2026) dice: el denso y el MoE dominan en recuperación
+        precisa y razonamiento; Mamba iguala en modelado fluido de secuencias largas y
+        pierde en "needle in a haystack"; los híbridos tipo Jamba (capas Transformer
+        intercaladas con capas Mamba) capturan lo mejor de ambos a partir de 128k de
+        contexto. Por eso la tabla del deck termina en un KPI por familia, no en un
+        ranking universal: eliges familia justificando TU KPI.</div></details></div>
+    <p><span class="hd">Setup.</span> Tres modelos concretos con cifras realistas: un
+      Transformer denso de 70B (L = 80, d = 8192), un MoE tipo DeepSeek (671B totales,
+      37B activos, L = 61, d = 7168) y un SSM tipo Mamba de 7B (L = 64, d = 4096,
+      N = 16). El canvas pinta &euro; por millón de tokens generados según el contexto T
+      (log&ndash;log), con tu T marcado; la tabla recalcula con tus sliders todas las
+      columnas usando las fórmulas del panel: FLOPs por token, memoria de cache o estado,
+      VRAM total, GPUs de 80&nbsp;GB necesarias, coste por millón de tokens (H100 a
+      3&nbsp;&euro;/h, 4&middot;10<sup>14</sup> FLOP/s útiles) y tokens servibles con tu
+      presupuesto mensual. La celda dorada marca al ganador de cada columna.</p>
+    <p><span class="hd">Juega.</span> Tres escenarios del curso: chatbot de churn telco
+      (T &asymp; 4k &rarr; gana el denso por simplicidad), asistente generalista BBVA con
+      RAG (T &asymp; 32k, mucho volumen &rarr; el MoE da máxima calidad por euro) y
+      análisis de historiales clínicos completos (T &asymp; 1M &rarr; solo Mamba o un
+      híbrido lo sirven a coste sano).</p>
+    <p><span class="hd">Lee así.</span> Ninguna fila gana todas las columnas, y esa es la
+      lección: el coste de entrenamiento favorece al MoE, la memoria por petición a
+      Mamba, la calidad por defecto al denso. La elección es un argumento de KPI, no de
+      moda.</p>
+    <p><span class="hd">Mensaje.</span> Las alternativas no sustituyen al Transformer: lo
+      complementan cuando una dimensión concreta (contexto, latencia, coste) deja de
+      admitir el modelo denso. En el proyecto AI-first, eliges familia justificando el
+      KPI &mdash; exactamente lo que acabas de hacer con los sliders.</p>
+    <p class="miniglos"><b>Términos.</b> <b>prefill/generación</b>: procesar el contexto
+      vs producir tokens nuevos. <b>híbrido (Jamba)</b>: alterna bloques Transformer y
+      Mamba. <b>Griffin/StripedHyena</b>: otras mezclas (atención local + recurrencias;
+      convoluciones largas). <b>KPI</b>: la métrica de negocio que decide la
+      arquitectura.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 : glosario ============ -->
+<section class="slide" id="s10">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="glosgrid" id="glos"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11 : síntesis ============ -->
+<section class="slide" id="s11">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="pipe">
+      <div class="pipebox"><div><div class="pname">El muro cuadrático</div>
+          <div class="pmap">Slides: Muro n&sup2; &middot; KV-cache</div></div>
+        <div class="pq">"La atención compara todos los pares: FLOPs &prop; T&sup2; a partir de T = 2d, y un KV-cache que crece con T hasta desbordar la VRAM. El Transformer no falla en contextos largos: deja de ser pagable."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Atención lineal</div>
+          <div class="pmap">Slide: At. lineal</div></div>
+        <div class="pq">"Cambiar softmax por &phi; y reordenar el producto: &phi;(Q)(&phi;(K)<sup>&#8868;</sup>V) baja de O(T&sup2;d) a O(Td&sup2;). El precio es foco: la matriz implícita de rango &le; d difumina la recuperación precisa. KPI: tokens/seg en edge."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">SSM y Mamba</div>
+          <div class="pmap">Slides: SSM &middot; Selectividad &middot; Convolución</div></div>
+        <div class="pq">"h<sub>t</sub> = &Abar;h<sub>t&minus;1</sub> + &Bbar;x<sub>t</sub>: memoria exponencial comprimida en N números, coste O(N) por token, estado que no crece. Mamba añade &Delta;(x): puertas que guardan lo importante e ignoran el ruido. Dualidad recurrencia&ndash;convolución para entrenar en paralelo. KPI: memoria por petición en contextos de 10<sup>6</sup> tokens."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Mixture of Experts</div>
+          <div class="pmap">Slides: MoE router &middot; Tot/activos &middot; Balanceo</div></div>
+        <div class="pq">"softmax(W<sub>g</sub>x) con top-r: capacidad K|E| pagando r|E| por token. La VRAM paga los totales, la latencia los activos; el router necesita L<sub>aux</sub> de balanceo o colapsa en expertos muertos. KPI: &euro;/token a calidad alta. Es la receta de GPT-4, Mixtral y DeepSeek-V3 (671B por 5.5 M$)."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">La decisión de arquitectura</div>
+          <div class="pmap">Slide: Comparativa</div></div>
+        <div class="pq">"Denso para &le; 32k y calidad por defecto; MoE para asistentes generalistas en cloud con VRAM grande; Mamba para genoma, historiales y libros; atención lineal para streaming en edge; híbridos (Jamba) para 128k+ balanceando calidad y coste. En el proyecto AI-first, la familia se elige justificando el KPI."</div></div>
+    </div>
+    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
+      El Bloque I termina donde empezó la ingeniería de 2026: la arquitectura ya no es un
+      dogma sino un menú, y el criterio de elección es siempre el mismo &mdash; qué
+      dimensión del coste (pares de tokens, memoria de contexto, parámetros por token)
+      limita TU caso de negocio, y qué familia la convierte en lineal.</p>
+  </div>
+</section>
+
+<div id="footerL">Garrido-Merch&aacute;n &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; D&iacute;a 10 &middot; Alternativas al Transformer: Mamba, SSM y MoE</div>
+<div id="footer"></div>
+<div id="arrows">
+  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
+</div>
+
+<script>
+"use strict";
+/* ================= PALETTE ================= */
+const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
+      MUTE="#8A8A8A", RULE="#D9C28A";
+
+/* ================= MATH CORE (DOM-free) ================= */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296;};}
+function randn(rng){let u=0;while(u===0)u=rng();const v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function softmax(z){const m=Math.max(...z);const e=z.map(v=>Math.exp(v-m));
+  const s=e.reduce((a,b)=>a+b,0);return e.map(v=>v/s);}
+function sigmoid(x){return 1/(1+Math.exp(-x));}
+function eluP1(x){return x>0?x+1:Math.exp(x);}
+/* costes del Transformer (FLOPs de una pasada forward) */
+function flopsAttn(T,d,L){return 4*L*T*T*d;}
+function flopsLin(T,d,L){return 8*L*T*d*d;}
+function eurH100(flops){return flops/4e14/3600*3;}   // 4e14 FLOP/s útiles, 3 €/h
+function kvBytes(T,L,d,bytes){return 2*L*T*d*bytes;}
+/* SSM escalar: recurrencia con coeficientes (constantes o por token) */
+function ssmRun(x,abar,bbar){const T=x.length,h=new Array(T);let hp=0;
+  for(let t=0;t<T;t++){const a=Array.isArray(abar)?abar[t]:abar,
+    b=Array.isArray(bbar)?bbar[t]:bbar;hp=a*hp+b*x[t];h[t]=hp;}return h;}
+/* contribución de cada token al estado final: w_i = b_i x_i prod_{j>i} a_j */
+function ssmContrib(x,abar,bbar){const T=x.length,w=new Array(T);
+  for(let i=0;i<T;i++){const b=Array.isArray(bbar)?bbar[i]:bbar;let p=b*x[i];
+    for(let j=i+1;j<T;j++){p*=Array.isArray(abar)?abar[j]:abar;}w[i]=p;}return w;}
+/* convolución causal con kernel k */
+function causalConv(x,k){const T=x.length,y=new Array(T).fill(0);
+  for(let t=0;t<T;t++)for(let j=0;j<=t&&j<k.length;j++)y[t]+=k[j]*x[t-j];return y;}
+/* atención exacta y lineal sobre matrices pequeñas */
+function matRandn(T,d,rng){const M=[];for(let i=0;i<T;i++){const r=[];
+  for(let j=0;j<d;j++)r.push(randn(rng));M.push(r);}return M;}
+function attnExact(Q,K,V){const T=Q.length,d=Q[0].length,dv=V[0].length;
+  const A=[],O=[];
+  for(let i=0;i<T;i++){const z=[];
+    for(let j=0;j<T;j++){let s=0;for(let m=0;m<d;m++)s+=Q[i][m]*K[j][m];
+      z.push(s/Math.sqrt(d));}
+    A.push(softmax(z));}
+  for(let i=0;i<T;i++){const o=new Array(dv).fill(0);
+    for(let j=0;j<T;j++)for(let m=0;m<dv;m++)o[m]+=A[i][j]*V[j][m];O.push(o);}
+  return {A:A,O:O};
+}
+function attnLinear(Q,K,V){const T=Q.length,d=Q[0].length,dv=V[0].length;
+  const fQ=Q.map(r=>r.map(eluP1)),fK=K.map(r=>r.map(eluP1));
+  /* S = fK^T V (d x dv), s = sum_j fK_j (d) */
+  const S=Array.from({length:d},()=>new Array(dv).fill(0)),sv=new Array(d).fill(0);
+  for(let j=0;j<T;j++)for(let m=0;m<d;m++){sv[m]+=fK[j][m];
+    for(let n=0;n<dv;n++)S[m][n]+=fK[j][m]*V[j][n];}
+  const A=[],O=[];
+  for(let i=0;i<T;i++){let z=0;for(let m=0;m<d;m++)z+=fQ[i][m]*sv[m];
+    const ai=[];for(let j=0;j<T;j++){let s=0;
+      for(let m=0;m<d;m++)s+=fQ[i][m]*fK[j][m];ai.push(s/z);}
+    A.push(ai);
+    const o=new Array(dv).fill(0);
+    for(let m=0;m<d;m++)for(let n=0;n<dv;n++)o[n]+=fQ[i][m]*S[m][n];
+    O.push(o.map(v=>v/z));}
+  return {A:A,O:O};
+}
+/* router MoE: logits, softmax, top-r renormalizado */
+function routerGates(W,x,r){const z=W.map(w=>w[0]*x[0]+w[1]*x[1]);
+  const p=softmax(z);
+  const idx=p.map((v,i)=>i).sort((a,b)=>p[b]-p[a]).slice(0,Math.min(r,p.length));
+  const mask=new Array(p.length).fill(0);let s=0;
+  for(const i of idx)s+=p[i];
+  for(const i of idx)mask[i]=p[i]/s;
+  return {z:z,p:p,g:mask,top:idx};
+}
+/* ================= END MATH CORE ================= */
+
+/* ================= plotting helpers ================= */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const wCss=cv.parentElement.clientWidth;
+  const asp=parseFloat(cv.dataset.aspect)||1.8;
+  const hCss=wCss/asp;
+  cv.style.height=hCss+"px";
+  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx:ctx,W:wCss,H:hCss};
+}
+function axes(ctx,fr,opt){
+  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
+  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
+  ctx.save();
+  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
+  ctx.font="11px Georgia, serif";
+  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
+  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
+  ctx.textAlign="center";ctx.textBaseline="top";
+  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
+    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
+    ctx.fillText(lb,fr.x0-6,Y(v));});
+  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
+  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
+    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText(opt.ylab,0,0);ctx.restore();}
+  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
+    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
+  ctx.restore();
+  return {X:X,Y:Y};
+}
+function polyline(ctx,pts,color,lw,dash){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
+  if(dash)ctx.setLineDash(dash);
+  ctx.beginPath();let first=true;
+  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
+  ctx.stroke();ctx.restore();
+}
+function rampColor(t){
+  t=Math.max(0,Math.min(1,t));
+  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
+  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
+  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function expColor(e,E){
+  const base=["#B8860B","#1A1A1A","#8C6508","#8A8A8A","#D9A727","#5C4304","#4d4d4d","#A98F4F"];
+  return base[e%base.length];
+}
+function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
+function fmtInt(x){return Math.round(x).toLocaleString("es-ES");}
+function fmtSci(x){if(x===0)return "0";const e=Math.floor(Math.log10(Math.abs(x)));
+  const m=x/Math.pow(10,e);return fmtG(m,3)+"·10"+supDigits(e);}
+function supDigits(n){const map={"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵",
+  "6":"⁶","7":"⁷","8":"⁸","9":"⁹","-":"⁻"};
+  return String(n).split("").map(c=>map[c]||c).join("");}
+
+/* ================= navigation ================= */
+const SECTIONS=["Muro n²","KV-cache","At. lineal","SSM","Selectividad",
+  "Convolución","MoE router","Tot/activos","Balanceo","Comparativa",
+  "Glosario","Síntesis"];
+const TITLES=[
+ "El coste de la atención crece con T² y a partir de T = 2d domina todo el cómputo.",
+ "El KV-cache crece linealmente con el contexto y revienta la VRAM antes que los FLOPs.",
+ "La atención lineal reordena el producto de matrices y baja de O(T²d) a O(Td²).",
+ "Un SSM es una recurrencia lineal: el estado comprime la historia con decaimiento ā^k.",
+ "Mamba hace Δ dependiente de la entrada: el estado guarda lo importante e ignora el ruido.",
+ "El mismo SSM es una convolución global: recurrencia para inferir, convolución para entrenar.",
+ "El router de un MoE elige los top-r expertos por token con un softmax sobre W_g·x.",
+ "MoE separa parámetros totales (capacidad y VRAM) de parámetros activos (coste por token).",
+ "Sin pérdida de balanceo el routing colapsa: expertos muertos y capacidad desperdiciada.",
+ "Transformer, Mamba y MoE no compiten en abstracto: gana el que optimiza tu KPI.",
+ "Glosario: todos los símbolos del día, en una página y en cristiano.",
+ "Bloque I cerrado: del muro cuadrático a un menú de arquitecturas con KPI claros."];
+let cur=0;const N=12;
+const nav=document.getElementById("navstrip");
+SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
+  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
+function go(i){
+  cur=(i+N)%N;
+  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
+  document.getElementById("slidetitle").textContent=TITLES[cur];
+  document.getElementById("footer").textContent=(cur+1)+" / "+N;
+  window.scrollTo(0,0);
+  if(updaters[cur])updaters[cur](true);
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
+window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
+const updaters={};
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 0 : muro cuadrático ================= */
+(function(){
+  const sln=document.getElementById("sl0n"),sld=document.getElementById("sl0d"),
+        slL=document.getElementById("sl0L");
+  sln.oninput=upd;sld.oninput=upd;slL.oninput=upd;
+  function upd(){
+    const T=Math.round(Math.pow(10,+sln.value)),d=+sld.value,L=+slL.value;
+    document.getElementById("r0n").textContent=fmtInt(T);
+    document.getElementById("r0d").textContent=d;
+    document.getElementById("r0L").textContent=L;
+    const fa=flopsAttn(T,d,L),fl=flopsLin(T,d,L),ft=fa+fl;
+    const share=fa/ft,Tc=2*d;
+    const secs=ft/4e14,eur=eurH100(ft);
+    document.getElementById("ro0").innerHTML=
+      "FLOPs totales = <b>"+fmtSci(ft)+"</b> &nbsp;(atenci&oacute;n "+fmtSci(fa)+
+      " &middot; resto "+fmtSci(fl)+")"+
+      "<br>cuota de la atenci&oacute;n = <span class='gold'>"+fmtG(100*share,3)+
+      "%</span> &nbsp;&middot;&nbsp; cruce T = 2d = <b>"+fmtInt(Tc)+"</b>"+
+      "<br>en una H100: "+fmtG(secs,3)+" s &nbsp;&rArr;&nbsp; "+
+      "<span class='gold'>"+fmtG(eur,2)+" &euro;</span> por pasada completa";
+    /* panel A: FLOPs vs T, log-log */
+    let c=fitCanvas(document.getElementById("cv0a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const lo=2,hi=6;
+    let ymin=1e99,ymax=0;
+    const cw=[],ci=[],ct=[];
+    for(let i=0;i<=160;i++){
+      const lT=lo+(hi-lo)*i/160,Ti=Math.pow(10,lT);
+      const a=flopsAttn(Ti,d,L),b=flopsLin(Ti,d,L);
+      cw.push([lT,Math.log10(a)]);ci.push([lT,Math.log10(b)]);
+      ct.push([lT,Math.log10(a+b)]);
+      ymin=Math.min(ymin,Math.log10(Math.min(a,b)));
+      ymax=Math.max(ymax,Math.log10(a+b));}
+    ymin=Math.floor(ymin)-0.2;ymax=Math.ceil(ymax)+0.2;
+    const yt=[];for(let e=Math.ceil(ymin);e<=ymax;e+=2)yt.push([e,"10"+supDigits(e)]);
+    const ax=axes(c.ctx,fr,{xmin:lo,xmax:hi,ymin:ymin,ymax:ymax,
+      xticks:[[2,"100"],[3,"1k"],[4,"10k"],[5,"100k"],[6,"1M"]],
+      yticks:yt,xlab:"longitud de contexto T (escala log)",ylab:"FLOPs",
+      title:"FLOPs de una pasada: término cuadrático (dorado) vs lineal (tinta)"});
+    polyline(c.ctx,ct.map(p=>[ax.X(p[0]),ax.Y(p[1])]),MUTE,1.2,[4,3]);
+    polyline(c.ctx,ci.map(p=>[ax.X(p[0]),ax.Y(p[1])]),INK,1.8);
+    polyline(c.ctx,cw.map(p=>[ax.X(p[0]),ax.Y(p[1])]),GOLD,2.4);
+    /* cruce */
+    const lc=Math.log10(Tc);
+    if(lc>lo&&lc<hi){
+      polyline(c.ctx,[[ax.X(lc),fr.y0],[ax.X(lc),fr.y0+fr.h]],GOLDD,1,[3,3]);
+      c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+      c.ctx.fillText("T = 2d = "+fmtInt(Tc),ax.X(lc)+5,fr.y0+14);}
+    /* punto actual sobre el total */
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(Math.log10(T)),ax.Y(Math.log10(ft)),5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("atención 4LT²d",fr.x0+10,fr.y0+14);
+    c.ctx.fillText("resto 8LTd²",fr.x0+10,fr.y0+28);
+    /* panel B: cuota de la atención */
+    c=fitCanvas(document.getElementById("cv0b"));
+    const fr2={x0:56,y0:22,w:c.W-76,h:c.H-58};
+    const ax2=axes(c.ctx,fr2,{xmin:lo,xmax:hi,ymin:0,ymax:1,
+      xticks:[[2,"100"],[3,"1k"],[4,"10k"],[5,"100k"],[6,"1M"]],
+      yticks:[[0,"0%"],[0.5,"50%"],[1,"100%"]],
+      xlab:"T",ylab:"cuota atención",
+      title:"qué fracción del cómputo se lleva la atención"});
+    const sh=[];
+    for(let i=0;i<=160;i++){const lT=lo+(hi-lo)*i/160,Ti=Math.pow(10,lT);
+      const a=flopsAttn(Ti,d,L),b=flopsLin(Ti,d,L);sh.push([lT,a/(a+b)]);}
+    polyline(c.ctx,[[ax2.X(lo),ax2.Y(0.5)],[ax2.X(hi),ax2.Y(0.5)]],MUTE,1,[4,3]);
+    polyline(c.ctx,sh.map(p=>[ax2.X(p[0]),ax2.Y(p[1])]),GOLD,2.2);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax2.X(Math.log10(T)),ax2.Y(share),5,0,7);c.ctx.fill();
+  }
+  updaters[0]=upd;
+})();
+
+/* ================= SLIDE 1 : KV-cache ================= */
+(function(){
+  const sln=document.getElementById("sl1n"),slL=document.getElementById("sl1L"),
+        sld=document.getElementById("sl1d"),ck=document.getElementById("ck1");
+  sln.oninput=upd;slL.oninput=upd;sld.oninput=upd;ck.onchange=upd;
+  const GPU=80;  // GB
+  function upd(){
+    const T=Math.round(Math.pow(10,+sln.value)),L=+slL.value,d=+sld.value;
+    const bytes=ck.checked?4:2,other=ck.checked?2:4;
+    document.getElementById("r1n").textContent=fmtInt(T);
+    document.getElementById("r1L").textContent=L;
+    document.getElementById("r1d").textContent=d;
+    const gb=kvBytes(T,L,d,bytes)/1e9;
+    const Tmax=Math.floor(GPU*1e9/(2*L*d*bytes));
+    const fits=gb<=GPU;
+    document.getElementById("ro1").innerHTML=
+      "M<sub>KV</sub> = 2&middot;"+L+"&middot;"+fmtInt(T)+"&middot;"+d+"&middot;"+bytes+
+      " B = <span class='gold'>"+fmtG(gb,3)+" GB</span>"+
+      " &nbsp;<span class='badge "+(fits?"ok":"bad")+"'>"+
+      (fits?"cabe en una GPU de 80 GB":"NO cabe en una GPU de 80 GB ("+
+       fmtG(gb/GPU,2)+"&times;)")+"</span>"+
+      "<br>contexto m&aacute;ximo (solo cache): T<sub>m&aacute;x</sub> = <b>"+
+      fmtInt(Tmax)+"</b> tokens";
+    const c=fitCanvas(document.getElementById("cv1a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const lo=2,hi=6;
+    const gbAt=lT=>kvBytes(Math.pow(10,lT),L,d,bytes)/1e9;
+    const gbAt2=lT=>kvBytes(Math.pow(10,lT),L,d,other)/1e9;
+    let ymin=Math.log10(gbAt(lo))-0.3,ymax=Math.max(Math.log10(gbAt(hi)),Math.log10(GPU))+0.4;
+    const yt=[];for(let e=Math.ceil(ymin);e<=ymax;e++)
+      yt.push([e,e>=0?fmtInt(Math.pow(10,e)):"10"+supDigits(e)]);
+    const ax=axes(c.ctx,fr,{xmin:lo,xmax:hi,ymin:ymin,ymax:ymax,
+      xticks:[[2,"100"],[3,"1k"],[4,"10k"],[5,"100k"],[6,"1M"]],
+      yticks:yt,xlab:"longitud de contexto T (escala log)",ylab:"KV-cache (GB)",
+      title:"memoria del KV-cache vs contexto, y el techo de una H100"});
+    polyline(c.ctx,[[fr.x0,ax.Y(Math.log10(GPU))],[fr.x0+fr.w,ax.Y(Math.log10(GPU))]],
+             INK,1.4,[6,4]);
+    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("80 GB (H100)",fr.x0+8,ax.Y(Math.log10(GPU))-6);
+    const pts=[],pts2=[];
+    for(let i=0;i<=120;i++){const lT=lo+(hi-lo)*i/120;
+      pts.push([ax.X(lT),ax.Y(Math.log10(gbAt(lT)))]);
+      pts2.push([ax.X(lT),ax.Y(Math.log10(gbAt2(lT)))]);}
+    polyline(c.ctx,pts2,MUTE,1.2,[3,3]);
+    polyline(c.ctx,pts,GOLD,2.4);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(Math.log10(T)),ax.Y(Math.log10(gb)),5.5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia,serif";
+    c.ctx.fillText(ck.checked?"FP32 (la fina: FP16)":"FP16 (la fina: FP32)",
+                   fr.x0+8,fr.y0+14);
+    /* marca Tmax */
+    const lmax=Math.log10(Tmax);
+    if(lmax>lo&&lmax<hi){
+      polyline(c.ctx,[[ax.X(lmax),fr.y0],[ax.X(lmax),fr.y0+fr.h]],GOLDD,1,[3,3]);
+      c.ctx.fillStyle=GOLDD;c.ctx.textAlign="left";
+      c.ctx.fillText("T máx = "+fmtInt(Tmax),ax.X(lmax)+5,fr.y0+fr.h-10);}
+  }
+  updaters[1]=upd;
+})();
+
+/* ================= SLIDE 2 : atención lineal ================= */
+(function(){
+  let seed=7;
+  const slT=document.getElementById("sl2T"),sld=document.getElementById("sl2d");
+  slT.oninput=upd;sld.oninput=upd;
+  document.getElementById("bt2").onclick=()=>{seed+=1;upd();};
+  function heat(cv,A,title){
+    const c=fitCanvas(cv),T=A.length;
+    const fr={x0:46,y0:22,w:c.W-66,h:c.H-44};
+    c.ctx.font="bold 12px Georgia,serif";c.ctx.fillStyle=INK;c.ctx.textAlign="left";
+    c.ctx.fillText(title,fr.x0,fr.y0-6);
+    let mx=0;for(const r of A)for(const v of r)mx=Math.max(mx,v);
+    const cw=fr.w/T,ch=fr.h/T;
+    for(let i=0;i<T;i++)for(let j=0;j<T;j++){
+      c.ctx.fillStyle=rampColor(A[i][j]/mx);
+      c.ctx.fillRect(fr.x0+j*cw,fr.y0+i*ch,cw+0.5,ch+0.5);}
+    c.ctx.strokeStyle="#ddd";c.ctx.strokeRect(fr.x0,fr.y0,fr.w,fr.h);
+    c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";
+    c.ctx.textAlign="center";
+    c.ctx.fillText("columna j (token atendido)",fr.x0+fr.w/2,fr.y0+fr.h+14);
+    c.ctx.save();c.ctx.translate(fr.x0-12,fr.y0+fr.h/2);c.ctx.rotate(-Math.PI/2);
+    c.ctx.fillText("fila i (token que mira)",0,0);c.ctx.restore();
+  }
+  function upd(){
+    const T=+slT.value,d=+sld.value;
+    document.getElementById("r2T").textContent=T;
+    document.getElementById("r2d").textContent=d;
+    const rng=mulberry32(seed);
+    const Q=matRandn(T,d,rng),K=matRandn(T,d,rng),V=matRandn(T,d,rng);
+    const ex=attnExact(Q,K,V),li=attnLinear(Q,K,V);
+    /* error entre salidas */
+    let maxd=0,sum=0,nrm=0,rowEx=0,rowLi=0;
+    for(let i=0;i<T;i++){for(let m=0;m<d;m++){
+      const e=Math.abs(ex.O[i][m]-li.O[i][m]);maxd=Math.max(maxd,e);
+      sum+=e*e;nrm+=ex.O[i][m]*ex.O[i][m];}}
+    for(let j=0;j<T;j++){rowEx+=ex.A[0][j];rowLi+=li.A[0][j];}
+    const relErr=Math.sqrt(sum/nrm);
+    const mExact=2*T*T*d,mLin=2*T*d*d;
+    document.getElementById("ro2").innerHTML=
+      "multiplicaciones: exacta 2T&sup2;d = <b>"+fmtInt(mExact)+
+      "</b> &middot; lineal 2Td&sup2; = <b>"+fmtInt(mLin)+"</b> &nbsp;&rArr;&nbsp; "+
+      "cociente <span class='gold'>&times;"+fmtG(mExact/mLin,3)+"</span>"+
+      "<br>error relativo de la salida ||O<sub>ex</sub>&minus;O<sub>lin</sub>||/||O<sub>ex</sub>|| = <b>"+
+      fmtG(relErr,3)+"</b> &nbsp;&middot;&nbsp; suma de la fila 0: exacta "+
+      rowEx.toFixed(3)+", lineal "+rowLi.toFixed(3);
+    heat(document.getElementById("cv2a"),ex.A,
+      "matriz softmax(QKᵀ/√d): picos nítidos");
+    heat(document.getElementById("cv2b"),li.A,
+      "matriz implícita φ(Q)φ(K)ᵀ/z: misma estructura, más borrosa");
+  }
+  updaters[2]=upd;
+})();
+
+/* ================= SLIDE 3 : recurrencia SSM ================= */
+(function(){
+  const BB=0.5,T=24;
+  const x=new Array(T).fill(0);x[0]=2;x[1]=1;x[2]=3;
+  const sla=document.getElementById("sl3a"),slc=document.getElementById("sl3c");
+  sla.oninput=upd;slc.oninput=upd;
+  function upd(){
+    const a1=+sla.value,a2=+slc.value;
+    document.getElementById("r3a").textContent=a1.toFixed(2);
+    document.getElementById("r3c").textContent=a2.toFixed(2);
+    const h1=ssmRun(x,a1,BB),h2=ssmRun(x,a2,BB);
+    const hl1=Math.log(2)/Math.log(1/a1),hl2=Math.log(2)/Math.log(1/a2);
+    const contrib=BB*x[0]*a1*a1;
+    document.getElementById("ro3").innerHTML=
+      "canal 1 (a&#772; = "+a1.toFixed(2)+"): h&#8321; = <b>"+h1[0].toFixed(2)+
+      "</b>, h&#8322; = <b>"+h1[1].toFixed(2)+"</b>, h&#8323; = <b>"+
+      h1[2].toFixed(2)+"</b>"+
+      (Math.abs(a1-0.9)<1e-9?" <span class='gold'>(= el ejemplo del deck)</span>":"")+
+      "<br>contribuci&oacute;n de x&#8321; = 2 a h&#8323;: b&#772;&middot;x&#8321;&middot;a&#772;&sup2; = "+
+      "0.5&middot;2&middot;"+(a1*a1).toFixed(3)+" = <span class='gold'>"+
+      contrib.toFixed(3)+"</span>"+
+      "<br>semividas: canal 1 = "+fmtG(hl1,3)+" pasos &middot; canal 2 = "+
+      fmtG(hl2,3)+" pasos";
+    /* panel A: respuesta al impulso */
+    let c=fitCanvas(document.getElementById("cv3a"));
+    const fr={x0:50,y0:24,w:c.W-70,h:c.H-60};
+    const JJ=40;
+    const ax=axes(c.ctx,fr,{xmin:-0.5,xmax:JJ,ymin:0,ymax:BB*1.1,
+      xticks:[0,10,20,30,40],yticks:[[0,"0"],[0.25,"0.25"],[0.5,"0.5"]],
+      xlab:"antigüedad k (pasos)",ylab:"peso ā^k·b̄",
+      title:"respuesta al impulso: cuánto pesa un token de hace k pasos"});
+    for(let j=0;j<=JJ;j++){
+      const k1=BB*Math.pow(a1,j),k2=BB*Math.pow(a2,j);
+      polyline(c.ctx,[[ax.X(j)-2,ax.Y(0)],[ax.X(j)-2,ax.Y(k2)]],INK,2);
+      polyline(c.ctx,[[ax.X(j)+2,ax.Y(0)],[ax.X(j)+2,ax.Y(k1)]],GOLD,2);}
+    /* semividas marcadas */
+    polyline(c.ctx,[[ax.X(hl1),fr.y0+fr.h],[ax.X(hl1),ax.Y(BB/2)]],GOLDD,1,[3,3]);
+    c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("t½(canal 1)",Math.min(ax.X(hl1)+4,fr.x0+fr.w-60),ax.Y(BB/2)-4);
+    c.ctx.fillStyle=GOLD;c.ctx.fillText("canal 1 (ā₁)",fr.x0+fr.w-90,fr.y0+14);
+    c.ctx.fillStyle=INK;c.ctx.fillText("canal 2 (ā₂)",fr.x0+fr.w-90,fr.y0+28);
+    /* panel B: trayectoria sobre el ejemplo del deck */
+    c=fitCanvas(document.getElementById("cv3b"));
+    const fr2={x0:50,y0:24,w:c.W-70,h:c.H-60};
+    const hmax=Math.max(...h1,...h2,...x)*1.15;
+    const ax2=axes(c.ctx,fr2,{xmin:0.5,xmax:T,ymin:0,ymax:hmax,
+      xticks:[1,5,10,15,20],yticks:[[0,"0"],[1,"1"],[2,"2"],[Math.floor(hmax),
+        String(Math.floor(hmax))]],
+      xlab:"paso t",ylab:"h_t",
+      title:"trayectoria del estado con x = (2, 1, 3, 0, 0, …)"});
+    for(let t=0;t<T;t++)if(x[t]!==0){
+      polyline(c.ctx,[[ax2.X(t+1),ax2.Y(0)],[ax2.X(t+1),ax2.Y(x[t])]],RULE,4);}
+    polyline(c.ctx,h2.map((h,t)=>[ax2.X(t+1),ax2.Y(h)]),INK,1.8);
+    polyline(c.ctx,h1.map((h,t)=>[ax2.X(t+1),ax2.Y(h)]),GOLD,2.4);
+    c.ctx.fillStyle=GOLD;
+    for(let t=0;t<3;t++){c.ctx.beginPath();
+      c.ctx.arc(ax2.X(t+1),ax2.Y(h1[t]),4,0,7);c.ctx.fill();}
+    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("entradas x_t (barras)",fr2.x0+10,fr2.y0+14);
+  }
+  updaters[3]=upd;
+})();
+
+/* ================= SLIDE 4 : selectividad de Mamba ================= */
+(function(){
+  const T=28,IMP=[6,19],VAL=3.0,SENS=6,THR=1.5;
+  let seed=21,xs=null;
+  function build(){const rng=mulberry32(seed),sig=+document.getElementById("sl4n").value;
+    xs=new Array(T);
+    for(let t=0;t<T;t++)xs[t]=sig*randn(rng);
+    for(const i of IMP)xs[i]=VAL;}
+  const sln=document.getElementById("sl4n"),slD=document.getElementById("sl4D"),
+        ck=document.getElementById("ck4");
+  sln.oninput=()=>{build();upd();};slD.oninput=upd;ck.onchange=upd;
+  document.getElementById("bt4").onclick=()=>{seed+=1;build();upd();};
+  build();
+  function deltas(){return xs.map(v=>0.02+3*sigmoid(SENS*(Math.abs(v)-THR)));}
+  function upd(){
+    const sig=+sln.value,Dfix=+slD.value,showSel=ck.checked;
+    document.getElementById("r4n").textContent=sig.toFixed(2);
+    document.getElementById("r4D").textContent=Dfix.toFixed(2);
+    const dts=deltas();
+    const aSel=dts.map(D=>Math.exp(-D)),bSel=dts.map(D=>1-Math.exp(-D));
+    const aF=Math.exp(-Dfix),bF=1-Math.exp(-Dfix);
+    const hSel=ssmRun(xs,aSel,bSel),hF=ssmRun(xs,aF,bF);
+    const wSel=ssmContrib(xs,aSel,bSel),wF=ssmContrib(xs,aF,bF);
+    function share(w){let si=0,st=0;
+      for(let i=0;i<T;i++){const a=Math.abs(w[i]);st+=a;
+        if(IMP.includes(i))si+=a;}
+      return st>0?si/st:0;}
+    const shS=share(wSel),shF=share(wF);
+    document.getElementById("ro4").innerHTML=
+      "estado final: selectivo h<sub>T</sub> = <b>"+hSel[T-1].toFixed(3)+
+      "</b> &middot; &Delta; fijo h<sub>T</sub> = <b>"+hF[T-1].toFixed(3)+"</b>"+
+      "<br>autor&iacute;a de los tokens importantes en h<sub>T</sub>: "+
+      "<span class='gold'>selectivo "+fmtG(100*shS,3)+"%</span> &nbsp;vs&nbsp; "+
+      "&Delta; fijo "+fmtG(100*shF,3)+"%"+
+      "<br><span class='badge "+(shS>shF?"ok":"bad")+"'>"+
+      (shS>shF?"la selectividad retiene la se&ntilde;al":"sin ventaja selectiva aqu&iacute;")+
+      "</span>";
+    /* panel A: tokens + delta */
+    let c=fitCanvas(document.getElementById("cv4a"));
+    const fr={x0:50,y0:24,w:c.W-70,h:c.H-58};
+    const xmax=Math.max(3.4,...xs.map(Math.abs))*1.05;
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:T+1,ymin:-xmax,ymax:xmax,
+      xticks:[1,7,14,20,28],yticks:[[-3,"-3"],[0,"0"],[3,"3"]],
+      xlab:"posición t",ylab:"x_t",
+      title:"la secuencia: ruido (gris) y tokens importantes (dorado); puntos = Δ_t"});
+    polyline(c.ctx,[[fr.x0,ax.Y(0)],[fr.x0+fr.w,ax.Y(0)]],MUTE,0.8);
+    for(let t=0;t<T;t++){
+      const col=IMP.includes(t)?GOLD:MUTE;
+      polyline(c.ctx,[[ax.X(t+1),ax.Y(0)],[ax.X(t+1),ax.Y(xs[t])]],col,
+               IMP.includes(t)?4:2);}
+    /* delta sobre cada token, escalado a la mitad superior */
+    c.ctx.fillStyle=GOLDD;
+    for(let t=0;t<T;t++){c.ctx.beginPath();
+      c.ctx.arc(ax.X(t+1),ax.Y(-xmax+ (dts[t]/3.1)*xmax*0.85),2.6,0,7);c.ctx.fill();}
+    c.ctx.font="11px Georgia,serif";c.ctx.fillStyle=GOLDD;c.ctx.textAlign="left";
+    c.ctx.fillText("Δ_t (puerta): solo se abre en los importantes",fr.x0+8,
+                   fr.y0+fr.h-8);
+    /* panel B: estados */
+    c=fitCanvas(document.getElementById("cv4b"));
+    const fr2={x0:50,y0:24,w:c.W-70,h:c.H-58};
+    const hmax=Math.max(...hSel.map(Math.abs),...hF.map(Math.abs),0.4)*1.15;
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:T+1,ymin:-hmax,ymax:hmax,
+      xticks:[1,7,14,20,28],yticks:[[0,"0"],[Math.floor(hmax*10)/10,
+        String(Math.floor(hmax*10)/10)]],
+      xlab:"posición t",ylab:"h_t",
+      title:"el estado: Δ fijo (tinta) vs selectivo Mamba (dorado)"});
+    polyline(c.ctx,[[fr2.x0,ax2.Y(0)],[fr2.x0+fr2.w,ax2.Y(0)]],MUTE,0.8);
+    for(const i of IMP)
+      polyline(c.ctx,[[ax2.X(i+1),fr2.y0],[ax2.X(i+1),fr2.y0+fr2.h]],RULE,1,[3,3]);
+    polyline(c.ctx,hF.map((h,t)=>[ax2.X(t+1),ax2.Y(h)]),INK,1.8);
+    if(showSel)polyline(c.ctx,hSel.map((h,t)=>[ax2.X(t+1),ax2.Y(h)]),GOLD,2.4);
+  }
+  updaters[4]=upd;
+})();
+
+/* ================= SLIDE 5 : convolución equivalente ================= */
+(function(){
+  const BB=0.5,T=60;
+  let seed=4,xs=null;
+  function build(){const rng=mulberry32(seed);
+    xs=new Array(T);for(let t=0;t<T;t++)xs[t]=randn(rng);}
+  build();
+  const sla=document.getElementById("sl5a");
+  sla.oninput=upd;
+  document.getElementById("bt5").onclick=()=>{seed+=1;build();upd();};
+  function upd(){
+    const a=+sla.value;
+    document.getElementById("r5a").textContent=a.toFixed(2);
+    const kern=[];for(let j=0;j<T;j++)kern.push(BB*Math.pow(a,j));
+    const yRec=ssmRun(xs,a,BB);
+    const yConv=causalConv(xs,kern);
+    let maxd=0;for(let t=0;t<T;t++)maxd=Math.max(maxd,Math.abs(yRec[t]-yConv[t]));
+    const memEff=1/(1-a);
+    document.getElementById("ro5").innerHTML=
+      "m&aacute;x |y<sup>rec</sup> &minus; y<sup>conv</sup>| = <span class='gold'>"+
+      fmtSci(maxd)+"</span> (precisi&oacute;n m&aacute;quina: identidad, no aproximaci&oacute;n)"+
+      "<br>memoria efectiva del kernel: 1/(1&minus;a&#772;) = <b>"+fmtG(memEff,3)+
+      "</b> pasos"+
+      "<br>coste por token: recurrencia <b>2</b> mult &middot; convoluci&oacute;n ingenua ~<b>"+
+      Math.round(T/2)+"</b> mult &middot; entrenamiento: FFT O(T log T) paralela";
+    /* panel A: kernel */
+    let c=fitCanvas(document.getElementById("cv5a"));
+    const fr={x0:50,y0:24,w:c.W-70,h:c.H-58};
+    const ax=axes(c.ctx,fr,{xmin:-0.5,xmax:T,ymin:0,ymax:BB*1.1,
+      xticks:[0,15,30,45,60],yticks:[[0,"0"],[0.25,"0.25"],[0.5,"0.5"]],
+      xlab:"retardo j",ylab:"k_j",
+      title:"el kernel implícito k_j = C·ā^j·B̄ que genera un solo escalar ā"});
+    for(let j=0;j<T;j++)
+      polyline(c.ctx,[[ax.X(j),ax.Y(0)],[ax.X(j),ax.Y(kern[j])]],GOLD,2);
+    polyline(c.ctx,[[ax.X(memEff),fr.y0+fr.h],[ax.X(memEff),fr.y0]],GOLDD,1,[3,3]);
+    c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("memoria efectiva 1/(1−ā) = "+fmtG(memEff,3),
+                   Math.min(ax.X(memEff)+5,fr.x0+fr.w-160),fr.y0+14);
+    /* panel B: dualidad */
+    c=fitCanvas(document.getElementById("cv5b"));
+    const fr2={x0:50,y0:24,w:c.W-70,h:c.H-58};
+    const ymax=Math.max(...yRec.map(Math.abs))*1.15;
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:T+1,ymin:-ymax,ymax:ymax,
+      xticks:[1,15,30,45,60],yticks:[[0,"0"]],
+      xlab:"paso t",ylab:"y_t",
+      title:"recurrencia paso a paso (tinta) vs convolución global (puntos dorados)"});
+    polyline(c.ctx,[[fr2.x0,ax2.Y(0)],[fr2.x0+fr2.w,ax2.Y(0)]],MUTE,0.8);
+    polyline(c.ctx,yRec.map((y,t)=>[ax2.X(t+1),ax2.Y(y)]),INK,1.8);
+    c.ctx.fillStyle=GOLD;
+    for(let t=0;t<T;t+=2){c.ctx.beginPath();
+      c.ctx.arc(ax2.X(t+1),ax2.Y(yConv[t]),3.2,0,7);c.ctx.fill();}
+  }
+  updaters[5]=upd;
+})();
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 6 : MoE routing ================= */
+(function(){
+  let seed=13;
+  const slx=document.getElementById("sl6x"),sly=document.getElementById("sl6y"),
+        slE=document.getElementById("sl6E"),slk=document.getElementById("sl6k");
+  slx.oninput=upd;sly.oninput=upd;slE.oninput=upd;slk.oninput=upd;
+  document.getElementById("bt6").onclick=()=>{seed+=1;upd();};
+  function makeW(E){const rng=mulberry32(seed+100*E),W=[];
+    for(let e=0;e<E;e++){const th=2*Math.PI*e/E+0.6*(rng()-0.5),
+      rr=1.0+0.6*rng();
+      W.push([rr*Math.cos(th),rr*Math.sin(th)]);}
+    return W;}
+  function upd(){
+    const x1=+slx.value,x2=+sly.value,E=+slE.value,r=Math.min(+slk.value,E);
+    document.getElementById("r6x").textContent=x1.toFixed(2);
+    document.getElementById("r6y").textContent=x2.toFixed(2);
+    document.getElementById("r6E").textContent=E;
+    document.getElementById("r6k").textContent=r;
+    const W=makeW(E);
+    const R=routerGates(W,[x1,x2],r);
+    const sumP=R.p.reduce((a,b)=>a+b,0),sumG=R.g.reduce((a,b)=>a+b,0);
+    document.getElementById("ro6").innerHTML=
+      "expertos activos: <span class='gold'>"+
+      R.top.map(i=>"E"+(i+1)+" (g = "+R.g[i].toFixed(3)+")").join(", ")+"</span>"+
+      "<br>softmax completo suma "+sumP.toFixed(3)+
+      " &middot; gates tras top-"+r+" suman <b>"+sumG.toFixed(3)+"</b>"+
+      " &middot; expertos dormidos: "+(E-r)+" de "+E;
+    /* panel A: mapa de regiones */
+    let c=fitCanvas(document.getElementById("cv6a"));
+    const fr={x0:46,y0:22,w:c.W-66,h:c.H-56};
+    const ax=axes(c.ctx,fr,{xmin:-3,xmax:3,ymin:-3,ymax:3,
+      xticks:[[-3,"-3"],[0,"0"],[3,"3"]],yticks:[[-3,"-3"],[0,"0"],[3,"3"]],
+      xlab:"x₁",ylab:"x₂",
+      title:"el mapa del router: cada región, el territorio de un experto"});
+    const NX=92,NY=62;
+    for(let i=0;i<NX;i++)for(let j=0;j<NY;j++){
+      const px=-3+6*i/(NX-1),py=-3+6*j/(NY-1);
+      let best=0,bv=-1e9;
+      for(let e=0;e<E;e++){const z=W[e][0]*px+W[e][1]*py;
+        if(z>bv){bv=z;best=e;}}
+      c.ctx.fillStyle=rampColor(0.15+0.75*best/(E-1));
+      c.ctx.globalAlpha=0.85;
+      c.ctx.fillRect(ax.X(px)-fr.w/(NX-1)/2,ax.Y(py)-fr.h/(NY-1)/2,
+                     fr.w/(NX-1)+0.7,fr.h/(NY-1)+0.7);}
+    c.ctx.globalAlpha=1;
+    /* direcciones de los expertos */
+    c.ctx.font="11px Georgia,serif";
+    for(let e=0;e<E;e++){
+      polyline(c.ctx,[[ax.X(0),ax.Y(0)],[ax.X(W[e][0]*1.6),ax.Y(W[e][1]*1.6)]],
+               INK,1,[2,3]);
+      c.ctx.fillStyle=INK;c.ctx.textAlign="center";
+      c.ctx.fillText("E"+(e+1),ax.X(W[e][0]*1.85),ax.Y(W[e][1]*1.85));}
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(x1),ax.Y(x2),7,0,7);c.ctx.fill();
+    c.ctx.strokeStyle="#fff";c.ctx.lineWidth=2;c.ctx.beginPath();
+    c.ctx.arc(ax.X(x1),ax.Y(x2),7,0,7);c.ctx.stroke();
+    /* panel B: gates */
+    c=fitCanvas(document.getElementById("cv6b"));
+    const fr2={x0:46,y0:22,w:c.W-66,h:c.H-50};
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:E+1,ymin:0,ymax:1,
+      xticks:Array.from({length:E},(_,e)=>[e+1,"E"+(e+1)]),
+      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      xlab:"",ylab:"peso",
+      title:"softmax completo (contorno) y gates tras top-r (dorado)"});
+    const bw=fr2.w/(E+1)*0.55;
+    for(let e=0;e<E;e++){
+      const cx=ax2.X(e+1);
+      c.ctx.strokeStyle=MUTE;c.ctx.lineWidth=1.4;
+      c.ctx.strokeRect(cx-bw/2,ax2.Y(R.p[e]),bw,ax2.Y(0)-ax2.Y(R.p[e]));
+      if(R.g[e]>0){c.ctx.fillStyle=GOLD;c.ctx.globalAlpha=0.8;
+        c.ctx.fillRect(cx-bw/2,ax2.Y(R.g[e]),bw,ax2.Y(0)-ax2.Y(R.g[e]));
+        c.ctx.globalAlpha=1;}}
+  }
+  updaters[6]=upd;
+})();
+
+/* ================= SLIDE 7 : totales vs activos ================= */
+(function(){
+  const REFS=[["Mixtral 8×7B",56,14],["DeepSeek-V3",671,37],
+              ["Llama-3-405B (denso)",405,405],["GPT-4 (rumor)",1800,280]];
+  const slK=document.getElementById("sl7K"),slr=document.getElementById("sl7r"),
+        sls=document.getElementById("sl7s");
+  slK.oninput=upd;slr.oninput=upd;sls.oninput=upd;
+  function upd(){
+    const K=Math.pow(2,+slK.value),r=Math.min(+slr.value,K),s=+sls.value;
+    document.getElementById("r7K").textContent=K;
+    document.getElementById("r7r").textContent=r;
+    document.getElementById("r7s").textContent=s.toFixed(1);
+    const tot=K*s,act=r*s;
+    const vram=2*tot;             // GB en FP16
+    const flopTok=2*act*1e9;
+    const eurM=eurH100(flopTok*1e6);
+    const nGpu=Math.ceil(vram/80);
+    document.getElementById("ro7").innerHTML=
+      "P<sub>total</sub> = "+K+"&middot;"+s.toFixed(1)+" = <b>"+fmtG(tot,4)+
+      " B</b> &nbsp;&middot;&nbsp; P<sub>activos</sub> = "+r+"&middot;"+s.toFixed(1)+
+      " = <span class='gold'>"+fmtG(act,4)+" B</span>"+
+      "<br>VRAM (FP16) = "+fmtG(vram,4)+" GB &rArr; "+
+      "<span class='badge "+(nGpu<=8?"ok":"bad")+"'>"+nGpu+
+      " GPU"+(nGpu>1?"s":"")+" de 80 GB"+(nGpu<=1?" (cabe en una)":
+        nGpu<=8?" (un nodo)":" (multinodo)")+"</span>"+
+      "<br>FLOPs/token &asymp; "+fmtSci(flopTok)+
+      " &rArr; <b>"+fmtG(eurM,3)+" &euro;</b> por mill&oacute;n de tokens (H100, solo c&oacute;mputo)";
+    const c=fitCanvas(document.getElementById("cv7a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const lo=Math.log10(1),hi=Math.log10(4000);
+    const ax=axes(c.ctx,fr,{xmin:lo,xmax:hi,ymin:lo,ymax:Math.log10(900),
+      xticks:[[0,"1"],[1,"10"],[2,"100"],[3,"1000"]],
+      yticks:[[0,"1"],[1,"10"],[2,"100"]],
+      xlab:"parámetros totales (B, escala log)",
+      ylab:"activos (B, log)",
+      title:"el plano de MoE: capacidad (x) contra coste por token (y)"});
+    /* diagonal densa */
+    polyline(c.ctx,[[ax.X(lo),ax.Y(lo)],[ax.X(Math.log10(900)),
+             ax.Y(Math.log10(900))]],MUTE,1.2,[5,4]);
+    c.ctx.fillStyle=MUTE;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("densos: activos = totales",ax.X(Math.log10(3)),
+                   ax.Y(Math.log10(3))-10);
+    /* referencias */
+    for(const ref of REFS){
+      const px=ax.X(Math.log10(ref[1])),py=ax.Y(Math.log10(ref[2]));
+      c.ctx.fillStyle=INK;c.ctx.beginPath();c.ctx.arc(px,py,4,0,7);c.ctx.fill();
+      c.ctx.textAlign="left";c.ctx.fillText(ref[0],px+7,py+3);}
+    /* config actual */
+    const px=ax.X(Math.log10(Math.max(tot,1))),py=ax.Y(Math.log10(Math.max(act,1)));
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();c.ctx.arc(px,py,6.5,0,7);c.ctx.fill();
+    c.ctx.strokeStyle="#fff";c.ctx.lineWidth=1.6;c.ctx.beginPath();
+    c.ctx.arc(px,py,6.5,0,7);c.ctx.stroke();
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("tu MoE",px+8,py-6);
+  }
+  updaters[7]=upd;
+})();
+
+/* ================= SLIDE 8 : balanceo de carga ================= */
+(function(){
+  const NTOK=360,LR=0.10,LRB=0.8;
+  let seed=31,toks=null,WA=null,WB=null,steps=0;
+  const slE=document.getElementById("sl8E"),sll=document.getElementById("sl8l");
+  function reset(){
+    const E=+slE.value,rng=mulberry32(seed);
+    toks=[];
+    const C=[[1.8,0.4],[-1.2,1.5],[-0.3,-1.8]];
+    for(let i=0;i<NTOK;i++){const cl=C[i%3];
+      toks.push([cl[0]+0.55*randn(rng),cl[1]+0.55*randn(rng)]);}
+    WA=[];WB=[];
+    for(let e=0;e<E;e++){const w=[0.3*randn(rng),0.3*randn(rng)];
+      WA.push(w.slice());WB.push(w.slice());}
+    steps=0;
+  }
+  function usage(W){
+    const E=W.length,f=new Array(E).fill(0),P=new Array(E).fill(0),probs=[];
+    for(const x of toks){
+      const z=W.map(w=>w[0]*x[0]+w[1]*x[1]);
+      const p=softmax(z);probs.push(p);
+      let b=0;for(let e=1;e<E;e++)if(p[e]>p[b])b=e;
+      f[b]+=1/NTOK;
+      for(let e=0;e<E;e++)P[e]+=p[e]/NTOK;}
+    return {f:f,P:P,probs:probs};
+  }
+  function step(W,lam){
+    const E=W.length;
+    const U=usage(W);
+    /* especialización winner-take-all (batch): el ganador se acerca a su centroide */
+    const cnt=new Array(E).fill(0),cen=Array.from({length:E},()=>[0,0]);
+    toks.forEach((x,i)=>{const p=U.probs[i];
+      let b=0;for(let e=1;e<E;e++)if(p[e]>p[b])b=e;
+      cnt[b]++;cen[b][0]+=x[0];cen[b][1]+=x[1];});
+    for(let e=0;e<E;e++)if(cnt[e]>0){
+      W[e][0]+=LR*(cen[e][0]/cnt[e]*1.4-W[e][0]);
+      W[e][1]+=LR*(cen[e][1]/cnt[e]*1.4-W[e][1]);}
+    /* gradiente exacto de L_aux = lam·E·sum_e f_e P_e (f con stop-grad) */
+    if(lam>0){
+      const g=Array.from({length:E},()=>[0,0]);
+      toks.forEach((x,i)=>{const p=U.probs[i];
+        let fp=0;for(let e=0;e<E;e++)fp+=U.f[e]*p[e];
+        for(let e=0;e<E;e++){
+          const gz=lam*E/NTOK*p[e]*(U.f[e]-fp);
+          g[e][0]+=gz*x[0];g[e][1]+=gz*x[1];}});
+      for(let e=0;e<E;e++){W[e][0]-=LRB*g[e][0];W[e][1]-=LRB*g[e][1];}}
+  }
+  slE.oninput=()=>{reset();upd();};
+  sll.oninput=upd;
+  document.getElementById("bt8a").onclick=()=>{
+    const lam=+sll.value;
+    for(let s=0;s<50;s++){step(WA,0);step(WB,lam);}
+    steps+=50;upd();};
+  document.getElementById("bt8r").onclick=()=>{seed+=1;reset();upd();};
+  reset();
+  function upd(){
+    const E=+slE.value,lam=+sll.value;
+    document.getElementById("r8E").textContent=E;
+    document.getElementById("r8l").textContent=lam.toFixed(1);
+    const UA=usage(WA),UB=usage(WB);
+    const deadA=UA.f.filter(v=>v<0.02).length,deadB=UB.f.filter(v=>v<0.02).length;
+    let balA=0,balB=0;
+    for(let e=0;e<E;e++){balA+=E*UA.f[e]*UA.P[e];balB+=E*UB.f[e]*UB.P[e];}
+    document.getElementById("ro8").innerHTML=
+      "pasos entrenados: <b>"+steps+"</b> &nbsp;&middot;&nbsp; "+
+      "K&middot;&Sigma;f<sub>e</sub>P<sub>e</sub> (1 = perfecto): sin balanceo "+
+      fmtG(balA,3)+" &middot; con balanceo <span class='gold'>"+fmtG(balB,3)+"</span>"+
+      "<br>uso m&aacute;x/m&iacute;n: sin "+fmtG(100*Math.max(...UA.f),3)+"%/"+
+      fmtG(100*Math.min(...UA.f),2)+"% &middot; con "+
+      fmtG(100*Math.max(...UB.f),3)+"%/"+fmtG(100*Math.min(...UB.f),2)+"%"+
+      "<br><span class='badge "+(deadA>0?"bad":"ok")+"'>sin balanceo: "+deadA+
+      " expertos muertos</span> <span class='badge "+(deadB>0?"bad":"ok")+
+      "'>con balanceo: "+deadB+"</span>";
+    /* panel A: histograma de uso */
+    let c=fitCanvas(document.getElementById("cv8a"));
+    const fr={x0:50,y0:24,w:c.W-70,h:c.H-56};
+    const ymax=Math.max(...UA.f,...UB.f,1.6/E)*1.15;
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:E+1,ymin:0,ymax:ymax,
+      xticks:Array.from({length:E},(_,e)=>[e+1,"E"+(e+1)]),
+      yticks:[[0,"0"],[1/E,"1/K"]],
+      xlab:"",ylab:"uso f_e",
+      title:"uso de cada experto: sin balanceo (tinta) vs con balanceo (dorado)"});
+    polyline(c.ctx,[[fr.x0,ax.Y(1/E)],[fr.x0+fr.w,ax.Y(1/E)]],MUTE,1,[4,3]);
+    const bw=fr.w/(E+1)*0.30;
+    for(let e=0;e<E;e++){
+      const cx=ax.X(e+1);
+      c.ctx.fillStyle=INK;c.ctx.globalAlpha=0.75;
+      c.ctx.fillRect(cx-bw-2,ax.Y(UA.f[e]),bw,ax.Y(0)-ax.Y(UA.f[e]));
+      c.ctx.globalAlpha=0.9;c.ctx.fillStyle=GOLD;
+      c.ctx.fillRect(cx+2,ax.Y(UB.f[e]),bw,ax.Y(0)-ax.Y(UB.f[e]));
+      c.ctx.globalAlpha=1;}
+    /* panel B: scatter de tokens (sim con balanceo) */
+    c=fitCanvas(document.getElementById("cv8b"));
+    const fr2={x0:50,y0:24,w:c.W-70,h:c.H-56};
+    const ax2=axes(c.ctx,fr2,{xmin:-3.2,xmax:3.4,ymin:-3.4,ymax:3.2,
+      xticks:[[-3,"-3"],[0,"0"],[3,"3"]],yticks:[[-3,"-3"],[0,"0"],[3,"3"]],
+      xlab:"x₁",ylab:"x₂",
+      title:"los 360 tokens, coloreados por su experto (sim. con balanceo)"});
+    toks.forEach((x,i)=>{const p=UB.probs[i];
+      let b=0;for(let e=1;e<E;e++)if(p[e]>p[b])b=e;
+      c.ctx.fillStyle=expColor(b,E);
+      c.ctx.fillRect(ax2.X(x[0])-1.6,ax2.Y(x[1])-1.6,3.2,3.2);});
+    for(let e=0;e<E;e++){const px=ax2.X(WB[e][0]),py=ax2.Y(WB[e][1]);
+      c.ctx.strokeStyle=expColor(e,E);c.ctx.lineWidth=2;
+      c.ctx.beginPath();c.ctx.moveTo(px-5,py);c.ctx.lineTo(px+5,py);
+      c.ctx.moveTo(px,py-5);c.ctx.lineTo(px,py+5);c.ctx.stroke();}
+  }
+  updaters[8]=upd;
+})();
+
+/* ================= SLIDE 9 : comparativa final ================= */
+(function(){
+  /* especificaciones: [nombre, P_act(B), P_tot(B), L, d, ssm?] */
+  const MODELS=[
+    ["Transformer denso 70B",70,70,80,8192,false],
+    ["MoE 671B (37B activos)",37,671,61,7168,false],
+    ["Mamba 7B (N = 16)",7,7,64,4096,true]];
+  const sln=document.getElementById("sl9n"),slb=document.getElementById("sl9b");
+  sln.oninput=upd;slb.oninput=upd;
+  function metrics(m,T){
+    const act=m[1]*1e9,tot=m[2]*1e9,L=m[3],d=m[4],ssm=m[5];
+    const flop=ssm?2*act:2*act+4*L*T*d;
+    const cache=ssm?2*L*d*16*2/1e9:2*L*T*d*2/1e9;     // GB FP16
+    const vram=2*tot/1e9+cache;
+    const gpus=Math.ceil(vram/80);
+    const eurM=eurH100(flop*1e6);
+    return {flop:flop,cache:cache,vram:vram,gpus:gpus,eurM:eurM};
+  }
+  function upd(){
+    const T=Math.round(Math.pow(10,+sln.value)),B=Math.pow(10,+slb.value);
+    document.getElementById("r9n").textContent=fmtInt(T);
+    document.getElementById("r9b").textContent=fmtInt(B);
+    const rows=MODELS.map(m=>({name:m[0],m:metrics(m,T)}));
+    /* ganadores por columna (mínimo, salvo tokens/mes = máximo) */
+    const keys=["flop","cache","vram","gpus","eurM"];
+    const best={};
+    for(const k of keys)best[k]=Math.min(...rows.map(r=>r.m[k]));
+    const tokMax=Math.max(...rows.map(r=>B/r.m.eurM));
+    document.getElementById("tb9").innerHTML=rows.map(r=>{
+      const tk=B/r.m.eurM;
+      return "<tr><td>"+r.name+"</td>"+
+        "<td class='"+(r.m.flop===best.flop?"win":"")+"'>"+fmtSci(r.m.flop)+"</td>"+
+        "<td class='"+(r.m.cache===best.cache?"win":"")+"'>"+
+          (r.m.cache<0.1?fmtG(r.m.cache*1000,2)+" MB":fmtG(r.m.cache,3)+" GB")+"</td>"+
+        "<td class='"+(r.m.vram===best.vram?"win":"")+"'>"+fmtG(r.m.vram,3)+" GB</td>"+
+        "<td class='"+(r.m.gpus===best.gpus?"win":"")+"'>"+r.m.gpus+"</td>"+
+        "<td class='"+(r.m.eurM===best.eurM?"win":"")+"'>"+fmtG(r.m.eurM,3)+"</td>"+
+        "<td class='"+(tk===tokMax?"win":"")+"'>"+fmtSci(tk*1e6)+"</td></tr>";
+    }).join("");
+    const r0=rows[0].m,r2=rows[2].m;
+    document.getElementById("ro9").innerHTML=
+      "a T = "+fmtInt(T)+": el denso paga <b>"+fmtG(r0.flop/(2*70e9),3)+
+      "&times;</b> su coste base por culpa de la atenci&oacute;n; Mamba sigue en 1&times;"+
+      "<br>con "+fmtInt(B)+" &euro;/mes sirves "+fmtSci(B/r0.eurM*1e6)+
+      " tokens con el denso y <span class='gold'>"+fmtSci(B/r2.eurM*1e6)+
+      "</span> con Mamba";
+    /* canvas: €/1M tokens vs T */
+    const c=fitCanvas(document.getElementById("cv9a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const lo=3,hi=6;
+    let ymin=1e99,ymax=0;
+    const curves=MODELS.map(m=>{
+      const pts=[];
+      for(let i=0;i<=120;i++){const lT=lo+(hi-lo)*i/120;
+        const e=metrics(m,Math.pow(10,lT)).eurM;
+        pts.push([lT,Math.log10(e)]);
+        ymin=Math.min(ymin,Math.log10(e));ymax=Math.max(ymax,Math.log10(e));}
+      return pts;});
+    ymin=Math.floor(ymin)-0.2;ymax=Math.ceil(ymax)+0.2;
+    const yt=[];for(let e=Math.ceil(ymin);e<=ymax;e++)
+      yt.push([e,e>=0?fmtInt(Math.pow(10,e)):"10"+supDigits(e)]);
+    const ax=axes(c.ctx,fr,{xmin:lo,xmax:hi,ymin:ymin,ymax:ymax,
+      xticks:[[3,"1k"],[4,"10k"],[5,"100k"],[6,"1M"]],
+      yticks:yt,xlab:"longitud de contexto T (escala log)",
+      ylab:"€ / 1M tokens",
+      title:"coste por millón de tokens generados según el contexto"});
+    const cols=[INK,GOLDD,GOLD],names=["denso 70B","MoE 671/37B","Mamba 7B"];
+    curves.forEach((pts,i)=>{
+      polyline(c.ctx,pts.map(p=>[ax.X(p[0]),ax.Y(p[1])]),cols[i],
+               i===2?2.6:1.8,i===1?[7,3]:null);});
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    names.forEach((n,i)=>{c.ctx.fillStyle=cols[i];
+      c.ctx.fillText(n,fr.x0+10,fr.y0+14+i*14);});
+    polyline(c.ctx,[[ax.X(Math.log10(T)),fr.y0],[ax.X(Math.log10(T)),
+             fr.y0+fr.h]],MUTE,1,[3,3]);
+  }
+  updaters[9]=upd;
+})();
+
+/* ================= SLIDE 10 : glosario ================= */
+(function(){
+  const G=[
+   ["T","longitud de la secuencia en tokens; la variable que rompe al Transformer (coste ∝ T²) y que SSM y atención lineal vuelven barata (∝ T)."],
+   ["d","dimensión interna del modelo (anchura de los vectores de token). El cruce atención/MLP está en T = 2d."],
+   ["L","número de capas apiladas; multiplica FLOPs y KV-cache."],
+   ["O(T²)","coste cuadrático: la atención compara todos los pares de tokens. Duplicar contexto = cuadruplicar coste."],
+   ["FLOP","operación de coma flotante; multiplicar-acumular son 2. Una H100 da ~4·10¹⁴ FLOP/s útiles (~3 €/h)."],
+   ["KV-cache","memoria 2·L·T·d·bytes con los K y V de todos los tokens pasados, para no recomputarlos al generar. Crece con T y vive en VRAM."],
+   ["VRAM","memoria de la GPU (80 GB en una H100). En MoE la pagan los parámetros TOTALES; en atención, además el KV-cache."],
+   ["FP16 / FP32","precisión de 2 o 4 bytes por número: multiplicador directo de la memoria."],
+   ["h_t","estado oculto del SSM: N números que comprimen toda la historia. Su tamaño NO crece con T."],
+   ["Ā, B̄, C","matrices del SSM discreto: transición (cuánto se recuerda), entrada (cuánto entra lo nuevo) y lectura. h_t = Āh_{t−1} + B̄x_t, y_t = Ch_t."],
+   ["N","tamaño del estado del SSM (16–64), fijo e independiente de T: coste O(T·N) en tiempo, O(N) en memoria."],
+   ["ā^k","decaimiento de la memoria: un token de hace k pasos pesa ā^k en el estado. Semivida = ln 2 / ln(1/ā)."],
+   ["Δ_t","paso de discretización por token en Mamba: la \"puerta\". Δ grande = reescribir el estado; Δ pequeño = conservarlo e ignorar la entrada."],
+   ["selectividad","la novedad de Mamba: Ā_t, B̄_t, C_t dependen de x_t; el modelo decide qué guardar y qué olvidar. Rompe la invariancia LTI."],
+   ["k_j = C·Ā^j·B̄","kernel convolucional implícito del SSM LTI: la recurrencia entera equivale a una convolución causal con este filtro generado, no almacenado."],
+   ["dualidad","misma función, dos algoritmos: convolución paralela (FFT, O(T log T)) para entrenar; recurrencia O(N)/token para inferir."],
+   ["φ (feature map)","sustituto del softmax en atención lineal: φ(Q)(φ(K)ᵀV) reordena el producto y baja a O(Td²). Variantes: Performer, Linear Transformer (ELU+1), RetNet."],
+   ["E_k","experto k de un MoE: un MLP independiente. Solo se evalúa si el router lo selecciona."],
+   ["g(x), W_g","gates de routing: softmax(W_g·x) con top-r y renormalización; suman 1. W_g se entrena end-to-end (el \"triaje\" del hospital)."],
+   ["K, r","expertos totales y activos por token. Mixtral: K = 8, r = 2 (56B/14B). DeepSeek-V3: K = 256, r = 8 (671B/37B)."],
+   ["P_total / P_activos","capacidad y VRAM escalan con los totales (K·|E|); FLOPs y latencia con los activos (r·|E|). La separación es toda la gracia de MoE."],
+   ["f_e, P_e","fracción de tokens enrutados al experto e y probabilidad media del router hacia e: los dos ingredientes de la pérdida de balanceo."],
+   ["L_aux","pérdida auxiliar λ·K·Σf_e·P_e (Switch): castiga la concentración del routing y evita expertos muertos. Mínimo en el reparto uniforme."],
+   ["experto muerto","experto con f_e ≈ 0 persistente: VRAM ocupada sin función. Síntoma del bucle rico-más-rico del router."],
+   ["GQA","grouped-query attention: varias cabezas de Q comparten K,V; divide el KV-cache por el factor de agrupado."],
+   ["híbrido (Jamba)","alterna bloques Transformer (precisión local) y Mamba (contexto largo); Griffin mezcla atención local y recurrencias; StripedHyena usa convoluciones largas."],
+   ["prefill / generación","procesar el contexto de una vez (paga FLOPs, ∝ T² con atención) vs producir tokens uno a uno (paga KV-cache o estado)."],
+   ["KPI","la métrica de negocio que decide la familia: calidad por defecto (denso), €/token a calidad alta (MoE), memoria por petición (Mamba), tokens/seg en CPU (lineal), calidad×coste a 128k+ (híbrido)."]];
+  const div=document.getElementById("glos");
+  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
+    "</div><div>"+e[1]+"</div></div>").join("");
+  updaters[10]=function(){};
+})();
+
+updaters[11]=function(){};
+
+/* ================= boot ================= */
+function fromHash(){const m=location.hash.match(/^#(\d+)$/);
+  return m?Math.max(0,Math.min(11,+m[1])):0;}
+window.addEventListener("hashchange",()=>go(fromHash()));
+go(fromHash());
+</script>
+</body>
+</html>
