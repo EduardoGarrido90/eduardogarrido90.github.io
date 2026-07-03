@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kahoots y exámenes · Deep Learning</title>
+<link rel="stylesheet" href="../../assets/style.css">
+<script defer src="../../assets/vault.js"></script>
+</head>
+<body>
+<div class="crumbs"><a href="../../index.html">Asignaturas</a><span class="sep">/</span><a href="../index.html">Deep Learning</a><span class="sep">/</span><span>Kahoots y exámenes</span></div>
+<h1>Kahoots y exámenes</h1>
+<p class="sub">Material de evaluación: los cuestionarios Kahoot de cada día, el banco de preguntas y los exámenes de práctica. Todo está cifrado; introduce la contraseña para desbloquearlo.</p>
+<div class="gate" id="gate">
+  <label for="pw">Contraseña de evaluación</label>
+  <input id="pw" type="password" autocomplete="off" placeholder="contraseña de clase">
+  <button class="go" id="go">Desbloquear</button>
+  <div class="msg" id="msg"></div>
+</div>
+<div id="content" style="display:none">
+<hr class="rule">
+<div class="tema-head">Exámenes y banco de preguntas</div>
+<div class="rows">
+<div class="row"><div class="rd">📝</div><div class="rt"><div class="rtt">Banco de preguntas</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/banco.enc" data-title="Banco de preguntas">Abrir</button></div></div>
+<div class="row"><div class="rd">📝</div><div class="rt"><div class="rtt">Examen de práctica 1 (mock)</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/mock_1.enc" data-title="Examen de práctica 1 (mock)">Abrir</button></div></div>
+<div class="row"><div class="rd">📝</div><div class="rt"><div class="rtt">Examen de práctica 2 (mock)</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/mock_2.enc" data-title="Examen de práctica 2 (mock)">Abrir</button></div></div>
+</div>
+<div class="tema-head">Kahoots por día</div>
+<div class="rows">
+<div class="row"><div class="rd">Día 01</div><div class="rt"><div class="rtt">Kahoot — Presentación: qué es el Deep Learning y cómo trabajaremos</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_01.enc" data-title="Kahoot Día 01">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 02</div><div class="rt"><div class="rtt">Kahoot — Fundamentos: neurona, MLP y backpropagation</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_02.enc" data-title="Kahoot Día 02">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 03</div><div class="rt"><div class="rtt">Kahoot — Regularización, schedules y dashboards</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_03.enc" data-title="Kahoot Día 03">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 04</div><div class="rt"><div class="rtt">Kahoot — Convolución, pooling y transfer learning</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_04.enc" data-title="Kahoot Día 04">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 05</div><div class="rt"><div class="rtt">Kahoot — Transfer learning en profundidad y el Hub de Hugging Face</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_05.enc" data-title="Kahoot Día 05">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 06</div><div class="rt"><div class="rtt">Kahoot — Datos secuenciales: RNN, LSTM y GRU</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_06.enc" data-title="Kahoot Día 06">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 07</div><div class="rt"><div class="rtt">Kahoot — Del cuello de botella RNN a la atención</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_07.enc" data-title="Kahoot Día 07">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 08</div><div class="rt"><div class="rtt">Kahoot — Embeddings: word2vec, distancias y vectores contextuales</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_08.enc" data-title="Kahoot Día 08">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 09</div><div class="rt"><div class="rtt">Kahoot — Self-attention, multi-head y el bloque Transformer</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_09.enc" data-title="Kahoot Día 09">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 10</div><div class="rt"><div class="rtt">Kahoot — Alternativas al Transformer: Mamba y MoE</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_10.enc" data-title="Kahoot Día 10">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 11</div><div class="rt"><div class="rtt">Kahoot — Cómo funciona un LLM: sampling y context engineering</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_11.enc" data-title="Kahoot Día 11">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 12</div><div class="rt"><div class="rtt">Kahoot — Difusión y modelos multimodales</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_12.enc" data-title="Kahoot Día 12">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 13</div><div class="rt"><div class="rtt">Kahoot — Agentes: del LLM al bucle con herramientas</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_13.enc" data-title="Kahoot Día 13">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 14</div><div class="rt"><div class="rtt">Kahoot — Subagentes, MCP y human-in-the-loop</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_14.enc" data-title="Kahoot Día 14">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 15</div><div class="rt"><div class="rtt">Kahoot — RAG: recuperación aumentada con generación</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_15.enc" data-title="Kahoot Día 15">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 16</div><div class="rt"><div class="rtt">Kahoot — Adaptación de LLMs: prompting, LoRA, RLHF, DPO</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_16.enc" data-title="Kahoot Día 16">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 17</div><div class="rt"><div class="rtt">Kahoot — Sistemas agénticos en producción: coste, latencia, observabilidad</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_17.enc" data-title="Kahoot Día 17">Abrir</button></div></div>
+<div class="row"><div class="rd">Día 18</div><div class="rt"><div class="rtt">Kahoot — Riesgos, AI Act y auditoría</div></div><div class="ra"><button class="btn ev-btn" data-file="vault/kahoot_18.enc" data-title="Kahoot Día 18">Abrir</button></div></div>
+</div>
+</div>
+<script>
+const CFG={salt:"3rxlcDosty21FAMYv90QDw==",check:"PfY3MUTBJLq/dFC+1Pc5PWaV929O1Ytspj/FR3W4TA1Trmg5kw==",iters:200000};
+let KEY=null;
+const msg=document.getElementById('msg');
+async function unlock(){
+  const pw=document.getElementById('pw').value;
+  msg.className='msg'; msg.textContent='Comprobando…';
+  try{
+    KEY=await DLVault.verify(pw,CFG);
+    document.getElementById('gate').style.display='none';
+    document.getElementById('content').style.display='';
+    document.querySelectorAll('.ev-btn').forEach(btn=>{
+      btn.addEventListener('click',async()=>{
+        try{ await DLVault.open({file:btn.dataset.file,title:btn.dataset.title,type:'html'},KEY);}
+        catch(e){ alert('No se pudo abrir: '+e.message);}
+      });
+    });
+  }catch(e){ msg.className='msg err'; msg.textContent='Contraseña incorrecta.'; }
+}
+document.getElementById('go').addEventListener('click',unlock);
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+</script>
+<p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027</p>
+</body>
+</html>
