@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Caso práctico III — Auditoría de riesgo, sesgo y cumplimiento (AI Act)</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root{--ink:#1A1A1A;--gold:#B8860B;--goldDeep:#8C6508;--goldPale:#F5EBD3;--mute:#8A8A8A;--rule:#D9C28A}
+    body{max-width:820px;margin:0 auto;padding:38px 26px 90px;
+      font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+      color:var(--ink);line-height:1.55;font-size:17px}
+    h1{border-bottom:1.5px solid var(--gold);padding-bottom:8px;font-size:1.7em}
+    h2{color:var(--goldDeep);margin-top:1.6em}
+    h3{color:var(--ink)}
+    a{color:var(--goldDeep)}
+    code{background:var(--goldPale);padding:1px 5px;border-radius:4px;font-size:.92em}
+    pre{background:#faf6ea;border:1px solid var(--rule);border-radius:6px;padding:13px 15px;overflow:auto}
+    pre code{background:none;padding:0}
+    table{border-collapse:collapse;margin:1.2em 0}
+    th,td{border:1px solid var(--rule);padding:6px 11px}
+    th{background:var(--goldPale)}
+    blockquote{border-left:3px solid var(--gold);margin:1em 0;padding:.2em 1em;color:#444}
+    img{max-width:100%;height:auto}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Caso práctico III — Auditoría de riesgo, sesgo y
+cumplimiento (AI Act)</h1>
+</header>
+<h1
+id="caso-práctico-iii-bloque-iii--regulación--auditoría-de-riesgo-sesgo-y-cumplimiento-ai-act-del-sistema-del-grupo">Caso
+práctico III (Bloque III — Regulación) — Auditoría de riesgo, sesgo y
+cumplimiento (AI Act) del sistema del grupo</h1>
+<p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
+Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
+· <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
+2026–2027. <strong>Bloque:</strong> III — Regulación y ética (Tema 7,
+semana 14). <strong>Modalidad:</strong> en grupo (los mismos grupos del
+proyecto final). <strong>Peso:</strong> caso práctico evaluado con la
+rúbrica común del curso (ver §8). <strong>Particularidad:</strong> este
+caso <strong>se entrega y se defiende junto al pitch del proyecto
+final</strong> (ver §11 y
+<code>proyecto_final_startup_ai_first.md</code>).</p>
+<hr />
+<h2 id="1-contexto-de-negocio">1. Contexto de negocio</h2>
+<p>Habéis construido (o vais a desplegar) un sistema de IA: un modelo
+del Bloque I, un asistente agéntico del Bloque II, o el sistema de
+vuestra startup. Antes de que toque a un cliente o a un empleado real,
+alguien tiene que responder a la pregunta que ya hace todo consejo de
+administración europeo: <strong>¿es esto legal y es esto
+responsable?</strong> El Reglamento (UE) 2024/1689 (AI Act) ya está en
+vigor y clasifica los sistemas por riesgo, con obligaciones duras para
+los de alto riesgo (crédito, empleo, educación, salud, justicia). Un
+sistema que en producción discrimine por género, edad u origen no es
+solo un problema ético: es una sanción regulatoria y un riesgo
+reputacional.</p>
+<p>La dirección os pide actuar como el <strong>equipo de cumplimiento y
+riesgo</strong> de vuestra propia startup: clasificar el sistema,
+documentar las obligaciones que le aplican, auditar el sesgo con datos,
+y proponer mitigaciones realistas, con sus costes. Este caso convierte
+el checklist del Día 18 en una auditoría completa y defendible frente a
+un regulador.</p>
+<h2 id="2-objetivo">2. Objetivo</h2>
+<p>Producir una <strong>auditoría de cumplimiento y ética</strong> del
+sistema del grupo que (i) lo clasifique correctamente bajo el AI Act con
+justificación por artículos, (ii) documente las obligaciones técnicas
+que le aplican, (iii) <strong>mida el sesgo empíricamente</strong> sobre
+datos, no en abstracto, y (iv) proponga mitigaciones con su coste
+(incluido el coste en rendimiento: ninguna técnica elimina el sesgo
+gratis).</p>
+<h2 id="3-alcance-mínimo">3. Alcance mínimo</h2>
+<ul>
+<li><strong>Clasificación de riesgo.</strong> Encuadrar el sistema en
+una de las cuatro categorías (prohibido / alto riesgo / riesgo limitado
+/ riesgo mínimo) y justificarlo. Si es de propósito general (GPAI),
+discutir el umbral de riesgo sistémico.</li>
+<li><strong>Mapa de obligaciones.</strong> Para la categoría que
+aplique, listar las obligaciones concretas con su base legal. Para alto
+riesgo, al menos cinco artículos relevantes (p. ej. gestión de riesgos
+Art. 9, gobernanza de datos Art. 10, transparencia/información Art. 13,
+supervisión humana Art. 14, exactitud y robustez Art. 15; transparencia
+de riesgo limitado Art. 50; prácticas prohibidas Art. 5).
+<strong>Verificad los artículos en la fuente</strong>, no de
+memoria.</li>
+<li><strong>Auditoría de sesgo con datos.</strong> Elegir al menos un
+atributo protegido (género, edad, origen), medir una métrica de equidad
+de grupo (paridad demográfica, igualdad de oportunidades / TPR por
+grupo, o calibración por grupo) sobre el modelo, e interpretar el
+resultado en el contexto del negocio.</li>
+<li><strong>Mitigaciones con coste.</strong> Proponer al menos dos
+mitigaciones (de datos, de entrenamiento o de post-proceso) y, para una
+de ellas, <strong>medir el trade-off</strong>: cuánto baja la disparidad
+y cuánto cuesta en métrica de negocio.</li>
+</ul>
+<h2 id="4-datos-y-herramientas-sugeridos">4. Datos y herramientas
+sugeridos</h2>
+<ul>
+<li><strong>Texto del Reglamento:</strong> EUR-Lex, Reglamento
+2024/1689. <a
+href="https://eur-lex.europa.eu">https://eur-lex.europa.eu</a> (fuente
+de verdad para los artículos).</li>
+<li><strong>Datos para la auditoría de sesgo</strong> (del repositorio
+validado): <strong>Telco Customer Churn</strong>, <strong>IBM HR
+Analytics Attrition</strong> (fairness por género/edad),
+<strong>LendingClub</strong> (scoring de crédito, el caso canónico de
+sesgo del Día 18). <a
+href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a>
+· <a
+href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset">https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset</a>
+· <a
+href="https://www.kaggle.com/datasets/wordsforthewise/lending-club">https://www.kaggle.com/datasets/wordsforthewise/lending-club</a></li>
+<li><strong>Librerías de equidad</strong> (opcional pero recomendado):
+<code>fairlearn</code> o <code>aif360</code> para las métricas y las
+mitigaciones.</li>
+</ul>
+<p>Si vuestro sistema no toca datos personales, auditad el riesgo que sí
+tenga (p. ej. veracidad, trazabilidad, dependencia de un proveedor) y
+razonad por qué el sesgo de grupo no aplica.</p>
+<h2 id="5-qué-se-entrega">5. Qué se entrega</h2>
+<p>Una carpeta comprimida <code>grupoNN_caso_3.zip</code> con:</p>
+<ol type="1">
+<li><strong>Informe de auditoría</strong>
+(<code>auditoria_caso_3.pdf</code>, máx. 6 páginas): clasificación de
+riesgo razonada, mapa de obligaciones con artículos, resultados de la
+auditoría de sesgo (con la métrica y su gráfico), tabla de riesgos y
+mitigaciones, y el trade-off medido. Incluye la tabla del §7.</li>
+<li><strong>Notebook de la auditoría de sesgo</strong>
+(<code>caso_3.ipynb</code> ejecutado): cómputo de la métrica de equidad
+y de la mitigación, reproducible y con semillas.</li>
+<li><strong>Una diapositiva de cumplimiento</strong> integrada en el
+pitch final (ver §11): "este es nuestro riesgo, esta es nuestra
+clasificación, así lo mitigamos".</li>
+<li><strong>Declaración de IA</strong>
+(<code>DECLARACION_IA.md</code>).</li>
+</ol>
+<h2 id="6-tareas">6. Tareas</h2>
+<ul>
+<li><strong>6.1 — Clasificación (negocio + regulación).</strong>
+Encuadre y justificación por artículos. Verificados en EUR-Lex.</li>
+<li><strong>6.2 — Mapa de obligaciones (regulación).</strong> Cinco
+artículos con qué exige cada uno y cómo lo cumple (o no aún) vuestro
+sistema.</li>
+<li><strong>6.3 — Auditoría de sesgo (técnica).</strong> Métrica de
+equidad de grupo sobre un atributo protegido, con su
+interpretación.</li>
+<li><strong>6.4 — Mitigación y trade-off (técnica + negocio).</strong>
+Dos mitigaciones; para una, el coste medido en disparidad vs. métrica de
+negocio.</li>
+<li><strong>6.5 — Defensa SIN IA ante el "regulador" (condición de
+aprobación).</strong> §9.</li>
+</ul>
+<h2 id="7-tabla-concepto--aplicación--entradas--salidas--kpi">7. Tabla
+Concepto → Aplicación → Entradas → Salidas → KPI</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Concepto</th>
+<th>Aplicación</th>
+<th>Entradas</th>
+<th>Salidas</th>
+<th>KPI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Clasificación AI Act</td>
+<td>Encuadre legal del sistema</td>
+<td>Descripción del sistema + Reglamento</td>
+<td>Categoría + artículos</td>
+<td>Nº de obligaciones cubiertas / aplicables</td>
+</tr>
+<tr class="even">
+<td>Auditoría de sesgo</td>
+<td>Riesgo de discriminación</td>
+<td>Predicciones + atributo protegido</td>
+<td>Métrica de equidad por grupo</td>
+<td>Disparidad (p. ej. Δ TPR entre grupos)</td>
+</tr>
+<tr class="odd">
+<td>Mitigación</td>
+<td>Reducción del riesgo</td>
+<td>Modelo + técnica de equidad</td>
+<td>Modelo mitigado</td>
+<td>Δ disparidad vs. Δ métrica de negocio</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-rúbrica-común-del-curso-10-pts--escala-010">8. Rúbrica común
+del curso (10 pts → escala 0–10)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Dimensión</th>
+<th>Peso</th>
+<th>Qué se valora</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Calidad técnica</td>
+<td>30 %</td>
+<td>Métrica de equidad correcta, mitigación medida, código reproducible,
+artículos verificados.</td>
+</tr>
+<tr class="even">
+<td>Relevancia de negocio</td>
+<td>25 %</td>
+<td>Clasificación de riesgo bien razonada, trade-off entendido como
+decisión de negocio.</td>
+</tr>
+<tr class="odd">
+<td>Comunicación</td>
+<td>20 %</td>
+<td>Informe claro, gráfico de equidad legible, narrativa de riesgo,
+tiempo respetado.</td>
+</tr>
+<tr class="even">
+<td>Defensa oral</td>
+<td>15 %</td>
+<td>Respuestas correctas ante el "regulador", dominio de la
+auditoría.</td>
+</tr>
+<tr class="odd">
+<td>Trazabilidad de IA</td>
+<td>10 %</td>
+<td>Herramientas declaradas, prompts conservados cuando proceda.</td>
+</tr>
+</tbody>
+</table>
+<p>Esta rúbrica es idéntica en los tres casos y en el proyecto
+final.</p>
+<h2 id="9-sección-sin-ia-obligatoria-condición-de-aprobación">9. Sección
+sin IA (obligatoria, condición de aprobación)</h2>
+<p>El <strong>§6.5</strong> es una <strong>defensa oral en clase, sin
+IA</strong>, en la que el profesor ejerce de regulador y el grupo
+responde, con una página de notas de autoría propia, a:</p>
+<ol type="1">
+<li><strong>Clasificad vuestro sistema en voz alta y
+justificadlo.</strong> ¿Por qué esa categoría y no la superior? Citad el
+artículo.</li>
+<li><strong>El sesgo que medisteis.</strong> Explicad qué significa la
+disparidad encontrada para una persona real afectada por una decisión
+del sistema.</li>
+<li><strong>El coste de la equidad.</strong> "Ninguna técnica elimina el
+sesgo sin coste." ¿Qué coste aceptasteis y por qué es defendible ante un
+cliente y ante un regulador?</li>
+</ol>
+<p>Texto generado por IA o incapacidad de defenderlo sin IA = cero en el
+caso (regla C, Día 01).</p>
+<h2 id="10-política-de-ia">10. Política de IA</h2>
+<p>Permitida y fomentada para el código de la auditoría y la redacción
+del informe, <strong>con declaración de trazabilidad</strong> y
+<strong>con los artículos del Reglamento verificados en EUR-Lex, no en
+el LLM</strong> (los LLMs alucinan números de artículo). Prohibida en la
+defensa §9.</p>
+<h2 id="11-fechas-y-articulación-con-el-proyecto-final">11. Fechas y
+articulación con el proyecto final</h2>
+<ul>
+<li><strong>Publicación:</strong> semana 13.</li>
+<li><strong>Entrega del informe:</strong> semana 14, junto a la entrega
+del proyecto final.</li>
+<li><strong>Defensa:</strong> <strong>el mismo día del pitch del
+proyecto</strong> (hito "Caso III + pitch" del calendario del Día 01).
+La diapositiva de cumplimiento (§5.3) va dentro del pitch; la defensa
+sin IA (§9) es la ronda de preguntas del "regulador".</li>
+<li><strong>Feedback:</strong> con la nota del proyecto final.</li>
+</ul>
+<h2 id="12-ayudas">12. Ayudas</h2>
+<p>Foro primero, profesor después. El Día 18 (checklist AI Act,
+formalización del sesgo, caso de scoring de crédito) es el andamiaje
+directo. Las 4 horas de mentorización del proyecto cubren también este
+caso.</p>
+</body>
+</html>

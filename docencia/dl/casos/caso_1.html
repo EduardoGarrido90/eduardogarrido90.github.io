@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Caso práctico I — Forecast de demanda multiproducto (retail)</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root{--ink:#1A1A1A;--gold:#B8860B;--goldDeep:#8C6508;--goldPale:#F5EBD3;--mute:#8A8A8A;--rule:#D9C28A}
+    body{max-width:820px;margin:0 auto;padding:38px 26px 90px;
+      font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+      color:var(--ink);line-height:1.55;font-size:17px}
+    h1{border-bottom:1.5px solid var(--gold);padding-bottom:8px;font-size:1.7em}
+    h2{color:var(--goldDeep);margin-top:1.6em}
+    h3{color:var(--ink)}
+    a{color:var(--goldDeep)}
+    code{background:var(--goldPale);padding:1px 5px;border-radius:4px;font-size:.92em}
+    pre{background:#faf6ea;border:1px solid var(--rule);border-radius:6px;padding:13px 15px;overflow:auto}
+    pre code{background:none;padding:0}
+    table{border-collapse:collapse;margin:1.2em 0}
+    th,td{border:1px solid var(--rule);padding:6px 11px}
+    th{background:var(--goldPale)}
+    blockquote{border-left:3px solid var(--gold);margin:1em 0;padding:.2em 1em;color:#444}
+    img{max-width:100%;height:auto}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Caso práctico I — Forecast de demanda multiproducto
+(retail)</h1>
+</header>
+<h1
+id="caso-práctico-i-bloque-i--deep-learning--forecast-de-demanda-multiproducto-para-una-cadena-de-retail">Caso
+práctico I (Bloque I — Deep Learning) — Forecast de demanda
+multiproducto para una cadena de retail</h1>
+<p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
+Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
+· <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
+2026–2027. <strong>Bloque:</strong> I — Deep Learning (Temas 0–3,
+semanas 1–7). <strong>Modalidad:</strong> en grupo (los mismos grupos
+del proyecto final). <strong>Peso:</strong> caso práctico evaluado con
+la rúbrica común del curso (ver §8).</p>
+<hr />
+<h2 id="1-contexto-de-negocio">1. Contexto de negocio</h2>
+<p>Una cadena de retail multiproducto (piensa en Inditex, Mercadona o un
+e-commerce de tamaño medio) planifica compras, reposición y promociones
+con semanas de antelación. Un error de previsión cuesta por los dos
+lados: si sobra inventario, hay rebajas y capital inmovilizado; si
+falta, hay rotura de stock y venta perdida. Hoy el equipo de
+planificación usa un modelo estadístico clásico (medias móviles,
+ARIMA/ETS) que captura tendencia y estacionalidad pero falla justo
+cuando más importa: promociones, cambios de precio del competidor,
+festivos y picos de calendario.</p>
+<p>La dirección comercial os contrata como consultores de analítica para
+responder a una pregunta concreta: <strong>¿aporta el deep learning una
+mejora medible sobre el baseline estadístico que justifique el coste de
+mantener un modelo más complejo?</strong> No quieren un modelo más
+sofisticado por moda; quieren saber dónde y cuánto gana, y dónde no
+merece la pena.</p>
+<p>Este es el <strong>caso recurrente</strong> del Bloque I que ya
+aparece en la presentación del Día 01: deep learning no sustituye al
+modelo estadístico, lo extiende. Vuestro trabajo es demostrar (o
+refutar) esa tesis con números.</p>
+<h2 id="2-objetivo">2. Objetivo</h2>
+<p>Construir un sistema de previsión de demanda a horizonte corto (4 a
+24 semanas) sobre datos multiproducto, comparar al menos un modelo
+profundo (LSTM, GRU o un Transformer ligero) contra un baseline
+estadístico debidamente afinado (ARIMA/ETS o naïve estacional), y
+cuantificar la mejora de negocio, no solo la mejora de error.</p>
+<h2 id="3-vía-alternativa-visión-por-computador">3. Vía alternativa
+(visión por computador)</h2>
+<p>Si el sector de vuestro grupo encaja mejor con imagen que con series
+(control de calidad en planta, clasificación documental, lectura de
+etiquetas, teledetección agrícola), podéis sustituir el problema de
+forecast por uno de <strong>clasificación de imágenes con transfer
+learning</strong> (ResNet o EfficientNet preentrenada, fine-tuning del
+clasificador). Las reglas de entrega, la rúbrica y la exigencia de
+baseline + análisis de negocio son idénticas: el baseline pasa a ser un
+modelo clásico de visión (HOG+SVM o una CNN pequeña entrenada desde
+cero) y la métrica de negocio pasa a ser, por ejemplo, coste de falso
+positivo/negativo en inspección. Avisad al profesor en la mentorización
+antes de elegir esta vía.</p>
+<h2 id="4-datos-sugeridos">4. Datos sugeridos</h2>
+<p>Cualquiera del repositorio validado
+(<code>datasets/README.md</code>). Para la vía de forecast, los más
+directos:</p>
+<ul>
+<li><strong>Online Retail II</strong> — ~1 M de transacciones,
+2009–2011, CC BY 4.0. <a
+href="https://archive.ics.uci.edu/dataset/502/online+retail+ii">https://archive.ics.uci.edu/dataset/502/online+retail+ii</a>
+(recomendado para empezar; agregad a demanda semanal por producto).</li>
+<li><strong>M5 Forecasting (Walmart)</strong> — 42.840 series
+jerárquicas, benchmark estándar. <a
+href="https://www.kaggle.com/competitions/m5-forecasting-accuracy/data">https://www.kaggle.com/competitions/m5-forecasting-accuracy/data</a></li>
+<li><strong>Open Power System Data</strong> o
+<strong>GEFCom2014</strong> si vuestro sector es energía.</li>
+</ul>
+<p>Para la vía de visión: <strong>Fashion-MNIST</strong>,
+<strong>CIFAR-10</strong>, <strong>EuroSAT</strong> (satélite) o
+<strong>RVL-CDIP</strong> (documentos). Podéis traer vuestro propio
+dataset con las restricciones del §10 del repositorio de datasets (sin
+PII real sin anonimizar, licencia documentada).</p>
+<h2 id="5-qué-se-entrega">5. Qué se entrega</h2>
+<p>Una carpeta comprimida <code>grupoNN_caso_1.zip</code> con:</p>
+<ol type="1">
+<li><strong>Memoria</strong> (<code>memoria_caso_1.pdf</code>, máx. 6
+páginas): problema de negocio, datos y preprocesado, modelos comparados,
+resultados, lectura de negocio y recomendación. Debe incluir la tabla
+del §7.</li>
+<li><strong>Notebook reproducible</strong> (<code>caso_1.ipynb</code>
+ejecutado, con outputs visibles) y, opcionalmente, su <code>.py</code>.
+Semillas fijadas; debe correr de principio a fin en local o en Colab sin
+intervención manual.</li>
+<li><strong>Slides de defensa</strong> (<code>caso_1_slides.pdf</code>,
+6–8 diapositivas) para la exposición de 8 minutos en clase.</li>
+<li><strong>Declaración de IA</strong> (<code>DECLARACION_IA.md</code>):
+qué herramienta se usó y para qué parte.</li>
+</ol>
+<h2 id="6-tareas">6. Tareas</h2>
+<ul>
+<li><strong>6.1 — Datos y baseline (técnica).</strong> Construir la
+serie/dataset, separar train/validación/test respetando el orden
+temporal (sin fuga de futuro), y ajustar un baseline estadístico
+honesto. Reportar MAE y MASE (o RMSE) sobre el horizonte.</li>
+<li><strong>6.2 — Modelo profundo (técnica).</strong> Entrenar al menos
+una red recurrente o Transformer ligero. Documentar arquitectura,
+ventana de entrada, función de pérdida, optimizador y regularización
+(dropout, early stopping). Curvas de entrenamiento/validación.</li>
+<li><strong>6.3 — Features exógenas (técnica).</strong> Incorporar al
+menos una variable exógena relevante (promoción, precio, festivo,
+calendario) y medir su efecto en el error. ¿Es ahí donde el modelo
+profundo gana al baseline?</li>
+<li><strong>6.4 — Lectura de negocio (negocio).</strong> Traducir la
+mejora de error a una métrica de negocio: reducción de rotura de stock,
+de sobre-inventario, de coste de inspección. Estimar el ROI de mantener
+el modelo profundo frente al baseline.</li>
+<li><strong>6.5 — Análisis SIN IA (condición de aprobación).</strong>
+Ver §9.</li>
+</ul>
+<h2 id="7-tabla-concepto--aplicación--entradas--salidas--kpi">7. Tabla
+Concepto → Aplicación → Entradas → Salidas → KPI</h2>
+<p>Rellenad esta tabla en la memoria con vuestros números reales:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Concepto</th>
+<th>Aplicación</th>
+<th>Entradas</th>
+<th>Salidas</th>
+<th>KPI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Forecast multiproducto</td>
+<td>Planificación de compras</td>
+<td>24 sem. de histórico + exógenas</td>
+<td>Demanda 4 sem. por SKU</td>
+<td>MASE / MAE; % rotura de stock evitada</td>
+</tr>
+<tr class="even">
+<td>Baseline estadístico</td>
+<td>Referencia de honestidad</td>
+<td>Serie temporal</td>
+<td>Predicción ETS/ARIMA</td>
+<td>MASE de referencia</td>
+</tr>
+<tr class="odd">
+<td>Modelo profundo</td>
+<td>Captura de no linealidades</td>
+<td>Ventanas + exógenas</td>
+<td>Predicción LSTM/Transformer</td>
+<td>Δ MASE vs baseline; ROI</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-rúbrica-común-del-curso-10-pts--escala-010">8. Rúbrica común
+del curso (10 pts → escala 0–10)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Dimensión</th>
+<th>Peso</th>
+<th>Qué se valora</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Calidad técnica</td>
+<td>30 %</td>
+<td>Modelo apropiado, baseline honesto, métricas justificadas, código
+reproducible (semillas, sin fuga temporal).</td>
+</tr>
+<tr class="even">
+<td>Relevancia de negocio</td>
+<td>25 %</td>
+<td>Problema bien planteado, KPI alineado, ROI argumentado con
+números.</td>
+</tr>
+<tr class="odd">
+<td>Comunicación</td>
+<td>20 %</td>
+<td>Slides claras, narrativa, gráficos legibles con ejes y unidades,
+tiempo respetado.</td>
+</tr>
+<tr class="even">
+<td>Defensa oral</td>
+<td>15 %</td>
+<td>Respuestas correctas, dominio del trabajo entregado, capacidad de
+explicar cualquier línea.</td>
+</tr>
+<tr class="odd">
+<td>Trazabilidad de IA</td>
+<td>10 %</td>
+<td>Herramientas declaradas, prompts conservados cuando proceda.</td>
+</tr>
+</tbody>
+</table>
+<p>Esta rúbrica es idéntica en los tres casos y en el proyecto
+final.</p>
+<h2 id="9-sección-sin-ia-obligatoria-condición-de-aprobación">9. Sección
+sin IA (obligatoria, condición de aprobación)</h2>
+<p>El <strong>§6.5</strong> se redacta y se defiende <strong>sin ninguna
+herramienta de IA generativa</strong>. Consiste en una página escrita a
+mano (o en editor, pero de autoría propia y declarada como tal) que
+responda, frente al director comercial, a estas preguntas:</p>
+<ol type="1">
+<li>¿Por qué el modelo profundo gana (o no) al baseline, en términos del
+problema, no del algoritmo? ¿Qué estructura de los datos explota?</li>
+<li>Si la mejora es pequeña, ¿recomendaríais mantener el modelo profundo
+en producción? Justificad el coste de complejidad.</li>
+<li>¿Qué pasaría si cambiara el régimen (una crisis, una promoción nunca
+vista)? ¿En qué confía cada modelo?</li>
+</ol>
+<p>En la defensa oral, el profesor preguntará sobre esta sección. La
+incapacidad de defenderla sin IA, o un texto claramente generado, supone
+un cero en el caso (regla C de la política de IA del Día 01).</p>
+<h2 id="10-política-de-ia">10. Política de IA</h2>
+<p>Permitida y fomentada para el código, el preprocesado y las slides,
+<strong>con declaración de trazabilidad</strong> (qué herramienta, qué
+parte). Prohibida solo en la sección §9. Conservad los prompts
+relevantes.</p>
+<h2 id="11-fechas">11. Fechas</h2>
+<ul>
+<li><strong>Publicación:</strong> semana 5 (durante el Tema 3).</li>
+<li><strong>Entrega:</strong> fin de la semana 7, antes de arrancar el
+Bloque II.</li>
+<li><strong>Defensa oral:</strong> en clase, semana 7 (8 minutos por
+grupo + preguntas).</li>
+<li><strong>Feedback:</strong> una semana tras la defensa.</li>
+</ul>
+<h2 id="12-ayudas">12. Ayudas</h2>
+<p>Foro primero, profesor después. Las 4 horas de mentorización del
+proyecto también cubren dudas de este caso. El banco de proyectos
+abiertos tiene ideas ancladas en empresas reales por si vuestro grupo
+aún duda de sector.</p>
+</body>
+</html>

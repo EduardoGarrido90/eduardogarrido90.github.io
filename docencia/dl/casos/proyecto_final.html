@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Proyecto final — Startup AI-first</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <style>
+    :root{--ink:#1A1A1A;--gold:#B8860B;--goldDeep:#8C6508;--goldPale:#F5EBD3;--mute:#8A8A8A;--rule:#D9C28A}
+    body{max-width:820px;margin:0 auto;padding:38px 26px 90px;
+      font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+      color:var(--ink);line-height:1.55;font-size:17px}
+    h1{border-bottom:1.5px solid var(--gold);padding-bottom:8px;font-size:1.7em}
+    h2{color:var(--goldDeep);margin-top:1.6em}
+    h3{color:var(--ink)}
+    a{color:var(--goldDeep)}
+    code{background:var(--goldPale);padding:1px 5px;border-radius:4px;font-size:.92em}
+    pre{background:#faf6ea;border:1px solid var(--rule);border-radius:6px;padding:13px 15px;overflow:auto}
+    pre code{background:none;padding:0}
+    table{border-collapse:collapse;margin:1.2em 0}
+    th,td{border:1px solid var(--rule);padding:6px 11px}
+    th{background:var(--goldPale)}
+    blockquote{border-left:3px solid var(--gold);margin:1em 0;padding:.2em 1em;color:#444}
+    img{max-width:100%;height:auto}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Proyecto final — Startup AI-first</h1>
+</header>
+<h1 id="proyecto-final--startup-ai-first">Proyecto final — Startup
+AI-first</h1>
+<p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
+Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
+· <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
+2026–2027. <strong>Modalidad:</strong> en grupo.
+<strong>Carácter:</strong> obligatorio (ver §3). <strong>Peso:</strong>
+evaluado con la rúbrica común del curso (ver §8).</p>
+<hr />
+<h2 id="1-qué-es-el-proyecto">1. Qué es el proyecto</h2>
+<p>Sois los fundadores de una <strong>startup AI-first</strong>: una
+empresa cuyo producto no sería posible sin deep learning o IA agéntica
+en su núcleo, no una empresa tradicional con un modelo pegado encima. A
+lo largo del semestre vuestro grupo elige un sector y un caso de uso, lo
+refina en mentorización, y al final defiende ante "inversores" (la clase
+y el profesor) la propuesta de valor, la arquitectura técnica, el modelo
+de costes y el plan de cumplimiento.</p>
+<p>El proyecto es <strong>la columna vertebral del curso</strong>. Los
+tres casos prácticos no son ejercicios sueltos: son los tres ensayos del
+proyecto. El Caso I os enseña a comparar un modelo profundo contra un
+baseline honesto; el Caso II, a montar un sistema agéntico medible; el
+Caso III, a auditar el riesgo y el cumplimiento. El proyecto integra
+esas tres competencias en un producto coherente.</p>
+<h2 id="2-qué-entrega-cada-grupo">2. Qué entrega cada grupo</h2>
+<p>Tres piezas, como anuncia el Día 01:</p>
+<ol type="1">
+<li><strong>Memoria escrita</strong> (<code>memoria_proyecto.pdf</code>,
+8–12 páginas):
+<ul>
+<li><strong>Propuesta de valor:</strong> qué problema, para quién, por
+qué ahora, por qué con IA. El "antes y después" para el cliente.</li>
+<li><strong>Arquitectura técnica:</strong> qué modelos, qué datos, qué
+herramientas, qué flujo. Diagrama legible. Decisiones justificadas
+(cloud vs. local, RAG vs. fine-tune, modelo abierto vs. API).</li>
+<li><strong>Modelo de costes:</strong> coste de inferencia y de
+operación, coste por usuario o por consulta, y cómo escala. Precio
+sugerido y margen.</li>
+<li><strong>Análisis de riesgo:</strong> técnico (fallos del modelo,
+alucinación, deriva) y regulatorio (clasificación AI Act, sesgo) — esto
+es el Caso III integrado.</li>
+<li><strong>Roadmap:</strong> qué hay hoy (el prototipo), qué falta, en
+qué orden, con qué hitos medibles.</li>
+</ul></li>
+<li><strong>Prototipo funcional mínimo</strong> (<code>prototipo/</code>
+con <code>README</code> de arranque): un notebook, un agente o una demo
+en Ollama/API que <strong>funcione de verdad</strong> sobre un caso
+reducido. No tiene que ser el producto final; tiene que demostrar que el
+núcleo de IA es viable. Semillas fijadas; arranque documentado.</li>
+<li><strong>Pitch final de 15 minutos</strong> en clase, ante la
+promoción y el profesor, con slides. Incluye la diapositiva de
+cumplimiento del Caso III. Tras el pitch, ronda de preguntas que hace
+las veces de defensa oral (y de Caso III §9).</li>
+</ol>
+<h2 id="3-restricción-dura-obligatoriedad">3. Restricción dura
+(obligatoriedad)</h2>
+<p>El proyecto es <strong>obligatorio</strong>. Sin proyecto presentado
+y aprobado por el profesor con <strong>nota mínima de 5 sobre
+10</strong>, la asignatura no se considera superada, con independencia
+del resto de calificaciones (Kahoots, casos, examen). Esta condición es
+la misma que se anuncia en la presentación del Día 01 y no es
+negociable.</p>
+<h2 id="4-formación-de-grupos-y-elección-de-tema">4. Formación de grupos
+y elección de tema</h2>
+<ul>
+<li><strong>Grupos:</strong> se forman en las <strong>dos primeras
+semanas</strong>. La elección de socios y de tema condiciona el resto
+del curso; pensadla. Tamaño orientativo 3–4 personas (confirmar con el
+profesor).</li>
+<li><strong>Tema:</strong> cada grupo decide un sector y un caso de uso
+candidato, que se refina en mentorización. Podéis partir del
+<strong>banco de proyectos abiertos</strong> (30–40 ideas pre-validadas
+ancladas en empresas reales: BBVA, Inditex, Iberdrola, Telefónica…) con
+<strong>cupo máximo de 2 grupos por idea</strong>, o proponer la
+vuestra.</li>
+<li><strong>Dataset:</strong> propio (con las restricciones del §10 de
+<code>datasets/README.md</code>: sin PII real sin anonimizar, licencia
+documentada) o del repositorio validado. La elección de dataset
+<strong>no resta puntos</strong>; lo que cuenta es la pregunta de
+negocio y la arquitectura.</li>
+</ul>
+<h2 id="5-mentorización">5. Mentorización</h2>
+<p><strong>4 horas presenciales</strong> de mentorización a lo largo del
+semestre, más los diez minutos después de cada clase y el café de la
+semana. Llegad a cada mentorización con una pregunta concreta, no con
+"no sabemos qué hacer". Los viernes de <em>open practicum</em> son el
+mejor avance del proyecto.</p>
+<h2 id="6-hitos-a-lo-largo-del-curso">6. Hitos a lo largo del curso</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Momento</th>
+<th>Hito</th>
+<th>Qué se espera</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Semanas 1–2</td>
+<td>Grupos y tema</td>
+<td>Grupo cerrado, sector y caso candidato elegidos.</td>
+</tr>
+<tr class="even">
+<td>Semana 7</td>
+<td><strong>Caso I entregado</strong></td>
+<td>El núcleo de modelado del proyecto, ensayado.</td>
+</tr>
+<tr class="odd">
+<td>Semana 13</td>
+<td><strong>Caso II entregado</strong></td>
+<td>El sistema agéntico/RAG del proyecto, ensayado.</td>
+</tr>
+<tr class="even">
+<td>Semana 14</td>
+<td><strong>Caso III + pitch</strong></td>
+<td>Auditoría de cumplimiento + pitch final + defensa.</td>
+</tr>
+</tbody>
+</table>
+<p>El proyecto no se construye la última semana: se va destilando de los
+tres casos. Un grupo que alinee sus tres casos con su startup llega al
+pitch con el trabajo casi hecho.</p>
+<h2 id="7-tabla-concepto--aplicación--entradas--salidas--kpi">7. Tabla
+Concepto → Aplicación → Entradas → Salidas → KPI</h2>
+<p>Rellenadla en la memoria con vuestro caso real:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Concepto</th>
+<th>Aplicación</th>
+<th>Entradas</th>
+<th>Salidas</th>
+<th>KPI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Propuesta de valor</td>
+<td>El problema que resolvéis</td>
+<td>Dolor del cliente</td>
+<td>Beneficio cuantificado</td>
+<td>Ahorro o ingreso por usuario</td>
+</tr>
+<tr class="even">
+<td>Núcleo de IA</td>
+<td>El motor del producto</td>
+<td>Datos del caso</td>
+<td>Predicción / respuesta / acción</td>
+<td>Métrica técnica (MASE, Recall@k, F1…)</td>
+</tr>
+<tr class="odd">
+<td>Modelo de costes</td>
+<td>Viabilidad económica</td>
+<td>Coste de inferencia + operación</td>
+<td>Coste por usuario/consulta</td>
+<td>Margen; punto de equilibrio</td>
+</tr>
+<tr class="even">
+<td>Cumplimiento</td>
+<td>Riesgo bajo control</td>
+<td>Clasificación AI Act + auditoría</td>
+<td>Plan de mitigación</td>
+<td>Obligaciones cubiertas; disparidad</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-rúbrica-común-del-curso-10-pts--escala-010">8. Rúbrica común
+del curso (10 pts → escala 0–10)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Dimensión</th>
+<th>Peso</th>
+<th>Qué se valora</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Calidad técnica</td>
+<td>30 %</td>
+<td>Prototipo que funciona, modelos apropiados, métricas justificadas,
+código reproducible.</td>
+</tr>
+<tr class="even">
+<td>Relevancia de negocio</td>
+<td>25 %</td>
+<td>Problema real, KPI alineado, modelo de costes y ROI creíbles.</td>
+</tr>
+<tr class="odd">
+<td>Comunicación</td>
+<td>20 %</td>
+<td>Pitch claro, slides y diagramas legibles, narrativa de inversor, 15
+min respetados.</td>
+</tr>
+<tr class="even">
+<td>Defensa oral</td>
+<td>15 %</td>
+<td>Respuestas correctas en la ronda de preguntas, dominio de todo lo
+entregado.</td>
+</tr>
+<tr class="odd">
+<td>Trazabilidad de IA</td>
+<td>10 %</td>
+<td>Herramientas declaradas, prompts conservados cuando proceda.</td>
+</tr>
+</tbody>
+</table>
+<p>Misma rúbrica que los tres casos. La nota del proyecto debe ser ≥ 5
+para superar la asignatura (§3).</p>
+<h2 id="9-sección-sin-ia-obligatoria-condición-de-aprobación">9. Sección
+sin IA (obligatoria, condición de aprobación)</h2>
+<p>La <strong>ronda de preguntas tras el pitch</strong> se responde
+<strong>sin IA</strong>, en directo. El profesor (y la clase) preguntan,
+y cualquier miembro del grupo debe poder:</p>
+<ol type="1">
+<li>Explicar <strong>cualquier línea de código, gráfico o
+párrafo</strong> entregado (regla C del Día 01: la defensa oral
+sustituye al examen oral).</li>
+<li>Justificar la <strong>decisión técnica más discutible</strong> del
+proyecto sin recurrir a "lo dijo el modelo".</li>
+<li>Defender el <strong>modelo de costes y el plan de
+cumplimiento</strong> ante una objeción de inversor.</li>
+</ol>
+<p>La incapacidad de un grupo para defender en directo lo que entregó es
+motivo de suspenso del proyecto, con independencia de la calidad del
+entregable.</p>
+<h2 id="10-política-de-ia">10. Política de IA</h2>
+<p>Permitida y fomentada en todo el proyecto (código, prototipo,
+memoria, slides), <strong>con declaración de trazabilidad</strong>: una
+nota al inicio de la memoria y del notebook diciendo qué herramienta se
+usó y para qué. La startup AI-first construida con agentes es
+exactamente lo que el curso quiere que sepáis hacer; lo que se evalúa es
+que <strong>entendáis y defendáis</strong> lo construido, no que lo
+hayáis tecleado a mano. Conservad los prompts relevantes.</p>
+<h2 id="11-fechas">11. Fechas</h2>
+<ul>
+<li><strong>Formación de grupos:</strong> semanas 1–2.</li>
+<li><strong>Entrega de memoria y prototipo:</strong> semana 14, antes
+del pitch.</li>
+<li><strong>Pitch y defensa:</strong> semana 14 (sesión del Día 18,
+junto al Caso III).</li>
+<li><strong>Nota:</strong> publicada tras la última sesión de
+defensas.</li>
+</ul>
+<h2 id="12-ayudas">12. Ayudas</h2>
+<p>Foro, profesor, mentorización (4 h), open practicum, café de la
+semana y los diez minutos tras cada clase. El banco de proyectos
+abiertos desbloquea la elección de tema. La charla invitada de la semana
+8 (profesional senior de banca o energía) es una oportunidad para
+validar vuestra idea con alguien del sector.</p>
+</body>
+</html>
