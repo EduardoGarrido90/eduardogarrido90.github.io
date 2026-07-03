@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El potencial de Claude Code y las terminales &mdash; Eduardo C. Garrido-Merch&aacute;n</title>
+  <meta name="description" content="One-hour hands-on seminar on Claude Code as an agentic AI for university teaching and research: live demos on building, literature synthesis, adversarial paper review, agent orchestration, MCP integrations, and a local-sovereignty closing (Florentino, CI2LAB Comillas ICAI).">
+  <meta name="author" content="Eduardo C. Garrido-Merch&aacute;n">
+
+  <meta property="og:title" content="El potencial de Claude Code y las terminales">
+  <meta property="og:description" content="Seminario con demos en vivo &middot; IA agéntica para docencia e investigación &middot; Comillas ICADE, 2026.">
+  <meta property="og:image" content="../img/talks/potencial-claude-code.jpg">
+  <meta property="og:type" content="article">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="El potencial de Claude Code y las terminales">
+  <meta name="twitter:description" content="Seminario con demos en vivo &middot; IA agéntica para docencia e investigación.">
+  <meta name="twitter:image" content="../img/talks/potencial-claude-code.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --accent: #8b5cf6;
+      --bg: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1f2937;
+      --text: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-bright: #f3f4f6;
+      --border: #1f2937;
+      --border-hover: #374151;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+    .topnav {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82em;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .topnav .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .topnav a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .topnav a:hover { color: var(--text-bright); }
+
+    header.page { padding: 48px 0 20px; }
+    header.page .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72em;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #a78bfa;
+      margin-bottom: 12px;
+    }
+    header.page h1 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 2.2em;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+      margin-bottom: 18px;
+    }
+    .sep { width: 48px; height: 2px; background: var(--gradient); border-radius: 2px; margin: 22px 0; }
+
+    .hero-image {
+      width: 100%;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin: 6px 0 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    }
+    .hero-image img { width: 100%; height: auto; display: block; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 10px 0 28px;
+    }
+    .meta-card {
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .meta-card .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .meta-card .value { color: var(--text-bright); font-size: 0.95em; line-height: 1.4; }
+    .meta-card .value a { color: #93c5fd; text-decoration: none; transition: color 0.2s; }
+    .meta-card .value a:hover { color: var(--text-bright); }
+
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0 32px; }
+    .actions a {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.82em;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .actions a.primary { background: var(--gradient); color: #fff; border: 1px solid transparent; }
+    .actions a.primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(59,130,246,0.35); }
+    .actions a.secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+    .actions a.secondary:hover { color: var(--text-bright); border-color: var(--border-hover); }
+
+    article.abstract {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 26px 30px;
+      margin-bottom: 32px;
+    }
+    article.abstract h2 {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.2em;
+      color: var(--text-bright);
+      margin-bottom: 14px;
+    }
+    article.abstract p { color: var(--text); margin-bottom: 12px; font-size: 0.96em; }
+    article.abstract p:last-child { margin-bottom: 0; }
+    article.abstract em { color: var(--text-bright); font-style: italic; }
+
+    h2.section-head {
+      font-family: 'IBM Plex Serif', serif;
+      font-size: 1.35em;
+      color: var(--text-bright);
+      margin: 4px 0 6px;
+    }
+    p.section-sub { color: var(--text-muted); font-size: 0.92em; margin-bottom: 20px; }
+
+    .demo-list { display: grid; gap: 12px; margin-bottom: 32px; }
+    .demo-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 16px 20px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .demo-item:hover { border-color: var(--border-hover); background: var(--bg-card-hover); }
+    .demo-item .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66em; text-transform: uppercase; letter-spacing: 0.1em;
+      color: #a78bfa; border: 1px solid #2e2a4a; border-radius: 4px;
+      padding: 2px 8px; margin-bottom: 8px;
+    }
+    .demo-item h3 { color: var(--text-bright); font-size: 1.02em; margin-bottom: 4px; font-family: 'IBM Plex Serif', serif; }
+    .demo-item p { color: var(--text); font-size: 0.9em; }
+    .demo-item code { font-family: 'IBM Plex Mono', monospace; font-size: 0.86em; color: #93c5fd; }
+
+    .note-card {
+      background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(59,130,246,0.05));
+      border: 1px solid #2e2a4a;
+      border-radius: 10px; padding: 22px 26px; margin-bottom: 32px;
+    }
+    .note-card h3 { color: var(--text-bright); font-size: 1.05em; margin-bottom: 8px; font-family: 'IBM Plex Serif', serif; }
+    .note-card p { color: var(--text); font-size: 0.93em; }
+
+    footer {
+      text-align: center; padding: 36px 0;
+      color: var(--text-muted); font-size: 0.78em;
+      border-top: 1px solid var(--border); margin-top: 24px;
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-bright); }
+
+    @media (max-width: 768px) {
+      header.page h1 { font-size: 1.55em; }
+      article.abstract { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topnav">
+    <div class="container">
+      <div><a href="index.html">&larr; Technical Talks</a></div>
+      <div>
+        <a href="../index.html">home</a> &middot;
+        <a href="../papers/index.html">papers</a> &middot;
+        <a href="../press/index.html">press</a> &middot;
+        <a href="../code/index.html">code</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <header class="page">
+      <div class="kicker">Hands-on seminar &middot; 2026 &middot; delivered in Spanish</div>
+      <h1>El potencial de Claude Code y las terminales</h1>
+    </header>
+
+    <div class="hero-image">
+      <img src="../img/talks/potencial-claude-code.jpg" alt="El potencial de Claude Code y las terminales &mdash; title slide">
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="label">Speaker</div>
+        <div class="value">Eduardo C. Garrido-Merch&aacute;n</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Format</div>
+        <div class="value">One hour &middot; live demos</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Focus</div>
+        <div class="value">Teaching &amp; research</div>
+      </div>
+      <div class="meta-card">
+        <div class="label">Institution</div>
+        <div class="value">Comillas &middot; ICADE</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="primary" href="potencial-claude-code.pdf" target="_blank">Download slides (PDF)</a>
+      <a class="secondary" href="potencial-claude-code-demos.zip">Download demo pack (ZIP)</a>
+      <a class="secondary" href="index.html">All technical talks</a>
+    </div>
+
+    <article class="abstract">
+      <h2>Abstract</h2>
+      <p>Claude Code turns the terminal into an <em>agent</em> you talk to in plain language: a model with hands that reads, writes, runs and verifies code and documents on your own files. This one-hour seminar, delivered in Spanish with live demos, shows how far that goes for university teaching and research, and where the human stays in control.</p>
+      <p>We move from foundations (chatbot versus agent, the new Claude family, permissions) to building (a reproducible paper figure, a numerical method verified against its closed-form solution), to research (automatic literature synthesis, a dense paper turned into a study dossier, a reproducible scientific analysis, and a zero-hallucination bibliography-verification loop), to orchestration (three adversarial referees reviewing a manuscript, a pipeline that drafts a paper end to end, a whole course parallelised one agent per topic).</p>
+      <p>The final blocks cover connection (MCP, Slack, Gmail, hooks, headless CI), the teaching toolkit (exercises and exams with rubric and version B, lecture notes, interactive HTML slides, design artifacts), how to keep control, and a closing on <em>sovereignty</em>: if frontier AI moves to per-use pricing or data cannot leave the organisation, the same agentic architecture can run fully local &mdash; illustrated with <em>Florentino</em>, the local agentic system built by the CI2LAB (C&aacute;tedra de Industria Inteligente, Comillas ICAI).</p>
+    </article>
+
+    <h2 class="section-head">Live demos</h2>
+    <p class="section-sub">The seminar is built around live, improvised demos. The demo pack (ZIP above) bundles the prompt and setup for each, ready to run with <code>claude</code>.</p>
+    <div class="demo-list">
+      <div class="demo-item">
+        <span class="tag">Orchestrate</span>
+        <h3>From one command to a full paper</h3>
+        <p>A single <code>/bo</code> order chains a dozen specialised sub-agents: idea, verified literature, theory, tested implementation, experiments, writing and adversarial review.</p>
+      </div>
+      <div class="demo-item">
+        <span class="tag">Orchestrate</span>
+        <h3>Three adversarial referees read your manuscript</h3>
+        <p>Canonical-order reviewer, experiments-first reviewer and a reference verifier read the same <code>.tex</code> in parallel and consolidate one report by severity.</p>
+      </div>
+      <div class="demo-item">
+        <span class="tag">Research</span>
+        <h3>Zero-hallucination bibliography</h3>
+        <p>A mechanical validator compares every BibTeX field against the downloaded source, and independent verifier agents repeat the audit until it is clean.</p>
+      </div>
+      <div class="demo-item">
+        <span class="tag">Teaching</span>
+        <h3>Exercises and exams with rubric, solution and version B</h3>
+        <p>From the syllabus, <code>/examenes</code> produces a full exam with rubric, worked solutions and a parallel, equal-difficulty version B.</p>
+      </div>
+      <div class="demo-item">
+        <span class="tag">Teaching</span>
+        <h3>Lecture notes from a syllabus and its sources</h3>
+        <p><code>/apuntes</code> weaves a syllabus and several sources into coherent notes: continuous prose, boxed definitions, worked examples and its own figures.</p>
+      </div>
+      <div class="demo-item">
+        <span class="tag">Teaching</span>
+        <h3>Interactive HTML slides</h3>
+        <p>The <code>interactive-slides</code> skill turns a topic into a self-contained HTML deck where every parameter is manipulable live on a canvas.</p>
+      </div>
+    </div>
+
+    <div class="note-card">
+      <h3>Closing &middot; Sovereignty: Florentino (CI2LAB)</h3>
+      <p>The talk ends with a local-first alternative for governance and cost control: <em>Florentino</em>, a local multi-model agent over Ollama (open 7B&ndash;32B models) that keeps the same agentic loop and sub-agents while no byte leaves your machine. Built by the CI2LAB &mdash; C&aacute;tedra de Industria Inteligente, Universidad Pontificia Comillas ICAI (J.&nbsp;Alonso, T.&nbsp;Contreras, C.&nbsp;Lucena, A.&nbsp;Rodr&iacute;guez, P.&nbsp;S&aacute;nchez).</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Eduardo C. Garrido-Merch&aacute;n &middot; <a href="../index.html">home</a> &middot; <a href="index.html">all talks</a></p>
+    </div>
+  </footer>
+</body>
+</html>
