@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Caso práctico I — Forecast de demanda multiproducto (retail)</title>
+  <title>Caso práctico I — Hackathon de HPO para redes tabulares</title>
   <style>
     html {
       color: #1a1a1a;
@@ -165,143 +165,183 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-  </style>
-  <style>
-    :root{--ink:#1A1A1A;--gold:#B8860B;--goldDeep:#8C6508;--goldPale:#F5EBD3;--mute:#8A8A8A;--rule:#D9C28A}
-    body{max-width:820px;margin:0 auto;padding:38px 26px 90px;
-      font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
-      color:var(--ink);line-height:1.55;font-size:17px}
-    h1{border-bottom:1.5px solid var(--gold);padding-bottom:8px;font-size:1.7em}
-    h2{color:var(--goldDeep);margin-top:1.6em}
-    h3{color:var(--ink)}
-    a{color:var(--goldDeep)}
-    code{background:var(--goldPale);padding:1px 5px;border-radius:4px;font-size:.92em}
-    pre{background:#faf6ea;border:1px solid var(--rule);border-radius:6px;padding:13px 15px;overflow:auto}
-    pre code{background:none;padding:0}
-    table{border-collapse:collapse;margin:1.2em 0}
-    th,td{border:1px solid var(--rule);padding:6px 11px}
-    th{background:var(--goldPale)}
-    blockquote{border-left:3px solid var(--gold);margin:1em 0;padding:.2em 1em;color:#444}
-    img{max-width:100%;height:auto}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Caso práctico I — Forecast de demanda multiproducto
-(retail)</h1>
+<h1 class="title">Caso práctico I — Hackathon de HPO para redes
+tabulares</h1>
 </header>
 <h1
-id="caso-práctico-i-bloque-i--deep-learning--forecast-de-demanda-multiproducto-para-una-cadena-de-retail">Caso
-práctico I (Bloque I — Deep Learning) — Forecast de demanda
-multiproducto para una cadena de retail</h1>
+id="caso-práctico-i-bloque-i-deep-learning-hackathon-de-hpo-construye-y-afina-una-red-neuronal-para-datos-tabulares">Caso
+práctico I (Bloque I — Deep Learning) — Hackathon de HPO: construye y
+afina una red neuronal para datos tabulares</h1>
 <p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
 Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 · <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
 2026–2027. <strong>Bloque:</strong> I — Deep Learning (Temas 0–3,
 semanas 1–7). <strong>Modalidad:</strong> en grupo (los mismos grupos
-del proyecto final). <strong>Peso:</strong> caso práctico evaluado con
-la rúbrica común del curso (ver §8).</p>
+del proyecto final), con una sesión tipo hackathon en clase y una
+entrega posterior. <strong>Peso:</strong> caso práctico evaluado con la
+rúbrica común del curso (ver §8).</p>
 <hr />
-<h2 id="1-contexto-de-negocio">1. Contexto de negocio</h2>
-<p>Una cadena de retail multiproducto (piensa en Inditex, Mercadona o un
-e-commerce de tamaño medio) planifica compras, reposición y promociones
-con semanas de antelación. Un error de previsión cuesta por los dos
-lados: si sobra inventario, hay rebajas y capital inmovilizado; si
-falta, hay rotura de stock y venta perdida. Hoy el equipo de
-planificación usa un modelo estadístico clásico (medias móviles,
-ARIMA/ETS) que captura tendencia y estacionalidad pero falla justo
-cuando más importa: promociones, cambios de precio del competidor,
-festivos y picos de calendario.</p>
-<p>La dirección comercial os contrata como consultores de analítica para
-responder a una pregunta concreta: <strong>¿aporta el deep learning una
-mejora medible sobre el baseline estadístico que justifique el coste de
-mantener un modelo más complejo?</strong> No quieren un modelo más
-sofisticado por moda; quieren saber dónde y cuánto gana, y dónde no
-merece la pena.</p>
-<p>Este es el <strong>caso recurrente</strong> del Bloque I que ya
-aparece en la presentación del Día 01: deep learning no sustituye al
-modelo estadístico, lo extiende. Vuestro trabajo es demostrar (o
-refutar) esa tesis con números.</p>
-<h2 id="2-objetivo">2. Objetivo</h2>
-<p>Construir un sistema de previsión de demanda a horizonte corto (4 a
-24 semanas) sobre datos multiproducto, comparar al menos un modelo
-profundo (LSTM, GRU o un Transformer ligero) contra un baseline
-estadístico debidamente afinado (ARIMA/ETS o naïve estacional), y
-cuantificar la mejora de negocio, no solo la mejora de error.</p>
-<h2 id="3-vía-alternativa-visión-por-computador">3. Vía alternativa
-(visión por computador)</h2>
-<p>Si el sector de vuestro grupo encaja mejor con imagen que con series
-(control de calidad en planta, clasificación documental, lectura de
-etiquetas, teledetección agrícola), podéis sustituir el problema de
-forecast por uno de <strong>clasificación de imágenes con transfer
-learning</strong> (ResNet o EfficientNet preentrenada, fine-tuning del
-clasificador). Las reglas de entrega, la rúbrica y la exigencia de
-baseline + análisis de negocio son idénticas: el baseline pasa a ser un
-modelo clásico de visión (HOG+SVM o una CNN pequeña entrenada desde
-cero) y la métrica de negocio pasa a ser, por ejemplo, coste de falso
-positivo/negativo en inspección. Avisad al profesor en la mentorización
-antes de elegir esta vía.</p>
-<h2 id="4-datos-sugeridos">4. Datos sugeridos</h2>
+<h2 id="contexto-de-negocio">1. Contexto de negocio</h2>
+<p>La mayoría de los problemas de analítica en una empresa no llegan
+como imágenes ni como texto: llegan como una <strong>tabla</strong>.
+Filas que son clientes, préstamos, empleados, pisos o transacciones;
+columnas que son variables numéricas y categóricas; y una columna
+objetivo que hay que predecir. ¿Se dará de baja este cliente? ¿Impagará
+este préstamo? ¿Cuánto vale este piso? Este es el pan de cada día de un
+equipo de Business Analytics.</p>
+<p>Hasta ahora, el reflejo del sector para datos tabulares ha sido el
+modelo clásico: regresión logística, árboles, <em>gradient boosting</em>
+(XGBoost, LightGBM). Funcionan, son rápidos y son interpretables. La
+pregunta que os hace la dirección es directa: <strong>¿merece la pena
+construir y afinar una red neuronal para un problema tabular, o el
+modelo clásico ya es suficiente?</strong> Y, sobre todo: si decidimos
+usar una red, <strong>¿cómo se elige su configuración sin ir a
+ciegas?</strong></p>
+<p>Ese “sin ir a ciegas” es el corazón del caso. Una red neuronal no
+tiene un único botón: tiene decenas de hiperparámetros (profundidad,
+anchura, tasa de aprendizaje, <em>dropout</em>, <em>weight decay</em>,
+tamaño de <em>batch</em>, optimizador, <em>early stopping</em>…) y la
+diferencia entre una configuración mediocre y una buena puede ser
+enorme. La disciplina que convierte ese caos en método se llama
+<strong>optimización de hiperparámetros (HPO)</strong>, y es una
+competencia que en Machine Learning I ya no se cubre para redes con
+datos tabulares. Aquí la hacéis vosotros, y aprendéis a defender por qué
+vuestra red está configurada como está.</p>
+<h2 id="objetivo">2. Objetivo</h2>
+<p>Construir, desde cero y con vuestras manos, una <strong>red neuronal
+(MLP) para un problema tabular</strong> de clasificación o regresión;
+<strong>buscar sus hiperparámetros de forma sistemática</strong> (no por
+corazonadas); <strong>compararla contra un baseline clásico
+honesto</strong> (regresión logística/lineal o un <em>gradient
+boosting</em> bien ajustado); y <strong>justificar cada hiperparámetro
+elegido</strong> en términos del problema y de lo observado en la
+búsqueda, no como receta memorizada.</p>
+<p>El entregable no es solo “la red que mejor puntúa”: es la
+<strong>historia de cómo llegasteis a ella</strong>. Un buen caso
+demuestra que entendéis qué mueve cada palanca y por qué la dejasteis
+donde la dejasteis.</p>
+<h2 id="formato-hackathon-sesión-en-clase">3. Formato hackathon (sesión
+en clase)</h2>
+<p>El caso arranca con una sesión tipo hackathon en el aula. Reglas del
+juego:</p>
+<p>Cada grupo elige un dataset tabular del §4 y una métrica objetivo.
+Durante la sesión, cada grupo entrena una red y busca hiperparámetros
+contra un conjunto de validación fijado de antemano; el profesor
+mantiene una <strong>tabla de posiciones (leaderboard)</strong> en clase
+con la métrica de validación de cada grupo, que se actualiza en vivo. Al
+cierre de la sesión, cada grupo congela su mejor configuración y solo
+entonces la evalúa una vez sobre el conjunto de test, que nadie ha
+tocado durante la búsqueda. El <em>leaderboard</em> es un incentivo, no
+la nota: puntúa el método y la justificación (§8), no el tercer decimal
+de una métrica. Un grupo con una red modesta pero perfectamente
+entendida y justificada vale más que uno con la red ganadora que no sabe
+explicar por qué gana.</p>
+<p>La entrega formal (memoria, notebook, defensa) se completa después de
+la sesión, con el margen del §11.</p>
+<h2 id="datos-sugeridos">4. Datos sugeridos</h2>
 <p>Cualquiera del repositorio validado
-(<code>datasets/README.md</code>). Para la vía de forecast, los más
-directos:</p>
+(<code>datasets/README.md</code>), sección de datos tabulares. Los más
+directos para este caso, según sea clasificación o regresión:</p>
 <ul>
-<li><strong>Online Retail II</strong> — ~1 M de transacciones,
-2009–2011, CC BY 4.0. <a
-href="https://archive.ics.uci.edu/dataset/502/online+retail+ii">https://archive.ics.uci.edu/dataset/502/online+retail+ii</a>
-(recomendado para empezar; agregad a demanda semanal por producto).</li>
-<li><strong>M5 Forecasting (Walmart)</strong> — 42.840 series
-jerárquicas, benchmark estándar. <a
-href="https://www.kaggle.com/competitions/m5-forecasting-accuracy/data">https://www.kaggle.com/competitions/m5-forecasting-accuracy/data</a></li>
-<li><strong>Open Power System Data</strong> o
-<strong>GEFCom2014</strong> si vuestro sector es energía.</li>
+<li><strong>Telco Customer Churn</strong> — 7.043 clientes, 21 columnas,
+clasificación binaria de baja. CC0. Pequeño, itera rápido; cuidado con
+el desequilibrio de clases. <a
+href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn"
+class="uri">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a></li>
+<li><strong>IBM HR Analytics Employee Attrition</strong> — 1.470
+empleados, 35 variables, clasificación de abandono. DbCL v1.0. <a
+href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset"
+class="uri">https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset</a></li>
+<li><strong>LendingClub Loan Stats</strong> — ~2,2 M préstamos,
+<em>scoring</em> crediticio / riesgo de impago (clasificación). CC BY
+4.0 (revisad uso comercial). <a
+href="https://www.kaggle.com/datasets/wordsforthewise/lending-club"
+class="uri">https://www.kaggle.com/datasets/wordsforthewise/lending-club</a></li>
+<li><strong>Airbnb Madrid (Inside Airbnb)</strong> — regresión de precio
+por anuncio. CC0. <a href="https://insideairbnb.com/get-the-data/"
+class="uri">https://insideairbnb.com/get-the-data/</a></li>
 </ul>
-<p>Para la vía de visión: <strong>Fashion-MNIST</strong>,
-<strong>CIFAR-10</strong>, <strong>EuroSAT</strong> (satélite) o
-<strong>RVL-CDIP</strong> (documentos). Podéis traer vuestro propio
-dataset con las restricciones del §10 del repositorio de datasets (sin
-PII real sin anonimizar, licencia documentada).</p>
-<h2 id="5-qué-se-entrega">5. Qué se entrega</h2>
+<p>Podéis traer vuestro propio dataset tabular con las restricciones del
+§10 del repositorio de datasets (sin PII real sin anonimizar, licencia
+documentada). La única exigencia es que sea un problema tabular de
+clasificación o regresión con suficiente señal.</p>
+<h2 id="qué-se-entrega">5. Qué se entrega</h2>
 <p>Una carpeta comprimida <code>grupoNN_caso_1.zip</code> con:</p>
 <ol type="1">
 <li><strong>Memoria</strong> (<code>memoria_caso_1.pdf</code>, máx. 6
-páginas): problema de negocio, datos y preprocesado, modelos comparados,
-resultados, lectura de negocio y recomendación. Debe incluir la tabla
-del §7.</li>
+páginas): problema de negocio, datos y preprocesado, arquitectura de la
+red, <strong>protocolo de búsqueda de hiperparámetros</strong>, baseline
+clásico, resultados (incluida la tabla del §7), <strong>justificación de
+los hiperparámetros finales</strong> y lectura de negocio.</li>
 <li><strong>Notebook reproducible</strong> (<code>caso_1.ipynb</code>
 ejecutado, con outputs visibles) y, opcionalmente, su <code>.py</code>.
-Semillas fijadas; debe correr de principio a fin en local o en Colab sin
-intervención manual.</li>
+Semillas fijadas (<code>numpy</code>, <code>torch</code>,
+<code>random</code>); debe correr de principio a fin en local o en Colab
+sin intervención manual. Debe incluir el registro de la búsqueda (tabla
+o gráfico de las configuraciones probadas y su métrica de
+validación).</li>
 <li><strong>Slides de defensa</strong> (<code>caso_1_slides.pdf</code>,
 6–8 diapositivas) para la exposición de 8 minutos en clase.</li>
 <li><strong>Declaración de IA</strong> (<code>DECLARACION_IA.md</code>):
 qué herramienta se usó y para qué parte.</li>
 </ol>
-<h2 id="6-tareas">6. Tareas</h2>
+<h2 id="tareas">6. Tareas</h2>
 <ul>
-<li><strong>6.1 — Datos y baseline (técnica).</strong> Construir la
-serie/dataset, separar train/validación/test respetando el orden
-temporal (sin fuga de futuro), y ajustar un baseline estadístico
-honesto. Reportar MAE y MASE (o RMSE) sobre el horizonte.</li>
-<li><strong>6.2 — Modelo profundo (técnica).</strong> Entrenar al menos
-una red recurrente o Transformer ligero. Documentar arquitectura,
-ventana de entrada, función de pérdida, optimizador y regularización
-(dropout, early stopping). Curvas de entrenamiento/validación.</li>
-<li><strong>6.3 — Features exógenas (técnica).</strong> Incorporar al
-menos una variable exógena relevante (promoción, precio, festivo,
-calendario) y medir su efecto en el error. ¿Es ahí donde el modelo
-profundo gana al baseline?</li>
-<li><strong>6.4 — Lectura de negocio (negocio).</strong> Traducir la
-mejora de error a una métrica de negocio: reducción de rotura de stock,
-de sobre-inventario, de coste de inspección. Estimar el ROI de mantener
-el modelo profundo frente al baseline.</li>
-<li><strong>6.5 — Análisis SIN IA (condición de aprobación).</strong>
+<li><strong>6.1 — Datos y baseline (técnica).</strong> Cargar la tabla,
+tratar variables categóricas (<em>one-hot</em> o <em>embeddings</em> de
+entrada), escalar las numéricas, separar train/validación/test con
+semilla fija (estratificando en clasificación). Ajustar un
+<strong>baseline clásico honesto</strong>: regresión logística/lineal
+y/o un <em>gradient boosting</em> con sus propios hiperparámetros
+razonables. Reportar la métrica objetivo (AUC/F1 en clasificación,
+MAE/RMSE o R² en regresión).</li>
+<li><strong>6.2 — Red neuronal tabular (técnica).</strong> Construir un
+<strong>MLP</strong> en PyTorch o Keras: capas densas, activaciones
+(ReLU/GELU), y al menos una técnica de regularización (<em>dropout</em>,
+<em>weight decay</em>, <em>batch/layer norm</em>). Documentar la
+arquitectura y el bucle de entrenamiento (pérdida, optimizador,
+<em>early stopping</em>). Curvas de entrenamiento y validación.</li>
+<li><strong>6.3 — Búsqueda de hiperparámetros (técnica, núcleo del
+caso).</strong> Definir un <strong>espacio de búsqueda</strong>
+explícito (al menos: tasa de aprendizaje, número de capas, anchura,
+<em>dropout</em>, <em>weight decay</em>, tamaño de <em>batch</em>,
+optimizador) y una <strong>estrategia</strong>: <em>grid search</em>,
+<em>random search</em> o búsqueda bayesiana (p. ej. Optuna). Fijar el
+presupuesto (número de configuraciones y <em>epochs</em>), usar SIEMPRE
+el conjunto de validación para elegir y <strong>el test solo una vez, al
+final</strong>. Registrar cada configuración probada y su métrica.</li>
+<li><strong>6.4 — Justificación de hiperparámetros (negocio +
+técnica).</strong> Para cada hiperparámetro final, explicar <strong>por
+qué ese valor</strong> y no otro, apoyándose en la búsqueda: ¿qué pasó
+al subir la tasa de aprendizaje? ¿el <em>dropout</em> ayudó o el modelo
+era demasiado pequeño para sobreajustar? ¿la red profunda ganó a la
+ancha? Un análisis de sensibilidad (curva métrica vs. un hiperparámetro)
+vale oro aquí.</li>
+<li><strong>6.5 — Lectura de negocio (negocio).</strong> ¿La red gana al
+baseline clásico? ¿En cuánto, y a qué coste de complejidad y de tiempo
+de entrenamiento/HPO? Traducir la métrica a negocio: coste de un falso
+negativo en <em>churn</em>, euros de error en el precio de un piso,
+pérdida esperada por impago mal clasificado. Recomendación honesta: ¿red
+o clásico en producción, y por qué?</li>
+<li><strong>6.6 — Análisis SIN IA (condición de aprobación).</strong>
 Ver §9.</li>
 </ul>
-<h2 id="7-tabla-concepto--aplicación--entradas--salidas--kpi">7. Tabla
+<h2 id="tabla-concepto-aplicación-entradas-salidas-kpi">7. Tabla
 Concepto → Aplicación → Entradas → Salidas → KPI</h2>
 <p>Rellenad esta tabla en la memoria con vuestros números reales:</p>
 <table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Concepto</th>
@@ -313,31 +353,43 @@ Concepto → Aplicación → Entradas → Salidas → KPI</h2>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Forecast multiproducto</td>
-<td>Planificación de compras</td>
-<td>24 sem. de histórico + exógenas</td>
-<td>Demanda 4 sem. por SKU</td>
-<td>MASE / MAE; % rotura de stock evitada</td>
+<td>Red tabular (MLP)</td>
+<td>Clasificación/regresión de negocio</td>
+<td>Features numéricas + categóricas</td>
+<td>Probabilidad de clase / valor</td>
+<td>AUC/F1 o MAE/RMSE</td>
 </tr>
 <tr class="even">
-<td>Baseline estadístico</td>
+<td>Baseline clásico</td>
 <td>Referencia de honestidad</td>
-<td>Serie temporal</td>
-<td>Predicción ETS/ARIMA</td>
-<td>MASE de referencia</td>
+<td>Misma tabla</td>
+<td>Logística/lineal o GBM</td>
+<td>Métrica de referencia</td>
 </tr>
 <tr class="odd">
-<td>Modelo profundo</td>
-<td>Captura de no linealidades</td>
-<td>Ventanas + exógenas</td>
-<td>Predicción LSTM/Transformer</td>
-<td>Δ MASE vs baseline; ROI</td>
+<td>HPO</td>
+<td>Elegir la configuración con método</td>
+<td>Espacio de búsqueda + validación</td>
+<td>Hiperparámetros finales</td>
+<td>Δ métrica vs. configuración inicial; nº de <em>trials</em></td>
+</tr>
+<tr class="even">
+<td>Justificación</td>
+<td>Entender qué mueve cada palanca</td>
+<td>Registro de la búsqueda</td>
+<td>Razones por hiperparámetro</td>
+<td>Sensibilidad de la métrica</td>
 </tr>
 </tbody>
 </table>
-<h2 id="8-rúbrica-común-del-curso-10-pts--escala-010">8. Rúbrica común
-del curso (10 pts → escala 0–10)</h2>
+<h2 id="rúbrica-común-del-curso-10-pts-escala-010">8. Rúbrica común del
+curso (10 pts → escala 0–10)</h2>
 <table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Dimensión</th>
@@ -349,26 +401,27 @@ del curso (10 pts → escala 0–10)</h2>
 <tr class="odd">
 <td>Calidad técnica</td>
 <td>30 %</td>
-<td>Modelo apropiado, baseline honesto, métricas justificadas, código
-reproducible (semillas, sin fuga temporal).</td>
+<td>Red bien construida, baseline honesto, protocolo de HPO correcto
+(validación para elegir, test una sola vez, sin fuga), código
+reproducible (semillas).</td>
 </tr>
 <tr class="even">
 <td>Relevancia de negocio</td>
 <td>25 %</td>
-<td>Problema bien planteado, KPI alineado, ROI argumentado con
-números.</td>
+<td>Problema bien planteado, KPI alineado, coste/beneficio de usar red
+vs. clásico argumentado con números.</td>
 </tr>
 <tr class="odd">
 <td>Comunicación</td>
 <td>20 %</td>
-<td>Slides claras, narrativa, gráficos legibles con ejes y unidades,
-tiempo respetado.</td>
+<td>Slides claras, narrativa de la búsqueda, gráficos legibles con ejes
+y unidades, tiempo respetado.</td>
 </tr>
 <tr class="even">
 <td>Defensa oral</td>
 <td>15 %</td>
-<td>Respuestas correctas, dominio del trabajo entregado, capacidad de
-explicar cualquier línea.</td>
+<td><strong>Justificación de los hiperparámetros</strong>, dominio del
+trabajo, capacidad de explicar cualquier línea.</td>
 </tr>
 <tr class="odd">
 <td>Trazabilidad de IA</td>
@@ -377,43 +430,54 @@ explicar cualquier línea.</td>
 </tr>
 </tbody>
 </table>
-<p>Esta rúbrica es idéntica en los tres casos y en el proyecto
-final.</p>
-<h2 id="9-sección-sin-ia-obligatoria-condición-de-aprobación">9. Sección
+<p>Esta rúbrica es idéntica en los tres casos y en el proyecto final. En
+este caso, la <strong>defensa de los hiperparámetros</strong> es el eje:
+una red ganadora que nadie sabe explicar puntúa por debajo de una red
+modesta perfectamente entendida.</p>
+<h2 id="sección-sin-ia-obligatoria-condición-de-aprobación">9. Sección
 sin IA (obligatoria, condición de aprobación)</h2>
-<p>El <strong>§6.5</strong> se redacta y se defiende <strong>sin ninguna
-herramienta de IA generativa</strong>. Consiste en una página escrita a
-mano (o en editor, pero de autoría propia y declarada como tal) que
-responda, frente al director comercial, a estas preguntas:</p>
+<p>El <strong>§6.6</strong> se redacta y se defiende <strong>sin ninguna
+herramienta de IA generativa</strong>. Consiste en una página de autoría
+propia (declarada como tal) que responda, frente al comité técnico de la
+empresa, a estas preguntas:</p>
 <ol type="1">
-<li>¿Por qué el modelo profundo gana (o no) al baseline, en términos del
-problema, no del algoritmo? ¿Qué estructura de los datos explota?</li>
-<li>Si la mejora es pequeña, ¿recomendaríais mantener el modelo profundo
-en producción? Justificad el coste de complejidad.</li>
-<li>¿Qué pasaría si cambiara el régimen (una crisis, una promoción nunca
-vista)? ¿En qué confía cada modelo?</li>
+<li>De vuestros hiperparámetros finales, elegid <strong>tres</strong> y
+explicad por qué ese valor y no otro, en términos del problema (no
+“porque dio mejor número”: <em>por qué</em> dio mejor número).</li>
+<li>¿Por qué la red gana (o no) al baseline clásico en
+<strong>este</strong> dataset? ¿Qué estructura de los datos explota una
+y no la otra? En tablas, el <em>gradient boosting</em> suele ser un
+rival durísimo: ¿por qué?</li>
+<li>Si tuvierais el doble de presupuesto de cómputo, ¿lo gastaríais en
+más búsqueda de hiperparámetros, en más datos o en un modelo más grande?
+Justificad.</li>
 </ol>
 <p>En la defensa oral, el profesor preguntará sobre esta sección. La
 incapacidad de defenderla sin IA, o un texto claramente generado, supone
 un cero en el caso (regla C de la política de IA del Día 01).</p>
-<h2 id="10-política-de-ia">10. Política de IA</h2>
-<p>Permitida y fomentada para el código, el preprocesado y las slides,
-<strong>con declaración de trazabilidad</strong> (qué herramienta, qué
-parte). Prohibida solo en la sección §9. Conservad los prompts
-relevantes.</p>
-<h2 id="11-fechas">11. Fechas</h2>
+<h2 id="política-de-ia">10. Política de IA</h2>
+<p>Permitida y fomentada para el código, el preprocesado, el montaje de
+la búsqueda y las slides, <strong>con declaración de
+trazabilidad</strong> (qué herramienta, qué parte). Prohibida solo en la
+sección §9. Conservad los prompts relevantes. Ojo: podéis usar IA para
+escribir el bucle de HPO, pero la <strong>decisión</strong> de qué
+espacio buscar y la <strong>justificación</strong> de por qué ese valor
+es vuestra, y se defiende en persona.</p>
+<h2 id="fechas">11. Fechas</h2>
 <ul>
-<li><strong>Publicación:</strong> semana 5 (durante el Tema 3).</li>
+<li><strong>Publicación y hackathon en clase:</strong> semana 5 (durante
+el Tema 3).</li>
 <li><strong>Entrega:</strong> fin de la semana 7, antes de arrancar el
 Bloque II.</li>
 <li><strong>Defensa oral:</strong> en clase, semana 7 (8 minutos por
 grupo + preguntas).</li>
 <li><strong>Feedback:</strong> una semana tras la defensa.</li>
 </ul>
-<h2 id="12-ayudas">12. Ayudas</h2>
+<h2 id="ayudas">12. Ayudas</h2>
 <p>Foro primero, profesor después. Las 4 horas de mentorización del
-proyecto también cubren dudas de este caso. El banco de proyectos
-abiertos tiene ideas ancladas en empresas reales por si vuestro grupo
-aún duda de sector.</p>
+proyecto también cubren dudas de este caso. Para HPO, empezad simple
+(<em>random search</em> sobre 3–4 hiperparámetros) antes de saltar a
+búsqueda bayesiana; una búsqueda pequeña bien entendida enseña más que
+una grande que no sabéis leer.</p>
 </body>
 </html>

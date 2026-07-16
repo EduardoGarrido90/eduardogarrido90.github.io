@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Día 11 — LLMs y context engineering — slides interactivas</title>
+<title>Día 11 — Muestreo en LLMs — slide interactiva</title>
 <style>
   :root{
     --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
@@ -12,1772 +12,314 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#fff;color:var(--ink);
     font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:16px;}
-  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
     letter-spacing:0.03em;flex-wrap:wrap}
   #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
   #navstrip span.cur{color:var(--gold);font-weight:bold}
-  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
-  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
-  .slide{display:none;padding:14px 24px 64px 24px;
-    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
   .slide.active{display:grid}
-  .figcol canvas{width:100%;display:block;margin-bottom:10px;
-    border:1px solid #eee;border-radius:2px}
-  .txtcol{font-size:0.9em;line-height:1.4}
-  .txtcol p{margin:0 0 9px 0}
-  .txtcol .hd{font-weight:bold}
-  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:10px 12px;margin-bottom:12px}
-  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
-  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
-  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
-    margin-right:6px}
-  .ctrlbox select{font-family:inherit;font-size:0.95em;width:100%;border:1px solid var(--gold);
-    border-radius:3px;background:#fff;color:var(--ink);padding:3px 4px}
-  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
-    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
-  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
   .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
-    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
-  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
-    font-size:0.9em;margin:4px 0}
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
   .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
   .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
-  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
-  .mut{color:var(--mute)}
-  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
-    font-size:0.84em;color:#333}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.5em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.12em;
+    font-variant-numeric:tabular-nums;color:#444}
+  /* highlightable equation terms */
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
   .miniglos b{color:var(--goldDeep)}
-  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
-  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
-    font-weight:bold}
-  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
-    font-variant-numeric:tabular-nums}
-  table.live th:first-child,table.live td:first-child{text-align:left}
-  table.live tr.win td{background:var(--goldPale);font-weight:bold}
-  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
     background:#fff;padding:0 4px}
-  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
     font-style:italic;background:#fff;padding:0 4px}
-  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
-    padding:0 6px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
   #arrows button{font-family:inherit;font-size:1em;background:#fff;
     border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
-    padding:2px 14px;cursor:pointer;margin:0 4px}
+    padding:2px 16px;cursor:pointer;margin:0 4px}
   #arrows button:hover{background:var(--goldPale)}
-  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
-  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
-    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
-  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
-  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
-  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
-  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
-  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
-    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
-  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
-  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
-  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
-  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
-  .eqread b{color:var(--goldDeep)}
-  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
-    font-size:0.93em}
-  .frac .num,.frac .den{display:block;padding:0 4px}
-  .frac .den{border-top:1.1px solid var(--ink)}
-  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:9px 13px;margin:10px 0;font-size:0.88em}
-  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
-  .guide ol{margin:4px 0 4px 18px;padding:0}
-  .guide li{margin:0 0 7px 0;line-height:1.4}
-  .guide .obs{color:var(--goldDeep);font-style:italic}
-  details.check{margin-top:6px}
-  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
-  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
-    border-left:3px solid var(--gold);line-height:1.4}
-  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
-  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
-    grid-template-columns:30% 70%}
-  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
-  .genout{background:#fff;border:1px solid var(--rule);border-radius:3px;padding:7px 10px;
-    margin:9px 0;font-size:0.88em;line-height:1.55;font-style:italic;min-height:2.2em}
-  .genout b{color:var(--goldDeep);font-style:normal}
 </style>
 </head>
 <body>
-
 <div id="navstrip"></div>
 <div id="slidetitle"></div>
 <hr id="goldrule">
 
-<!-- ============ SLIDE 0 : next token ============ -->
+<!-- ============ SLIDE 1: interactiva ============ -->
 <section class="slide" id="s0">
   <div class="figcol">
-    <canvas id="cv0a" data-aspect="1.95"></canvas>
-    <canvas id="cv0b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">p<sub>&theta;</sub>(x<sub>t+1</sub> | x<sub>1:t</sub>) = softmax(W<sup>O</sup>h<sub>t</sub>)<span class="eqn">(Ec. 1)</span></div>
-      <div class="eqread">el LLM entero, en una línea: dado el <b>prefijo</b> x<sub>1:t</sub>
-        (todo lo escrito hasta ahora), el Transformer lo comprime en un vector
-        <b>h<sub>t</sub></b> &isin; &#8477;<sup>d</sup> (el último estado oculto), la matriz de
-        salida <b>W<sup>O</sup></b> &isin; &#8477;<sup>|&#119985;|&times;d</sup> lo proyecta a un
-        número por palabra del vocabulario &#119985; (los <b>logits</b>), y el softmax los
-        convierte en una distribución de probabilidad sobre el siguiente token.</div>
-      <div class="eq">softmax(z)<sub>i</sub> = <span class="frac"><span class="num">e<sup>z<sub>i</sub></sup></span><span class="den">&Sigma;<sub>j</sub> e<sup>z<sub>j</sub></sup></span></span>&nbsp;&nbsp;&nbsp;&nbsp;&#8466;(&theta;) = <big>&Sigma;</big><sub>t=1..T&minus;1</sub> log p<sub>&theta;</sub>(x<sub>t+1</sub> | x<sub>1:t</sub>)<span class="eqn">(Ec. 2)</span></div>
-      <div class="eqread">el softmax exponencia cada logit y divide por la suma: salen números
-        positivos que <b>suman 1</b> (compruébalo en el lector). El entrenamiento maximiza
-        &#8466;(&theta;): la log-probabilidad del token verdadero en cada posición, sobre
-        ~10<sup>13</sup> tokens de internet. No hay más objetivo que ese.</div>
+    <div class="eqpanel">
+      <div class="eqtitle">La ecuación del muestreo (softmax con temperatura)</div>
+      <div class="eq">
+        p<sub>i</sub> = exp( z<sub>i</sub> /
+        <span class="term" id="t_T">T</span> ) &nbsp;/&nbsp;
+        &Sigma;<sub>j</sub> exp( z<sub>j</sub> / T )
+      </div>
+      <div class="eqnum">
+        con T = <span class="nterm" id="n_T">0.70</span>,
+        top-k = <span id="n_k">6</span>: la más probable es
+        &laquo;<b id="n_top">gracias</b>&raquo; con p = <b id="n_ptop">0.00</b>
+      </div>
     </div>
+    <canvas id="cv" width="720" height="360"></canvas>
   </div>
   <div class="txtcol">
+    <p><span class="hd">El caso.</span> Un chatbot de atención al cliente ha de
+    elegir la <b>siguiente palabra</b> de su respuesta. El modelo entrega una
+    puntuación (logit z<sub>i</sub>) a cada candidata; la <b>temperatura T</b>
+    decide si responde de forma <b>segura y repetitiva</b> (T baja) o
+    <b>creativa y arriesgada</b> (T alta).</p>
+
     <div class="ctrlbox">
-      <label>elige el prefijo (la "conversación hasta ahora"):</label>
-      <select id="se0p">
-        <option value="0">El cliente descontento con la tarifa…</option>
-        <option value="1">Si subimos el precio, la demanda…</option>
-        <option value="2">Para retener al cliente ofrecemos un…</option>
-        <option value="3">El modelo de churn dice que el cliente…</option>
-      </select>
-      <button id="bt0s">muestrear 1 token</button>
-      <button id="bt0m">muestrear 100</button>
-      <button id="bt0r">reiniciar contador</button>
+      <div class="row"><span class="lab">T</span>
+        <input type="range" id="T" min="0.1" max="2" step="0.05" value="0.7"
+          oninput="hot('T');upd()"><span class="val" id="v_T">0.70</span></div>
+      <div class="row"><span class="lab">k</span>
+        <input type="range" id="k" min="1" max="6" step="1" value="6"
+          oninput="hot('T');upd()"><span class="val" id="v_k">6</span></div>
     </div>
-    <div class="readout" id="ro0"></div>
-    <div class="genout" id="ge0"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Cambia de prefijo con el desplegable mirando las barras de arriba.
-        <span class="obs">La distribución entera cambia con el contexto: el "conocimiento"
-        del modelo es esta tabla condicional, no una base de datos de frases.</span></li>
-      <li>Pulsa "muestrear 1 token" diez veces con el mismo prefijo.
-        <span class="obs">Casi siempre sale el token más probable, pero no siempre: generar
-        texto es tirar un dado cargado, no consultar una respuesta fija.</span></li>
-      <li>Pulsa "muestrear 100" varias veces y compara el panel de abajo con el de arriba.
-        <span class="obs">Las frecuencias empíricas (barras huecas) se pegan a las
-        probabilidades teóricas: la ley de los grandes números, en vivo.</span></li>
-      <li>Lee en el lector la suma de probabilidades.
-        <span class="obs">Siempre 1.000: el softmax reparte toda la probabilidad entre los
-        12 tokens, no inventa ni pierde masa.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿dónde está "guardada" la
-        respuesta del LLM antes de pulsar muestrear?</summary><div class="ans">En ningún
-        sitio. Antes de muestrear solo existe la distribución p<sub>&theta;</sub>(&middot;|prefijo):
-        12 números que suman 1. La "respuesta" nace al tirar el dado. Por eso dos llamadas
-        idénticas pueden dar textos distintos, y por eso la slide siguiente (temperatura)
-        puede hacer al modelo más o menos atrevido sin tocar ni un peso de la red: solo
-        deforma estos 12 números antes de tirar el dado.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Un LLM de juguete con vocabulario de 12 tokens de
-      negocio (churn telco: cliente, contrato, precio, cancela, renueva&hellip;). Para cada
-      prefijo he fijado el vector de logits z = W<sup>O</sup>h<sub>t</sub> que produciría el
-      Transformer; el JS aplica el softmax de la Ec. (1) de verdad y pinta arriba la
-      distribución resultante. Abajo, las frecuencias con que de verdad han salido los
-      tokens al pulsar "muestrear" (el dado usa <i>mulberry32</i>, reproducible).</p>
-    <p><span class="hd">Juega.</span> Un LLM real hace exactamente esto con
-      |&#119985;| &asymp; 50&thinsp;000 subwords y un h<sub>t</sub> de miles de dimensiones,
-      una vez por token generado: una respuesta de 500 tokens son 500 tiradas de este dado,
-      cada una condicionada a todo lo anterior.</p>
-    <p><span class="hd">Mensaje.</span> "Predecir el próximo token" suena humilde, pero
-      obliga al modelo a aprender gramática, hechos y razonamiento: todo lo que ayude a
-      acertar la siguiente palabra de internet. La "creatividad" que verás en las dos slides
-      siguientes es solo cómo de cargado está el dado.</p>
-    <p class="miniglos"><b>Términos.</b> <b>token</b>: unidad mínima de texto (&asymp; trozo
-      de palabra). <b>logit</b>: puntuación real previa al softmax, una por token.
-      <b>softmax</b>: exponenciar y normalizar; convierte puntuaciones en probabilidades.
-      <b>x<sub>1:t</sub></b>: el prefijo, todo el texto visible hasta el paso t.</p>
+
+    <div class="readout" id="ro"></div>
+
+    <p><span class="hd">Lee así.</span> Baja T hacia 0.1: casi toda la probabilidad
+    se concentra en la palabra top (muestreo casi <b>greedy</b>). Sube T hacia 2:
+    las barras se aplanan y el bot puede elegir palabras raras. El
+    <b>top-k</b> corta a las k candidatas más probables y renormaliza.</p>
+
+    <div class="miniglos">
+      <b>z<sub>i</sub></b> logit: puntuación bruta de cada palabra. <b>T</b>
+      temperatura: divide los logits antes de exponenciar. <b>p<sub>i</sub></b>
+      probabilidad final; siempre suma 1.
+    </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 1 : temperatura ============ -->
+<!-- ============ SLIDE 2: cierre ============ -->
 <section class="slide" id="s1">
   <div class="figcol">
-    <canvas id="cv1a" data-aspect="1.95"></canvas>
-    <canvas id="cv1b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">p<sub>&tau;</sub>(x | x<sub>1:t</sub>) = softmax<big>(</big><span class="frac"><span class="num">logits(x)</span><span class="den">&tau;</span></span><big>)</big>&nbsp;&nbsp;&hArr;&nbsp;&nbsp;p<sub>i</sub> &prop; e<sup>z<sub>i</sub>/&tau;</sup><span class="eqn">(Ec. 3)</span></div>
-      <div class="eqread">la <b>temperatura</b> &tau; divide todos los logits antes del
-        softmax. Con &tau;&lt;1 las diferencias entre logits se agrandan y el token líder
-        acapara la probabilidad (&tau;&rarr;0 = greedy, determinista); con &tau;&gt;1 se
-        encogen y la distribución se aplana (&tau;&rarr;&infin; = uniforme, 1/12 cada uno).
-        Los logits no cambian: solo su reparto.</div>
-      <div class="eq">H(p) = &minus;<big>&Sigma;</big><sub>i</sub>&nbsp;p<sub>i</sub>&thinsp;log<sub>2</sub>&thinsp;p<sub>i</sub>&nbsp;&nbsp;&nbsp;(bits),&nbsp;&nbsp;&nbsp; perplejidad = 2<sup>H</sup></div>
-      <div class="eqread">la <b>entropía</b> mide la incertidumbre del dado: 0 bits si un
-        token tiene probabilidad 1; log<sub>2</sub>12 &asymp; 3.58 bits si los 12 son
-        equiprobables. La perplejidad 2<sup>H</sup> se lee como "número efectivo de tokens
-        entre los que duda el modelo".</div>
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">p<sub>i</sub> = exp( z<sub>i</sub> / T ) / &Sigma;<sub>j</sub> exp( z<sub>j</sub> / T )</div>
     </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
   </div>
   <div class="txtcol">
-    <div class="ctrlbox">
-      <label>temperatura &tau; = <b id="r1t"></b></label>
-      <input type="range" id="sl1t" min="0.1" max="2" step="0.01" value="0.7">
-      <button id="bt1g">generar 12 tokens (misma semilla)</button>
-      <button id="bt1n">otra semilla</button>
-    </div>
-    <div class="readout" id="ro1"></div>
-    <div class="genout" id="ge1"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Baja &tau; a 0.1 mirando las barras. <span class="obs">El token líder se come
-        casi toda la probabilidad y la entropía cae hacia 0 bits: dado casi seguro.</span></li>
-      <li>Sube &tau; a 2. <span class="obs">Las barras se igualan y la entropía sube hacia
-        los 3.58 bits del dado justo de 12 caras: el modelo "duda de todo".</span></li>
-      <li>Con &tau; = 0.2, pulsa "generar 12 tokens" tres veces seguidas sin cambiar la
-        semilla. <span class="obs">Salen los mismos tokens, dominados por el líder: misma
-        semilla + dado afilado = texto reproducible y monótono.</span></li>
-      <li>Sube a &tau; = 1.5 y vuelve a generar tres veces con la misma semilla.
-        <span class="obs">La secuencia cambia de carácter: los mismos números aleatorios
-        ahora caen en tokens distintos porque la distribución es plana. La diversidad
-        viene de &tau;, no de la suerte.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué &tau; no cambia
-        nunca el ORDEN de los tokens?</summary><div class="ans">Porque dividir por
-        &tau;&gt;0 es una transformación monótona de los logits: si z<sub>i</sub> &gt;
-        z<sub>j</sub>, entonces z<sub>i</sub>/&tau; &gt; z<sub>j</sub>/&tau; y, como la
-        exponencial es creciente, p<sub>i</sub> &gt; p<sub>j</sub> para cualquier &tau;.
-        La temperatura redistribuye probabilidad entre los mismos candidatos en el mismo
-        orden; jamás hace al segundo más probable que al primero. Por eso "bajar la
-        temperatura" nunca puede corregir un modelo que pone el token equivocado en
-        cabeza.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Mismos 12 tokens y mismos logits que la slide
-      anterior (prefijo "Si subimos el precio, la demanda&hellip;"). El slider de &tau;
-      alimenta la Ec. (3) tal cual: el JS divide los logits por &tau;, aplica softmax y
-      pinta las barras; la curva de abajo es la entropía H(&tau;) calculada en una rejilla
-      de temperaturas, con el punto dorado en tu &tau; actual.</p>
-    <p><span class="hd">Juega.</span> El botón "generar 12 tokens" tira el dado 12 veces
-      <i>con la misma semilla</i> (mulberry32): así la única diferencia entre corridas es
-      &tau;, no el azar. Es el experimento limpio que en producción nunca ves.</p>
-    <p><span class="hd">Mensaje.</span> En producción: extracción de campos de una factura
-      &tau; = 0 (greedy, reproducible); asistente corporativo &tau; &asymp; 0.2&ndash;0.3;
-      redacción &tau; &asymp; 0.7; brainstorming de campañas &tau; &asymp; 0.9&ndash;1.1.
-      Cualquier respuesta crítica de negocio: &tau; &le; 0.3.</p>
-    <p class="miniglos"><b>Términos.</b> <b>greedy</b>: elegir siempre el token más
-      probable (&tau;&rarr;0). <b>entropía H</b>: incertidumbre media del dado, en bits.
-      <b>perplejidad</b>: 2<sup>H</sup>, nº efectivo de opciones. <b>semilla</b>: estado
-      inicial del generador pseudoaleatorio; fijarla hace el muestreo reproducible.</p>
+    <p><span class="hd">La idea.</span> Un LLM no escupe texto de golpe: predice
+    <b>una palabra cada vez</b>, la añade al contexto y vuelve a predecir. En cada
+    paso el softmax con temperatura convierte los logits en probabilidades y de
+    ahí se <b>muestrea</b> el siguiente token.</p>
+    <p><span class="hd">Negocio.</span> T es una palanca de producto. Para
+    respuestas de soporte (importes, políticas, condiciones) conviene T baja:
+    consistente y sin sorpresas. Para un asistente de marketing o brainstorming,
+    T alta aporta variedad. Ajustarla mal cuesta reputación o clientes aburridos.</p>
+    <p><span class="hd">Y ahora.</span> Como cada token se factura, la longitud y
+    la estrategia de muestreo tienen coste directo. Sobre esta base construiremos
+    top-p (nucleus), penalizaciones por repetición y el prompting del resto del tema.</p>
   </div>
 </section>
 
-<!-- ============ SLIDE 2 : top-k y top-p ============ -->
-<section class="slide" id="s2">
-  <div class="figcol">
-    <canvas id="cv2a" data-aspect="1.95"></canvas>
-    <canvas id="cv2b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">top-k:&nbsp; V<sub>k</sub> = {los k tokens de mayor p},&nbsp;&nbsp; p&#771;<sub>i</sub> = <span class="frac"><span class="num">p<sub>i</sub>&middot;&#120793;[i&isin;V<sub>k</sub>]</span><span class="den">&Sigma;<sub>j&isin;V<sub>k</sub></sub> p<sub>j</sub></span></span></div>
-      <div class="eqread"><b>top-k</b> trunca: ordena los tokens por probabilidad, se queda
-        con los k primeros y <b>renormaliza</b> (divide por la masa superviviente para que
-        vuelva a sumar 1). k es fijo: corta igual de ancho esté la distribución afilada o
-        plana.</div>
-      <div class="eq">top-p:&nbsp; S<sub>p</sub> = el menor conjunto con <big>&Sigma;</big><sub>i&isin;S<sub>p</sub></sub> p<sub>(i)</sub> &ge; p&nbsp;&nbsp;(núcleo),&nbsp; luego renormalizar</div>
-      <div class="eqread"><b>top-p</b> (nucleus) acumula desde el token más probable hacia
-        abajo y corta en cuanto la suma alcanza p: el nº de supervivientes es
-        <b>adaptativo</b> &mdash; pocos si la distribución está concentrada, muchos si está
-        plana. Los APIs suelen traer &tau; = 0.7, top-p = 0.9 por defecto.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>temperatura &tau; = <b id="r2t"></b></label>
-      <input type="range" id="sl2t" min="0.3" max="2" step="0.01" value="1">
-      <label>top-k: conservar k = <b id="r2k"></b> tokens</label>
-      <input type="range" id="sl2k" min="1" max="12" step="1" value="12">
-      <label>top-p: núcleo con masa &ge; p = <b id="r2p"></b></label>
-      <input type="range" id="sl2p" min="0.05" max="1" step="0.01" value="0.9">
-    </div>
-    <div class="readout" id="ro2"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con &tau; = 1 y k = 12, baja p de 1.00 a 0.50 despacio.
-        <span class="obs">Los tokens de cola se tachan uno a uno y los supervivientes
-        crecen al renormalizar: la masa descartada se reparte entre los que quedan.</span></li>
-      <li>Pon p = 1 y baja k de 12 a 1. <span class="obs">Con k = 1 sobrevive solo el
-        líder con p&#771; = 1.000: top-k extremo = greedy, da igual la temperatura.</span></li>
-      <li>Fija p = 0.9 y compara &tau; = 0.4 con &tau; = 1.8 mirando el nº de
-        supervivientes. <span class="obs">Con &tau; baja el núcleo son 1&ndash;2 tokens;
-        con &tau; alta, 8 o más: top-p se adapta a la forma de la distribución, top-k
-        no.</span></li>
-      <li>Activa los dos a la vez: k = 4, p = 0.6. <span class="obs">Sobrevive la
-        intersección (primero corta k, luego p dentro de los k): los filtros se componen,
-        siempre gana el más estricto.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿para qué truncar, si la
-        temperatura ya controla el riesgo?</summary><div class="ans">Porque la temperatura
-        aplana o afila TODA la distribución, pero nunca pone un cero: con &tau; alta, un
-        token absurdo de probabilidad 0.1% sigue pudiendo salir (y en una respuesta de 500
-        tokens, tienes 500 oportunidades de que salga uno). Top-k/top-p ponen probabilidad
-        exactamente 0 en la cola: permiten diversidad entre los candidatos razonables
-        (gracias a &tau;) sin exponerse jamás a los disparates. Por eso en producción se
-        combinan: &tau; da el "tono" y top-p pone la red de seguridad.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Mismos logits del prefijo de demanda. El pipeline del
-      JS es el real de los APIs: logits &rarr; dividir por &tau; &rarr; softmax &rarr;
-      filtro top-k &rarr; filtro top-p sobre lo que quede &rarr; renormalizar. Arriba: las
-      barras grises tenues son la probabilidad antes del filtro en los tokens descartados
-      (con aspa); las doradas, la probabilidad <i>renormalizada</i> de los supervivientes.
-      Abajo: la probabilidad acumulada ordenada de mayor a menor, con la línea de corte de
-      tu p; es la definición visual del núcleo.</p>
-    <p><span class="hd">Juega.</span> El lector te da los dos recuentos (cuántos pasan el
-      top-k, cuántos el top-p), la masa que retenía el núcleo antes de renormalizar y la
-      comprobación &Sigma;p&#771; = 1.000 tras renormalizar.</p>
-    <p><span class="hd">Mensaje.</span> Para un chatbot bancario tipo BBVA querrás
-      &tau; &asymp; 0.3 y top-p &asymp; 0.9: respuestas estables que jamás muestrean la
-      cola; para brainstorming de campañas, &tau; &asymp; 1 y top-p alto. Son dos mandos
-      distintos: forma del dado (&tau;) y qué caras se pegan con cinta (k, p).</p>
-    <p class="miniglos"><b>Términos.</b> <b>truncar</b>: poner probabilidad 0 fuera del
-      conjunto elegido. <b>renormalizar</b>: dividir por la masa superviviente para volver
-      a sumar 1. <b>núcleo (nucleus)</b>: el menor conjunto de tokens que acumula masa
-      &ge; p. <b>p<sub>(i)</sub></b>: probabilidades ordenadas de mayor a menor.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 3 : generación autorregresiva ============ -->
-<section class="slide" id="s3">
-  <div class="figcol">
-    <canvas id="cv3a" data-aspect="1.75"></canvas>
-    <canvas id="cv3b" data-aspect="2.6"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">p(x<sub>1:T</sub>) = <big>&Pi;</big><sub>t=1..T&minus;1</sub>&nbsp;p<sub>&theta;</sub>(x<sub>t+1</sub> | x<sub>1:t</sub>)<span class="eqn">(regla de la cadena)</span></div>
-      <div class="eqread">una frase entera es un producto de condicionales: el modelo nunca
-        "planifica" la frase, solo encadena predicciones del siguiente token. La
-        probabilidad de la frase completa es el producto de las probabilidades de cada
-        elección (por eso frases largas y raras tienen probabilidad minúscula).</div>
-      <div class="eq">bucle: &nbsp;x&#770;<sub>t+1</sub> &sim; p<sub>&tau;,k,p</sub>(&middot; | x<sub>1:t</sub>)&nbsp;&rarr;&nbsp; x<sub>1:t+1</sub> = [x<sub>1:t</sub>, x&#770;<sub>t+1</sub>]&nbsp;&rarr;&nbsp; repetir hasta FIN</div>
-      <div class="eqread">la generación <b>autorregresiva</b>: muestrear con el pipeline
-        &tau;/top-k/top-p de las slides anteriores, <b>concatenar</b> el token al contexto
-        y volver a empezar. Cada token generado condiciona todos los siguientes: un mal
-        token temprano arrastra al resto de la frase.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>temperatura &tau; = <b id="r3t"></b></label>
-      <input type="range" id="sl3t" min="0.1" max="2" step="0.01" value="0.7">
-      <label>top-k = <b id="r3k"></b> &nbsp;&middot;&nbsp; top-p = <b id="r3p"></b></label>
-      <input type="range" id="sl3k" min="1" max="13" step="1" value="13">
-      <input type="range" id="sl3p" min="0.05" max="1" step="0.01" value="0.95">
-      <button id="bt3g">generar frase</button>
-      <button id="bt3m">generar 5 frases</button>
-      <button id="bt3r">reiniciar (semilla 1)</button>
-    </div>
-    <div class="genout" id="ge3"></div>
-    <div class="readout" id="ro3"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con &tau; = 0.1, pulsa "generar 5 frases". <span class="obs">Las cinco son
-        idénticas (la frase modal): dado afilado = generador casi determinista, como un
-        autocompletar.</span></li>
-      <li>Sube a &tau; = 0.7 y genera otras 5. <span class="obs">Frases distintas pero
-        todas gramaticales: la diversidad útil vive en temperaturas moderadas.</span></li>
-      <li>Sube a &tau; = 2 con top-p = 1 y genera 5. <span class="obs">Aparecen
-        incoherencias ("el contrato baja el modelo…"): a temperatura alta el dado visita
-        transiciones de probabilidad ínfima.</span></li>
-      <li>Deja &tau; = 2 pero pon top-p = 0.6. <span class="obs">Las incoherencias casi
-        desaparecen sin perder variedad: el truncamiento poda la cola absurda. Mira en el
-        panel inferior cómo sube la probabilidad media por paso.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué un token malo al
-        principio estropea TODA la frase?</summary><div class="ans">Por la regla de la
-        cadena: el token t entra en el condicionante de todos los posteriores. Si a
-        &tau; alta sale "mañana" justo después de "el cliente", el modelo queda atrapado:
-        debe continuar un prefijo que ya es raro, y todas sus condicionales están ahora
-        evaluadas en una zona del espacio de frases donde tiene poca probabilidad buena
-        que repartir. En los LLM reales es igual: las alucinaciones suelen empezar en UNA
-        mala elección temprana que el resto de la respuesta se ve obligado a
-        justificar.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Un "LLM" mínimo de verdad: 13 estados (palabras o
-      sintagmas de negocio: el cliente, la demanda, renueva, cancela&hellip; y FIN) y una
-      matriz de logits de bigramas Z[i][j] = puntuación de pasar de la palabra i a la j.
-      En cada paso el JS aplica el pipeline completo de las slides anteriores (dividir por
-      &tau;, softmax, top-k, top-p, renormalizar, muestrear con mulberry32) a la fila del
-      estado actual, concatena y repite hasta FIN (máx. 9 tokens). Arriba: la matriz de
-      transición a tu &tau; como heatmap (blanco&rarr;dorado&rarr;sepia = probabilidad
-      creciente). Abajo: para la última frase generada, la probabilidad que tenía el token
-      elegido en cada paso.</p>
-    <p><span class="hd">Lee así.</span> El heatmap es el "modelo"; las frases son
-      muestras de la regla de la cadena. La probabilidad de la frase (producto de las
-      barras de abajo) sale en el lector junto a su log-probabilidad.</p>
-    <p><span class="hd">Mensaje.</span> Esto, escalado de 13 estados a 50&thinsp;000
-      subwords y de bigramas a contextos de 200K tokens, ES un LLM generando la respuesta
-      de tu chatbot: una cadena de dados condicionados. Spotify generando descripciones de
-      playlists o Inditex redactando fichas de producto ajustan exactamente estos tres
-      mandos.</p>
-    <p class="miniglos"><b>Términos.</b> <b>autorregresivo</b>: cada salida se realimenta
-      como entrada. <b>bigrama</b>: par (palabra actual, palabra siguiente); aquí el
-      contexto es solo la última palabra, en un LLM real es todo x<sub>1:t</sub>.
-      <b>frase modal</b>: la de máxima probabilidad, la que produce &tau;&rarr;0.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 4 : tokens y coste ============ -->
-<section class="slide" id="s4">
-  <div class="figcol">
-    <canvas id="cv4a" data-aspect="1.95"></canvas>
-    <canvas id="cv4b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">N<sub>tokens</sub> &asymp; <span class="frac"><span class="num">caracteres</span><span class="den">4</span></span> &asymp; palabras &times; 1.3<span class="eqn">(regla de pulgar)</span></div>
-      <div class="eqread">los LLM no cobran por palabras sino por <b>tokens</b> (subwords).
-        En español/inglés, un token son ~4 caracteres o ~0.75 palabras: dos estimaciones
-        independientes que el lector calcula a la vez para que veas que casi coinciden.</div>
-      <div class="eq">C = <span class="frac"><span class="num">N<sub>in</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>in</sub> + <span class="frac"><span class="num">N<sub>out</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>out</sub>,&nbsp;&nbsp;&nbsp; C<sub>mes</sub> = 30 &middot; R &middot; C<span class="eqn">(Ec. 4)</span></div>
-      <div class="eqread">el coste de una llamada: tokens de entrada y de salida, cada uno a
-        su precio <b>por millón</b> (p<sub>out</sub> suele ser ~5&times; p<sub>in</sub>:
-        generar es más caro que leer). R = peticiones/día. Todo coste de LLM en cloud se
-        reduce a esta ecuación.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>longitud del prompt = <b id="r4c"></b> caracteres</label>
-      <input type="range" id="sl4c" min="200" max="40000" step="100" value="2600">
-      <label>respuesta = <b id="r4o"></b> tokens</label>
-      <input type="range" id="sl4o" min="50" max="2000" step="10" value="600">
-      <label>precio entrada p<sub>in</sub> = <b id="r4pi"></b> $/Mtoken</label>
-      <input type="range" id="sl4pi" min="0.25" max="10" step="0.25" value="3">
-      <label>precio salida p<sub>out</sub> = <b id="r4po"></b> $/Mtoken</label>
-      <input type="range" id="sl4po" min="1" max="30" step="0.5" value="15">
-      <label>peticiones/día R = <b id="r4r"></b></label>
-      <input type="range" id="sl4r" min="1" max="5" step="0.02" value="3">
-    </div>
-    <div class="readout" id="ro4"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Deja los valores por defecto (email comercial de ~2.600 caracteres, Sonnet a
-        3/15 $/M). <span class="obs">Una llamada cuesta ~0.011 $: leer el email son
-        ~650 tokens (0.002 $) y la respuesta de 600 tokens cuesta 0.009 $ — la salida
-        domina aunque sea más corta.</span></li>
-      <li>Sube el prompt a 40.000 caracteres (un informe entero).
-        <span class="obs">La entrada pasa a dominar: con contexto largo, leer es lo que
-        pagas. Esta es la motivación del prompt caching (slide siguiente).</span></li>
-      <li>Sube R a 50.000 peticiones/día con el resto por defecto.
-        <span class="obs">~16.000 $/mes en LLM frente a 4.5 M$/mes del call center humano
-        a 3 $/consulta (línea gris del panel inferior): más de dos órdenes de magnitud,
-        el argumento del caso BBVA.</span></li>
-      <li>Baja p<sub>in</sub>/p<sub>out</sub> a 0.5/2 (un modelo pequeño).
-        <span class="obs">El coste cae ~7&times; sin tocar el tráfico: elegir modelo ES una
-        decisión de coste, no solo de calidad (slide de elección).</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué la salida cuesta
-        ~5 veces más cara por token que la entrada?</summary><div class="ans">Por la
-        slide anterior: la entrada se procesa en paralelo en una sola pasada del
-        Transformer (leer 8.000 tokens es UNA pasada), pero cada token de salida exige una
-        pasada completa nueva del modelo, porque la generación es autorregresiva: token a
-        token, 600 pasadas para 600 tokens. El precio refleja el cómputo: generar es
-        secuencial y caro; leer es paralelo y barato. Por eso pedir respuestas concisas
-        ("responde en 3 frases") es la optimización de coste más barata que existe.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> El caso: un asistente que lee emails comerciales de
-      clientes (churn telco) y redacta la respuesta. El slider de longitud parte de un
-      email real de ~2.600 caracteres; el JS estima N<sub>in</sub> por las dos reglas de
-      pulgar (caracteres/4 y palabras&times;1.3, suponiendo ~5.8 caracteres por palabra
-      con espacios) y aplica la Ec. (4) con tus precios. Arriba: desglose del coste de una
-      llamada (leer vs generar). Abajo: coste mensual frente a peticiones/día en escala
-      log-log, con tu punto en dorado y la referencia del call center humano (3 $/consulta)
-      en gris.</p>
-    <p><span class="hd">Lee así.</span> El slider de R es logarítmico (10 a 100.000
-      peticiones/día). El lector da N<sub>in</sub> por ambas reglas, el coste por llamada
-      desglosado y el coste mensual a 30 días.</p>
-    <p><span class="hd">Mensaje.</span> Con la Ec. (4) y dos reglas de pulgar puedes
-      presupuestar cualquier despliegue LLM en una servilleta antes de hablar con el
-      proveedor. El error de la estimación de tokens (~10%) es despreciable frente al
-      factor 100&times; de la decisión humano vs LLM.</p>
-    <p class="miniglos"><b>Términos.</b> <b>Mtoken</b>: un millón de tokens, la unidad de
-      tarificación. <b>N<sub>in</sub>/N<sub>out</sub></b>: tokens de entrada (prompt
-      completo) y de salida (respuesta). <b>R</b>: volumen, peticiones/día.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 5 : prompt caching ============ -->
-<section class="slide" id="s5">
-  <div class="figcol">
-    <canvas id="cv5a" data-aspect="1.95"></canvas>
-    <canvas id="cv5b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">C<sub>caché</sub> = <span class="frac"><span class="num">N<sub>prefijo</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>cache</sub> + <span class="frac"><span class="num">N<sub>nuevo</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>in</sub> + <span class="frac"><span class="num">N<sub>out</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>out</sub>,&nbsp;&nbsp; p<sub>cache</sub> = 0.30 &times; p<sub>in</sub><span class="eqn">(Ec. 5)</span></div>
-      <div class="eqread">si el <b>prefijo</b> del prompt (instrucciones de sistema +
-        documentos RAG) se repite idéntico entre llamadas, el proveedor lo guarda
-        precomputado y cobra esos tokens a ~30% del precio normal. Solo lo nuevo (la
-        pregunta del usuario) paga tarifa completa. La salida no cambia de precio.</div>
-      <div class="eq">ahorro = 1 &minus; <span class="frac"><span class="num">C<sub>caché</sub></span><span class="den">C<sub>sin</sub></span></span>&nbsp;&nbsp;&rarr;&nbsp;&nbsp;crece con la fracción <span class="frac"><span class="num">N<sub>prefijo</sub></span><span class="den">N<sub>prefijo</sub>+N<sub>nuevo</sub></span></span> y con el peso de la entrada en C</div>
-      <div class="eqread">la <b>llave del caché</b> son los primeros N tokens del prompt:
-        para activarlo hay que poner lo inmutable (sistema, documentos) AL PRINCIPIO y lo
-        variable (la pregunta) al final. Mover una coma del prefijo invalida el caché.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>prefijo repetido (sistema + RAG) = <b id="r5f"></b> tokens</label>
-      <input type="range" id="sl5f" min="500" max="50000" step="250" value="7000">
-      <label>parte nueva (pregunta del usuario) = <b id="r5n"></b> tokens</label>
-      <input type="range" id="sl5n" min="20" max="2000" step="10" value="200">
-      <label>respuesta = <b id="r5o"></b> tokens</label>
-      <input type="range" id="sl5o" min="50" max="2000" step="10" value="800">
-      <label>descuento de caché: p<sub>cache</sub>/p<sub>in</sub> = <b id="r5d"></b></label>
-      <input type="range" id="sl5d" min="0.05" max="1" step="0.01" value="0.30">
-    </div>
-    <div class="readout" id="ro5"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Valores por defecto (prefijo 7.000, pregunta 200, respuesta 800, Sonnet 3/15).
-        <span class="obs">Sin caché ~0.034 $/llamada; con caché ~0.019 $: el ahorro ronda
-        el 44% y sale TODO de la columna de entrada.</span></li>
-      <li>Sube el prefijo a 50.000 tokens (manual de producto entero, estilo asistente
-        interno de Inditex). <span class="obs">El ahorro sube al ~65%: cuanto mayor
-        la parte repetida, más paga el caching.</span></li>
-      <li>Sube la respuesta a 2.000 tokens. <span class="obs">El ahorro relativo baja
-        aunque el descuento sea el mismo: el caché solo actúa sobre la entrada, y ahora la
-        salida domina el coste. Mira la curva inferior desplazarse.</span></li>
-      <li>Mueve el descuento a 0.05 (caché casi gratis) y a 1.00 (sin descuento).
-        <span class="obs">Con 1.00 las dos barras coinciden exactamente: la Ec. (5) se
-        reduce a la Ec. (4). Coherencia interna comprobada.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué puede el proveedor
-        cobrar el prefijo a precio reducido sin perder dinero?</summary><div class="ans">
-        Porque el cómputo caro del prefijo (la pasada del Transformer que construye los
-        estados internos de esos tokens, la "KV cache") ya se hizo en la primera llamada y
-        se guardó en memoria. En las llamadas siguientes el modelo no relee el prefijo:
-        carga los estados guardados y solo computa los tokens nuevos. El 30% que cobras
-        cubre el almacenamiento y la carga, no la inferencia. Es la misma idea que
-        precomputar un índice en una base de datos: pagas una vez el trabajo y lo
-        amortizas en cada consulta.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Asistente corporativo con base de contexto estable:
-      el mismo system prompt y los mismos documentos en cada llamada, solo cambia la
-      pregunta. El JS calcula C<sub>sin</sub> con la Ec. (4) y C<sub>caché</sub> con la
-      Ec. (5) y los compara. Arriba: las dos barras apiladas (prefijo / pregunta /
-      respuesta), con el tramo de prefijo encogido por el descuento. Abajo: el ahorro (%)
-      en función del tamaño del prefijo, con tu configuración marcada en dorado.</p>
-    <p><span class="hd">Lee así.</span> El lector da los dos costes por llamada, el ahorro
-      relativo y el ahorro mensual a 1.000 llamadas/día: con la configuración por defecto,
-      unos 440 $/mes que aparecen solos por ordenar bien el prompt.</p>
-    <p><span class="hd">Mensaje.</span> Caching, long context y memoria persistente son
-      las tres palancas que bajan 5&ndash;10&times; el coste real de un asistente en
-      producción. La primera es gratis: basta con poner lo inmutable al principio del
-      contexto. Es ingeniería de orden, no de modelos.</p>
-    <p class="miniglos"><b>Términos.</b> <b>prefijo</b>: tramo inicial e inmutable del
-      prompt. <b>cache key</b>: los primeros N tokens; cualquier cambio la invalida.
-      <b>KV cache</b>: los estados internos precomputados que el proveedor guarda.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 6 : ventana de contexto ============ -->
-<section class="slide" id="s6">
-  <div class="figcol">
-    <canvas id="cv6a" data-aspect="2.6"></canvas>
-    <canvas id="cv6b" data-aspect="2.2"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">m&aacute;x&nbsp;&#120124;[calidad]&nbsp;&nbsp;s.a.&nbsp;&nbsp;<big>&Sigma;</big><sub>i=1..5</sub>&nbsp;t<sub>i</sub> &le; B<span class="eqn">(Ec. 6)</span></div>
-      <div class="eqread">el problema central del <b>context engineering</b>: repartir el
-        presupuesto de tokens <b>B</b> (la ventana de contexto del modelo) entre las cinco
-        piezas t<sub>1</sub>&hellip;t<sub>5</sub>: instrucciones de sistema, memoria
-        persistente, documentos RAG, histórico de conversación y pregunta actual. Es un
-        problema de asignación con restricción, no de redacción.</div>
-      <div class="eq">histórico resumido:&nbsp; t<sub>4</sub> &rarr; &rho;&middot;t<sub>4</sub>&nbsp;(&rho; &asymp; 0.25),&nbsp;&nbsp;&nbsp; coste:&nbsp; C = <span class="frac"><span class="num">&Sigma;t<sub>i</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>in</sub> + <span class="frac"><span class="num">N<sub>out</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>out</sub></div>
-      <div class="eqread">las dos estrategias cuando desborda: <b>truncar</b> (tirar los
-        turnos más antiguos: gratis pero pierde información) o <b>resumir</b> (comprimir el
-        histórico ~4&times; con una llamada extra al modelo). Y como el coste es lineal en
-        la entrada, cada token de contexto que no aporta calidad es dinero quemado en cada
-        llamada.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>ventana del modelo B = <b id="r6B"></b> tokens</label>
-      <input type="range" id="sl6B" min="0" max="3" step="1" value="1">
-      <label>instrucciones de sistema = <b id="r6s"></b> tokens</label>
-      <input type="range" id="sl6s" min="100" max="5000" step="50" value="1200">
-      <label>memoria persistente = <b id="r6m"></b> tokens</label>
-      <input type="range" id="sl6m" min="0" max="8000" step="100" value="1500">
-      <label>documentos RAG = <b id="r6g"></b> tokens</label>
-      <input type="range" id="sl6g" min="0" max="60000" step="500" value="6000">
-      <label>histórico = <b id="r6h"></b> tokens</label>
-      <input type="range" id="sl6h" min="0" max="60000" step="500" value="4000">
-      <label>pregunta actual = <b id="r6q"></b> tokens</label>
-      <input type="range" id="sl6q" min="20" max="2000" step="20" value="150">
-      <label><input type="checkbox" id="ck6"> resumir histórico (&times;0.25, cuesta una
-        llamada extra de resumen)</label>
-    </div>
-    <div class="readout" id="ro6"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con B = 32K, sube el RAG a 25.000 y el histórico a 10.000.
-        <span class="obs">La barra desborda y aparece el badge rojo: la llamada fallaría
-        (o el proveedor truncaría por ti, en silencio, lo último que añadiste).</span></li>
-      <li>Activa "resumir histórico". <span class="obs">El tramo de histórico se encoge
-        4&times;, vuelve el badge verde y el coste por llamada baja: comprimes lo barato
-        de comprimir.</span></li>
-      <li>Cambia B a 200K con la misma carga. <span class="obs">Sobra ventana… pero mira
-        el coste por llamada en el panel inferior: la ventana grande no abarata nada,
-        sigue cobrándose cada token. Long context no es contexto gratis.</span></li>
-      <li>Deja solo sistema + pregunta (RAG, memoria e histórico a 0).
-        <span class="obs">Ocupación mínima y coste mínimo: todo lo demás es una decisión
-        de ingeniería que debe justificar su calidad marginal (Ec. 6).</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué truncar el
-        histórico por el principio y no por el final?</summary><div class="ans">Porque la
-        información más reciente es la que condiciona la respuesta: la pregunta actual
-        suele referirse a los últimos turnos ("¿y eso cuánto costaría?"). Truncar por el
-        final rompería la conversación en curso; truncar por el principio pierde contexto
-        antiguo, normalmente ya agotado. Cuando lo antiguo SÍ importa (el cliente dio su
-        número de póliza en el turno 2), truncar es destructivo: ahí entra resumir, o
-        mejor, mover ese dato a memoria persistente, que es exactamente para lo que
-        existe la pieza t<sub>2</sub>.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Asistente bancario tipo BBVA con RAG sobre la
-      normativa interna. La barra superior es la ventana del modelo B llenándose con las
-      cinco piezas del contexto (colores por pieza); si &Sigma;t<sub>i</sub> &gt; B,
-      desborda y el badge avisa. El selector de B recorre cuatro modelos reales: 8K
-      (modelo local pequeño), 32K, 200K (Claude Sonnet), 1M (Gemini Pro). Abajo: el coste
-      por llamada de la Ec. (4) para tu reparto actual, con y sin resumen, a precios
-      3/15 $/M y respuesta fija de 600 tokens.</p>
-    <p><span class="hd">Lee así.</span> El lector da la ocupación (tokens y %), el badge
-      cabe/desborda y el coste por llamada. El resumen añade el coste de la llamada de
-      resumen (los t<sub>4</sub> tokens originales leídos una vez a p<sub>in</sub> más
-      su salida), amortizado: aún así casi siempre compensa si reutilizas el resumen
-      varios turnos.</p>
-    <p><span class="hd">Mensaje.</span> Prompt engineering era buscar la frase mágica;
-      context engineering es ESTO: decidir qué entra, en qué orden y a qué precio. El 80%
-      de la mejora de un asistente viene de qué contexto pasas, no de cómo lo redactas.
-      Es la habilidad central de los Temas 5 (agentes) y 6 (RAG).</p>
-    <p class="miniglos"><b>Términos.</b> <b>ventana de contexto B</b>: máximo de tokens
-      que el modelo acepta por llamada. <b>RAG</b>: recuperar documentos relevantes y
-      pegarlos al contexto. <b>memoria persistente</b>: lo aprendido en sesiones previas,
-      guardado en disco y recuperado selectivamente. <b>truncar/resumir</b>: las dos
-      salidas al desbordamiento.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 7 : lost in the middle ============ -->
-<section class="slide" id="s7">
-  <div class="figcol">
-    <canvas id="cv7a" data-aspect="1.95"></canvas>
-    <canvas id="cv7b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">acc(s) = a &minus; d<sub>ef</sub>&middot;4s(1&minus;s) &minus; b&middot;s,&nbsp;&nbsp;&nbsp; s &isin; [0,1]<span class="eqn">(modelo en U)</span></div>
-      <div class="eqread">probabilidad de que el modelo recupere un dato colocado en la
-        posición relativa <b>s</b> del contexto (0 = principio, 1 = final). El término
-        <b>4s(1&minus;s)</b> vale 0 en los extremos y 1 en el centro: resta hasta
-        <b>d<sub>ef</sub></b> puntos justo en mitad del contexto. El término b&middot;s
-        inclina la U (algunos modelos recuerdan mejor el principio que el final). Es un
-        modelo didáctico calibrado sobre el fenómeno medido por Liu et al. (2023),
-        "Lost in the Middle".</div>
-      <div class="eq">d<sub>ef</sub> = d &middot; <span class="frac"><span class="num">log<sub>10</sub>(N/2000)</span><span class="den">log<sub>10</sub>(100)</span></span>&nbsp;&nbsp;(0 si N &le; 2000)</div>
-      <div class="eqread">la profundidad del valle <b>crece con la longitud del
-        contexto N</b>: con 2K tokens apenas hay valle; con 200K, el centro es una zona
-        ciega. Meter más contexto no es gratis ni en coste (slide anterior) ni en
-        recuperación.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>posición del dato crítico s = <b id="r7s"></b></label>
-      <input type="range" id="sl7s" min="0" max="1" step="0.01" value="0.5">
-      <label>longitud del contexto N = <b id="r7N"></b> tokens</label>
-      <input type="range" id="sl7N" min="3.4" max="5.3" step="0.02" value="4.9">
-      <label>profundidad máxima del valle d = <b id="r7d"></b></label>
-      <input type="range" id="sl7d" min="0" max="0.6" step="0.01" value="0.35">
-      <label>sesgo hacia el principio b = <b id="r7b"></b></label>
-      <input type="range" id="sl7b" min="-0.2" max="0.2" step="0.01" value="0.05">
-      <button id="bt7">simular 200 consultas en s</button>
-    </div>
-    <div class="readout" id="ro7"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con los valores por defecto, arrastra s de 0 a 1 mirando el punto dorado.
-        <span class="obs">La recuperación cae del ~96% al ~65% en el centro y se recupera
-        al ~91% al final: la U canónica de "lost in the middle".</span></li>
-      <li>Baja N a 3.000 tokens. <span class="obs">El valle casi desaparece: en contextos
-        cortos da igual dónde pongas el dato. El problema es de contexto largo.</span></li>
-      <li>Sube N a 200K y pon s = 0.5. <span class="obs">La recuperación en el centro se
-        hunde: el contrato que pegaste "en medio" de los 40 documentos RAG es
-        funcionalmente invisible.</span></li>
-      <li>Pulsa "simular 200 consultas" en s = 0.5 y luego en s = 0.95.
-        <span class="obs">Los aciertos empíricos (Bernoulli con mulberry32) confirman la
-        curva: ~65% frente a ~86%. La curva no es decorativa, es la probabilidad que
-        gobierna la simulación.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿qué orden de contexto se
-        deduce de la U para un asistente RAG?</summary><div class="ans">Lo inmutable y
-        crítico (instrucciones de sistema, formato de salida) al PRINCIPIO, que además
-        activa el prompt caching; la pregunta del usuario y el documento más relevante al
-        FINAL, pegados; y el relleno (documentos secundarios, histórico antiguo) en el
-        medio, que es donde menos se lee. Y la lección de fondo: si un dato es crítico,
-        no lo entierres entre 30 documentos "por si acaso" — recorta el RAG a los 3
-        relevantes. Menos contexto mejor colocado bate a más contexto, en calidad Y en
-        coste.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> El experimento clásico: escondo un dato (la
-      cláusula de permanencia del contrato del cliente) en la posición s de un contexto de
-      N tokens y pregunto por él. Arriba: la curva acc(s) del modelo en U con tus
-      parámetros, el punto dorado en tu s y las zonas seguras sombreadas en los extremos.
-      Abajo: barras de aciertos/fallos de la última simulación de 200 consultas
-      independientes, cada una un Bernoulli(acc(s)) con mulberry32.</p>
-    <p><span class="hd">Lee así.</span> El slider de N es logarítmico (2.5K a 200K). El
-      lector da acc(s), la mejor y la peor posición de la curva actual, y el resultado
-      empírico de la última simulación con su error muestral.</p>
-    <p><span class="hd">Mensaje.</span> La ventana de contexto no es memoria RAM perfecta:
-      es un foco con penumbra en el centro. Pon lo importante al principio o al final;
-      el medio es para lo prescindible. Este hecho, medido y reproducible, es la mitad
-      del oficio de context engineering.</p>
-    <p class="miniglos"><b>Términos.</b> <b>s</b>: posición relativa del dato en el
-      contexto. <b>acc(s)</b>: probabilidad de recuperación. <b>lost in the middle</b>:
-      degradación de recuperación en posiciones centrales de contextos largos.
-      <b>needle in a haystack</b>: el benchmark estándar que mide exactamente esto.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 8 : elección de modelo ============ -->
-<section class="slide" id="s8">
-  <div class="figcol">
-    <canvas id="cv8a" data-aspect="1.75"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">C<sub>mes</sub>(m) = 30&thinsp;R&thinsp;<big>(</big><span class="frac"><span class="num">N<sub>in</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>in</sub><sup>(m)</sup> + <span class="frac"><span class="num">N<sub>out</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>out</sub><sup>(m)</sup><big>)</big> + fijo<sup>(m)</sup></div>
-      <div class="eqread">el coste mensual de cada modelo m con tu tráfico: la Ec. (4)
-        escalada a 30 días y R peticiones/día, más el coste fijo (el modelo local no cobra
-        por token pero paga servidor GPU ~300 $/mes).</div>
-      <div class="eq">elegir:&nbsp; m* = arg&thinsp;m&aacute;x<sub>m</sub>&nbsp;calidad(m)&nbsp;&nbsp;s.a.&nbsp;&nbsp;C<sub>mes</sub>(m) &le; presupuesto,&nbsp; lat(m) &le; lat<sub>m&aacute;x</sub>,&nbsp; N<sub>in</sub> &le; ctx(m)</div>
-      <div class="eqread">la elección de modelo es una <b>optimización con
-        restricciones</b>, no un ranking universal: máxima calidad entre los que caben en
-        presupuesto, latencia y ventana. Cambia una restricción y cambia el ganador; no
-        existe "el mejor modelo", existe el mejor modelo PARA tu caso.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>presupuesto = <b id="r8b"></b> $/mes</label>
-      <input type="range" id="sl8b" min="1.7" max="4.3" step="0.02" value="3">
-      <label>latencia máxima tolerable = <b id="r8l"></b> s</label>
-      <input type="range" id="sl8l" min="0.5" max="8" step="0.1" value="4">
-      <label>peticiones/día R = <b id="r8r"></b></label>
-      <input type="range" id="sl8r" min="2" max="4.7" step="0.02" value="3">
-      <label>tokens de entrada por petición N<sub>in</sub> = <b id="r8n"></b></label>
-      <input type="range" id="sl8n" min="500" max="40000" step="250" value="4000">
-    </div>
-    <div class="readout" id="ro8"></div>
-    <table class="live" id="tb8"><thead><tr>
-      <th>modelo</th><th>calidad</th><th>$/M in·out</th><th>lat</th><th>ctx</th>
-      <th>$/mes</th><th>apto</th></tr></thead><tbody></tbody></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con los valores por defecto, mira quién gana. <span class="obs">Vega M: el
-        equilibrado. El frontier no cabe en presupuesto y el barato pierde en
-        calidad.</span></li>
-      <li>Sube el presupuesto a 10.000 $/mes y la latencia tolerable a 8 s.
-        <span class="obs">Gana Cumbre 1 (frontier): cuando el dinero y la espera no
-        aprietan, la calidad manda.</span></li>
-      <li>Baja la latencia máxima a 1 s. <span class="obs">Solo sobrevive Brisa S: en un
-        autocompletar o un chatbot de alta frecuencia, la latencia elimina a los grandes
-        antes de mirar el precio.</span></li>
-      <li>Sube R a 50.000 peticiones/día con presupuesto 2.000 $.
-        <span class="obs">El local 8B se vuelve competitivo: su coste fijo de 300 $/mes
-        no crece con el tráfico, mientras los de cloud escalan linealmente. El volumen
-        cambia al ganador.</span></li>
-      <li>Sube N<sub>in</sub> a 40.000 tokens. <span class="obs">El local queda
-        descalificado por ventana (32K): la restricción de contexto también
-        veta.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué el modelo local
-        gana con volumen alto aunque su calidad sea la peor?</summary><div class="ans">
-        Porque su estructura de coste es distinta: coste fijo (servidor) + coste marginal
-        ~0 por petición, frente al cloud, que es coste marginal puro. Con R pequeño el
-        fijo de 300 $/mes no se amortiza y el cloud barato gana; con R enorme, el coste
-        cloud crece linealmente hasta reventar cualquier presupuesto y el local se queda
-        solo dentro de la restricción. Es la regla práctica del curso: borrador y volumen
-        masivo en local, producción crítica en cloud — y la frontera exacta entre ambos
-        la dibuja esta ecuación, no la intuición.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> Cinco modelos sintéticos pero verosímiles (precios
-      estilo 2026): Cumbre 1 (frontier, calidad 96, 5/25 $/M, 6 s), Vega M (equilibrado,
-      88, 3/15, 2 s), Brisa S (barato, 76, 0.5/2, 0.8 s), Gigas XL (90, 2.5/10, 3.5 s,
-      ventana 1M) y Local 8B (64, 0/0 por token + 300 $/mes fijos, 5 s, ventana 32K).
-      Respuesta fija de 500 tokens. El canvas pinta la frontera calidad-coste: cada modelo
-      es un punto (coste mensual con TU tráfico, en x logarítmica; calidad en y), la línea
-      vertical es tu presupuesto, los descalificados por latencia o ventana van en gris
-      tachado y el ganador lleva el anillo dorado.</p>
-    <p><span class="hd">Lee así.</span> Los sliders de presupuesto y R son logarítmicos.
-      La tabla recalcula el coste mensual de cada modelo con tu tráfico y marca apto/no
-      con el motivo; la fila dorada es m*.</p>
-    <p><span class="hd">Mensaje.</span> La elección de modelo es siempre coste &times;
-      latencia &times; calidad &times; privacidad (la cuarta no está en el canvas: datos
-      sensibles pueden vetar el cloud entero, como en banca o sanidad, y entonces el local
-      gana por descarte). Presenta siempre la decisión como esta optimización: convence a
-      un comité de dirección mucho más que "este modelo me gusta".</p>
-    <p class="miniglos"><b>Términos.</b> <b>frontier</b>: el modelo más capaz del momento,
-      al precio más alto. <b>latencia</b>: segundos hasta completar la respuesta.
-      <b>coste fijo vs marginal</b>: servidor propio vs pago por token; el volumen decide
-      cuál domina. <b>m*</b>: el modelo óptimo bajo tus restricciones.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 9 : glosario ============ -->
-<section class="slide" id="s9">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="glosgrid" id="glos"></div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 10 : síntesis ============ -->
-<section class="slide" id="s10">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="pipe">
-      <div class="pipebox"><div><div class="pname">1 &mdash; Next-token prediction</div>
-          <div class="pmap">Slides: Next token &middot; Generación</div></div>
-        <div class="pq">"Un LLM es p<sub>&theta;</sub>(x<sub>t+1</sub>|x<sub>1:t</sub>) = softmax(W<sup>O</sup>h<sub>t</sub>), aplicado miles de millones de veces. La respuesta de tu chatbot es una cadena de dados condicionados: cada token muestreado se concatena y condiciona al siguiente (regla de la cadena)."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">2 &mdash; Sampling: &tau;, top-k, top-p</div>
-          <div class="pmap">Slides: Temperatura &middot; Top-k/p</div></div>
-        <div class="pq">"La 'creatividad' es geometría del dado: &tau; afila o aplana (p<sub>i</sub> &prop; e<sup>z<sub>i</sub>/&tau;</sup>, la entropía lo mide), top-k y top-p tachan la cola y renormalizan. Código y extracción a &tau; &le; 0.2; brainstorming a &tau; &asymp; 0.9 con top-p de red de seguridad."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">3 &mdash; Context engineering</div>
-          <div class="pmap">Slides: Contexto &middot; Posición</div></div>
-        <div class="pq">"Cinco piezas (sistema, memoria, RAG, histórico, pregunta) compitiendo por B tokens: máx &#120124;[calidad] s.a. &Sigma;t<sub>i</sub> &le; B. La ventana tiene penumbra en el centro (lost in the middle): lo crítico al principio o al final, lo inmutable delante para activar el caché."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">4 &mdash; Coste y elección de modelo</div>
-          <div class="pmap">Slides: Coste &middot; Caching &middot; Elección</div></div>
-        <div class="pq">"Todo coste es C = N<sub>in</sub>p<sub>in</sub>/10<sup>6</sup> + N<sub>out</sub>p<sub>out</sub>/10<sup>6</sup>; el caching cobra el prefijo repetido al 30% y el modelo se elige como arg máx calidad s.a. presupuesto, latencia y ventana. Borrador en local, producción en cloud, y la frontera la dibuja la ecuación, no la moda."</div></div>
-    </div>
-    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
-      Hoy has abierto la caja: un LLM es un predictor de próximo token cuyo
-      comportamiento gobiernas con tres mandos de sampling, cuyo conocimiento por llamada
-      gobiernas repartiendo la ventana de contexto, y cuyo coste gobiernas con una
-      ecuación lineal que cabe en una servilleta. Con eso ya puedes presupuestar,
-      configurar y defender ante dirección cualquier despliegue de LLM.</p>
-  </div>
-</section>
-
-<div id="footerL">Garrido-Merch&aacute;n &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; D&iacute;a 11 &middot; LLMs y context engineering</div>
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
 <div id="footer"></div>
-<div id="arrows">
-  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
-</div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 11 · Muestreo en LLMs</div>
 
 <script>
-"use strict";
-/* ================= PALETTE ================= */
-const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
-      MUTE="#8A8A8A", RULE="#D9C28A";
-
-/* ================= MATH CORE (DOM-free) ================= */
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
-  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
-  return ((t^t>>>14)>>>0)/4294967296;};}
-function softmax(z,tau){const t=tau||1;
-  const m=Math.max(...z.map(v=>v/t));
-  const e=z.map(v=>Math.exp(v/t-m));
-  const s=e.reduce((a,b)=>a+b,0);
-  return e.map(v=>v/s);}
-function entropyBits(p){let H=0;
-  for(const q of p)if(q>0)H-=q*Math.log2(q);return H;}
-/* top-k + top-p pipeline: returns {keep:bool[], pf:renormalized[], kSet, pSet, massKept} */
-function filterTopKP(p,k,topp){
-  const n=p.length;
-  const ord=p.map((v,i)=>i).sort((a,b)=>p[b]-p[a]);
-  const inK=new Array(n).fill(false);
-  for(let r=0;r<Math.min(k,n);r++)inK[ord[r]]=true;
-  /* nucleus over the k survivors, in descending order */
-  const inS=new Array(n).fill(false);
-  let acc=0;
-  for(const i of ord){if(!inK[i])continue;
-    inS[i]=true;acc+=p[i];
-    if(acc>=topp-1e-12)break;}
-  let mass=0;for(let i=0;i<n;i++)if(inS[i])mass+=p[i];
-  const pf=p.map((v,i)=>inS[i]?v/mass:0);
-  let nK=0,nS=0;for(let i=0;i<n;i++){if(inK[i])nK++;if(inS[i])nS++;}
-  return {keep:inS,pf:pf,nK:nK,nS:nS,massKept:mass};
+const SECTIONS=["Muestreo","Para llevar"];
+const TITLES=["La temperatura decide si el chatbot es prudente o creativo al elegir palabra.",
+              "El LLM genera palabra a palabra; el softmax con temperatura gobierna cada paso."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');
+  ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
 }
-function sampleCat(p,rng){const u=rng();let acc=0;
-  for(let i=0;i<p.length;i++){acc+=p[i];if(u<acc)return i;}
-  return p.length-1;}
-function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
-function fmtInt(x){return Math.round(x).toLocaleString("es-ES");}
-function fmtUSD(x){
-  if(x>=1000)return Math.round(x).toLocaleString("es-ES")+" $";
-  if(x>=1)return x.toFixed(2)+" $";
-  return x.toFixed(4)+" $";}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
 
-/* shared toy vocabulary and logits (slides 0-2) */
-const VOC=["cliente","contrato","precio","oferta","churn","sube","baja",
-           "renueva","cancela","mañana","descuento","."];
-const PREFIXES=[
- "El cliente descontento con la tarifa…",
- "Si subimos el precio, la demanda…",
- "Para retener al cliente ofrecemos un…",
- "El modelo de churn dice que el cliente…"];
-const LOGITS=[
- [-1.0,0.2,-0.5,-0.3,1.2,-1.5,0.4,0.8,2.1,-0.8,0.0,-2.0],
- [-1.2,-0.8,0.0,-0.6,-0.4,0.3,2.4,-1.5,0.6,0.9,-0.7,-2.0],
- [-0.8,0.7,0.4,1.8,-1.5,-2.0,-1.8,-0.5,-1.2,-0.9,2.6,-2.2],
- [0.3,-0.4,-0.9,-0.6,0.9,-1.4,-0.2,1.3,2.0,-0.5,0.2,-1.6]];
+// ---- highlight helper: light up one equation term + its numeric twin ----
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
 
-/* cost helpers */
-function costCall(Nin,Nout,pin,pout){return Nin/1e6*pin+Nout/1e6*pout;}
-function costCached(Npre,Nnew,Nout,pin,pout,disc){
-  return Npre/1e6*(disc*pin)+Nnew/1e6*pin+Nout/1e6*pout;}
-
-/* lost-in-the-middle U model */
-function accU(s,a,deff,b){
-  const v=a-deff*4*s*(1-s)-b*s;
-  return Math.max(0.02,Math.min(0.99,v));}
-function deffOf(d,N){
-  const f=Math.log10(Math.max(N,2000)/2000)/Math.log10(100);
-  return d*Math.max(0,Math.min(1,f));}
-/* ================= END MATH CORE ================= */
-
-/* ================= plotting helpers ================= */
+// ---- canvas helper ----
 function fitCanvas(cv){
   const dpr=window.devicePixelRatio||1;
-  const wCss=cv.parentElement.clientWidth;
-  const asp=parseFloat(cv.dataset.aspect)||1.8;
-  const hCss=wCss/asp;
-  cv.style.height=hCss+"px";
-  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
-  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
-  return {ctx:ctx,W:wCss,H:hCss};
+  const w=cv.clientWidth||cv.width, h=cv.height;
+  cv.width=w*dpr; cv.height=h*dpr;
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
 }
-function axes(ctx,fr,opt){
-  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
-  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
-  ctx.save();
-  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
-  ctx.font="11px Georgia, serif";
-  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
-  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
-  ctx.textAlign="center";ctx.textBaseline="top";
-  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
-    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
-  ctx.textAlign="right";ctx.textBaseline="middle";
-  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
-    ctx.fillText(lb,fr.x0-6,Y(v));});
-  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
-    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
-  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
-    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
-    ctx.fillText(opt.ylab,0,0);ctx.restore();}
-  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
-    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
-  ctx.restore();
-  return {X:X,Y:Y};
+
+// six candidate next-words with fixed logits (higher = more preferred)
+const WORDS=["gracias","claro","perdón","entiendo","disculpe","vaya"];
+const Z=[3.0, 2.4, 1.7, 1.1, 0.6, 0.2];
+
+function upd(){
+  const T=+document.getElementById('T').value;
+  const k=+document.getElementById('k').value;
+  document.getElementById('v_T').textContent=T.toFixed(2);
+  document.getElementById('v_k').textContent=k;
+  document.getElementById('n_T').textContent=T.toFixed(2);
+  document.getElementById('n_k').textContent=k;
+
+  // real softmax with temperature (stabilised)
+  const zmax=Math.max(...Z);
+  const ex=Z.map(z=>Math.exp((z-zmax)/T));
+  const S=ex.reduce((a,b)=>a+b,0);
+  let p=ex.map(v=>v/S);
+
+  // top-k: keep the k highest logits, zero the rest, renormalise
+  const order=[...Z.keys()].sort((a,b)=>Z[b]-Z[a]);
+  const keep=new Set(order.slice(0,k));
+  let ptk=p.map((v,i)=>keep.has(i)?v:0);
+  const s2=ptk.reduce((a,b)=>a+b,0);
+  ptk=ptk.map(v=>v/s2);
+
+  // argmax + entropy (diversity)
+  const topi=order[0];
+  let H=0; ptk.forEach(v=>{if(v>0)H-=v*Math.log2(v);});
+  const sum=ptk.reduce((a,b)=>a+b,0); // == 1, shown as a check
+
+  document.getElementById('n_top').textContent=WORDS[topi];
+  document.getElementById('n_ptop').textContent=ptk[topi].toFixed(2);
+
+  const creative=T>=1.0;
+  document.getElementById('ro').innerHTML=
+    'Palabra más probable: &laquo;<b>'+WORDS[topi]+'</b>&raquo; con p = <b>'+
+    (ptk[topi]*100).toFixed(0)+'%</b>.<br>'+
+    'Diversidad (entropía) = '+H.toFixed(2)+' bits &nbsp;·&nbsp; &Sigma; p<sub>i</sub> = '+
+    sum.toFixed(3)+'.<br>'+
+    '<span class="badge '+(creative?'bad':'ok')+'">'+
+    (creative?'T alta: creativo y arriesgado':'T baja: seguro y repetitivo')+'</span>';
+  drawBars(ptk,topi,keep);
 }
-function polyline(ctx,pts,color,lw,dash){
-  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
-  if(dash)ctx.setLineDash(dash);
-  ctx.beginPath();let first=true;
-  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
-    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
-  ctx.stroke();ctx.restore();
-}
-function rampColor(t){
-  t=Math.max(0,Math.min(1,t));
-  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
-  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
-  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
-}
-/* vertical probability bars over a vocabulary */
-function probBars(ctx,fr,labels,probs,opt){
-  opt=opt||{};
-  const n=labels.length,ymax=opt.ymax||Math.max(0.4,Math.max(...probs)*1.15);
-  const ax=axes(ctx,fr,{xmin:0,xmax:n,ymin:0,ymax:ymax,
-    xticks:[],yticks:opt.yticks||[[0,"0"],[ymax/2,fmtG(ymax/2,2)],[ymax,fmtG(ymax,2)]],
-    ylab:opt.ylab||"probabilidad",title:opt.title||""});
-  const bw=fr.w/n;
+
+function drawBars(p,topi,keep){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=40,my=24, W=w-mx-16, H=h-my-46;
+  const n=WORDS.length, slot=W/n;
+  // baseline
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';ctx.textAlign='left';
+  ctx.fillText('p(palabra)',6,my+10);
   for(let i=0;i<n;i++){
-    const x=fr.x0+i*bw+bw*0.14,w=bw*0.72;
-    const keep=opt.keep?opt.keep[i]:true;
-    ctx.fillStyle=keep?(opt.color||GOLD):"rgba(138,138,138,0.30)";
-    const y=ax.Y(probs[i]);
-    ctx.fillRect(x,y,w,fr.y0+fr.h-y);
-    if(opt.over&&opt.over[i]>0){
-      ctx.strokeStyle=GOLDD;ctx.lineWidth=1.6;
-      const y2=ax.Y(opt.over[i]);
-      ctx.strokeRect(x+1,y2,w-2,fr.y0+fr.h-y2);}
-    if(!keep&&opt.cross){
-      ctx.strokeStyle=MUTE;ctx.lineWidth=1.2;
-      ctx.beginPath();
-      ctx.moveTo(x,fr.y0+fr.h-14);ctx.lineTo(x+w,fr.y0+fr.h-2);
-      ctx.moveTo(x+w,fr.y0+fr.h-14);ctx.lineTo(x,fr.y0+fr.h-2);ctx.stroke();}
-    ctx.save();
-    ctx.fillStyle=keep?INK:MUTE;ctx.font="10px Georgia, serif";
-    ctx.translate(x+w/2+3,fr.y0+fr.h+6);ctx.rotate(0.62);
-    ctx.textAlign="left";ctx.textBaseline="middle";
-    ctx.fillText(labels[i],0,0);ctx.restore();
+    const bw=slot*0.58, x=mx+i*slot+(slot-bw)/2;
+    const barH=p[i]*H, y=my+H-barH;
+    const kept=keep.has(i);
+    if(kept){
+      ctx.fillStyle=(i===topi)?'#B8860B':'#F5EBD3';
+      ctx.strokeStyle=(i===topi)?'#8C6508':'#D9C28A';
+    }else{
+      ctx.fillStyle='#f2f2f2';ctx.strokeStyle='#ddd';
+    }
+    ctx.lineWidth=1.4;
+    ctx.beginPath();ctx.rect(x,y,bw,Math.max(barH,1));ctx.fill();ctx.stroke();
+    // prob value on top
+    ctx.textAlign='center';
+    ctx.fillStyle=kept?((i===topi)?'#8C6508':'#8A8A8A'):'#bbb';
+    ctx.font=(i===topi)?'bold 13px Georgia':'12px Georgia';
+    ctx.fillText((p[i]*100).toFixed(0)+'%',x+bw/2,y-6);
+    // word label
+    ctx.fillStyle=kept?'#1A1A1A':'#bbb';
+    ctx.font=(i===topi)?'bold 14px Georgia':'13px Georgia';
+    ctx.fillText(WORDS[i],x+bw/2,my+H+20);
   }
-  return ax;
+  ctx.textAlign='left';
 }
+updaters[0]=upd;
 
-/* ================= navigation ================= */
-const SECTIONS=["Next token","Temperatura","Top-k/p","Generación","Coste",
-  "Caching","Contexto","Posición","Elección","Glosario","Síntesis"];
-const TITLES=[
- "Un LLM solo hace una cosa: una distribución softmax sobre el siguiente token.",
- "La temperatura afila o aplana el dado sin cambiar nunca el orden de los tokens.",
- "Top-k y top-p tachan la cola de la distribución y reparten su masa entre los supervivientes.",
- "Generar texto es encadenar dados condicionados: la regla de la cadena en acción.",
- "El coste de un LLM es una ecuación lineal en tokens que cabe en una servilleta.",
- "El prompt caching cobra el prefijo repetido al 30%: ordenar el contexto es dinero.",
- "La ventana de contexto es un presupuesto: cinco piezas compiten por B tokens.",
- "El modelo lee peor el centro del contexto: lo crítico va al principio o al final.",
- "No existe el mejor modelo: existe el óptimo bajo tu presupuesto, latencia y ventana.",
- "Glosario: todos los símbolos del día, en una página y en cristiano.",
- "Del softmax al presupuesto: las cuatro ideas del día forman un pipeline de decisión."];
-let cur=0;const N=11;
-const nav=document.getElementById("navstrip");
-SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
-  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
-function go(i){
-  cur=(i+N)%N;
-  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
-  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
-  document.getElementById("slidetitle").textContent=TITLES[cur];
-  document.getElementById("footer").textContent=(cur+1)+" / "+N;
-  window.scrollTo(0,0);
-  if(updaters[cur])updaters[cur](true);
+function drawAuto(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  ctx.textAlign='center';
+  const toks=["Lamento","las","molestias,","le","...","?"];
+  const cy=h*0.42;
+  const bw=88,bh=40,gap=(w-30-toks.length*bw)/(toks.length-1);
+  let x=15;
+  const cx=[];
+  for(let i=0;i<toks.length;i++){
+    const solid=i<toks.length-1;
+    ctx.fillStyle=solid?'#F5EBD3':'#fff';
+    ctx.strokeStyle=solid?'#B8860B':'#D9C28A';
+    ctx.lineWidth=solid?2:1.4;
+    ctx.beginPath();ctx.rect(x,cy-bh/2,bw,bh);ctx.fill();ctx.stroke();
+    ctx.fillStyle=solid?'#1A1A1A':'#8A8A8A';
+    ctx.font='15px Georgia';ctx.fillText(toks[i],x+bw/2,cy+5);
+    cx.push(x+bw/2);
+    x+=bw+gap;
+  }
+  // forward arrows token -> token
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=1.6;
+  for(let i=0;i<toks.length-1;i++){
+    const a=cx[i]+bw/2, b=cx[i+1]-bw/2;
+    ctx.beginPath();ctx.moveTo(a,cy);ctx.lineTo(b,cy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(b,cy);ctx.lineTo(b-7,cy-4);ctx.lineTo(b-7,cy+4);ctx.closePath();
+    ctx.fillStyle='#8C6508';ctx.fill();
+  }
+  // "softmax con T" box under the last predicted step, feeding the next token
+  const bx=Math.min(cx[toks.length-1],w-100), by=cy+bh/2+52;
+  ctx.fillStyle='#fffdf7';ctx.strokeStyle='#B8860B';ctx.lineWidth=1.6;
+  ctx.beginPath();ctx.rect(bx-92,by-20,184,40);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#8C6508';ctx.font='bold 14px Georgia';
+  ctx.fillText('softmax(z / T)',bx,by+5);
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=1.6;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(bx,by-20);ctx.lineTo(bx,cy+bh/2);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(bx,cy+bh/2);ctx.lineTo(bx-4,cy+bh/2+8);ctx.lineTo(bx+4,cy+bh/2+8);ctx.closePath();ctx.fill();
+  // caption
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('Generación autorregresiva: cada token nuevo se muestrea y se re-alimenta al contexto.',w/2,h-14);
+  ctx.textAlign='left';
 }
-document.getElementById("prev").onclick=()=>go(cur-1);
-document.getElementById("next").onclick=()=>go(cur+1);
-document.addEventListener("keydown",e=>{
-  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
-  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
-window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
-const updaters={};
-</script>
+updaters[1]=drawAuto;
 
-<script>
-"use strict";
-/* ================= SLIDE 0 : next token ================= */
-(function(){
-  const se=document.getElementById("se0p");
-  let seed=1,rng=mulberry32(seed);
-  let counts=new Array(VOC.length).fill(0),nDraws=0,last=null;
-  function reset(){counts=new Array(VOC.length).fill(0);nDraws=0;last=null;
-    seed=1;rng=mulberry32(seed);}
-  function draw(m){
-    const p=softmax(LOGITS[+se.value],1);
-    for(let j=0;j<m;j++){const i=sampleCat(p,rng);counts[i]++;nDraws++;last=i;}
-    upd();}
-  se.onchange=()=>{reset();upd();};
-  document.getElementById("bt0s").onclick=()=>draw(1);
-  document.getElementById("bt0m").onclick=()=>draw(100);
-  document.getElementById("bt0r").onclick=()=>{reset();upd();};
-  function upd(){
-    const z=LOGITS[+se.value],p=softmax(z,1);
-    const sum=p.reduce((a,b)=>a+b,0);
-    let top=0;for(let i=1;i<p.length;i++)if(p[i]>p[top])top=i;
-    document.getElementById("ro0").innerHTML=
-      "&Sigma;p<sub>i</sub> = "+sum.toFixed(3)+
-      " &nbsp;&middot;&nbsp; token más probable: <span class='gold'>«"+VOC[top]+"»</span>"+
-      " (p = "+p[top].toFixed(3)+")"+
-      " &nbsp;&middot;&nbsp; muestras acumuladas: "+nDraws;
-    document.getElementById("ge0").innerHTML= last===null?
-      "<span class='mut'>pulsa «muestrear 1 token»…</span>":
-      "<b>"+PREFIXES[+se.value]+"</b> &rarr; «"+VOC[last]+"»"+
-      " <span class='mut'>(probabilidad "+p[last].toFixed(3)+")</span>";
-    /* top: theoretical distribution */
-    let c=fitCanvas(document.getElementById("cv0a"));
-    const fr={x0:52,y0:24,w:c.W-70,h:c.H-72};
-    probBars(c.ctx,fr,VOC,p,{title:"pθ(· | prefijo) = softmax de los logits, Ec. (1)",
-      ylab:"probabilidad"});
-    /* bottom: empirical frequencies vs theoretical */
-    c=fitCanvas(document.getElementById("cv0b"));
-    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-72};
-    const freq=counts.map(k=>nDraws>0?k/nDraws:0);
-    const ymax=Math.max(0.4,Math.max(...p,...freq)*1.15);
-    const ax=probBars(c.ctx,fr2,VOC,freq,{color:"rgba(184,134,11,0.35)",ymax:ymax,
-      title:"frecuencias empíricas tras "+nDraws+" muestras (mulberry32)",
-      ylab:"frecuencia"});
-    /* overlay theoretical as ink ticks */
-    const bw=fr2.w/VOC.length;
-    c.ctx.strokeStyle=INK;c.ctx.lineWidth=2;
-    for(let i=0;i<VOC.length;i++){
-      const x=fr2.x0+i*bw+bw*0.14,w=bw*0.72,y=ax.Y(p[i]);
-      c.ctx.beginPath();c.ctx.moveTo(x,y);c.ctx.lineTo(x+w,y);c.ctx.stroke();}
-    c.ctx.fillStyle=INK;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("— marca tinta = probabilidad teórica",fr2.x0+8,fr2.y0+10);
-  }
-  updaters[0]=upd;
-})();
-
-/* ================= SLIDE 1 : temperatura ================= */
-(function(){
-  const Z=LOGITS[1];           // prefijo "Si subimos el precio, la demanda…"
-  const sl=document.getElementById("sl1t");
-  let seed=7,genHTML="<span class='mut'>pulsa «generar 12 tokens»…</span>";
-  sl.oninput=upd;
-  function gen(){
-    const tau=+sl.value,p=softmax(Z,tau),rng=mulberry32(seed);
-    const toks=[];
-    for(let j=0;j<12;j++)toks.push(VOC[sampleCat(p,rng)]);
-    genHTML="<b>semilla "+seed+", τ = "+tau.toFixed(2)+":</b> "+
-      toks.map(t=>"«"+t+"»").join(" ");
-    upd();}
-  document.getElementById("bt1g").onclick=gen;
-  document.getElementById("bt1n").onclick=()=>{seed+=1;gen();};
-  function upd(){
-    const tau=+sl.value;
-    document.getElementById("r1t").textContent=tau.toFixed(2);
-    const p=softmax(Z,tau);
-    const H=entropyBits(p),sum=p.reduce((a,b)=>a+b,0);
-    document.getElementById("ro1").innerHTML=
-      "&Sigma;p<sub>i</sub> = "+sum.toFixed(3)+
-      " &nbsp;&middot;&nbsp; entropía H = <span class='gold'>"+H.toFixed(2)+" bits</span>"+
-      " (máx log<sub>2</sub>12 = "+Math.log2(12).toFixed(2)+")"+
-      " &nbsp;&middot;&nbsp; perplejidad 2<sup>H</sup> = "+fmtG(Math.pow(2,H),3)+
-      " tokens efectivos";
-    document.getElementById("ge1").innerHTML=genHTML;
-    /* top: bars at this tau */
-    let c=fitCanvas(document.getElementById("cv1a"));
-    const fr={x0:52,y0:24,w:c.W-70,h:c.H-72};
-    probBars(c.ctx,fr,VOC,p,{ymax:Math.max(0.45,Math.max(...p)*1.12),
-      title:"pτ ∝ exp(z_i/τ) con τ = "+tau.toFixed(2)+", Ec. (3)",
-      ylab:"probabilidad"});
-    /* bottom: entropy vs tau curve */
-    c=fitCanvas(document.getElementById("cv1b"));
-    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
-    const ax=axes(c.ctx,fr2,{xmin:0.1,xmax:2,ymin:0,ymax:3.8,
-      xticks:[[0.1,"0.1"],[0.5,"0.5"],[1,"1"],[1.5,"1.5"],[2,"2"]],
-      yticks:[[0,"0"],[1,"1"],[2,"2"],[3,"3"],[3.58,"3.58"]],
-      xlab:"temperatura τ",ylab:"H (bits)",
-      title:"entropía del dado en función de τ (curva calculada, no dibujada)"});
-    polyline(c.ctx,[[ax.X(0.1),ax.Y(Math.log2(12))],[ax.X(2),ax.Y(Math.log2(12))]],
-             MUTE,1.1,[5,4]);
-    c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("uniforme: log₂12 bits",ax.X(1.45),ax.Y(Math.log2(12))-5);
-    const pts=[];
-    for(let i=0;i<=160;i++){const t=0.1+1.9*i/160;
-      pts.push([ax.X(t),ax.Y(entropyBits(softmax(Z,t)))]);}
-    polyline(c.ctx,pts,INK,1.8);
-    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-    c.ctx.arc(ax.X(tau),ax.Y(H),5.5,0,7);c.ctx.fill();
-  }
-  updaters[1]=upd;
-})();
-
-/* ================= SLIDE 2 : top-k / top-p ================= */
-(function(){
-  const Z=LOGITS[1];
-  const st=document.getElementById("sl2t"),sk=document.getElementById("sl2k"),
-        sp=document.getElementById("sl2p");
-  st.oninput=upd;sk.oninput=upd;sp.oninput=upd;
-  function upd(){
-    const tau=+st.value,k=+sk.value,pp=+sp.value;
-    document.getElementById("r2t").textContent=tau.toFixed(2);
-    document.getElementById("r2k").textContent=k;
-    document.getElementById("r2p").textContent=pp.toFixed(2);
-    const p=softmax(Z,tau);
-    const F=filterTopKP(p,k,pp);
-    const sumf=F.pf.reduce((a,b)=>a+b,0);
-    document.getElementById("ro2").innerHTML=
-      "pasan el top-k: "+F.nK+" / 12 &nbsp;&middot;&nbsp; núcleo top-p: "+
-      "<span class='gold'>"+F.nS+" tokens</span>"+
-      " &nbsp;&middot;&nbsp; masa retenida antes de renormalizar: "+F.massKept.toFixed(3)+
-      "<br>tras renormalizar: &Sigma;p&#771;<sub>i</sub> = "+sumf.toFixed(3)+
-      (F.nS===1?" &nbsp;<span class='badge ok'>greedy: un único superviviente</span>":"");
-    /* top: bars with filtered/cross and renormalized overlay */
-    let c=fitCanvas(document.getElementById("cv2a"));
-    const fr={x0:52,y0:24,w:c.W-70,h:c.H-72};
-    probBars(c.ctx,fr,VOC,p,{keep:F.keep,cross:true,over:F.pf,
-      ymax:Math.max(0.5,Math.max(...p,...F.pf)*1.12),
-      title:"barras: pτ; aspas: descartados; contorno sepia: renormalizada",
-      ylab:"probabilidad"});
-    /* bottom: cumulative sorted probability with p cut */
-    c=fitCanvas(document.getElementById("cv2b"));
-    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
-    const ord=p.map((v,i)=>i).sort((a,b)=>p[b]-p[a]);
-    const ax=axes(c.ctx,fr2,{xmin:0,xmax:12,ymin:0,ymax:1.04,
-      xticks:[[1,"1"],[3,"3"],[6,"6"],[9,"9"],[12,"12"]],
-      yticks:[[0,"0"],[0.5,"0.5"],[0.9,"0.9"],[1,"1"]],
-      xlab:"tokens ordenados de mayor a menor probabilidad",
-      ylab:"prob. acumulada",
-      title:"definición visual del núcleo: acumular hasta cruzar p"});
-    polyline(c.ctx,[[ax.X(0),ax.Y(pp)],[ax.X(12),ax.Y(pp)]],GOLDD,1.4,[6,4]);
-    c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("p = "+pp.toFixed(2),ax.X(10.6),ax.Y(pp)-6);
-    let acc=0;const steps=[[ax.X(0),ax.Y(0)]];
-    ord.forEach((i,r)=>{acc+=p[i];
-      steps.push([ax.X(r),ax.Y(acc-p[i])]);steps.push([ax.X(r+1),ax.Y(acc)]);});
-    polyline(c.ctx,steps,INK,1.7);
-    acc=0;
-    ord.forEach((i,r)=>{acc+=p[i];
-      c.ctx.fillStyle=F.keep[i]?GOLD:MUTE;
-      c.ctx.beginPath();c.ctx.arc(ax.X(r+1),ax.Y(acc),4,0,7);c.ctx.fill();
-      c.ctx.save();c.ctx.fillStyle=F.keep[i]?INK:MUTE;
-      c.ctx.font="9px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(VOC[i],ax.X(r+1),ax.Y(acc)-9);c.ctx.restore();});
-  }
-  updaters[2]=upd;
-})();
-
-/* ================= SLIDE 3 : generación autorregresiva ================= */
-(function(){
-  const W3=["INICIO","el cliente","la demanda","el modelo","predice","renueva",
-            "cancela","sube","baja","el contrato","mañana","con descuento","FIN"];
-  const NW=W3.length,BASE=-3.0;
-  /* bigram logits matrix */
-  const Z3=Array.from({length:NW},()=>new Array(NW).fill(BASE));
-  function setz(i,pairs){for(const [j,v] of pairs)Z3[i][j]=v;}
-  setz(0,[[1,2.0],[2,1.5],[3,1.2]]);
-  setz(1,[[5,1.8],[6,1.4],[8,-0.5]]);
-  setz(2,[[7,1.7],[8,1.7]]);
-  setz(3,[[4,2.5]]);
-  setz(4,[[2,2.0],[6,0.2]]);
-  setz(5,[[9,2.0],[11,1.2],[12,0.8]]);
-  setz(6,[[9,1.8],[10,0.8],[12,1.0]]);
-  setz(7,[[10,1.5],[12,1.2]]);
-  setz(8,[[10,1.5],[12,1.2]]);
-  setz(9,[[11,1.5],[12,1.6],[10,0.6]]);
-  setz(10,[[12,2.5]]);
-  setz(11,[[12,2.5]]);
-  /* never transition INTO INICIO, never out of FIN */
-  for(let i=0;i<NW;i++)Z3[i][0]=-30;
-  const st=document.getElementById("sl3t"),sk=document.getElementById("sl3k"),
-        sp=document.getElementById("sl3p");
-  let seed=1,sentences=[],lastProbs=[],lastToks=[];
-  function rowDist(i,tau,k,pp){
-    const p=softmax(Z3[i],tau);
-    return filterTopKP(p,k,pp).pf;}
-  function genOne(){
-    const tau=+st.value,k=+sk.value,pp=+sp.value;
-    const rng=mulberry32(seed);seed+=1;
-    let cur=0;const toks=[],probs=[];
-    for(let step=0;step<9;step++){
-      const pf=rowDist(cur,tau,k,pp);
-      const nx=sampleCat(pf,rng);
-      probs.push(pf[nx]);
-      if(nx===12)break;
-      toks.push(W3[nx]);cur=nx;}
-    const s=toks.join(" ");
-    sentences.unshift(s.length?s:"(frase vacía: FIN inmediato)");
-    sentences=sentences.slice(0,5);
-    lastProbs=probs;lastToks=toks.concat(["FIN"]);
-    upd();}
-  document.getElementById("bt3g").onclick=genOne;
-  document.getElementById("bt3m").onclick=()=>{for(let r=0;r<5;r++)genOne();};
-  document.getElementById("bt3r").onclick=()=>{seed=1;sentences=[];
-    lastProbs=[];lastToks=[];upd();};
-  st.oninput=upd;sk.oninput=upd;sp.oninput=upd;
-  function upd(){
-    const tau=+st.value,k=+sk.value,pp=+sp.value;
-    document.getElementById("r3t").textContent=tau.toFixed(2);
-    document.getElementById("r3k").textContent=k;
-    document.getElementById("r3p").textContent=pp.toFixed(2);
-    document.getElementById("ge3").innerHTML= sentences.length===0?
-      "<span class='mut'>pulsa «generar frase»…</span>":
-      sentences.map((s,i)=>(i===0?"<b>&rarr;</b> ":"&nbsp;&nbsp;&nbsp; ")+"«"+s+"»")
-        .join("<br>");
-    let ro="";
-    if(lastProbs.length){
-      const logp=lastProbs.reduce((a,b)=>a+Math.log(b),0);
-      ro="última frase: p = &Pi; p<sub>paso</sub> = <span class='gold'>"+
-        fmtG(Math.exp(logp),3)+"</span> &nbsp;&middot;&nbsp; log p = "+logp.toFixed(2)+
-        " &nbsp;&middot;&nbsp; prob. media por paso = "+
-        fmtG(lastProbs.reduce((a,b)=>a+b,0)/lastProbs.length,3);
-    } else ro="<span class='mut'>aún no hay frase generada</span>";
-    document.getElementById("ro3").innerHTML=ro;
-    /* top: transition heatmap at current tau (before k/p) */
-    let c=fitCanvas(document.getElementById("cv3a"));
-    const ml=86,mt=24,mb=18,mr=10;
-    const w=(c.W-ml-mr)/NW,h=(c.H-mt-mb)/NW;
-    c.ctx.font="bold 12px Georgia,serif";c.ctx.fillStyle=INK;c.ctx.textAlign="left";
-    c.ctx.fillText("matriz de transición P(siguiente | actual) a τ = "+tau.toFixed(2),
-      ml,mt-8);
-    for(let i=0;i<NW-1;i++){
-      const p=softmax(Z3[i],tau);
-      for(let j=0;j<NW;j++){
-        c.ctx.fillStyle=rampColor(Math.pow(p[j],0.55));
-        c.ctx.fillRect(ml+j*w,mt+i*h,w-1,h-1);}}
-    c.ctx.fillStyle="#f4f4f4";
-    for(let j=0;j<NW;j++)c.ctx.fillRect(ml+j*w,mt+(NW-1)*h,w-1,h-1);
-    c.ctx.font="8.5px Georgia,serif";c.ctx.fillStyle=INK;
-    for(let i=0;i<NW;i++){
-      c.ctx.textAlign="right";c.ctx.textBaseline="middle";
-      c.ctx.fillText(W3[i],ml-4,mt+i*h+h/2);}
-    for(let j=0;j<NW;j++){
-      c.ctx.save();c.ctx.translate(ml+j*w+w/2,mt+(NW)*h+2);
-      c.ctx.rotate(0.0);c.ctx.textAlign="center";c.ctx.textBaseline="top";
-      c.ctx.fillText(String(j),0,0);c.ctx.restore();}
-    /* bottom: chosen-token probability per step of last sentence */
-    c=fitCanvas(document.getElementById("cv3b"));
-    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
-    const ns=Math.max(lastProbs.length,1);
-    const ax=axes(c.ctx,fr2,{xmin:0,xmax:Math.max(ns,5),ymin:0,ymax:1.04,
-      xticks:Array.from({length:Math.max(ns,5)},(_,i)=>[i+0.5,String(i+1)]),
-      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
-      xlab:"paso de generación",ylab:"p del token elegido",
-      title:"última frase: probabilidad que tenía cada token al ser muestreado"});
-    if(lastProbs.length){
-      const bw=fr2.w/Math.max(ns,5);
-      lastProbs.forEach((q,i)=>{
-        c.ctx.fillStyle=q>0.5?GOLD:(q>0.2?GOLDD:MUTE);
-        c.ctx.fillRect(ax.X(i)+bw*0.15,ax.Y(q),bw*0.7,ax.Y(0)-ax.Y(q));
-        c.ctx.save();c.ctx.fillStyle=INK;c.ctx.font="9px Georgia,serif";
-        c.ctx.textAlign="center";
-        c.ctx.fillText(lastToks[i]||"",ax.X(i+0.5),ax.Y(q)-6);c.ctx.restore();});
-    } else {
-      c.ctx.fillStyle=MUTE;c.ctx.font="12px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText("genera una frase para ver sus probabilidades paso a paso",
-        fr2.x0+fr2.w/2,fr2.y0+fr2.h/2);}
-  }
-  updaters[3]=upd;
-})();
-</script>
-
-<script>
-"use strict";
-/* ================= SLIDE 4 : tokens y coste ================= */
-(function(){
-  const sc=document.getElementById("sl4c"),so=document.getElementById("sl4o"),
-        spi=document.getElementById("sl4pi"),spo=document.getElementById("sl4po"),
-        sr=document.getElementById("sl4r");
-  [sc,so,spi,spo,sr].forEach(s=>s.oninput=upd);
-  const CHARS_PER_WORD=5.8;     // con espacios, español comercial
-  function upd(){
-    const chars=+sc.value,Nout=+so.value,pin=+spi.value,pout=+spo.value;
-    const R=Math.round(Math.pow(10,+sr.value));
-    document.getElementById("r4c").textContent=fmtInt(chars);
-    document.getElementById("r4o").textContent=fmtInt(Nout);
-    document.getElementById("r4pi").textContent=pin.toFixed(2);
-    document.getElementById("r4po").textContent=pout.toFixed(2);
-    document.getElementById("r4r").textContent=fmtInt(R);
-    const NinA=chars/4;                          // chars/4
-    const words=chars/CHARS_PER_WORD;
-    const NinB=words*1.3;                        // words*1.3
-    const Nin=Math.round((NinA+NinB)/2);
-    const cin=Nin/1e6*pin,cout=Nout/1e6*pout,C=cin+cout;
-    const Cmes=30*R*C, Chum=30*R*3;
-    document.getElementById("ro4").innerHTML=
-      "N<sub>in</sub> &asymp; caracteres/4 = "+fmtInt(NinA)+
-      " &nbsp;&middot;&nbsp; palabras&times;1.3 = "+fmtInt(NinB)+
-      " &nbsp;&rarr;&nbsp; uso <span class='gold'>"+fmtInt(Nin)+" tokens</span>"+
-      "<br>C/llamada = "+fmtUSD(cin)+" (leer) + "+fmtUSD(cout)+" (generar) = "+
-      "<span class='gold'>"+fmtUSD(C)+"</span>"+
-      "<br>C<sub>mes</sub> = 30 &middot; "+fmtInt(R)+" &middot; C = "+
-      "<span class='gold'>"+fmtUSD(Cmes)+"/mes</span>"+
-      " &nbsp;vs&nbsp; humano a 3 $/consulta: "+fmtUSD(Chum)+"/mes"+
-      " <span class='mut'>(&times;"+fmtG(Chum/Math.max(Cmes,1e-9),3)+")</span>";
-    /* top: stacked cost breakdown per call */
-    let c=fitCanvas(document.getElementById("cv4a"));
-    const fr={x0:62,y0:24,w:c.W-80,h:c.H-62};
-    const cmax=Math.max(C*1.25,1e-6);
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:0,ymax:cmax,
-      xticks:[],yticks:[[0,"0"],[cmax/2,fmtG(cmax/2,2)],[cmax,fmtG(cmax,2)]],
-      ylab:"$ por llamada",
-      title:"coste de UNA llamada: leer (entrada) vs generar (salida), Ec. (4)"});
-    const bx=fr.x0+fr.w*0.30,bw=fr.w*0.40;
-    c.ctx.fillStyle=GOLDP;c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=1;
-    c.ctx.fillRect(bx,ax.Y(cin),bw,ax.Y(0)-ax.Y(cin));
-    c.ctx.strokeRect(bx,ax.Y(cin),bw,ax.Y(0)-ax.Y(cin));
-    c.ctx.fillStyle=GOLD;
-    c.ctx.fillRect(bx,ax.Y(C),bw,ax.Y(cin)-ax.Y(C));
-    c.ctx.strokeRect(bx,ax.Y(C),bw,ax.Y(cin)-ax.Y(C));
-    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("entrada: "+fmtInt(Nin)+" tk × "+pin.toFixed(2)+" $/M = "+fmtUSD(cin),
-      bx+bw+10,ax.Y(cin/2));
-    c.ctx.fillText("salida: "+fmtInt(Nout)+" tk × "+pout.toFixed(2)+" $/M = "+fmtUSD(cout),
-      bx+bw+10,ax.Y(cin+cout/2));
-    /* bottom: monthly cost vs R, log-log */
-    c=fitCanvas(document.getElementById("cv4b"));
-    const fr2={x0:62,y0:24,w:c.W-80,h:c.H-62};
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:5,ymin:-3,ymax:7,
-      xticks:[[0,"1"],[1,"10"],[2,"100"],[3,"1K"],[4,"10K"],[5,"100K"]],
-      yticks:[[-2,"0.01"],[0,"1"],[2,"100"],[4,"10K"],[6,"1M"]],
-      xlab:"peticiones/día R (escala log)",ylab:"$/mes (log)",
-      title:"coste mensual LLM (dorado) vs call center humano a 3 $/consulta (gris)"});
-    const pts=[],ptsH=[];
-    for(let i=0;i<=120;i++){const lr=5*i/120,r=Math.pow(10,lr);
-      pts.push([ax2.X(lr),ax2.Y(Math.log10(Math.max(30*r*C,1e-3)))]);
-      ptsH.push([ax2.X(lr),ax2.Y(Math.log10(30*r*3))]);}
-    polyline(c.ctx,ptsH,MUTE,1.5,[6,4]);
-    polyline(c.ctx,pts,GOLD,2.4);
-    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-    c.ctx.arc(ax2.X(Math.log10(R)),ax2.Y(Math.log10(Math.max(Cmes,1e-3))),5.5,0,7);
-    c.ctx.fill();
-    c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("humano",ax2.X(0.2),ax2.Y(Math.log10(30*Math.pow(10,0.2)*3))-8);
-    c.ctx.fillStyle=GOLDD;
-    c.ctx.fillText("LLM",ax2.X(4.0),ax2.Y(Math.log10(Math.max(30*1e4*C,1e-3)))+14);
-  }
-  updaters[4]=upd;
-})();
-
-/* ================= SLIDE 5 : prompt caching ================= */
-(function(){
-  const sf=document.getElementById("sl5f"),sn=document.getElementById("sl5n"),
-        so=document.getElementById("sl5o"),sd=document.getElementById("sl5d");
-  [sf,sn,so,sd].forEach(s=>s.oninput=upd);
-  const PIN=3,POUT=15,RDAY=1000;
-  function upd(){
-    const Npre=+sf.value,Nnew=+sn.value,Nout=+so.value,disc=+sd.value;
-    document.getElementById("r5f").textContent=fmtInt(Npre);
-    document.getElementById("r5n").textContent=fmtInt(Nnew);
-    document.getElementById("r5o").textContent=fmtInt(Nout);
-    document.getElementById("r5d").textContent=disc.toFixed(2);
-    const Csin=costCall(Npre+Nnew,Nout,PIN,POUT);
-    const Ccon=costCached(Npre,Nnew,Nout,PIN,POUT,disc);
-    const ah=1-Ccon/Csin, ahMes=30*RDAY*(Csin-Ccon);
-    document.getElementById("ro5").innerHTML=
-      "sin caché: <span class='deep'>"+fmtUSD(Csin)+"/llamada</span>"+
-      " &nbsp;&middot;&nbsp; con caché: <span class='gold'>"+fmtUSD(Ccon)+"/llamada</span>"+
-      "<br>ahorro = <span class='gold'>"+(100*ah).toFixed(1)+"%</span>"+
-      " &nbsp;&middot;&nbsp; a 1.000 llamadas/día: "+fmtUSD(ahMes)+"/mes ahorrados"+
-      " <span class='mut'>(precios Sonnet 3/15 $/M)</span>";
-    /* top: two stacked bars */
-    let c=fitCanvas(document.getElementById("cv5a"));
-    const fr={x0:62,y0:24,w:c.W-80,h:c.H-62};
-    const cmax=Csin*1.25;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:2,ymin:0,ymax:cmax,
-      xticks:[[0.5,"sin caché"],[1.5,"con caché"]],
-      yticks:[[0,"0"],[cmax/2,fmtG(cmax/2,2)],[cmax,fmtG(cmax,2)]],
-      ylab:"$ por llamada",
-      title:"la misma llamada con y sin caching: solo encoge el tramo de prefijo"});
-    function stack(xc,parts,labels){
-      const bw=fr.w*0.26;let acc=0;
-      parts.forEach((v,i)=>{
-        c.ctx.fillStyle=[GOLD,GOLDD,GOLDP][i];
-        c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=0.8;
-        c.ctx.fillRect(ax.X(xc)-bw/2,ax.Y(acc+v),bw,ax.Y(acc)-ax.Y(acc+v));
-        c.ctx.strokeRect(ax.X(xc)-bw/2,ax.Y(acc+v),bw,ax.Y(acc)-ax.Y(acc+v));
-        acc+=v;});
-      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(fmtUSD(acc),ax.X(xc),ax.Y(acc)-7);}
-    stack(0.5,[Npre/1e6*PIN,Nnew/1e6*PIN,Nout/1e6*POUT]);
-    stack(1.5,[Npre/1e6*PIN*disc,Nnew/1e6*PIN,Nout/1e6*POUT]);
-    c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
-    const lg=[["prefijo (sistema+RAG)",GOLD],["pregunta nueva",GOLDD],
-              ["respuesta (salida)",GOLDP]];
-    lg.forEach((l,i)=>{c.ctx.fillStyle=l[1];
-      c.ctx.fillRect(fr.x0+8,fr.y0+8+i*15,12,9);
-      c.ctx.strokeStyle=GOLDD;c.ctx.strokeRect(fr.x0+8,fr.y0+8+i*15,12,9);
-      c.ctx.fillStyle=INK;c.ctx.fillText(l[0],fr.x0+25,fr.y0+16+i*15);});
-    /* bottom: savings vs prefix size */
-    c=fitCanvas(document.getElementById("cv5b"));
-    const fr2={x0:62,y0:24,w:c.W-80,h:c.H-62};
-    const ax2=axes(c.ctx,fr2,{xmin:500,xmax:50000,ymin:0,ymax:0.8,
-      xticks:[[500,"0.5K"],[10000,"10K"],[25000,"25K"],[50000,"50K"]],
-      yticks:[[0,"0%"],[0.2,"20%"],[0.4,"40%"],[0.6,"60%"],[0.8,"80%"]],
-      xlab:"tokens de prefijo cacheado",ylab:"ahorro",
-      title:"ahorro relativo según el tamaño del prefijo (resto de valores: los tuyos)"});
-    const pts=[];
-    for(let i=0;i<=140;i++){const f=500+(50000-500)*i/140;
-      const a=1-costCached(f,Nnew,Nout,PIN,POUT,disc)/costCall(f+Nnew,Nout,PIN,POUT);
-      pts.push([ax2.X(f),ax2.Y(a)]);}
-    polyline(c.ctx,pts,INK,1.8);
-    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-    c.ctx.arc(ax2.X(Npre),ax2.Y(ah),5.5,0,7);c.ctx.fill();
-    /* asymptote when input dominates: savings -> 1-disc */
-    polyline(c.ctx,[[ax2.X(500),ax2.Y(1-disc)],[ax2.X(50000),ax2.Y(1-disc)]],
-             MUTE,1.1,[5,4]);
-    c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("techo teórico 1−descuento = "+((1-disc)*100).toFixed(0)+"%",
-      ax2.X(1500),ax2.Y(1-disc)-6);
-  }
-  updaters[5]=upd;
-})();
-
-/* ================= SLIDE 6 : ventana de contexto ================= */
-(function(){
-  const BOPTS=[8000,32000,200000,1000000];
-  const BNAME=["8K (local pequeño)","32K","200K (Sonnet)","1M (Gemini Pro)"];
-  const sB=document.getElementById("sl6B"),ss=document.getElementById("sl6s"),
-        sm=document.getElementById("sl6m"),sg=document.getElementById("sl6g"),
-        sh=document.getElementById("sl6h"),sq=document.getElementById("sl6q"),
-        ck=document.getElementById("ck6");
-  [sB,ss,sm,sg,sh,sq].forEach(s=>s.oninput=upd);
-  ck.onchange=upd;
-  const PIN=3,POUT=15,NOUT=600,RHO=0.25,NSUMOUT=400;
-  function upd(){
-    const B=BOPTS[+sB.value];
-    const t1=+ss.value,t2=+sm.value,t3=+sg.value,t4raw=+sh.value,t5=+sq.value;
-    const summar=ck.checked;
-    const t4=summar?Math.round(t4raw*RHO):t4raw;
-    document.getElementById("r6B").textContent=BNAME[+sB.value];
-    document.getElementById("r6s").textContent=fmtInt(t1);
-    document.getElementById("r6m").textContent=fmtInt(t2);
-    document.getElementById("r6g").textContent=fmtInt(t3);
-    document.getElementById("r6h").textContent=fmtInt(t4raw)+
-      (summar?" → "+fmtInt(t4):"");
-    document.getElementById("r6q").textContent=fmtInt(t5);
-    const tot=t1+t2+t3+t4+t5, fits=tot<=B, occ=100*tot/B;
-    const C=costCall(tot,NOUT,PIN,POUT);
-    const Csum=summar?costCall(t4raw,NSUMOUT,PIN,POUT):0;
-    document.getElementById("ro6").innerHTML=
-      "&Sigma;t<sub>i</sub> = <span class='gold'>"+fmtInt(tot)+" tokens</span>"+
-      " de B = "+fmtInt(B)+" ("+occ.toFixed(1)+"%) &nbsp; "+
-      (fits?"<span class='badge ok'>cabe en la ventana</span>"
-           :"<span class='badge bad'>DESBORDA: "+fmtInt(tot-B)+" tokens de más</span>")+
-      "<br>coste/llamada (Ec. 4, respuesta 600 tk): <span class='gold'>"+fmtUSD(C)+
-      "</span>"+(summar?" + llamada de resumen "+fmtUSD(Csum)+
-      " <span class='mut'>(una vez, amortizable)</span>":"");
-    /* top: stacked horizontal window bar */
-    let c=fitCanvas(document.getElementById("cv6a"));
-    const x0=20,y0=42,bh=Math.min(54,c.H*0.34),bw=c.W-40;
-    c.ctx.font="bold 12px Georgia,serif";c.ctx.fillStyle=INK;c.ctx.textAlign="left";
-    c.ctx.fillText("la ventana B = "+fmtInt(B)+" tokens, llenándose pieza a pieza",
-      x0,y0-22);
-    c.ctx.strokeStyle=INK;c.ctx.lineWidth=1.4;
-    c.ctx.strokeRect(x0,y0,bw,bh);
-    const cols=["#8C6508","#B8860B","#D9A727","#D9C28A","#1A1A1A"];
-    const names=["sistema","memoria","RAG","histórico","pregunta"];
-    const vals=[t1,t2,t3,t4,t5];
-    let acc=0;
-    const scale=bw/Math.max(B,tot);
-    vals.forEach((v,i)=>{
-      c.ctx.fillStyle=cols[i];
-      c.ctx.fillRect(x0+acc*scale,y0+1,v*scale,bh-2);
-      acc+=v;});
-    if(tot>B){ /* mark overflow zone */
-      c.ctx.save();c.ctx.strokeStyle="#7a3c00";c.ctx.lineWidth=2;
-      c.ctx.setLineDash([5,3]);
-      c.ctx.beginPath();c.ctx.moveTo(x0+B*scale,y0-8);
-      c.ctx.lineTo(x0+B*scale,y0+bh+8);c.ctx.stroke();c.ctx.restore();
-      c.ctx.fillStyle="#7a3c00";c.ctx.font="10px Georgia,serif";
-      c.ctx.textAlign="center";
-      c.ctx.fillText("límite B",x0+B*scale,y0+bh+20);}
-    c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
-    let lx=x0;
-    names.forEach((nm,i)=>{
-      c.ctx.fillStyle=cols[i];c.ctx.fillRect(lx,y0+bh+26,11,9);
-      c.ctx.fillStyle=INK;
-      c.ctx.fillText(nm+" "+fmtInt(vals[i]),lx+14,y0+bh+34);
-      lx+=14+c.ctx.measureText(nm+" "+fmtInt(vals[i])).width+16;});
-    /* bottom: cost comparison strategies */
-    c=fitCanvas(document.getElementById("cv6b"));
-    const fr2={x0:62,y0:24,w:c.W-80,h:c.H-58};
-    const Craw=costCall(t1+t2+t3+t4raw+t5,NOUT,PIN,POUT);
-    const Ctr=costCall(Math.min(t1+t2+t3+t4raw+t5,B),NOUT,PIN,POUT);
-    const Csm=costCall(t1+t2+t3+Math.round(t4raw*RHO)+t5,NOUT,PIN,POUT);
-    const cmax=Math.max(Craw,Ctr,Csm)*1.3;
-    const ax=axes(c.ctx,fr2,{xmin:0,xmax:3,ymin:0,ymax:cmax,
-      xticks:[[0.5,"sin tocar"],[1.5,"truncar a B"],[2.5,"resumir ×0.25"]],
-      yticks:[[0,"0"],[cmax/2,fmtG(cmax/2,2)],[cmax,fmtG(cmax,2)]],
-      ylab:"$/llamada",
-      title:"qué hace cada estrategia con el coste de la llamada"});
-    [[0.5,Craw,t1+t2+t3+t4raw+t5>B?MUTE:GOLD],
-     [1.5,Ctr,GOLDD],[2.5,Csm,GOLD]].forEach(([xc,v,col])=>{
-      const bw2=fr2.w*0.18;
-      c.ctx.fillStyle=col;
-      c.ctx.fillRect(ax.X(xc)-bw2/2,ax.Y(v),bw2,ax.Y(0)-ax.Y(v));
-      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(fmtUSD(v),ax.X(xc),ax.Y(v)-6);});
-    if(t1+t2+t3+t4raw+t5>B){
-      c.ctx.fillStyle="#7a3c00";c.ctx.font="10px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText("(no cabe: la llamada falla)",ax.X(0.5),fr2.y0+14);}
-  }
-  updaters[6]=upd;
-})();
-</script>
-
-<script>
-"use strict";
-/* ================= SLIDE 7 : lost in the middle ================= */
-(function(){
-  const ss=document.getElementById("sl7s"),sN=document.getElementById("sl7N"),
-        sd=document.getElementById("sl7d"),sb=document.getElementById("sl7b");
-  [ss,sN,sd,sb].forEach(s=>s.oninput=upd);
-  const A=0.96,NTRIALS=200;
-  let sim=null,seed=11;
-  document.getElementById("bt7").onclick=()=>{
-    const s=+ss.value,Nctx=Math.round(Math.pow(10,+sN.value));
-    const acc=accU(s,A,deffOf(+sd.value,Nctx),+sb.value);
-    const rng=mulberry32(seed);seed+=1;
-    let hits=0;const outc=[];
-    for(let i=0;i<NTRIALS;i++){const ok=rng()<acc;if(ok)hits++;outc.push(ok);}
-    sim={s:s,acc:acc,hits:hits,outc:outc};
-    upd();};
-  function upd(){
-    const s=+ss.value,Nctx=Math.round(Math.pow(10,+sN.value)),
-          d=+sd.value,b=+sb.value;
-    const deff=deffOf(d,Nctx);
-    document.getElementById("r7s").textContent=s.toFixed(2);
-    document.getElementById("r7N").textContent=fmtInt(Nctx);
-    document.getElementById("r7d").textContent=d.toFixed(2);
-    document.getElementById("r7b").textContent=b.toFixed(2);
-    const acc=accU(s,A,deff,b);
-    /* best/worst position on grid */
-    let best=0,worst=0,ab=-1,aw=2;
-    for(let i=0;i<=100;i++){const si=i/100,a=accU(si,A,deff,b);
-      if(a>ab){ab=a;best=si;} if(a<aw){aw=a;worst=si;}}
-    document.getElementById("ro7").innerHTML=
-      "acc(s = "+s.toFixed(2)+") = <span class='gold'>"+(100*acc).toFixed(1)+"%</span>"+
-      " &nbsp;&middot;&nbsp; mejor posición: s = "+best.toFixed(2)+
-      " ("+(100*ab).toFixed(1)+"%) &nbsp;&middot;&nbsp; peor: s = "+worst.toFixed(2)+
-      " ("+(100*aw).toFixed(1)+"%)"+
-      (sim?"<br>última simulación (s = "+sim.s.toFixed(2)+"): "+sim.hits+"/"+NTRIALS+
-        " aciertos = <span class='gold'>"+(100*sim.hits/NTRIALS).toFixed(1)+"%</span>"+
-        " <span class='mut'>(teórico "+(100*sim.acc).toFixed(1)+
-        "%, error muestral ±"+(100*1.96*Math.sqrt(sim.acc*(1-sim.acc)/NTRIALS)).toFixed(1)+
-        ")</span>":"");
-    /* top: the U curve */
-    let c=fitCanvas(document.getElementById("cv7a"));
-    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:0,ymax:1.02,
-      xticks:[[0,"inicio"],[0.25,"0.25"],[0.5,"medio"],[0.75,"0.75"],[1,"final"]],
-      yticks:[[0,"0"],[0.25,"25%"],[0.5,"50%"],[0.75,"75%"],[1,"100%"]],
-      xlab:"posición relativa s del dato en el contexto",ylab:"P(recuperar)",
-      title:"curva de recuperación acc(s) — N = "+fmtInt(Nctx)+" tokens"});
-    /* safe zones */
-    c.ctx.save();c.ctx.globalAlpha=0.12;c.ctx.fillStyle=GOLD;
-    c.ctx.fillRect(ax.X(0),fr.y0,ax.X(0.12)-ax.X(0),fr.h);
-    c.ctx.fillRect(ax.X(0.88),fr.y0,ax.X(1)-ax.X(0.88),fr.h);
-    c.ctx.restore();
-    c.ctx.fillStyle=GOLDD;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="center";
-    c.ctx.fillText("zona segura",ax.X(0.06),fr.y0+14);
-    c.ctx.fillText("zona segura",ax.X(0.94),fr.y0+14);
-    const pts=[];
-    for(let i=0;i<=160;i++){const si=i/160;
-      pts.push([ax.X(si),ax.Y(accU(si,A,deff,b))]);}
-    polyline(c.ctx,pts,INK,2);
-    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-    c.ctx.arc(ax.X(s),ax.Y(acc),6,0,7);c.ctx.fill();
-    polyline(c.ctx,[[ax.X(s),ax.Y(0)],[ax.X(s),ax.Y(acc)]],GOLD,1,[3,3]);
-    /* bottom: last simulation outcomes */
-    c=fitCanvas(document.getElementById("cv7b"));
-    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
-    if(sim){
-      const ax2=axes(c.ctx,fr2,{xmin:0,xmax:NTRIALS,ymin:0,ymax:1,
-        xticks:[[0,"1"],[50,"50"],[100,"100"],[150,"150"],[200,"200"]],
-        yticks:[],xlab:"consulta n.º",
-        title:"200 consultas Bernoulli(acc) en s = "+sim.s.toFixed(2)+
-          ": dorado = acierta, gris = falla"});
-      const bw=fr2.w/NTRIALS;
-      sim.outc.forEach((ok,i)=>{
-        c.ctx.fillStyle=ok?GOLD:"rgba(138,138,138,0.45)";
-        c.ctx.fillRect(fr2.x0+i*bw,ok?fr2.y0+fr2.h*0.15:fr2.y0+fr2.h*0.55,
-          Math.max(bw-0.6,0.8),fr2.h*0.30);});
-      c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-      c.ctx.fillText("aciertos: "+sim.hits,fr2.x0+6,fr2.y0+fr2.h*0.12);
-      c.ctx.fillStyle=MUTE;
-      c.ctx.fillText("fallos: "+(NTRIALS-sim.hits),fr2.x0+6,fr2.y0+fr2.h*0.52);
-    } else {
-      axes(c.ctx,fr2,{xmin:0,xmax:1,ymin:0,ymax:1,xticks:[],yticks:[],
-        title:"simulación empírica (aún no lanzada)"});
-      c.ctx.fillStyle=MUTE;c.ctx.font="12px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText("pulsa «simular 200 consultas en s» para contrastar la curva",
-        fr2.x0+fr2.w/2,fr2.y0+fr2.h/2);}
-  }
-  updaters[7]=upd;
-})();
-
-/* ================= SLIDE 8 : elección de modelo ================= */
-(function(){
-  const MODELS=[
-    {name:"Cumbre 1 (frontier)",q:96,pin:5,pout:25,lat:6.0,ctx:200000,fix:0},
-    {name:"Vega M (equilibrado)",q:88,pin:3,pout:15,lat:2.0,ctx:200000,fix:0},
-    {name:"Brisa S (barato)",q:76,pin:0.5,pout:2,lat:0.8,ctx:128000,fix:0},
-    {name:"Gigas XL (1M ctx)",q:90,pin:2.5,pout:10,lat:3.5,ctx:1000000,fix:0},
-    {name:"Local 8B (on-prem)",q:64,pin:0,pout:0,lat:5.0,ctx:32000,fix:300}];
-  const NOUT=500;
-  const sb=document.getElementById("sl8b"),sl=document.getElementById("sl8l"),
-        sr=document.getElementById("sl8r"),sn=document.getElementById("sl8n");
-  [sb,sl,sr,sn].forEach(s=>s.oninput=upd);
-  function upd(){
-    const budget=Math.round(Math.pow(10,+sb.value));
-    const latmax=+sl.value;
-    const R=Math.round(Math.pow(10,+sr.value));
-    const Nin=+sn.value;
-    document.getElementById("r8b").textContent=fmtInt(budget);
-    document.getElementById("r8l").textContent=latmax.toFixed(1);
-    document.getElementById("r8r").textContent=fmtInt(R);
-    document.getElementById("r8n").textContent=fmtInt(Nin);
-    const rows=MODELS.map(m=>{
-      const cm=30*R*costCall(Nin,NOUT,m.pin,m.pout)+m.fix;
-      const reasons=[];
-      if(cm>budget)reasons.push("presupuesto");
-      if(m.lat>latmax)reasons.push("latencia");
-      if(Nin>m.ctx)reasons.push("ventana");
-      const ok=reasons.length===0;
-      return {m:m,cm:cm,ok:ok,why:reasons.join(", ")};});
-    let win=null;
-    rows.forEach(r=>{if(r.ok&&(!win||r.m.q>win.m.q||
-      (r.m.q===win.m.q&&r.cm<win.cm)))win=r;});
-    document.getElementById("ro8").innerHTML= win?
-      "m* = <span class='gold'>"+win.m.name+"</span> &nbsp;&middot;&nbsp; calidad "+
-      win.m.q+" &nbsp;&middot;&nbsp; "+fmtUSD(win.cm)+"/mes con tu tráfico"+
-      " &nbsp;<span class='badge ok'>óptimo bajo restricciones</span>":
-      "<span class='badge bad'>ningún modelo cumple las restricciones</span>"+
-      " — relaja presupuesto o latencia, o reduce N<sub>in</sub>";
-    /* table */
-    const tb=document.querySelector("#tb8 tbody");
-    tb.innerHTML=rows.map(r=>
-      "<tr"+(win&&r===win?" class='win'":"")+"><td>"+r.m.name+"</td><td>"+r.m.q+
-      "</td><td>"+r.m.pin+" · "+r.m.pout+(r.m.fix?" +"+r.m.fix+"$ fijo":"")+
-      "</td><td>"+r.m.lat.toFixed(1)+" s</td><td>"+fmtInt(r.m.ctx/1000)+"K</td><td>"+
-      fmtUSD(r.cm)+"</td><td>"+(r.ok?"sí":"no ("+r.why+")")+"</td></tr>").join("");
-    /* canvas: quality-cost frontier */
-    const c=fitCanvas(document.getElementById("cv8a"));
-    const fr={x0:62,y0:26,w:c.W-82,h:c.H-66};
-    const ax=axes(c.ctx,fr,{xmin:0.8,xmax:5.6,ymin:55,ymax:100,
-      xticks:[[1,"10"],[2,"100"],[3,"1K"],[4,"10K"],[5,"100K"]],
-      yticks:[[60,"60"],[70,"70"],[80,"80"],[90,"90"],[100,"100"]],
-      xlab:"coste mensual con tu tráfico ($, escala log)",ylab:"calidad (benchmark)",
-      title:"frontera calidad–coste: tu presupuesto (línea), tu ganador (anillo)"});
-    /* feasible budget region */
-    const lb=Math.log10(budget);
-    if(lb>0.8&&lb<5.6){
-      c.ctx.save();c.ctx.globalAlpha=0.10;c.ctx.fillStyle=GOLD;
-      c.ctx.fillRect(fr.x0,fr.y0,ax.X(lb)-fr.x0,fr.h);c.ctx.restore();
-      polyline(c.ctx,[[ax.X(lb),fr.y0],[ax.X(lb),fr.y0+fr.h]],GOLDD,1.5,[6,4]);
-      c.ctx.fillStyle=GOLDD;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText("presupuesto",ax.X(lb),fr.y0-6);}
-    rows.forEach(r=>{
-      const x=ax.X(Math.max(0.8,Math.min(5.6,Math.log10(Math.max(r.cm,7))))),
-            y=ax.Y(r.m.q);
-      const dq=r.m.lat>latmax||Nin>r.m.ctx;
-      c.ctx.fillStyle=r.ok?GOLD:(dq?"rgba(138,138,138,0.55)":MUTE);
-      c.ctx.beginPath();c.ctx.arc(x,y,6,0,7);c.ctx.fill();
-      if(dq){ /* cross out latency/ctx-disqualified */
-        c.ctx.strokeStyle=MUTE;c.ctx.lineWidth=1.4;
-        c.ctx.beginPath();c.ctx.moveTo(x-8,y-8);c.ctx.lineTo(x+8,y+8);
-        c.ctx.moveTo(x+8,y-8);c.ctx.lineTo(x-8,y+8);c.ctx.stroke();}
-      if(win&&r===win){
-        c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=2.4;
-        c.ctx.beginPath();c.ctx.arc(x,y,10.5,0,7);c.ctx.stroke();}
-      c.ctx.fillStyle=r.ok?INK:MUTE;c.ctx.font="10px Georgia,serif";
-      c.ctx.textAlign="left";
-      c.ctx.fillText(r.m.name,x+13,y+3);});
-  }
-  updaters[8]=upd;
-})();
-
-/* ================= SLIDE 9 : glosario ================= */
-(function(){
-  const G=[
-   ["token","unidad mínima de texto del modelo (≈ trozo de palabra): ~4 caracteres o ~0.75 palabras en español/inglés. Todo se cobra y se mide en tokens."],
-   ["𝒱, |𝒱|","vocabulario de tokens y su tamaño (~50.000 subwords en un LLM real; 12 en el juguete de hoy)."],
-   ["x_{1:t}","el prefijo: todo el texto visible hasta el paso t (la conversación entera). Es el único condicionante del siguiente token."],
-   ["h_t","último estado oculto del Transformer: el vector (∈ ℝ^d) que resume el prefijo entero."],
-   ["W^O","matriz de salida (|𝒱|×d): proyecta h_t a un logit por token del vocabulario."],
-   ["logits, z","puntuaciones reales previas al softmax, z = W^O h_t; su orden decide el ranking de candidatos."],
-   ["softmax","e^{z_i}/Σ_j e^{z_j}: convierte logits en probabilidades positivas que suman 1."],
-   ["p_θ(x_{t+1}|x_{1:t})","la distribución del siguiente token dado el prefijo (Ec. 1): el LLM entero es esta función."],
-   ["ℒ(θ)","objetivo de entrenamiento (Ec. 2): suma de log-probabilidades del token verdadero sobre ~10¹³ tokens de internet."],
-   ["autorregresivo","generar muestreando un token, concatenarlo al contexto y repetir; la frase completa tiene probabilidad Π_t p_θ (regla de la cadena)."],
-   ["τ (temperatura)","divide los logits antes del softmax (Ec. 3): τ→0 greedy/determinista, τ→∞ uniforme. Nunca cambia el orden de los tokens."],
-   ["H(p), perplejidad","entropía −Σp_i log₂ p_i en bits (incertidumbre del dado) y 2^H (nº efectivo de opciones)."],
-   ["top-k","truncar a los k tokens más probables y renormalizar; corte de anchura fija."],
-   ["top-p (nucleus)","truncar al menor conjunto que acumula masa ≥ p y renormalizar; corte adaptativo a la forma de la distribución."],
-   ["greedy","elegir siempre el token más probable (τ→0 o k = 1): salida reproducible."],
-   ["semilla (seed)","estado inicial del generador pseudoaleatorio (aquí mulberry32): fijarla hace el muestreo reproducible."],
-   ["N_in, N_out","tokens de entrada (prompt completo) y de salida (respuesta) de una llamada."],
-   ["p_in, p_out","precios por millón de tokens de entrada y salida; p_out ≈ 5×p_in porque generar es secuencial y leer es paralelo."],
-   ["C, C_mes","coste por llamada C = N_in·p_in/10⁶ + N_out·p_out/10⁶ (Ec. 4) y mensual C_mes = 30·R·C."],
-   ["R","volumen: peticiones por día."],
-   ["regla de pulgar","N_tokens ≈ caracteres/4 ≈ palabras×1.3: para presupuestar sin tokenizador."],
-   ["prompt caching","cobrar el prefijo repetido a p_cache ≈ 0.30×p_in (Ec. 5) porque sus estados internos (KV cache) ya están precomputados."],
-   ["cache key","los primeros N tokens del prompt: cualquier cambio en el prefijo invalida el caché. Lo inmutable va al principio."],
-   ["B (ventana de contexto)","máximo de tokens por llamada: 8K–32K local, 200K (Claude Sonnet), 1M–2M (Gemini). Grande ≠ gratis: el coste sigue siendo lineal."],
-   ["t₁…t₅","las cinco piezas del contexto: sistema, memoria persistente, RAG, histórico, pregunta actual; compiten por B (Ec. 6)."],
-   ["context engineering","decidir qué información entra al contexto, en qué orden y a qué coste: máx 𝔼[calidad] s.a. Σt_i ≤ B. Sustituyó al prompt engineering."],
-   ["RAG","Retrieval-Augmented Generation: recuperar documentos relevantes y pegarlos al contexto (Tema 6)."],
-   ["truncar / resumir","las dos salidas al desbordamiento: tirar lo antiguo (gratis, pierde información) o comprimir ~4× con una llamada extra."],
-   ["lost in the middle","degradación de la recuperación en posiciones centrales del contexto largo (curva en U, Liu et al. 2023): lo crítico, al principio o al final."],
-   ["acc(s)","probabilidad de recuperar un dato en la posición relativa s: a − d_ef·4s(1−s) − b·s en el modelo didáctico de hoy."],
-   ["latencia","segundos hasta completar la respuesta; restricción que descalifica modelos antes que el precio."],
-   ["m*","el modelo óptimo: arg máx calidad s.a. presupuesto, latencia y ventana. No existe 'el mejor modelo' sin restricciones."],
-   ["coste fijo vs marginal","local = servidor (~300 $/mes) + ~0 por petición; cloud = puro coste por token. El volumen R decide cuál gana."],
-   ["KV cache","estados internos precomputados de los tokens del prefijo; lo que el proveedor guarda para cobrarte el 30%."]];
-  const div=document.getElementById("glos");
-  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
-    "</div><div>"+e[1]+"</div></div>").join("");
-  updaters[9]=function(){};
-})();
-
-updaters[10]=function(){};
-
-/* ================= boot ================= */
-function fromHash(){const m=location.hash.match(/^#(\d+)$/);
-  return m?Math.max(0,Math.min(10,+m[1])):0;}
-window.addEventListener("hashchange",()=>go(fromHash()));
-go(fromHash());
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+buildNav();
+hot('T');
+go(0);
 </script>
 </body>
 </html>

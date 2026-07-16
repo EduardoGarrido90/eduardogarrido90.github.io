@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Día 16 — Adaptación de LLMs (SFT, LoRA, RLHF, DPO) — slides interactivas</title>
+<title>Día 16 — LoRA — slide interactiva</title>
 <style>
   :root{
     --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
@@ -12,2047 +12,309 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#fff;color:var(--ink);
     font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:16px;}
-  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
     letter-spacing:0.03em;flex-wrap:wrap}
   #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
   #navstrip span.cur{color:var(--gold);font-weight:bold}
-  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
-  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
-  .slide{display:none;padding:14px 24px 64px 24px;
-    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
   .slide.active{display:grid}
-  .figcol canvas{width:100%;display:block;margin-bottom:10px;
-    border:1px solid #eee;border-radius:2px}
-  .txtcol{font-size:0.9em;line-height:1.4}
-  .txtcol p{margin:0 0 9px 0}
-  .txtcol .hd{font-weight:bold}
-  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:10px 12px;margin-bottom:12px}
-  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
-  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
-  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
-    margin-right:6px}
-  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
-    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
-  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
   .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
-    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
-  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
-    font-size:0.9em;margin:4px 0}
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
   .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
   .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
-  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
-  .mut{color:var(--mute)}
-  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
-    font-size:0.84em;color:#333}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.5em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.12em;
+    font-variant-numeric:tabular-nums;color:#444}
+  /* highlightable equation terms */
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
   .miniglos b{color:var(--goldDeep)}
-  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
-  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
-    font-weight:bold}
-  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
-    font-variant-numeric:tabular-nums}
-  table.live th:first-child,table.live td:first-child{text-align:left}
-  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
     background:#fff;padding:0 4px}
-  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
     font-style:italic;background:#fff;padding:0 4px}
-  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
-    padding:0 6px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
   #arrows button{font-family:inherit;font-size:1em;background:#fff;
     border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
-    padding:2px 14px;cursor:pointer;margin:0 4px}
+    padding:2px 16px;cursor:pointer;margin:0 4px}
   #arrows button:hover{background:var(--goldPale)}
-  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
-  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
-    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
-  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
-  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
-  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
-  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
-  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
-    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
-  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
-  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
-  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
-  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
-  .eqread b{color:var(--goldDeep)}
-  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
-    font-size:0.93em}
-  .frac .num,.frac .den{display:block;padding:0 4px}
-  .frac .den{border-top:1.1px solid var(--ink)}
-  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:9px 13px;margin:10px 0;font-size:0.88em}
-  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
-  .guide ol{margin:4px 0 4px 18px;padding:0}
-  .guide li{margin:0 0 7px 0;line-height:1.4}
-  .guide .obs{color:var(--goldDeep);font-style:italic}
-  details.check{margin-top:6px}
-  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
-  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
-    border-left:3px solid var(--gold);line-height:1.4}
-  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
-  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
-    grid-template-columns:30% 70%}
-  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
-  .pairwrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
-  .pairbox{border:1px solid var(--rule);border-radius:4px;padding:7px 9px;
-    font-size:0.84em;background:#fff;line-height:1.35;min-height:5.2em}
-  .pairbox .plab{font-weight:bold;color:var(--goldDeep);font-size:0.88em;display:block;
-    margin-bottom:2px}
 </style>
 </head>
 <body>
-
 <div id="navstrip"></div>
 <div id="slidetitle"></div>
 <hr id="goldrule">
 
-<!-- ============ SLIDE 0 : la escalera de coste ============ -->
+<!-- ============ SLIDE 1: interactiva ============ -->
 <section class="slide" id="s0">
   <div class="figcol">
-    <canvas id="cv0a" data-aspect="1.95"></canvas>
-    <canvas id="cv0b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">TCO<sub>12</sub> = C<sub>fijo</sub> + 12&middot;c<sub>q</sub>&middot;Q + c<sub>e</sub>&middot;n<span class="eqn">(modelo de coste)</span></div>
-      <div class="eqread">coste total de propiedad a 12 meses: <b>C<sub>fijo</sub></b> = puesta en
-        marcha (indexar el corpus, horas de prompt engineering, GPU del fine-tune);
-        <b>c<sub>q</sub></b> = coste marginal por consulta (en RAG &asymp; 0,02 &euro; por
-        embeddings + tokens extra de contexto, cifra de la nota t&eacute;cnica);
-        <b>Q</b> = consultas/mes; <b>c<sub>e</sub></b> = euros por ejemplo etiquetado;
-        <b>n</b> = ejemplos. Cada t&eacute;cnica activa unos t&eacute;rminos y apaga otros.</div>
-      <div class="eq">prompt &lt; RAG &lt; LoRA &lt; SFT total &lt; DPO &lt; RLHF<span class="eqn">(escalera de c&oacute;mputo)</span></div>
-      <div class="eqread">la escalera del deck ordena el <b>c&oacute;mputo</b>. Con el etiquetado
-        dentro (TCO), SFT total (50&thinsp;000 ejemplos &times; 2 &euro;) llega a superar a DPO.
-        La regla de la nota t&eacute;cnica: <b>sube de pelda&ntilde;o solo cuando el inferior se
-        quede corto</b>.</div>
+    <div class="eqpanel">
+      <div class="eqtitle">La ecuación de LoRA</div>
+      <div class="eq">
+        W&prime; = W + (
+        <span class="term" id="t_alpha">&alpha;</span> /
+        <span class="term" id="t_r">r</span> )&middot;B&middot;A
+      </div>
+      <div class="eqnum">
+        W&prime; = W + (
+        <span class="nterm" id="n_alpha">8</span> /
+        <span class="nterm" id="n_r">4</span> )&middot;B&middot;A ,
+        escala efectiva = <b id="n_scale">2.00</b>
+      </div>
     </div>
+    <canvas id="cv" width="720" height="360"></canvas>
   </div>
   <div class="txtcol">
+    <p><span class="hd">El caso.</span> Una empresa SaaS quiere adaptar un LLM
+    enorme a su dominio (soporte, jerga interna, tono de marca) <b>sin</b> pagar el
+    coste de reentrenarlo entero. LoRA congela los pesos originales W y solo
+    entrena dos matrices finas, <b>B</b> y <b>A</b>, de rango r.</p>
+
     <div class="ctrlbox">
-      <label>consultas al mes, Q = <b id="r0q"></b></label>
-      <input type="range" id="sl0q" min="2" max="5" step="0.05" value="3.3">
-      <label>ejemplos etiquetados para LoRA, n = <b id="r0n"></b></label>
-      <input type="range" id="sl0n" min="100" max="10000" step="100" value="1000">
+      <div class="row"><span class="lab">r</span>
+        <input type="range" id="r" min="1" max="16" step="1" value="4"
+          oninput="hot('r');upd()"><span class="val" id="v_r">4</span></div>
+      <div class="row"><span class="lab">&alpha;</span>
+        <input type="range" id="alpha" min="1" max="32" step="1" value="8"
+          oninput="hot('alpha');upd()"><span class="val" id="v_alpha">8</span></div>
     </div>
-    <div class="readout" id="ro0"></div>
-    <table class="live">
-      <thead><tr><th>T&eacute;cnica</th><th>Datos</th><th>TCO 12 m</th></tr></thead>
-      <tbody id="tb0"></tbody>
-    </table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Sube Q hasta 100&thinsp;000 consultas/mes. <span class="obs">El TCO de RAG escala
-        lineal hasta &asymp;24&thinsp;200 &euro;/a&ntilde;o y cruza la l&iacute;nea plana de
-        LoRA: el punto dorado del panel inferior marca el cruce Q*.</span></li>
-      <li>Baja n a 100 ejemplos. <span class="obs">LoRA cae a 250 &euro; y el cruce Q* se
-        desploma a &asymp;200 consultas/mes: con pocos datos que etiquetar, LoRA amortiza
-        casi desde el primer d&iacute;a.</span></li>
-      <li>Mira la tabla: SFT total y RLHF no se mueven con tus sliders.
-        <span class="obs">Su coste lo domina el etiquetado masivo (100&thinsp;k&euro; /
-        30&thinsp;k&euro;), no la GPU: por eso casi nadie los hace en producci&oacute;n.</span></li>
-      <li>Busca la pareja (Q, n) donde RAG y LoRA empatan exactamente.
-        <span class="obs">La frontera es la recta Q* = (2n &minus; 150)/0,24: la
-        decisi&oacute;n RAG vs LoRA es aritm&eacute;tica, no fe.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: si el prompt engineering tiene
-        el TCO m&aacute;s bajo, &iquest;por qu&eacute; no gana siempre?</summary>
-        <div class="ans">Porque el eje de coste no captura la calidad: el prompting no cambia
-        &theta; y no puede aprender un tono o formato fino, ni meter en contexto un
-        conocimiento que no cabe. La escalera se sube cuando la <i>calidad</i> del
-        pelda&ntilde;o inferior se queda corta, nunca por gusto: esa es la regla
-        pr&aacute;ctica de la nota t&eacute;cnica, y el resto del d&iacute;a explica
-        qu&eacute; compra exactamente cada pelda&ntilde;o.</div></details></div>
-    <p><span class="hd">Setup.</span> Un banco tipo BBVA quiere un asistente interno sobre su
-      normativa y con su tono. Sobre el LLM base f<sub>&theta;&#8320;</sub> hay cinco
-      v&iacute;as de adaptaci&oacute;n (tabla de la nota t&eacute;cnica): prompting/few-shot
-      y RAG no tocan &theta;; LoRA entrena adaptadores diminutos; SFT total y RLHF/DPO tocan
-      muchos m&aacute;s pesos y muchos m&aacute;s euros. Arriba: cada t&eacute;cnica como un
-      punto en el cuadrante datos &times; coste (ambos ejes log), con los puntos de RAG y
-      LoRA movi&eacute;ndose con tus sliders. Abajo: el TCO anual de RAG (crece con Q) contra
-      el de LoRA (plano en Q), con su cruce Q* calculado en vivo.</p>
-    <p><span class="hd">Juega.</span> El caso Telef&oacute;nica del deck vive aqu&iacute;:
-      LoRA con 1&thinsp;000 ejemplos son &asymp;2&thinsp;050 &euro; todo incluido (50 &euro;
-      de GPU, el resto datos) frente a los 10&thinsp;000 &euro; de GPU del full fine-tuning
-      sin contar sus 50&thinsp;000 ejemplos. Mueve Q y n y observa qu&eacute;
-      t&eacute;cnicas se mueven contigo y cu&aacute;les son rocas.</p>
-    <p><span class="hd">Lee as&iacute;.</span> El cuadrante es el mapa del d&iacute;a: hoy
-      bajaremos a la matem&aacute;tica de LoRA (por qu&eacute; 50 &euro; bastan), de SFT
-      (qu&eacute; compra cada ejemplo), y de RLHF/DPO (qu&eacute; pasa cuando la calidad es
-      una preferencia y no una etiqueta).</p>
-    <p><span class="hd">Mensaje.</span> Para el 90&thinsp;% de los casos corporativos, la
-      respuesta es RAG + LoRA. El resto del deck te da los n&uacute;meros para defender esa
-      frase delante de un comit&eacute; de inversi&oacute;n.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>TCO</b>: coste total de propiedad (fijo +
-      por consulta + etiquetado). <b>RAG</b>: recuperar documentos e inyectarlos en el
-      prompt, sin tocar pesos. <b>LoRA</b>: adaptadores de rango bajo sobre el modelo
-      congelado. <b>Q*</b>: volumen de consultas donde dos t&eacute;cnicas empatan en
-      coste.</p>
+
+    <div class="readout" id="ro"></div>
+
+    <p><span class="hd">Lee así.</span> Mueve un slider: su símbolo se enciende en
+    <span style="color:var(--gold);font-weight:bold">dorado</span> dentro de la
+    ecuación. Al subir <b>r</b>, las barras muestran cómo el coste entrenable sube
+    de forma <b>lineal</b>, siempre minúsculo frente a W. <b>&alpha;</b> no cambia el
+    coste: solo escala la fuerza de la actualización, &alpha;/r.</p>
+
+    <div class="miniglos">
+      <b>W</b> pesos originales, congelados (no se entrenan). <b>r</b> rango: grosor
+      de B y A. <b>&alpha;</b> escala que gradúa cuánto se aplica la actualización.
+    </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 1 : LoRA idea ============ -->
+<!-- ============ SLIDE 2: cierre ============ -->
 <section class="slide" id="s1">
   <div class="figcol">
-    <canvas id="cv1a" data-aspect="1.95"></canvas>
-    <canvas id="cv1b" data-aspect="2.6"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">W&prime; = W + &Delta;W,&nbsp;&nbsp;&nbsp; &Delta;W = <span class="frac"><span class="num">&alpha;</span><span class="den">r</span></span>&thinsp;B&thinsp;A<span class="eqn">(Ec. LoRA)</span></div>
-      <div class="eqread">la matriz original <b>W &isin; R<sup>d&times;d</sup></b> queda
-        <b>congelada</b>; lo &uacute;nico entrenable es la perturbaci&oacute;n
-        &Delta;W, factorizada como producto de <b>B &isin; R<sup>d&times;r</sup></b>
-        (up-projection, inicializada a cero) por <b>A &isin; R<sup>r&times;d</sup></b>
-        (down-projection, inicializada gaussiana), con <b>r &Lt; d</b> y un factor de escala
-        <b>&alpha;/r</b> (t&iacute;picamente &alpha; = r o 2r).</div>
-      <div class="eq">#params: d&middot;d &nbsp;&rarr;&nbsp; r&middot;(d+d) = 2rd,&nbsp;&nbsp;&nbsp; <span class="frac"><span class="num">2rd</span><span class="den">d&sup2;</span></span> = <span class="frac"><span class="num">2r</span><span class="den">d</span></span><span class="eqn">(ahorro)</span></div>
-      <div class="eqread">de los <b>d&sup2;</b> par&aacute;metros del full fine-tuning a los
-        <b>2rd</b> de LoRA: el cociente 2r/d es la fracci&oacute;n entrenable. Con d = 4096
-        y r = 8 sale 0,39&thinsp;%: el factor &sim;1000&times; de la nota t&eacute;cnica
-        (en general, de mn a r(m+n)).</div>
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">W&prime; = W + (&alpha;/r)&middot;B&middot;A &nbsp;&nbsp; <span style="font-size:0.62em;color:var(--mute)">(W congelada)</span></div>
     </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
   </div>
   <div class="txtcol">
-    <div class="ctrlbox">
-      <label>dimensi&oacute;n de la capa, d = <b id="r1d"></b></label>
-      <input type="range" id="sl1d" min="512" max="8192" step="256" value="4096">
-      <label>rango del adaptador, r = <b id="r1r"></b></label>
-      <input type="range" id="sl1r" min="1" max="64" step="1" value="8">
-    </div>
-    <div class="readout" id="ro1"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Deja los valores por defecto (d = 4096, r = 8). <span class="obs">El readout da
-        16.777.216 par&aacute;metros congelados frente a 65.536 entrenables, el 0,39&thinsp;%:
-        los n&uacute;meros exactos de la slide del deck.</span></li>
-      <li>Sube r a 64. <span class="obs">La fracci&oacute;n entrenable sube solo al
-        3,1&thinsp;% y el factor de ahorro d/(2r) sigue siendo 32&times;: incluso el rango
-        "grande" es rid&iacute;culo al lado de W.</span></li>
-      <li>Con r = 8, sube d a 8192. <span class="obs">La fracci&oacute;n entrenable BAJA al
-        0,20&thinsp;%: cuanto m&aacute;s grande el modelo, m&aacute;s barato es LoRA en
-        t&eacute;rminos relativos (el ahorro escala con d).</span></li>
-      <li>Pon r = 1. <span class="obs">B y A son hilos de un p&iacute;xel en el dibujo a
-        escala, y aun as&iacute; mueven la salida de la capa entera en una direcci&oacute;n:
-        la slide del forward pass te ense&ntilde;a cu&aacute;l.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; B se
-        inicializa a cero y A gaussiana?</summary><div class="ans">Porque as&iacute;
-        &Delta;W = BA = 0 en el paso 0: el modelo adaptado arranca siendo <i>exactamente</i>
-        el modelo base, sin romper nada de lo aprendido. Y el gradiente no se atasca: como A
-        es gaussiana (no nula), &part;L/&part;B &prop; (&hellip;)A<sup>T</sup> &ne; 0 desde
-        el primer paso, y B empieza a crecer desde cero solo en las direcciones que los datos
-        piden. Si ambas fueran cero, el producto tendr&iacute;a gradiente nulo y nada
-        aprender&iacute;a.</div></details></div>
-    <p><span class="hd">Setup.</span> Una capa lineal de un LLM tipo Llama es una matriz W de
-      4096&times;4096. El full fine-tuning actualiza sus 16,7 millones de entradas (y hay
-      cientos de capas). LoRA congela W y a&ntilde;ade el rodeo B&middot;A: comprimir la
-      entrada de d dimensiones a r (matriz A), volver a expandir de r a d (matriz B). Arriba:
-      las tres matrices <i>dibujadas a escala real</i>; el &aacute;rea de cada
-      rect&aacute;ngulo es proporcional a su n&uacute;mero de par&aacute;metros. Abajo:
-      las mismas &aacute;reas como barras en escala logar&iacute;tmica.</p>
-    <p><span class="hd">Juega.</span> El dibujo a escala es el argumento de venta completo:
-      con r = 8 y d = 4096, B y A juntas son una franja casi invisible pegada a un continente.
-      Es la "gafa graduada" del deck: el cerebro (W) no se toca; la lente (BA) corrige la
-      salida. Y como W no cambia, puedes tener N lentes (legal, riesgos, marketing) y
-      cambiarlas en segundos sobre el mismo modelo base.</p>
-    <p><span class="hd">Lee as&iacute;.</span> El readout da los tres n&uacute;meros que
-      gobiernan el coste: par&aacute;metros congelados (d&sup2;), entrenables (2rd) y su
-      cociente. La GPU solo necesita gradientes y estados de optimizador para los segundos:
-      de ah&iacute; saldr&aacute; la slide de memoria.</p>
-    <p><span class="hd">Mensaje.</span> LoRA no es un truco de compresi&oacute;n del modelo:
-      es una <i>parametrizaci&oacute;n del cambio</i>. La pregunta de por qu&eacute; un
-      cambio de rango 8 basta para adaptar una matriz de rango 4096 la responde la slide
-      siguiente, con una SVD de verdad.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>rango r</b>: n&uacute;mero de direcciones
-      independientes del cambio &Delta;W. <b>down/up-projection</b>: A comprime
-      (r&times;d), B expande (d&times;r). <b>&alpha;</b>: escala fija de la
-      correcci&oacute;n, no se aprende. <b>congelar</b>: excluir de gradientes y
-      optimizador.</p>
+    <p><span class="hd">La idea.</span> En vez de tocar los millones de pesos de W,
+    LoRA aprende una corrección de <b>rango bajo</b>: el producto B&middot;A. Dos
+    matrices finas bastan para reorientar el modelo hacia tu dominio.</p>
+    <p><span class="hd">Negocio.</span> La empresa SaaS entrena en horas, en una
+    sola GPU, y guarda un adaptador de pocos MB por cliente en vez de una copia
+    entera del modelo. Menos cómputo, menos memoria, despliegue barato.</p>
+    <p><span class="hd">Y ahora.</span> LoRA adapta el <b>qué sabe</b> el modelo.
+    Alinear el <b>cómo responde</b> con las preferencias humanas es otra vía:
+    <b>RLHF</b> y <b>DPO</b>. Combinadas, adaptan un LLM al negocio a coste
+    contenido.</p>
   </div>
 </section>
 
-<!-- ============ SLIDE 2 : rango y SVD ============ -->
-<section class="slide" id="s2">
-  <div class="figcol">
-    <canvas id="cv2a" data-aspect="2.0"></canvas>
-    <canvas id="cv2b" data-aspect="2.3"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">M = <big>&Sigma;</big><sub>k=1..d</sub>&nbsp;&sigma;<sub>k</sub>&thinsp;u<sub>k</sub>v<sub>k</sub><sup>T</sup>,&nbsp;&nbsp;&nbsp; M<sub>r</sub> = <big>&Sigma;</big><sub>k=1..r</sub>&nbsp;&sigma;<sub>k</sub>&thinsp;u<sub>k</sub>v<sub>k</sub><sup>T</sup><span class="eqn">(SVD truncada)</span></div>
-      <div class="eqread">toda matriz es una suma de capas de rango 1, ordenadas por
-        importancia <b>&sigma;<sub>1</sub> &ge; &sigma;<sub>2</sub> &ge; &hellip;</b>
-        (valores singulares). Quedarse con las r primeras capas es la SVD truncada: una
-        matriz de rango r, igual que el producto BA de LoRA.</div>
-      <div class="eq">E(r) = <span class="frac"><span class="num">&#8214;M&minus;M<sub>r</sub>&#8214;<sub>F</sub></span><span class="den">&#8214;M&#8214;<sub>F</sub></span></span> = <big>(</big><span class="frac"><span class="num">&Sigma;<sub>k&gt;r</sub>&thinsp;&sigma;<sub>k</sub>&sup2;</span><span class="den">&Sigma;<sub>k</sub>&thinsp;&sigma;<sub>k</sub>&sup2;</span></span><big>)</big><sup>1/2</sup><span class="eqn">(Eckart&ndash;Young)</span></div>
-      <div class="eqread">el teorema de Eckart&ndash;Young: <b>ninguna</b> matriz de rango r
-        aproxima mejor a M que su SVD truncada, y el error que pagas es exactamente la
-        energ&iacute;a de los valores singulares descartados. Si el espectro se hunde
-        r&aacute;pido, r peque&ntilde;o casi no pierde: la raz&oacute;n geom&eacute;trica de
-        que LoRA funcione.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>rango retenido, r = <b id="r2r"></b> (de 22 posibles)</label>
-      <input type="range" id="sl2r" min="1" max="22" step="1" value="4">
-      <button id="bt2">otra matriz (otra semilla)</button>
-    </div>
-    <div class="readout" id="ro2"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Pon r = 1. <span class="obs">El heatmap reconstruido ya recuerda a M: una sola
-        capa de rango 1 captura la mayor parte de la energ&iacute;a (m&iacute;ralo en el
-        readout).</span></li>
-      <li>Sube a r = 4. <span class="obs">El error relativo cae por debajo del
-        &asymp;15&thinsp;% y la curva inferior se aplana: las 18 dimensiones restantes son
-        casi puro ruido.</span></li>
-      <li>Lleva r a 22. <span class="obs">Error exactamente 0: con rango completo la SVD
-        reproduce M&hellip; pero almacenas 484 n&uacute;meros en vez de los 180 de
-        r = 4.</span></li>
-      <li>Pulsa "otra matriz" varias veces con r = 4. <span class="obs">El codo de la curva
-        se queda siempre en r &asymp; 4: no era suerte de una semilla; es la estructura
-        (rango efectivo) de la matriz la que manda.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: &iquest;qu&eacute; tiene que
-        ver Eckart&ndash;Young con que r = 8 baste en LoRA?</summary><div class="ans">
-        Eckart&ndash;Young dice que la mejor aproximaci&oacute;n de rango r es la SVD truncada
-        y que su error es la energ&iacute;a de las &sigma; descartadas. Hu et al. midieron
-        que el &Delta;W que produce el fine-tuning <i>completo</i> tiene un espectro que se
-        hunde r&aacute;pido: la actualizaci&oacute;n &uacute;til vive en un subespacio de
-        dimensi&oacute;n peque&ntilde;a, como nuestra M de juguete. Parametrizar el cambio
-        directamente como BA de rango 8 descarta casi solo ruido. Ojo: el teorema habla de
-        aproximar una matriz dada; LoRA <i>aprende</i> su BA por gradiente, pero la
-        garant&iacute;a de que el objetivo es alcanzable con rango bajo viene de
-        aqu&iacute;.</div></details></div>
-    <p><span class="hd">Setup.</span> Genero una matriz M de 22&times;22 con estructura
-      (cuatro patrones suaves de pesos 10, 4, 2 y 1) m&aacute;s ruido peque&ntilde;o: el
-      mismo aspecto que tiene el &Delta;W de un fine-tuning real. El JS calcula su SVD de
-      verdad: diagonaliza M<sup>T</sup>M con rotaciones de Jacobi (un algoritmo
-      cl&aacute;sico de &aacute;lgebra num&eacute;rica, ejecutado en tu navegador ahora
-      mismo), extrae los 22 valores singulares y reconstruye M<sub>r</sub> con las r capas
-      m&aacute;s importantes. Arriba: M original y su reconstrucci&oacute;n lado a lado.
-      Abajo: el espectro &sigma;<sub>k</sub> (barras, doradas las retenidas) y la curva de
-      error E(r) con tu r marcado.</p>
-    <p><span class="hd">Juega.</span> El espectro es la radiograf&iacute;a: cuatro barras
-      grandes y un suelo plano de ruido. El error cae a plomo mientras recorres las barras
-      grandes y se arrastra despu&eacute;s: cada rango extra a partir del codo compra
-      casi nada. Ese codo es el "r" que eliges en LoRA.</p>
-    <p><span class="hd">Lee as&iacute;.</span> El readout traduce a almacenamiento: M
-      completa son 484 n&uacute;meros; el formato factorizado son 45r (las u<sub>k</sub>,
-      v<sub>k</sub> y &sigma;<sub>k</sub>). En la capa real de la slide anterior la misma
-      cuenta es d&sup2; contra 2rd.</p>
-    <p><span class="hd">Mensaje.</span> LoRA funciona porque los cambios que pide una
-      adaptaci&oacute;n (tono BBVA, formato de factura) son de rango efectivo bajo. No es un
-      milagro de deep learning: es Eckart&ndash;Young aplicado al fine-tuning.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>&sigma;<sub>k</sub></b>: valores
-      singulares, la "importancia" de cada capa de rango 1. <b>&#8214;&middot;&#8214;<sub>F</sub></b>:
-      norma de Frobenius (ra&iacute;z de la suma de cuadrados). <b>Jacobi</b>: m&eacute;todo
-      iterativo que anula entradas fuera de la diagonal con rotaciones 2&times;2.
-      <b>rango efectivo</b>: cu&aacute;ntas &sigma; sobresalen del ruido.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 3 : forward pass ============ -->
-<section class="slide" id="s3">
-  <div class="figcol">
-    <canvas id="cv3a" data-aspect="1.9"></canvas>
-    <canvas id="cv3b" data-aspect="2.4"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">W&prime;x = Wx + <span class="frac"><span class="num">&alpha;</span><span class="den">r</span></span>&thinsp;B(Ax)<span class="eqn">(forward LoRA)</span></div>
-      <div class="eqread">en inferencia nunca se forma &Delta;W: se calcula <b>Ax</b> (un
-        vector de r n&uacute;meros: cu&aacute;nto "activa" x cada direcci&oacute;n del
-        adaptador), se reexpande con <b>B</b> y se suma a la salida original. La
-        correcci&oacute;n es <b>aditiva</b> y de rango r.</div>
-      <div class="eq">W = <big>(</big>1&nbsp;2; 3&nbsp;4<big>)</big>, A = (0.1,&thinsp;0.2), B = (0.5,&thinsp;0.3)<sup>T</sup>, x = (1,1)<sup>T</sup> &nbsp;&rArr;&nbsp; W&prime;x = (3.15,&thinsp;7.09)<sup>T</sup><span class="eqn">(ejemplo del deck)</span></div>
-      <div class="eqread">con &alpha; = r = 1: <b>Wx = (3, 7)<sup>T</sup></b>;
-        <b>Ax = 0.1&middot;1 + 0.2&middot;1 = 0.3</b> (un escalar, porque r = 1);
-        <b>B&middot;0.3 = (0.15, 0.09)<sup>T</sup></b>; suma: (3.15, 7.09)<sup>T</sup>.
-        Los sliders de esta slide reproducen exactamente esta cuenta.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>entrada x&#8321; = <b id="r3x1"></b></label>
-      <input type="range" id="sl3x1" min="-2" max="2" step="0.1" value="1">
-      <label>entrada x&#8322; = <b id="r3x2"></b></label>
-      <input type="range" id="sl3x2" min="-2" max="2" step="0.1" value="1">
-      <label>escala del adaptador &alpha; = <b id="r3al"></b> (r = 1 fijo)</label>
-      <input type="range" id="sl3al" min="0.25" max="4" step="0.25" value="1">
-    </div>
-    <div class="readout" id="ro3"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Deja los valores por defecto (x = (1,1), &alpha; = 1). <span class="obs">El
-        readout reproduce el deck d&iacute;gito a d&iacute;gito: Wx = (3, 7), BAx =
-        (0.15, 0.09), W&prime;x = (3.15, 7.09).</span></li>
-      <li>Sube &alpha; a 4. <span class="obs">La flecha dorada se estira exactamente
-        &times;4: &alpha;/r es el volumen de la correcci&oacute;n, un hiperpar&aacute;metro
-        que t&uacute; fijas, no algo aprendido.</span></li>
-      <li>Pon x = (2, &minus;1). <span class="obs">Ax = 0.1&middot;2 &minus; 0.2 = 0: la
-        correcci&oacute;n desaparece por completo. LoRA solo act&uacute;a sobre la
-        componente de x en la direcci&oacute;n que A "mira"; lo ortogonal pasa
-        intacto.</span></li>
-      <li>Mueve x&#8322; de &minus;2 a 2. <span class="obs">La flecha dorada cambia de
-        tama&ntilde;o y de signo pero SIEMPRE apunta seg&uacute;n B = (0.5, 0.3): con r = 1
-        solo existe una direcci&oacute;n de salida posible.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: si B(Ax) solo puede apuntar
-        en la direcci&oacute;n de B, &iquest;c&oacute;mo adapta nada &uacute;til?</summary>
-        <div class="ans">Esta demo es el &aacute;tomo del mecanismo: una capa, r = 1. En el
-        modelo real hay una pareja (B, A) por cada matriz adaptada (W<sub>q</sub> y
-        W<sub>v</sub> de cada bloque de atenci&oacute;n) y r &gt; 1 da r direcciones de
-        entrada y r de salida por matriz. Decenas de capas &times; 2 matrices &times; r
-        direcciones, compuestas a trav&eacute;s de no-linealidades, generan un cambio de
-        comportamiento rico &mdash; aunque cada &aacute;tomo sea tan r&iacute;gido como el
-        que tienes delante.</div></details></div>
-    <p><span class="hd">Setup.</span> Esta es la slide del deck "LoRA forward pass" hecha
-      manipulable. W = (1 2; 3 4) congelada, el adaptador con los valores exactos del deck
-      (A = (0.1, 0.2), B = (0.5, 0.3)<sup>T</sup>) y t&uacute; controlas la entrada x y la
-      escala &alpha;. Arriba: el plano de salida con la flecha tinta Wx (lo que dec&iacute;a
-      el modelo base), la flecha dorada (&alpha;/r)B(Ax) colgada de su punta (la
-      correcci&oacute;n del adaptador) y la flecha profunda W&prime;x (lo que dice el modelo
-      adaptado). Abajo: las mismas cantidades por componente, como barras.</p>
-    <p><span class="hd">Juega.</span> La geometr&iacute;a cuenta la historia entera: Ax
-      <i>proyecta</i> la entrada sobre la direcci&oacute;n que el adaptador vigila (un solo
-      n&uacute;mero con r = 1) y B decide hacia d&oacute;nde empujar la salida con esa
-      intensidad. Hay entradas invisibles para el adaptador (las ortogonales a A) y una
-      &uacute;nica direcci&oacute;n de empuje (la de B).</p>
-    <p><span class="hd">Lee as&iacute;.</span> En producci&oacute;n hay dos opciones que el
-      deck menciona: fusionar (W&prime; = W + (&alpha;/r)BA una sola vez, coste de
-      inferencia id&eacute;ntico al base) o mantener el rodeo separado para conmutar
-      adaptadores por departamento sin recargar los 7B de par&aacute;metros.</p>
-    <p><span class="hd">Mensaje.</span> El forward de LoRA es una perturbaci&oacute;n aditiva
-      de rango bajo sobre la salida original: nada m&aacute;s, y por eso es tan barato y tan
-      seguro (apagar el adaptador devuelve el modelo base exacto).</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Ax</b>: proyecci&oacute;n de la entrada en
-      las r direcciones del adaptador. <b>fusionar</b>: sumar BA a W tras entrenar, para
-      servir sin coste extra. <b>conmutar adaptadores</b>: cambiar de BA en caliente, mismo
-      W base.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 4 : calidad vs r y memoria GPU ============ -->
-<section class="slide" id="s4">
-  <div class="figcol">
-    <canvas id="cv4a" data-aspect="1.95"></canvas>
-    <canvas id="cv4b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">q(r) = q<sub>&infin;</sub> &minus; (q<sub>&infin;</sub>&minus;q<sub>0</sub>)&thinsp;e<sup>&minus;r/r&#8320;</sup><span class="eqn">(saturaci&oacute;n emp&iacute;rica)</span></div>
-      <div class="eqread">modelo de la curva calidad&ndash;rango con las cifras del deck:
-        <b>q<sub>&infin;</sub> = 91</b> (la calidad del full fine-tuning, que LoRA iguala),
-        <b>q<sub>0</sub> = 62</b> (prompting sin adaptar) y <b>r&#8320; = 3</b>. Cada
-        duplicaci&oacute;n de r compra la mitad que la anterior: rendimiento decreciente
-        puro.</div>
-      <div class="eq">M<sub>full</sub> &asymp; 16&middot;N<sub>&theta;</sub>,&nbsp;&nbsp; M<sub>LoRA</sub> &asymp; 2&middot;N<sub>&theta;</sub> + 16&middot;N<sub>ad</sub>,&nbsp;&nbsp; M<sub>QLoRA</sub> &asymp; 0.55&middot;N<sub>&theta;</sub> + 16&middot;N<sub>ad</sub><span class="eqn">(bytes de GPU)</span></div>
-      <div class="eqread">full fine-tuning: 16 bytes por par&aacute;metro (peso fp16 +
-        gradiente fp16 + momentos de Adam m, v en fp32 + copia maestra fp32). LoRA: el
-        99,6&thinsp;% congelado solo paga sus 2 bytes de peso; los 16 van solo a
-        <b>N<sub>ad</sub> = 4&middot;r&middot;d&middot;L</b> (adaptadores en W<sub>q</sub> y
-        W<sub>v</sub> de las L capas). QLoRA: el base cuantizado a 4 bits NF4
-        (&asymp;0,55 bytes/par&aacute;metro con overhead).</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>rango LoRA, r = 2<sup>k</sup> = <b id="r4r"></b></label>
-      <input type="range" id="sl4r" min="0" max="6" step="1" value="3">
-      <label>tama&ntilde;o del modelo: <b id="r4m"></b></label>
-      <input type="range" id="sl4m" min="0" max="4" step="1" value="2">
-    </div>
-    <div class="readout" id="ro4"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con el modelo 8B, sube r de 1 a 8. <span class="obs">La calidad pasa de
-        &asymp;70 a &asymp;89 puntos; lee &Delta;q en el readout: cada duplicaci&oacute;n
-        compra menos que la anterior.</span></li>
-      <li>Sigue hasta r = 64. <span class="obs">Apenas +0,1 puntos sobre r = 16 pagando
-        4&times; m&aacute;s par&aacute;metros: pasado el punto dulce (marcado en oro), el
-        rango es vanidad.</span></li>
-      <li>Cambia al modelo 70B y mira las barras. <span class="obs">Full FT: &asymp;1.043 GB
-        (m&aacute;s de 13 A100); LoRA: &asymp;131 GB (tampoco cabe en una GPU); QLoRA:
-        &asymp;36 GB &mdash; cabe en una A6000 de 48 GB, la promesa literal de la nota
-        t&eacute;cnica.</span></li>
-      <li>Cambia al modelo 1B. <span class="obs">Hasta el full fine-tuning cabe en una
-        RTX 4090 de 24 GB: con modelos peque&ntilde;os el debate LoRA vs full es de coste y
-        comodidad, no de posibilidad f&iacute;sica.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: si el peso fp16 ocupa 2 bytes,
-        &iquest;de d&oacute;nde salen los 16 del full fine-tuning?</summary><div class="ans">
-        Del optimizador: gradiente fp16 (2) + momento m de Adam en fp32 (4) + momento v en
-        fp32 (4) + copia maestra del peso en fp32 (4) = 14, m&aacute;s los 2 del peso: 16
-        bytes por par&aacute;metro. El optimizador pesa 7 veces m&aacute;s que el modelo.
-        Congelar un par&aacute;metro elimina TODO eso y deja solo los 2 bytes de su peso
-        (0,5 si adem&aacute;s lo cuantizas a NF4): por eso LoRA divide la memoria entre
-        &asymp;8 y QLoRA entre &asymp;29.</div></details></div>
-    <p><span class="hd">Setup.</span> Dos preguntas de negocio en una slide. Primera:
-      &iquest;cu&aacute;nta calidad compra cada punto de rango? La curva superior es el
-      modelo de saturaci&oacute;n q(r) anclado en las cifras del deck (prompting 62, full FT
-      91, LoRA r = 8 &asymp; 89). Segunda: &iquest;qu&eacute; GPU necesito? Las barras
-      inferiores calculan los bytes reales de full FT, LoRA y QLoRA para el modelo elegido
-      (con sus L capas y dimensi&oacute;n d reales), contra las l&iacute;neas de 24, 48 y
-      80 GB de las GPUs t&iacute;picas.</p>
-    <p><span class="hd">Juega.</span> El punto dulce del rango (el m&iacute;nimo r que se
-      queda a menos de 1 punto del techo) se marca solo: con estas cifras es r = 16, y r = 8
-      se queda a 2 puntos por 2&times; menos par&aacute;metros &mdash; por eso 8 y 16 son
-      los valores por defecto en la industria. La memoria, en cambio, casi no depende de r:
-      los adaptadores son ruido al lado del modelo base.</p>
-    <p><span class="hd">Lee as&iacute;.</span> Los badges del readout dicen si cada
-      m&eacute;todo cabe en cada GPU. La frase para el comit&eacute;: "QLoRA convierte un
-      cl&uacute;ster de 13 A100 en una sola tarjeta de estaci&oacute;n de trabajo".</p>
-    <p><span class="hd">Mensaje.</span> El rango se elige por la curva de calidad (codo en
-      8&ndash;16) y la t&eacute;cnica por la memoria (QLoRA si el modelo no cabe). Las dos
-      decisiones son independientes y las dos est&aacute;n en esta pantalla.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>N<sub>&theta;</sub></b>: par&aacute;metros
-      del modelo base. <b>N<sub>ad</sub></b>: par&aacute;metros de los adaptadores,
-      4rdL. <b>NF4</b>: NormalFloat de 4 bits, la cuantizaci&oacute;n de QLoRA.
-      <b>punto dulce</b>: m&iacute;nimo r con q(r) &ge; q<sub>&infin;</sub> &minus; 1.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 5 : SFT ============ -->
-<section class="slide" id="s5">
-  <div class="figcol">
-    <canvas id="cv5a" data-aspect="1.95"></canvas>
-    <canvas id="cv5b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">L<sub>SFT</sub>(&theta;) = &minus;<span class="frac"><span class="num">1</span><span class="den">N</span></span><big>&Sigma;</big><sub>i=1..N</sub>&nbsp;log&thinsp;p<sub>&theta;</sub>(y<sub>i</sub>&thinsp;|&thinsp;x<sub>i</sub>)<span class="eqn">(p&eacute;rdida de imitaci&oacute;n)</span></div>
-      <div class="eqread">el fine-tuning supervisado minimiza la misma p&eacute;rdida de
-        next-token del pre-entrenamiento, pero sobre <b>tus</b> pares (instrucci&oacute;n
-        x<sub>i</sub>, respuesta y<sub>i</sub>): imitaci&oacute;n pura de demostraciones
-        humanas. Nada de recompensas: el dato dice exactamente qu&eacute; producir.</div>
-      <div class="eq">p&#770;(y|x) = <span class="frac"><span class="num">c<sub>xy</sub>+&lambda;</span><span class="den">n<sub>x</sub>+&lambda;V</span></span>,&nbsp;&nbsp;&nbsp; CE(n) = &minus;<big>&Sigma;</big><sub>x</sub>&thinsp;p(x)<big>&Sigma;</big><sub>y</sub>&thinsp;p*(y|x)&thinsp;log&thinsp;p&#770;(y|x) &nbsp;&ge;&nbsp; H*<span class="eqn">(el juguete)</span></div>
-      <div class="eqread">nuestro "LLM" de juguete es el estimador de m&aacute;xima
-        verosimilitud suavizado (<b>c<sub>xy</sub></b> = veces que viste la respuesta y para
-        el prompt x; &lambda; = 0.5): el mejor imitador posible con n ejemplos. Su
-        p&eacute;rdida de test se calcula <b>exacta</b> contra la verdad p* y nunca baja de
-        <b>H*</b>, la entrop&iacute;a condicional verdadera: el suelo irreducible.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>ejemplos etiquetados, n = <b id="r5n"></b></label>
-      <input type="range" id="sl5n" min="0" max="7" step="1" value="2">
-      <label>coste de etiquetar, c = <b id="r5c"></b> &euro;/ejemplo</label>
-      <input type="range" id="sl5c" min="0.5" max="10" step="0.5" value="2">
-      <button id="bt5">nueva semilla (otros datasets)</button>
-    </div>
-    <div class="readout" id="ro5"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Pon n = 20. <span class="obs">La CE de test queda lejos del suelo H* y la nube de
-        24 r&eacute;plicas est&aacute; dispersa: con 20 ejemplos, cada dataset cuenta una
-        historia distinta.</span></li>
-      <li>Sube n hasta 640. <span class="obs">La CE casi toca H* y la calidad relativa
-        supera el 98&thinsp;%: la curva ha saturado; los datasets ya cuentan todos la misma
-        historia.</span></li>
-      <li>Con c = 2 &euro;, mira el punto dorado del panel inferior. <span class="obs">Marca
-        el n a partir del cual 100 &euro; m&aacute;s compran menos de medio punto de
-        calidad: el punto de rendimiento decreciente, calculado de la propia curva.</span></li>
-      <li>Sube c a 10 &euro; (anotador experto legal). <span class="obs">La curva
-        calidad&ndash;gasto se estira horizontalmente y el punto de parada se adelanta en n:
-        el &oacute;ptimo econ&oacute;mico depende del precio del dato, no solo de la
-        curva de aprendizaje.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: la CE de test nunca baja de
-        H*. &iquest;Es un defecto del modelo?</summary><div class="ans">No: H* es la
-        entrop&iacute;a condicional de la verdad p*(y|x). Aunque tengas infinitos ejemplos y
-        el imitador clave p&#770; = p*, las respuestas tienen aleatoriedad intr&iacute;nseca
-        (un mismo prompt admite varias respuestas v&aacute;lidas) y esa incertidumbre no se
-        puede imitar hasta desaparecer. En LLMs reales es la "p&eacute;rdida irreducible" de
-        los scaling laws. La consecuencia de negocio: presupuestar datos para perforar H* es
-        tirar el dinero; el punto dorado existe siempre.</div></details></div>
-    <p><span class="hd">Setup.</span> Un contact center tipo Telef&oacute;nica quiere que el
-      modelo responda con sus plantillas. El juguete: 4 tipos de prompt (saldo, queja, baja,
-      oferta) y 6 plantillas de respuesta, con una verdad p*(y|x) fijada (la plantilla
-      correcta sale con prob. 0,78; la gen&eacute;rica educada 0,12; el resto, ruido). El JS
-      muestrea n pares (x, y) de esa verdad, ajusta el imitador p&#770; por m&aacute;xima
-      verosimilitud y eval&uacute;a su cross-entropy de test <i>exacta</i> &mdash; y repite
-      todo 24 veces por cada n para que veas la varianza. Arriba: CE(n) con su nube de
-      r&eacute;plicas y el suelo H*. Abajo: calidad relativa
-      (e<sup>H*&minus;CE</sup>; 100&thinsp;% = imitador en el techo te&oacute;rico) contra
-      euros gastados (n &times; c), con el punto de rendimiento decreciente en oro.</p>
-    <p><span class="hd">Juega.</span> La curva de arriba es la curva de aprendizaje m&aacute;s
-      honesta que ver&aacute;s: sin trucos, es el MLE contra la verdad. Decae r&aacute;pido,
-      satura contra H*, y la nube de r&eacute;plicas se estrecha como 1/&radic;n.</p>
-    <p><span class="hd">Lee as&iacute;.</span> El deck dice "LoRA: 1K&ndash;10K ejemplos;
-      SFT total: 50K+". Esta slide es el porqu&eacute; econ&oacute;mico: el valor marginal
-      del ejemplo n-&eacute;simo cae exponencialmente, as&iacute; que el presupuesto de
-      etiquetado &oacute;ptimo se corta donde la curva del panel inferior se dobla, no donde
-      se acaba el dinero.</p>
-    <p><span class="hd">Mensaje.</span> SFT es imitaci&oacute;n con saturaci&oacute;n: compra
-      mucho al principio y casi nada despu&eacute;s. Cuando lo que falla ya no es
-      <i>qu&eacute;</i> responder sino <i>cu&aacute;l de dos respuestas v&aacute;lidas es
-      mejor</i>, el dato (x, y) se queda corto: hacen falta preferencias &mdash; siguiente
-      slide.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>p*(y|x)</b>: la verdad generadora del
-      juguete. <b>c<sub>xy</sub>, n<sub>x</sub></b>: conteos de entrenamiento.
-      <b>&lambda;</b>: suavizado de Laplace (evita log 0). <b>H*</b>: entrop&iacute;a
-      condicional verdadera, suelo de la CE. <b>CE</b>: cross-entropy de test.
-      <b>calidad relativa</b>: e<sup>H*&minus;CE</sup> &isin; (0, 1]; 100&thinsp;% cuando el
-      imitador alcanza el techo.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 6 : preferencias y Bradley-Terry ============ -->
-<section class="slide" id="s6">
-  <div class="figcol">
-    <canvas id="cv6a" data-aspect="2.2"></canvas>
-    <canvas id="cv6b" data-aspect="2.2"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">P(A &#8827; B) = &sigma;(r<sub>A</sub> &minus; r<sub>B</sub>) = <span class="frac"><span class="num">1</span><span class="den">1+e<sup>&minus;(r<sub>A</sub>&minus;r<sub>B</sub>)</sup></span></span><span class="eqn">(Bradley&ndash;Terry)</span></div>
-      <div class="eqread">cada respuesta tiene un <b>reward latente r</b>; la probabilidad de
-        preferir A sobre B solo depende de la <b>diferencia</b> r<sub>A</sub> &minus;
-        r<sub>B</sub> pasada por la sigmoide. Diferencia 0 = moneda al aire; +2 &asymp;
-        88&thinsp;%; +4 &asymp; 98&thinsp;%.</div>
-      <div class="eq">L<sub>RM</sub>(&phi;) = &minus;E<big>[</big>log&thinsp;&sigma;(r<sub>&phi;</sub>(x,y<sub>w</sub>) &minus; r<sub>&phi;</sub>(x,y<sub>l</sub>))<big>]</big>,&nbsp;&nbsp;&nbsp; <span class="frac"><span class="num">&part;L</span><span class="den">&part;r<sub>w</sub></span></span> = &minus;&sigma;(r<sub>l</sub>&minus;r<sub>w</sub>)<span class="eqn">(Ec. RM del deck)</span></div>
-      <div class="eqread">el reward model se entrena maximizando la verosimilitud de los votos
-        observados (y<sub>w</sub> = preferida, y<sub>l</sub> = rechazada). El gradiente sube
-        el reward del ganador y baja el del perdedor en proporci&oacute;n a lo
-        <b>sorprendente</b> que fue el voto: un resultado esperado casi no mueve nada. Esta
-        p&aacute;gina ejecuta ese ascenso por gradiente con cada voto tuyo (con una
-        regularizaci&oacute;n &#8467;&#8322; peque&ntilde;a, porque con pocos votos la
-        verosimilitud pura divergir&iacute;a).</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <div style="font-size:0.86em;margin-bottom:2px">Par <b id="r6p"></b> &mdash; el cliente
-        escribe: <i>"Llevo dos meses con cargos duplicados y nadie me responde."</i>
-        &iquest;Qu&eacute; respuesta prefieres?</div>
-      <div class="pairwrap">
-        <div class="pairbox"><span class="plab">Respuesta 1</span><span id="t6a"></span></div>
-        <div class="pairbox"><span class="plab">Respuesta 2</span><span id="t6b"></span></div>
-      </div>
-      <button id="bt6a">Prefiero la 1&ordf;</button>
-      <button id="bt6b">Prefiero la 2&ordf;</button>
-      <button id="bt6sim">+20 votos simulados de la clase</button>
-      <button id="bt6rst">reiniciar votos</button>
-    </div>
-    <div class="readout" id="ro6"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Vota los 5 primeros pares seg&uacute;n tu criterio. <span class="obs">Las barras
-        de reward se reajustan con CADA voto: est&aacute;s viendo el ascenso por gradiente
-        de L<sub>RM</sub> ejecutarse en vivo sobre tus datos.</span></li>
-      <li>Tras tus 5 votos, mira el heatmap. <span class="obs">El modelo ya predice
-        P(i &#8827; j) para pares que NUNCA le ense&ntilde;aste: si A gan&oacute; a B y B a
-        D, P(A &#8827; D) sale alta sola &mdash; transitividad emergente de la escala
-        com&uacute;n.</span></li>
-      <li>Pulsa "+20 votos simulados". <span class="obs">Las barras se estabilizan y la
-        log-verosimilitud por voto mejora: con pocos votos el ajuste era nervioso; con 25,
-        las posiciones se asientan.</span></li>
-      <li>Reinicia y vota 5 veces seguidas la respuesta m&aacute;s seca. <span class="obs">
-        El reward de la seca despega: el RM aprende TU preferencia, no "la verdad". Un
-        reward model es un espejo de sus anotadores &mdash; el germen del sesgo en
-        RLHF.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute;
-        comparaciones binarias y no notas de 1 a 10?</summary><div class="ans">Porque las
-        notas absolutas son inconsistentes entre anotadores (mi 7 es tu 5, y mi 7 de hoy no
-        es mi 7 de ma&ntilde;ana), mientras que el orden dentro de una pareja es mucho
-        m&aacute;s estable y r&aacute;pido de emitir. Bradley&ndash;Terry hace el resto:
-        convierte muchos &oacute;rdenes locales y ruidosos en una escala continua global
-        r<sub>i</sub>, que es exactamente lo que la Ec. L<sub>RM</sub> del deck necesita
-        para entrenar el reward model de RLHF.</div></details></div>
-    <p><span class="hd">Setup.</span> El problema de la preferencia, con tus manos: cuatro
-      estilos de respuesta de un asistente bancario (formal y resolutiva, seca, coloquial,
-      burocr&aacute;tica evasiva) y un cliente enfadado. T&uacute; votas pares A/B; cada voto
-      entra como (y<sub>w</sub>, y<sub>l</sub>) en la verosimilitud de Bradley&ndash;Terry y
-      el JS la maximiza por ascenso de gradiente (600 pasos, en milisegundos) tras cada
-      clic. Arriba: los rewards aprendidos r<sub>i</sub> como barras. Abajo: la matriz
-      completa de predicciones P(i &#8827; j) que esos rewards implican.</p>
-    <p><span class="hd">Juega.</span> F&iacute;jate en lo que NO hay: ninguna nota, ninguna
-      etiqueta correcta, ninguna respuesta de referencia. Solo "prefiero esta". Y de ese
-      material tan pobre emerge una escala num&eacute;rica continua que ordena los cuatro
-      estilos y cuantifica las distancias.</p>
-    <p><span class="hd">Lee as&iacute;.</span> En OpenAI/Anthropic esto mismo se hace con
-      r<sub>&phi;</sub>(x, y) = una red sobre el texto, decenas de miles de pares y
-      anotadores profesionales. La matem&aacute;tica del ajuste es id&eacute;ntica a la de
-      esta p&aacute;gina; solo cambia el tama&ntilde;o.</p>
-    <p><span class="hd">Mensaje.</span> Cuando la calidad es "cu&aacute;l prefieres", el
-      dato natural es el par de preferencia y el modelo natural es Bradley&ndash;Terry. Con
-      el reward model en la mano, la pregunta siguiente es c&oacute;mo usarlo para mover el
-      LLM sin romperlo: RLHF, siguiente slide.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>y<sub>w</sub>, y<sub>l</sub></b>:
-      respuesta preferida (winner) y rechazada (loser). <b>r<sub>i</sub></b>: reward latente
-      de la respuesta i (centrados a media 0). <b>&sigma;</b>: sigmoide.
-      <b>log-verosimilitud/voto</b>: m&eacute;trica de ajuste; log&thinsp;0.5 = &minus;0.69
-      es "no s&eacute; nada".</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 7 : RLHF ============ -->
-<section class="slide" id="s7">
-  <div class="figcol">
-    <canvas id="cv7a" data-aspect="1.95"></canvas>
-    <canvas id="cv7b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">m&aacute;x<sub>&theta;</sub>&nbsp;E<sub>y&sim;&pi;<sub>&theta;</sub></sub><big>[</big>r<sub>&phi;</sub>(y)<big>]</big> &minus; &beta;&middot;KL<big>(</big>&pi;<sub>&theta;</sub>&thinsp;&#8214;&thinsp;&pi;<sub>SFT</sub><big>)</big><span class="eqn">(objetivo RLHF del deck)</span></div>
-      <div class="eqread">sube la recompensa que el RM asigna a tus respuestas, pero paga una
-        multa <b>&beta;</b> por cada nat de divergencia
-        KL = &Sigma;<sub>y</sub>&thinsp;&pi;(y)&thinsp;log(&pi;(y)/&pi;&#8320;(y)) respecto
-        del modelo SFT de partida. &beta; grande = pegado a casa; &beta; peque&ntilde;o =
-        libertad total para perseguir el reward.</div>
-      <div class="eq">&pi;<sub>&beta;</sub>(y) &prop; &pi;&#8320;(y)&middot;e<sup>r(y)/&beta;</sup><span class="eqn">(soluci&oacute;n exacta)</span></div>
-      <div class="eqread">ese objetivo tiene &oacute;ptimo en forma cerrada: reponderar la
-        referencia exponencialmente. Es un softmax con temperatura &beta;: cuando
-        &beta;&rarr;&infin; queda &pi;&#8320;; cuando &beta;&rarr;0 colapsa al argmax del
-        reward &mdash; <b>incluido cualquier error del reward model</b>. Esta slide dibuja
-        &pi;<sub>&beta;</sub> calculada exactamente as&iacute;; PPO es solo la manera
-        aproximada de llegar ah&iacute; cuando y son secuencias de tokens.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>freno KL, &beta; = <b id="r7b"></b> (escala log)</label>
-      <input type="range" id="sl7b" min="-1.3" max="0.7" step="0.02" value="-0.2">
-      <label><input type="checkbox" id="ck7" checked> reward model con fallo: sobrevalora la
-        muletilla burocr&aacute;tica "seg&uacute;n nuestra pol&iacute;tica&hellip;"</label>
-    </div>
-    <div class="readout" id="ro7"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Pon &beta; = 5 (slider a la derecha). <span class="obs">&pi;<sub>&beta;</sub> se
-        pega a &pi;&#8320; (KL &asymp; 0): el freno gana y el modelo no aprende nada del
-        reward.</span></li>
-      <li>Baja a &beta; &asymp; 0.6. <span class="obs">La masa se desplaza hacia calidad
-        alta: E[r real] sube casi tanto como E[r&#770;]; las dos curvas del panel inferior
-        van juntas. Zona sana.</span></li>
-      <li>Baja a &beta; = 0.05 con el fallo del RM activo. <span class="obs">La
-        distribuci&oacute;n colapsa al pico falso de calidad baja: E[r&#770;] (proxy) es
-        m&aacute;ximo mientras E[r real] se hunde. Eso es reward hacking, y en el panel
-        inferior es el punto donde las curvas se separan.</span></li>
-      <li>Apaga el fallo del RM y repite &beta; = 0.05. <span class="obs">Ya no hay
-        hackeo (colapsa donde debe), pero el KL se dispara y la diversidad muere: todas las
-        respuestas iguales. &beta; bajo es peligroso incluso con un RM perfecto.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: &iquest;de d&oacute;nde sale
-        &pi;<sub>&beta;</sub> &prop; &pi;&#8320;e<sup>r/&beta;</sup>?</summary>
-        <div class="ans">Maximizar &Sigma;&pi;r &minus; &beta;&Sigma;&pi;log(&pi;/&pi;&#8320;)
-        con la restricci&oacute;n &Sigma;&pi; = 1 es un problema c&oacute;ncavo en &pi;;
-        poniendo el multiplicador de Lagrange y derivando:
-        r &minus; &beta;(log(&pi;/&pi;&#8320;)+1) &minus; &mu; = 0, de donde
-        log&thinsp;&pi; = log&thinsp;&pi;&#8320; + r/&beta; + cte. Es la misma
-        matem&aacute;tica del softmax con temperatura: &beta; ES una temperatura aplicada al
-        reward. DPO explota exactamente esta f&oacute;rmula, despejando r en funci&oacute;n
-        de &pi; &mdash; lo ver&aacute;s en la siguiente slide.</div></details></div>
-    <p><span class="hd">Setup.</span> Simplifico el espacio de respuestas a una recta de
-      "calidad latente" y (60 valores): &pi;&#8320; es el modelo SFT (campana centrada en
-      calidad media), r<sub>real</sub>(y) es la calidad verdadera (sube y satura) y el
-      reward model r&#770;(y) la estima bien&hellip; salvo un pico falso en la zona de
-      respuestas burocr&aacute;ticas cortas, donde sobrevalora (el checkbox lo controla:
-      as&iacute; son los fallos reales de un RM entrenado con pocos pares). El JS calcula
-      <b>exactamente</b> &pi;<sub>&beta;</sub> &prop; &pi;&#8320;e<sup>r&#770;/&beta;</sup>,
-      su KL contra &pi;&#8320;, y los dos rewards esperados. Arriba: &pi;&#8320; (gris) y
-      &pi;<sub>&beta;</sub> (oro). Abajo: E[r&#770;] y E[r<sub>real</sub>] como funciones de
-      &beta;, con tu &beta; marcada.</p>
-    <p><span class="hd">Juega.</span> El slider de &beta; recorre el dilema central del
-      alineamiento: a un lado, no aprender nada; al otro, optimizar tan fuerte el proxy que
-      explotas sus errores. El panel inferior es la imagen que deber&iacute;as recordar:
-      las curvas proxy y real van juntas hasta una &beta; cr&iacute;tica y luego divergen.</p>
-    <p><span class="hd">Lee as&iacute;.</span> En producci&oacute;n no puedes dibujar la
-      curva real (no la conoces: por eso el RM existe). Se vigila el KL: si crece mucho, el
-      modelo est&aacute; explotando; InstructGPT us&oacute; exactamente este t&eacute;rmino
-      &beta;&middot;KL para contenerlo, y es la receta detr&aacute;s de ChatGPT.</p>
-    <p><span class="hd">Mensaje.</span> RLHF = perseguir un proxy con un freno KL. El freno
-      no es un detalle de implementaci&oacute;n: es lo &uacute;nico que separa "alinear" de
-      "hackear el reward".</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>&pi;&#8320; = &pi;<sub>SFT</sub></b>:
-      pol&iacute;tica de referencia. <b>r&#770; = r<sub>&phi;</sub></b>: reward model
-      (proxy). <b>KL</b>: nats de divergencia; 0 = id&eacute;nticas. <b>reward hacking</b>:
-      E[r&#770;] sube mientras E[r<sub>real</sub>] baja. <b>PPO</b>: el algoritmo de RL que
-      aproxima esta soluci&oacute;n en el espacio real de secuencias.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 8 : DPO ============ -->
-<section class="slide" id="s8">
-  <div class="figcol">
-    <canvas id="cv8a" data-aspect="1.95"></canvas>
-    <canvas id="cv8b" data-aspect="2.3"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">L<sub>DPO</sub>(&theta;) = &minus;E<big>[</big>log&thinsp;&sigma;<big>(</big>&beta;&thinsp;log<span class="frac"><span class="num">&pi;<sub>&theta;</sub>(y<sub>w</sub>|x)</span><span class="den">&pi;<sub>ref</sub>(y<sub>w</sub>|x)</span></span> &minus; &beta;&thinsp;log<span class="frac"><span class="num">&pi;<sub>&theta;</sub>(y<sub>l</sub>|x)</span><span class="den">&pi;<sub>ref</sub>(y<sub>l</sub>|x)</span></span><big>)</big><big>]</big><span class="eqn">(Ec. DPO del deck)</span></div>
-      <div class="eqread">Bradley&ndash;Terry donde el reward se ha sustituido por el
-        <b>reward impl&iacute;cito</b> r&#770;<sub>&theta;</sub>(y) =
-        &beta;&thinsp;log(&pi;<sub>&theta;</sub>(y)/&pi;<sub>ref</sub>(y)) &mdash; el
-        despeje exacto de la soluci&oacute;n cerrada de RLHF de la slide anterior. Mismo
-        &oacute;ptimo, pero ahora es <b>clasificaci&oacute;n supervisada de pares</b>: sin
-        reward model que entrenar y sin PPO.</div>
-      <div class="eq">s = &beta;<big>[</big>(z<sub>w</sub>&minus;z<sub>l</sub>) &minus; (z<sup>ref</sup><sub>w</sub>&minus;z<sup>ref</sup><sub>l</sub>)<big>]</big>,&nbsp;&nbsp;&nbsp; &nabla;<sub>z</sub>L = &minus;&sigma;(&minus;s)&middot;&beta;&middot;(e<sub>w</sub>&minus;e<sub>l</sub>)<span class="eqn">(gradiente exacto del juguete)</span></div>
-      <div class="eqread">con 6 respuestas y log&iacute;ts z, los log-softmax se cancelan en
-        la diferencia y el gradiente queda limpio: sube el log&iacute;t del ganador y baja el
-        del perdedor, con fuerza <b>&sigma;(&minus;s)</b> = cu&aacute;nto le queda al par por
-        aprender. El bot&oacute;n "100 pasos" ejecuta exactamente esta f&oacute;rmula.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>fuerza del alineamiento, &beta; = <b id="r8b"></b></label>
-      <input type="range" id="sl8b" min="0.1" max="2" step="0.05" value="0.5">
-      <button id="bt8s">100 pasos de gradiente</button>
-      <button id="bt8r">reiniciar &pi;<sub>&theta;</sub> = &pi;<sub>ref</sub></button>
-    </div>
-    <div class="readout" id="ro8"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Pulsa "100 pasos" tres veces. <span class="obs">La p&eacute;rdida baja
-        mon&oacute;tona, &pi;(formal) y &pi;(disculpas+soluci&oacute;n) suben, &pi;(alucina)
-        se hunde, y el % de pares bien ordenados llega al 100&thinsp;%: descenso por
-        gradiente de verdad, sobre la L<sub>DPO</sub> de verdad.</span></li>
-      <li>Reinicia, pon &beta; = 2 y repite. <span class="obs">Cada paso mueve m&aacute;s
-        (el gradiente lleva &beta; dentro) y la pol&iacute;tica final se aleja m&aacute;s de
-        &pi;<sub>ref</sub>: &beta; en DPO juega el papel del freno KL en RLHF.</span></li>
-      <li>Reinicia, pon &beta; = 0.1. <span class="obs">Tras 300 pasos &pi;<sub>&theta;</sub>
-        apenas se despega de &pi;<sub>ref</sub>: alineamiento suave, conservador.</span></li>
-      <li>Mira el panel de rewards impl&iacute;citos tras entrenar. <span class="obs">Nunca
-        entrenamos un reward model y sin embargo ah&iacute; hay rewards: salen de la propia
-        pol&iacute;tica, r&#770; = &beta;&thinsp;log(&pi;<sub>&theta;</sub>/&pi;<sub>ref</sub>).
-        Compara su orden con tus barras de Bradley&ndash;Terry de hace dos slides.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: &iquest;d&oacute;nde
-        est&aacute; escondido el reward model en DPO?</summary><div class="ans">En la propia
-        pol&iacute;tica. La soluci&oacute;n cerrada de RLHF dice
-        &pi;* &prop; &pi;<sub>ref</sub>e<sup>r/&beta;</sup>; despejando,
-        r(y) = &beta;&thinsp;log(&pi;*(y)/&pi;<sub>ref</sub>(y)) + cte. Rafailov et al.
-        sustituyen ese r en la verosimilitud de Bradley&ndash;Terry (la L<sub>RM</sub> del
-        deck) y la constante se cancela en la diferencia w&minus;l: queda L<sub>DPO</sub>,
-        que se optimiza directamente en &theta;. "Your language model is secretly a reward
-        model": el cambio respecto a la referencia ES la recompensa.</div></details></div>
-    <p><span class="hd">Setup.</span> El mismo banco, 6 respuestas candidatas al cliente
-      enfadado: formal+resolutiva, seca, coloquial, burocr&aacute;tica, disculpas+soluci&oacute;n,
-      y una que alucina una pol&iacute;tica inexistente. &pi;<sub>ref</sub> es el modelo SFT
-      (asigna probabilidad decente a casi todas, incluida la alucinaci&oacute;n). El dataset
-      de preferencias: 8 pares (y<sub>w</sub>, y<sub>l</sub>) donde las resolutivas ganan y
-      la alucinaci&oacute;n siempre pierde. El JS optimiza L<sub>DPO</sub> con descenso por
-      gradiente expl&iacute;cito sobre los log&iacute;ts. Arriba: &pi;<sub>ref</sub>
-      (contorno gris) contra &pi;<sub>&theta;</sub> (oro) tras tus pasos. Abajo: la curva de
-      p&eacute;rdida y los rewards impl&iacute;citos resultantes.</p>
-    <p><span class="hd">Juega.</span> Esto es todo el pipeline de alineamiento moderno en
-      tres botones: sin RM expl&iacute;cito, sin rollouts, sin PPO; gradientes estables de
-      una p&eacute;rdida supervisada. Compara mentalmente con la slide RLHF: el objetivo es
-      el mismo y &beta; significa lo mismo; ha desaparecido la maquinaria, no la
-      matem&aacute;tica.</p>
-    <p><span class="hd">Lee as&iacute;.</span> El deck lo resume: RLHF necesita 3 modelos
-      (SFT &rarr; RM &rarr; PPO); DPO necesita 1 (SFT &rarr; DPO). Por eso DPO es el default
-      2026 y por eso su fila en la tabla de costes baja un orden de magnitud en
-      infraestructura (los pares de preferencia siguen costando lo mismo).</p>
-    <p><span class="hd">Mensaje.</span> DPO = el objetivo de RLHF resuelto en cerrado y
-      convertido en clasificaci&oacute;n de pares. Cuando alguien te proponga "hacer RLHF"
-      en la empresa, la pregunta correcta es: &iquest;y por qu&eacute; no DPO?</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>z, z<sup>ref</sup></b>: log&iacute;ts de
-      la pol&iacute;tica y de la referencia (&pi; = softmax(z)). <b>s</b>: margen del par en
-      unidades de reward impl&iacute;cito. <b>&sigma;(&minus;s)</b>: "cu&aacute;nto queda
-      por aprender" del par. <b>e<sub>w</sub>, e<sub>l</sub></b>: vectores indicadores del
-      ganador y el perdedor.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 9 : árbol de decisión ============ -->
-<section class="slide" id="s9">
-  <div class="figcol">
-    <canvas id="cv9a" data-aspect="1.45"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">t&eacute;cnica* = m&iacute;n<big>{</big>pelda&ntilde;o de la escalera : calidad(pelda&ntilde;o) &ge; calidad exigida<big>}</big><span class="eqn">(la regla)</span></div>
-      <div class="eqread">la decisi&oacute;n &oacute;ptima es el <b>pelda&ntilde;o m&aacute;s
-        bajo que alcanza la calidad exigida</b>: nunca se sube por prestigio. Las cuatro
-        preguntas del panel implementan esa b&uacute;squeda: conocimiento cambiante &rarr;
-        RAG; tono/formato &rarr; LoRA; comportamiento por preferencias &rarr; DPO.</div>
-      <div class="eq">stack t&iacute;pico 90&thinsp;% &asymp; RAG + LoRA,&nbsp;&nbsp;&nbsp; TCO = &Sigma;<sub>componentes</sub>&thinsp;TCO<sub>i</sub><span class="eqn">(deck, tabla final)</span></div>
-      <div class="eqread">las t&eacute;cnicas <b>se apilan</b>, no compiten: RAG aporta el
-        conocimiento fresco, LoRA el tono, DPO el comportamiento. El coste del stack es la
-        suma de sus componentes, y la tabla de abajo lo calcula en vivo para tus
-        respuestas.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label><input type="checkbox" id="ck9a"> &iquest;El conocimiento necesario cambia a
-        diario (tarifas, stock, normativa)?</label>
-      <label><input type="checkbox" id="ck9b" checked> &iquest;Necesitas un tono o formato de
-        salida muy espec&iacute;fico (marca, plantillas)?</label>
-      <label><input type="checkbox" id="ck9c"> &iquest;Tienes (o puedes comprar) &ge;5.000
-        pares de preferencia?</label>
-      <label><input type="checkbox" id="ck9d" checked> &iquest;Hay presupuesto y GPU para
-        entrenar (aunque sean 50&ndash;500 &euro;)?</label>
-    </div>
-    <div class="readout" id="ro9"></div>
-    <table class="live">
-      <thead><tr><th>Componente</th><th>Coste a&ntilde;o 1</th><th>&iquest;En tu stack?</th></tr></thead>
-      <tbody id="tb9"></tbody>
-    </table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Apaga las cuatro preguntas. <span class="obs">Recomendaci&oacute;n = prompting +
-        few-shot, 300 &euro;: el suelo de la escalera. En el &aacute;rbol, el camino entero
-        baja por los "no".</span></li>
-      <li>Activa "el conocimiento cambia a diario". <span class="obs">RAG se enciende y entra
-        al stack; f&iacute;jate en que NO sustituye al prompt: se apila encima.</span></li>
-      <li>Activa "tono/formato" y conmuta la pregunta de la GPU. <span class="obs">Con GPU
-        el &aacute;rbol enciende LoRA (&asymp;2.050 &euro;); sin GPU degrada a plantillas
-        few-shot: la misma necesidad cae a un pelda&ntilde;o distinto seg&uacute;n el
-        presupuesto.</span></li>
-      <li>Activa "pares de preferencia". <span class="obs">Solo si adem&aacute;s hay GPU
-        aparece DPO y el TCO salta un orden de magnitud (&asymp;30.500 &euro;): el
-        alineamiento por preferencias es el pelda&ntilde;o caro, resérvalo para cuando el
-        comportamiento sea el producto.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; el
-        &aacute;rbol nunca recomienda RLHF?</summary><div class="ans">Porque para una empresa
-        el pelda&ntilde;o RLHF (3 modelos en memoria, PPO delicado, &asymp;80.000 &euro;)
-        est&aacute; dominado por DPO, que consume exactamente los mismos datos (pares de
-        preferencia) y alcanza la misma calidad con un solo modelo y gradientes estables. La
-        nota t&eacute;cnica lo dice sin rodeos: en 2026 RLHF lo hacen los laboratorios
-        (Anthropic, OpenAI, Meta); la empresa consume modelos ya alineados v&iacute;a API o
-        pesos abiertos y, como mucho, hace LoRA/DPO encima.</div></details></div>
-    <p><span class="hd">Setup.</span> El &aacute;rbol de decisi&oacute;n del deck, hecho
-      circuito: cuatro preguntas de negocio (sin jerga de ML) y un camino que se ilumina en
-      oro seg&uacute;n tus respuestas, de la ra&iacute;z a la recomendaci&oacute;n. La tabla
-      en vivo suma el TCO del stack resultante con los costes de la primera slide, cerrando
-      el c&iacute;rculo del d&iacute;a.</p>
-    <p><span class="hd">Juega.</span> Prueba los 16 caminos posibles (son 4 bits). Ver&aacute;s
-      que solo uno de ellos &mdash; preferencias + GPU &mdash; activa el pelda&ntilde;o caro,
-      y que la GPU act&uacute;a de llave: sin ella, las necesidades de tono caen a
-      few-shot y las de comportamiento a "consumir un modelo ya alineado por API".</p>
-    <p><span class="hd">Lee as&iacute;.</span> Caso Inditex: el stock cambia a diario (RAG)
-      y el tono de marca importa (LoRA): stack RAG + LoRA. Caso Netflix moderando
-      contenido: el comportamiento ES el producto: pares de preferencia + DPO. Caso
-      consultor&iacute;a peque&ntilde;a: prompting + few-shot y a correr.</p>
-    <p><span class="hd">Mensaje.</span> La adaptaci&oacute;n corporativa no es una
-      elecci&oacute;n de t&eacute;cnica favorita: es un recorrido por la escalera de coste
-      con cuatro preguntas de negocio. Empieza en RAG y sube solo cuando el negocio lo
-      exige.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>stack</b>: combinaci&oacute;n de
-      t&eacute;cnicas apiladas sobre el mismo modelo base. <b>llave GPU</b>: sin
-      c&oacute;mputo de entrenamiento, todo lo que toque &theta; queda fuera.
-      <b>API gestionada</b>: fine-tuning de pago por uso cuando no hay GPU propia.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 10 : glosario ============ -->
-<section class="slide" id="s10">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="glosgrid" id="glos"></div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 11 : síntesis ============ -->
-<section class="slide" id="s11">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="pipe">
-      <div class="pipebox"><div><div class="pname">La escalera de coste &mdash; cu&aacute;ndo adaptar</div>
-          <div class="pmap">Slides: Escalera &middot; Decisi&oacute;n</div></div>
-        <div class="pq">"Prompting &rarr; RAG &rarr; LoRA &rarr; SFT &rarr; DPO/RLHF: cada pelda&ntilde;o cuesta un orden de magnitud m&aacute;s en datos y c&oacute;mputo. Se sube solo cuando la calidad del pelda&ntilde;o inferior se queda corta, y la frontera entre pelda&ntilde;os es aritm&eacute;tica de TCO (Q*, n), no fe."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">LoRA &mdash; c&oacute;mo adaptar barato</div>
-          <div class="pmap">Slides: LoRA idea &middot; Rango y SVD &middot; Forward &middot; Memoria GPU</div></div>
-        <div class="pq">"&Delta;W = (&alpha;/r)BA con r &Lt; d: 0,4&thinsp;% de par&aacute;metros entrenables, porque las actualizaciones &uacute;tiles tienen rango efectivo bajo (Eckart&ndash;Young en vivo). El optimizador pesa 7&times; m&aacute;s que el modelo: congelar W elimina ese coste, y QLoRA cuantiza el base a 4 bits y mete un 70B en una GPU de 48 GB."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">De la imitaci&oacute;n a la preferencia</div>
-          <div class="pmap">Slides: SFT &middot; Preferencias</div></div>
-        <div class="pq">"SFT imita pares (x, y) con la misma p&eacute;rdida del pre-entrenamiento y satura contra el suelo H*: cada euro de etiquetado compra menos que el anterior. Cuando la calidad es 'cu&aacute;l prefieres', el dato natural es el par de preferencia y Bradley&ndash;Terry convierte votos binarios en recompensas continuas: nace el reward model."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">Alinear sin romper &mdash; RLHF y DPO</div>
-          <div class="pmap">Slides: RLHF &middot; DPO</div></div>
-        <div class="pq">"Maximizar r &minus; &beta;&middot;KL tiene soluci&oacute;n exacta &pi; &prop; &pi;&#8320;e<sup>r/&beta;</sup>: &beta; gobierna el dilema entre no aprender nada y hackear el reward. DPO despeja esa soluci&oacute;n y la convierte en clasificaci&oacute;n supervisada de pares, sin reward model ni PPO: mismo &oacute;ptimo, sin maquinaria. El default 2026."</div></div>
-    </div>
-    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
-      Adaptar un LLM corporativo es elegir el pelda&ntilde;o m&aacute;s bajo de la escalera
-      que alcanza la calidad exigida: casi siempre RAG + LoRA; preferencias (DPO) solo cuando
-      el comportamiento, y no el conocimiento, es el producto.</p>
-  </div>
-</section>
-
-<div id="footerL">Garrido-Merch&aacute;n &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; D&iacute;a 16 &middot; Adaptaci&oacute;n corporativa: SFT, LoRA, RLHF, DPO</div>
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
 <div id="footer"></div>
-<div id="arrows">
-  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
-</div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 16 · LoRA</div>
 
 <script>
-"use strict";
-/* ================= PALETTE ================= */
-const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
-      MUTE="#8A8A8A", RULE="#D9C28A";
-
-/* ================= MATH CORE (DOM-free) ================= */
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
-  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
-  return ((t^t>>>14)>>>0)/4294967296;};}
-function randn(rng){let u=0;while(u===0)u=rng();const v=rng();
-  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-function sigmoid(z){return z>=0?1/(1+Math.exp(-z)):Math.exp(z)/(1+Math.exp(z));}
-function softmax(z){const m=Math.max(...z);const e=z.map(v=>Math.exp(v-m));
-  const s=e.reduce((a,b)=>a+b,0);return e.map(v=>v/s);}
-function linfit(xs,ys){const n=xs.length;let sx=0,sy=0,sxx=0,sxy=0;
-  for(let i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxx+=xs[i]*xs[i];sxy+=xs[i]*ys[i];}
-  const b=(n*sxy-sx*sy)/(n*sxx-sx*sx);return {a:(sy-b*sx)/n,b:b};}
-function bisect(f,lo,hi,it){it=it||90;let flo=f(lo);
-  for(let i=0;i<it;i++){const m=0.5*(lo+hi),fm=f(m);
-    if((fm>0)===(flo>0)){lo=m;flo=fm;}else hi=m;}
-  return 0.5*(lo+hi);}
-/* Jacobi eigendecomposition of a symmetric matrix (cyclic sweeps).
-   Returns eigenvalues (vals) and eigenvectors (columns of V). */
-function jacobiEig(Sin){
-  const n=Sin.length;
-  const S=Sin.map(row=>row.slice());
-  const V=Array.from({length:n},(_,i)=>{
-    const r=new Array(n).fill(0);r[i]=1;return r;});
-  for(let sweep=0;sweep<40;sweep++){
-    let off=0;
-    for(let p=0;p<n-1;p++)for(let q=p+1;q<n;q++)off+=S[p][q]*S[p][q];
-    if(off<1e-22)break;
-    for(let p=0;p<n-1;p++)for(let q=p+1;q<n;q++){
-      if(Math.abs(S[p][q])<1e-15)continue;
-      const theta=(S[q][q]-S[p][p])/(2*S[p][q]);
-      const t=Math.sign(theta||1)/(Math.abs(theta)+Math.sqrt(theta*theta+1));
-      const c=1/Math.sqrt(t*t+1),s=t*c;
-      for(let k=0;k<n;k++){
-        const skp=S[k][p],skq=S[k][q];
-        S[k][p]=c*skp-s*skq;S[k][q]=s*skp+c*skq;}
-      for(let k=0;k<n;k++){
-        const spk=S[p][k],sqk=S[q][k];
-        S[p][k]=c*spk-s*sqk;S[q][k]=s*spk+c*sqk;}
-      for(let k=0;k<n;k++){
-        const vkp=V[k][p],vkq=V[k][q];
-        V[k][p]=c*vkp-s*vkq;V[k][q]=s*vkp+c*vkq;}
-    }
-  }
-  const vals=new Array(n);for(let i=0;i<n;i++)vals[i]=S[i][i];
-  return {vals:vals,V:V};
+const SECTIONS=["LoRA","Para llevar"];
+const TITLES=["LoRA adapta un LLM enorme entrenando solo dos matrices de rango r.",
+              "Corrección de rango bajo sobre pesos congelados: adaptación barata."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');
+  ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
 }
-/* ================= plotting helpers ================= */
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+// ---- highlight helper: light up one equation term + its numeric twin ----
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+
+// ---- canvas helper ----
 function fitCanvas(cv){
   const dpr=window.devicePixelRatio||1;
-  const wCss=cv.parentElement.clientWidth;
-  const asp=parseFloat(cv.dataset.aspect)||1.8;
-  const hCss=wCss/asp;
-  cv.style.height=hCss+"px";
-  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
-  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
-  return {ctx:ctx,W:wCss,H:hCss};
-}
-function axes(ctx,fr,opt){
-  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
-  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
-  ctx.save();
-  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
-  ctx.font="11px Georgia, serif";
-  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
-  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
-  ctx.textAlign="center";ctx.textBaseline="top";
-  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
-    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
-  ctx.textAlign="right";ctx.textBaseline="middle";
-  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
-    ctx.fillText(lb,fr.x0-6,Y(v));});
-  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
-    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
-  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
-    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
-    ctx.fillText(opt.ylab,0,0);ctx.restore();}
-  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
-    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
-  ctx.restore();
-  return {X:X,Y:Y};
-}
-function polyline(ctx,pts,color,lw,dash){
-  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
-  if(dash)ctx.setLineDash(dash);
-  ctx.beginPath();let first=true;
-  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
-    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
-  ctx.stroke();ctx.restore();
-}
-function rampColor(t){
-  t=Math.max(0,Math.min(1,t));
-  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
-  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
-  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
-  return "rgb("+c[0]+","+c[1]+","+c[2]+")";
-}
-function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
-function fmtN(x){return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");}
-function arrow(ctx,x1,y1,x2,y2,color,lw){
-  ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=lw||2;
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
-  const ang=Math.atan2(y2-y1,x2-x1),L=7+(lw||2);
-  ctx.beginPath();ctx.moveTo(x2,y2);
-  ctx.lineTo(x2-L*Math.cos(ang-0.42),y2-L*Math.sin(ang-0.42));
-  ctx.lineTo(x2-L*Math.cos(ang+0.42),y2-L*Math.sin(ang+0.42));
-  ctx.closePath();ctx.fill();ctx.restore();
+  const w=cv.clientWidth||cv.width, h=cv.height;
+  cv.width=w*dpr; cv.height=h*dpr;
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
 }
 
-/* ================= navigation ================= */
-const SECTIONS=["Escalera","LoRA idea","Rango y SVD","Forward","Memoria GPU","SFT",
-  "Preferencias","RLHF","DPO","Decisión","Glosario","Síntesis"];
-const TITLES=[
- "Adaptar un LLM es una escalera de coste: súbela solo cuando el peldaño inferior se quede corto.",
- "LoRA — Congelar W y entrenar dos matrices finas reduce los parámetros entrenables en un factor ~1000.",
- "LoRA funciona porque una matriz grande se aproxima sorprendentemente bien con rango pequeño (Eckart–Young en vivo).",
- "El forward pass de LoRA es una perturbación aditiva: W′x = Wx + (α/r)·B(Ax), con los números del deck.",
- "Cada punto de rango compra calidad con rendimiento decreciente, y QLoRA mete un 70B en una sola GPU.",
- "SFT — Imitar ejemplos etiquetados mejora con saturación: a partir de cierto n, cada euro compra casi nada.",
- "Tus votos entrenan un Bradley–Terry de verdad: de comparaciones binarias salen recompensas continuas.",
- "RLHF — Maximizar r(y) − β·KL(π‖π₀) tiene solución exacta, y con β pequeño el modelo hackea el reward.",
- "DPO — La misma alineación sin reward model: descenso por gradiente directo sobre los pares de preferencia.",
- "El árbol de decisión empieza en RAG y solo sube de peldaño cuando el negocio lo exige.",
- "Glosario: todos los símbolos del día, en una página y en cristiano.",
- "Síntesis: de la escalera de coste al modelo corporativo alineado, con un pipeline auditable."];
-let cur=0;const N=12;
-const nav=document.getElementById("navstrip");
-SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
-  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
-function go(i){
-  cur=(i+N)%N;
-  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
-  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
-  document.getElementById("slidetitle").textContent=TITLES[cur];
-  document.getElementById("footer").textContent=(cur+1)+" / "+N;
-  window.scrollTo(0,0);
-  if(updaters[cur])updaters[cur](true);
+// fixed layer dimension for the arithmetic
+const D=1024;
+const FULL=D*D;                 // full fine-tuning trainable params
+function human(n){              // integer -> short human string
+  if(n>=1e6) return (n/1e6).toFixed(2)+' M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+' k';
+  return ''+n;
 }
-document.getElementById("prev").onclick=()=>go(cur-1);
-document.getElementById("next").onclick=()=>go(cur+1);
-document.addEventListener("keydown",e=>{
-  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
-  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
-window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
-const updaters={};
-</script>
+function humanBytes(b){
+  if(b>=1048576) return (b/1048576).toFixed(2)+' MB';
+  if(b>=1024) return (b/1024).toFixed(1)+' KB';
+  return b+' B';
+}
 
-<script>
-"use strict";
-/* ================= SLIDE 0 : escalera de coste ================= */
-(function(){
-  const CQ_RAG=0.02;            // €/consulta RAG (nota técnica)
-  function tcos(Q,n){
-    return {
-      prompt:300,
-      rag:200+CQ_RAG*Q*12,
-      lora:50+2*n,
-      sft:10000+50000*2,
-      dpo:500+10000*3,
-      rlhf:50000+10000*3
-    };
-  }
-  const slq=document.getElementById("sl0q"),sln=document.getElementById("sl0n");
-  slq.oninput=upd;sln.oninput=upd;
-  function upd(){
-    const Q=Math.round(Math.pow(10,+slq.value)),n=+sln.value;
-    document.getElementById("r0q").textContent=fmtN(Q);
-    document.getElementById("r0n").textContent=fmtN(n);
-    const T=tcos(Q,n);
-    const Qstar=(T.lora-200)/(CQ_RAG*12);   // RAG = LoRA
-    document.getElementById("ro0").innerHTML=
-      "RAG: <b>"+fmtN(T.rag)+" &euro;</b>/a&ntilde;o &nbsp;&middot;&nbsp; LoRA: "+
-      "<span class='gold'>"+fmtN(T.lora)+" &euro;</span> &nbsp;&middot;&nbsp; cruce "+
-      "Q* = <b>"+fmtN(Qstar)+"</b> consultas/mes "+
-      (Q>Qstar?"&nbsp;<span class='badge ok'>LoRA ya amortiza</span>"
-              :"&nbsp;<span class='badge bad'>a&uacute;n gana RAG</span>");
-    const rows=[
-      ["Prompt + few-shot","5 ejemplos",T.prompt],
-      ["RAG","corpus indexado",T.rag],
-      ["LoRA",fmtN(n)+" pares (x,y)",T.lora],
-      ["SFT total","50.000 pares",T.sft],
-      ["DPO","10.000 pares pref.",T.dpo],
-      ["RLHF","10.000 pares pref.",T.rlhf]];
-    document.getElementById("tb0").innerHTML=rows.map(r=>
-      "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td>"+fmtN(r[2])+" &euro;</td></tr>").join("");
-    /* --- canvas a: cuadrante datos × coste --- */
-    let c=fitCanvas(document.getElementById("cv0a"));
-    const fr={x0:60,y0:24,w:c.W-80,h:c.H-62};
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:5.3,ymin:2,ymax:5.6,
-      xticks:[[0,"1"],[1,"10"],[2,"100"],[3,"1k"],[4,"10k"],[5,"100k"]],
-      yticks:[[2,"100 €"],[3,"1 k€"],[4,"10 k€"],[5,"100 k€"]],
-      xlab:"datos necesarios (ejemplos / docs / pares, escala log)",
-      ylab:"TCO 12 meses",
-      title:"Cinco técnicas en el cuadrante datos × coste"});
-    const pts=[
-      ["Prompt+few-shot",0.7,T.prompt,MUTE],
-      ["RAG",3.3,T.rag,GOLD],
-      ["LoRA",Math.log10(n),T.lora,GOLD],
-      ["SFT total",Math.log10(50000),T.sft,INK],
-      ["DPO",4,T.dpo,GOLDD],
-      ["RLHF",4,T.rlhf,INK]];
-    c.ctx.font="11px Georgia,serif";
-    for(const p of pts){
-      const px=ax.X(p[1]),py=ax.Y(Math.log10(Math.max(p[2],100)));
-      c.ctx.fillStyle=p[3];c.ctx.beginPath();c.ctx.arc(px,py,5,0,7);c.ctx.fill();
-      c.ctx.textAlign="left";c.ctx.fillStyle=INK;
-      c.ctx.fillText(p[0],px+8,py+(p[0]==="RLHF"?-6:4));}
-    /* --- canvas b: TCO vs Q, cruce --- */
-    c=fitCanvas(document.getElementById("cv0b"));
-    const fr2={x0:60,y0:24,w:c.W-80,h:c.H-62};
-    const ymax=Math.max(Math.log10(tcos(1e5,n).rag),Math.log10(T.lora))+0.25;
-    const ax2=axes(c.ctx,fr2,{xmin:2,xmax:5,ymin:2,ymax:ymax,
-      xticks:[[2,"100"],[3,"1k"],[4,"10k"],[5,"100k"]],
-      yticks:[[2,"100 €"],[3,"1 k€"],[4,"10 k€"]],
-      xlab:"consultas al mes, Q (escala log)",ylab:"TCO 12 meses",
-      title:"RAG crece con Q; LoRA es plano: el cruce Q* decide"});
-    const ragPts=[],loraPts=[];
-    for(let lq=2;lq<=5.001;lq+=0.04){
-      const t=tcos(Math.pow(10,lq),n);
-      ragPts.push([ax2.X(lq),ax2.Y(Math.log10(t.rag))]);
-      loraPts.push([ax2.X(lq),ax2.Y(Math.log10(t.lora))]);}
-    polyline(c.ctx,ragPts,GOLD,2.2);
-    polyline(c.ctx,loraPts,INK,2.2);
-    polyline(c.ctx,[[ax2.X(2),ax2.Y(Math.log10(300))],[ax2.X(5),ax2.Y(Math.log10(300))]],
-      MUTE,1.2,[5,4]);
-    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillStyle=GOLD;c.ctx.fillText("RAG",ragPts[60][0]+4,ragPts[60][1]-8);
-    c.ctx.fillStyle=INK;c.ctx.fillText("LoRA ("+fmtN(n)+" ej.)",
-      loraPts[14][0]+4,loraPts[14][1]-8);
-    c.ctx.fillStyle=MUTE;c.ctx.fillText("prompt",ax2.X(4.55),ax2.Y(Math.log10(300))-6);
-    if(Qstar>=100&&Qstar<=1e5){
-      const lx=Math.log10(Qstar);
-      c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-      c.ctx.arc(ax2.X(lx),ax2.Y(Math.log10(T.lora)),6,0,7);c.ctx.fill();
-      c.ctx.fillStyle=GOLDD;c.ctx.textAlign="center";
-      c.ctx.fillText("Q* = "+fmtN(Qstar),ax2.X(lx),ax2.Y(Math.log10(T.lora))-12);}
-    const px=ax2.X(+slq.value);
-    polyline(c.ctx,[[px,fr2.y0],[px,fr2.y0+fr2.h]],GOLDD,1,[3,3]);
-  }
-  updaters[0]=upd;
-})();
+function upd(){
+  const r    =+document.getElementById('r').value;
+  const alpha=+document.getElementById('alpha').value;
+  document.getElementById('v_r').textContent=r;
+  document.getElementById('v_alpha').textContent=alpha;
+  document.getElementById('n_r').textContent=r;
+  document.getElementById('n_alpha').textContent=alpha;
+  const scale=alpha/r;
+  document.getElementById('n_scale').textContent=scale.toFixed(2);
 
-/* ================= SLIDE 1 : LoRA idea, matrices a escala ================= */
-(function(){
-  const sld=document.getElementById("sl1d"),slr=document.getElementById("sl1r");
-  sld.oninput=upd;slr.oninput=upd;
-  function upd(){
-    const d=+sld.value,r=+slr.value;
-    document.getElementById("r1d").textContent=fmtN(d);
-    document.getElementById("r1r").textContent=r;
-    const full=d*d,lora=2*r*d,pct=100*lora/full,factor=full/lora;
-    document.getElementById("ro1").innerHTML=
-      "congelados (W): <b>"+fmtN(full)+"</b> &nbsp;&middot;&nbsp; entrenables (B,A): "+
-      "<span class='gold'>"+fmtN(lora)+"</span> &nbsp;&middot;&nbsp; fracci&oacute;n "+
-      "<b>"+fmtG(pct,3)+"%</b> &nbsp;&middot;&nbsp; ahorro d/(2r) = <b>"+
-      fmtG(factor,4)+"&times;</b>";
-    /* --- canvas a: matrices a escala --- */
-    const c=fitCanvas(document.getElementById("cv1a"));
-    const M=30,side=c.H-2*M-22;          // lado del cuadrado W en px
-    const s=side/d;                       // px por unidad
-    const rpx=Math.max(1,r*s);
-    const x0=24,y0=M+10;
-    c.ctx.fillStyle="#efefef";c.ctx.strokeStyle=INK;c.ctx.lineWidth=1;
-    c.ctx.fillRect(x0,y0,side,side);c.ctx.strokeRect(x0,y0,side,side);
-    c.ctx.fillStyle=INK;c.ctx.font="12px Georgia,serif";c.ctx.textAlign="center";
-    c.ctx.fillText("W  ("+fmtN(d)+"×"+fmtN(d)+", congelada)",x0+side/2,y0+side/2-8);
-    c.ctx.fillStyle=MUTE;
-    c.ctx.fillText("d² = "+fmtN(d*d),x0+side/2,y0+side/2+12);
-    const xp=x0+side+26;
-    c.ctx.fillStyle=INK;c.ctx.font="16px Georgia,serif";
-    c.ctx.fillText("+",x0+side+13,y0+side/2+5);
-    /* B : d×r (alta y estrecha) */
-    c.ctx.fillStyle=GOLD;
-    c.ctx.fillRect(xp,y0,rpx,side);
-    c.ctx.strokeStyle=GOLDD;c.ctx.strokeRect(xp,y0,rpx,side);
-    /* A : r×d (baja y ancha), debajo a la derecha de B */
-    const xa=xp+rpx+18;
-    const ya=y0+(side-rpx)/2;
-    c.ctx.fillStyle=INK;c.ctx.font="14px Georgia,serif";
-    c.ctx.fillText("×",xp+rpx+9,y0+side/2+4);
-    c.ctx.fillStyle=GOLD;
-    c.ctx.fillRect(xa,ya,side,rpx);
-    c.ctx.strokeStyle=GOLDD;c.ctx.strokeRect(xa,ya,side,rpx);
-    c.ctx.fillStyle=GOLDD;c.ctx.font="12px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillText("B ("+fmtN(d)+"×"+r+")",xp-6,y0-7);
-    c.ctx.fillText("A ("+r+"×"+fmtN(d)+")",xa,ya-7);
-    c.ctx.fillStyle=MUTE;
-    c.ctx.fillText("2rd = "+fmtN(lora)+" entrenables ("+fmtG(pct,2)+"%)",xa,ya+rpx+16);
-    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";
-    c.ctx.fillText("dibujo a escala real: el área es proporcional a #parámetros",
-      x0,y0+side+18);
-    /* --- canvas b: barras log --- */
-    const c2=fitCanvas(document.getElementById("cv1b"));
-    const fr={x0:120,y0:18,w:c2.W-150,h:c2.H-52};
-    const lmax=Math.log10(8192*8192);
-    const ax=axes(c2.ctx,fr,{xmin:0,xmax:lmax,ymin:0,ymax:1,
-      xticks:[[3,"10³"],[4,"10⁴"],[5,"10⁵"],[6,"10⁶"],[7,"10⁷"]],yticks:[],
-      xlab:"número de parámetros (escala log)",
-      title:"Los mismos números, como barras"});
-    const bars=[["full FT: d²",full,INK],["LoRA: 2rd",lora,GOLD]];
-    bars.forEach((b,i)=>{
-      const y=fr.y0+14+i*(fr.h/2);
-      const wpx=(Math.log10(b[1]))/lmax*fr.w;
-      c2.ctx.fillStyle=b[2];c2.ctx.fillRect(fr.x0,y,Math.max(2,wpx),fr.h/2-26);
-      c2.ctx.fillStyle=INK;c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="right";
-      c2.ctx.fillText(b[0],fr.x0-8,y+(fr.h/2-26)/2+4);
-      c2.ctx.textAlign="left";
-      c2.ctx.fillText(fmtN(b[1]),fr.x0+Math.max(2,wpx)+6,y+(fr.h/2-26)/2+4);});
-  }
-  updaters[1]=upd;
-})();
+  const lora=2*D*r;                 // trainable params in B (d x r) + A (r x d)
+  const pct=lora/FULL*100;          // % of full
+  const factor=FULL/lora;           // savings factor
+  const memBytes=lora*4;            // fp32, 4 bytes/param
 
-/* ================= SLIDE 2 : rango y SVD (Eckart–Young en vivo) ================= */
-(function(){
-  const n=22;
-  let seed=7,M=null,sv=null,U=null,Vt=null;
-  function buildAndSVD(){
-    const rng=mulberry32(seed);
-    const w=[10,4,2,1];
-    M=Array.from({length:n},()=>new Array(n).fill(0));
-    for(let k=0;k<4;k++){
-      const ph1=rng()*Math.PI,ph2=rng()*Math.PI;
-      for(let i=0;i<n;i++)for(let j=0;j<n;j++){
-        M[i][j]+=w[k]/Math.sqrt(n)*Math.sin((k+1)*Math.PI*(i+0.5)/n+ph1)
-                              *Math.sin((k+1.5)*Math.PI*(j+0.5)/n+ph2);}}
-    for(let i=0;i<n;i++)for(let j=0;j<n;j++)M[i][j]+=0.12*randn(rng);
-    /* S = MᵀM, eigen por Jacobi, σ_k = sqrt(eig), u_k = M v_k / σ_k */
-    const S=Array.from({length:n},()=>new Array(n).fill(0));
-    for(let a=0;a<n;a++)for(let b=0;b<n;b++){
-      let acc=0;for(let i=0;i<n;i++)acc+=M[i][a]*M[i][b];S[a][b]=acc;}
-    const eig=jacobiEig(S);
-    const idx=eig.vals.map((v,i)=>[Math.max(v,0),i]).sort((a,b)=>b[0]-a[0]);
-    sv=idx.map(e=>Math.sqrt(e[0]));
-    Vt=idx.map(e=>{const col=new Array(n);
-      for(let a=0;a<n;a++)col[a]=eig.V[a][e[1]];return col;});
-    U=sv.map((s0,k)=>{const u=new Array(n).fill(0);
-      if(s0<1e-12)return u;
-      for(let i=0;i<n;i++){let acc=0;
-        for(let a=0;a<n;a++)acc+=M[i][a]*Vt[k][a];u[i]=acc/s0;}
-      return u;});
-  }
-  buildAndSVD();
-  const slr=document.getElementById("sl2r");
-  slr.oninput=upd;
-  document.getElementById("bt2").onclick=()=>{seed+=1;buildAndSVD();upd();};
-  function recon(r){
-    const R=Array.from({length:n},()=>new Array(n).fill(0));
-    for(let k=0;k<r;k++)for(let i=0;i<n;i++)for(let j=0;j<n;j++)
-      R[i][j]+=sv[k]*U[k][i]*Vt[k][j];
-    return R;
-  }
-  function heat(ctx,Mx,x0,y0,sz,vmin,vmax,title){
-    const cell=sz/n;
-    for(let i=0;i<n;i++)for(let j=0;j<n;j++){
-      ctx.fillStyle=rampColor((Mx[i][j]-vmin)/(vmax-vmin));
-      ctx.fillRect(x0+j*cell,y0+i*cell,cell+0.5,cell+0.5);}
-    ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.strokeRect(x0,y0,sz,sz);
-    ctx.fillStyle=INK;ctx.font="bold 12px Georgia,serif";ctx.textAlign="left";
-    ctx.textBaseline="bottom";ctx.fillText(title,x0,y0-5);
-  }
-  function upd(){
-    const r=+slr.value;
-    document.getElementById("r2r").textContent=r;
-    const tot=sv.reduce((a,s)=>a+s*s,0);
-    let tail=0;for(let k=r;k<n;k++)tail+=sv[k]*sv[k];
-    const E=Math.sqrt(tail/tot),energia=100*(1-tail/tot);
-    document.getElementById("ro2").innerHTML=
-      "&sigma; = ["+fmtG(sv[0],3)+", "+fmtG(sv[1],3)+", "+fmtG(sv[2],3)+", "+
-      fmtG(sv[3],3)+", "+fmtG(sv[4],2)+", &hellip;] &nbsp;&middot;&nbsp; energ&iacute;a "+
-      "capturada <span class='gold'>"+fmtG(energia,3)+"%</span> &nbsp;&middot;&nbsp; "+
-      "error E(r) = <b>"+fmtG(100*E,3)+"%</b> &nbsp;&middot;&nbsp; almac&eacute;n: "+
-      "<b>"+fmtN(n*n)+"</b> vs <span class='gold'>"+fmtN(r*(2*n+1))+"</span> n&uacute;meros";
-    /* --- canvas a: heatmaps M y M_r --- */
-    const c=fitCanvas(document.getElementById("cv2a"));
-    let vmin=1e9,vmax=-1e9;
-    for(let i=0;i<n;i++)for(let j=0;j<n;j++){
-      if(M[i][j]<vmin)vmin=M[i][j];if(M[i][j]>vmax)vmax=M[i][j];}
-    const sz=Math.min(c.H-44,(c.W-90)/2);
-    const Mr=recon(r);
-    heat(c.ctx,M,30,28,sz,vmin,vmax,"M original (22×22)");
-    heat(c.ctx,Mr,30+sz+30,28,sz,vmin,vmax,"M_r = SVD truncada, r = "+r);
-    /* --- canvas b: espectro + curva E(r) --- */
-    const c2=fitCanvas(document.getElementById("cv2b"));
-    const half=(c2.W-110)/2;
-    const fr1={x0:46,y0:24,w:half,h:c2.H-60};
-    const ax1=axes(c2.ctx,fr1,{xmin:0.5,xmax:n+0.5,ymin:0,ymax:sv[0]*1.08,
-      xticks:[1,8,15,22],yticks:[[0,"0"],[Math.round(sv[0]),String(Math.round(sv[0]))]],
-      xlab:"k",title:"Espectro σ_k (oro = retenidos)"});
-    for(let k=0;k<n;k++){
-      const bx=ax1.X(k+1)-half/(n*2.6);
-      c2.ctx.fillStyle=k<r?GOLD:MUTE;
-      c2.ctx.fillRect(bx,ax1.Y(sv[k]),half/(n*1.3),ax1.Y(0)-ax1.Y(sv[k]));}
-    const fr2={x0:46+half+58,y0:24,w:half,h:c2.H-60};
-    const ax2=axes(c2.ctx,fr2,{xmin:0,xmax:n,ymin:0,ymax:100,
-      xticks:[1,4,8,16,22],yticks:[[0,"0"],[50,"50%"],[100,"100%"]],
-      xlab:"r",title:"Error de reconstrucción E(r)"});
-    const pts=[];
-    for(let rr=0;rr<=n;rr++){
-      let tl=0;for(let k=rr;k<n;k++)tl+=sv[k]*sv[k];
-      pts.push([ax2.X(rr),ax2.Y(100*Math.sqrt(tl/tot))]);}
-    polyline(c2.ctx,pts,INK,1.8);
-    c2.ctx.fillStyle=GOLD;c2.ctx.beginPath();
-    c2.ctx.arc(ax2.X(r),ax2.Y(100*E),5,0,7);c2.ctx.fill();
-  }
-  updaters[2]=upd;
-})();
+  document.getElementById('ro').innerHTML=
+    'Capa de dimensión d='+D+'. Fine-tuning completo: <b>'+human(FULL)+'</b> parámetros (d&sup2;).<br>'+
+    'LoRA (2&middot;d&middot;r): <b>'+human(lora)+'</b> parámetros entrenables &rarr; <b>'+pct.toFixed(3)+'%</b> del total.<br>'+
+    'Memoria de los pesos entrenables (fp32): <b>'+humanBytes(memBytes)+'</b> · escala &alpha;/r = <b>'+scale.toFixed(2)+'</b>.<br>'+
+    '<span class="badge ok">Ahorro &times;'+Math.round(factor)+' en parámetros a entrenar</span>';
+  drawBars(r,lora,pct);
+}
 
-/* ================= SLIDE 3 : forward pass con los números del deck ================= */
-(function(){
-  const W=[[1,2],[3,4]],A=[0.1,0.2],B=[0.5,0.3];
-  const sx1=document.getElementById("sl3x1"),sx2=document.getElementById("sl3x2"),
-        sal=document.getElementById("sl3al");
-  sx1.oninput=upd;sx2.oninput=upd;sal.oninput=upd;
-  function upd(){
-    const x1=+sx1.value,x2=+sx2.value,al=+sal.value;
-    document.getElementById("r3x1").textContent=x1.toFixed(1);
-    document.getElementById("r3x2").textContent=x2.toFixed(1);
-    document.getElementById("r3al").textContent=al.toFixed(2);
-    const wx=[W[0][0]*x1+W[0][1]*x2,W[1][0]*x1+W[1][1]*x2];
-    const s=A[0]*x1+A[1]*x2;                  // Ax (escalar, r=1)
-    const dx=[al*s*B[0],al*s*B[1]];           // (α/r)·B·(Ax)
-    const wpx=[wx[0]+dx[0],wx[1]+dx[1]];
-    document.getElementById("ro3").innerHTML=
-      "Wx = (<b>"+fmtG(wx[0],4)+"</b>, <b>"+fmtG(wx[1],4)+"</b>) &nbsp;&middot;&nbsp; "+
-      "Ax = <b>"+fmtG(s,3)+"</b> &nbsp;&middot;&nbsp; (&alpha;/r)BAx = "+
-      "(<span class='gold'>"+fmtG(dx[0],3)+"</span>, <span class='gold'>"+fmtG(dx[1],3)+
-      "</span>) &nbsp;&middot;&nbsp; W&prime;x = (<span class='deep'>"+fmtG(wpx[0],4)+
-      "</span>, <span class='deep'>"+fmtG(wpx[1],4)+"</span>)";
-    /* --- canvas a: plano de salida con flechas --- */
-    const c=fitCanvas(document.getElementById("cv3a"));
-    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
-    const R=Math.max(2,Math.abs(wx[0]),Math.abs(wx[1]),
-                     Math.abs(wpx[0]),Math.abs(wpx[1]))*1.18;
-    const ax=axes(c.ctx,fr,{xmin:-R,xmax:R,ymin:-R,ymax:R,
-      xticks:[[-Math.round(R*0.7),String(-Math.round(R*0.7))],[0,"0"],
-              [Math.round(R*0.7),String(Math.round(R*0.7))]],
-      yticks:[[-Math.round(R*0.7),String(-Math.round(R*0.7))],[0,"0"],
-              [Math.round(R*0.7),String(Math.round(R*0.7))]],
-      xlab:"salida, componente 1",ylab:"componente 2",
-      title:"Salida de la capa: base (tinta), corrección LoRA (oro), adaptada (oro oscuro)"});
-    polyline(c.ctx,[[ax.X(-R),ax.Y(0)],[ax.X(R),ax.Y(0)]],"#dddddd",1);
-    polyline(c.ctx,[[ax.X(0),ax.Y(-R)],[ax.X(0),ax.Y(R)]],"#dddddd",1);
-    /* dirección de B (línea punteada): única dirección posible de la corrección */
-    const bn=Math.sqrt(B[0]*B[0]+B[1]*B[1]),bs=R*0.95/bn;
-    polyline(c.ctx,[[ax.X(wx[0]-B[0]*bs),ax.Y(wx[1]-B[1]*bs)],
-                    [ax.X(wx[0]+B[0]*bs),ax.Y(wx[1]+B[1]*bs)]],RULE,1.2,[4,4]);
-    arrow(c.ctx,ax.X(0),ax.Y(0),ax.X(wx[0]),ax.Y(wx[1]),INK,2.4);
-    if(Math.abs(s)>1e-9)
-      arrow(c.ctx,ax.X(wx[0]),ax.Y(wx[1]),ax.X(wpx[0]),ax.Y(wpx[1]),GOLD,2.6);
-    arrow(c.ctx,ax.X(0),ax.Y(0),ax.X(wpx[0]),ax.Y(wpx[1]),GOLDD,1.6);
-    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillStyle=INK;c.ctx.fillText("Wx",ax.X(wx[0])+6,ax.Y(wx[1])+12);
-    c.ctx.fillStyle=GOLDD;c.ctx.fillText("W′x",ax.X(wpx[0])+6,ax.Y(wpx[1])-6);
-    c.ctx.fillStyle=MUTE;c.ctx.fillText("dirección de B",
-      ax.X(wx[0]+B[0]*bs*0.6)+4,ax.Y(wx[1]+B[1]*bs*0.6));
-    /* --- canvas b: barras por componente --- */
-    const c2=fitCanvas(document.getElementById("cv3b"));
-    const fr2={x0:52,y0:24,w:c2.W-72,h:c2.H-60};
-    const ymax=Math.max(1,wx[0],wx[1],wpx[0],wpx[1],0)*1.15;
-    const ymin=Math.min(-0.5,wx[0],wx[1],wpx[0],wpx[1],0)*1.15;
-    const ax2=axes(c2.ctx,fr2,{xmin:0,xmax:4,ymin:ymin,ymax:ymax,
-      xticks:[[1,"componente 1"],[3,"componente 2"]],
-      yticks:[[0,"0"],[Math.round(ymax*0.8),String(Math.round(ymax*0.8))]],
-      title:"Las mismas cantidades, por componente"});
-    [0,1].forEach(i=>{
-      const xc=0.55+2*i,bw=0.32;
-      c2.ctx.fillStyle=INK;
-      c2.ctx.fillRect(ax2.X(xc),Math.min(ax2.Y(0),ax2.Y(wx[i])),
-        ax2.X(xc+bw)-ax2.X(xc),Math.abs(ax2.Y(wx[i])-ax2.Y(0)));
-      c2.ctx.fillStyle=GOLD;
-      c2.ctx.fillRect(ax2.X(xc+bw+0.06),Math.min(ax2.Y(0),ax2.Y(dx[i])),
-        ax2.X(xc+bw)-ax2.X(xc),Math.max(1,Math.abs(ax2.Y(dx[i])-ax2.Y(0))));
-      c2.ctx.fillStyle=GOLDD;
-      c2.ctx.fillRect(ax2.X(xc+2*(bw+0.06)),Math.min(ax2.Y(0),ax2.Y(wpx[i])),
-        ax2.X(xc+bw)-ax2.X(xc),Math.abs(ax2.Y(wpx[i])-ax2.Y(0)));});
-    c2.ctx.font="10px Georgia,serif";c2.ctx.fillStyle=MUTE;c2.ctx.textAlign="left";
-    c2.ctx.fillText("tinta: Wx · oro: (α/r)BAx · oscuro: W′x",fr2.x0+4,fr2.y0+10);
-  }
-  updaters[3]=upd;
-})();
+function drawBars(r,lora,pct){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=52,my=24, W=w-mx-20, H=h-my-46;
+  // log10 scale for heights (params span several orders of magnitude)
+  const lg=v=>Math.log10(v);
+  const top=lg(FULL)*1.02;               // headroom above the full bar
+  const barY=v=>my+(1-lg(v)/top)*H;      // y of bar top for value v
+  // axis
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  // log gridlines at 10^3,10^4,10^5,10^6
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.textAlign='right';
+  for(let e=3;e<=6;e++){const y=my+(1-e/top)*H;
+    ctx.strokeStyle='#eee';ctx.beginPath();ctx.moveTo(mx,y);ctx.lineTo(mx+W,y);ctx.stroke();
+    ctx.fillText('10^'+e,mx-6,y+4);}
+  ctx.textAlign='center';
+  // two bars
+  const bw=W*0.24;
+  const cx1=mx+W*0.30, cx2=mx+W*0.72;
+  // full bar (ink)
+  const y1=barY(FULL);
+  ctx.fillStyle='#1A1A1A';
+  ctx.fillRect(cx1-bw/2,y1,bw,my+H-y1);
+  // lora bar (gold)
+  const y2=barY(lora);
+  ctx.fillStyle='#B8860B';
+  ctx.fillRect(cx2-bw/2,y2,bw,my+H-y2);
+  // labels on bars
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 13px Georgia';
+  ctx.fillText(human(FULL),cx1,y1-8);
+  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';
+  ctx.fillText(human(lora),cx2,y2-8);
+  // x labels
+  ctx.fillStyle='#1A1A1A';ctx.font='13px Georgia';
+  ctx.fillText('Fine-tuning completo',cx1,my+H+18);
+  ctx.fillText('d²',cx1,my+H+34);
+  ctx.fillStyle='#8C6508';
+  ctx.fillText('LoRA  (r='+r+')',cx2,my+H+18);
+  ctx.fillText('2·d·r',cx2,my+H+34);
+  // percentage caption
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.textAlign='left';
+  ctx.fillText('LoRA = '+pct.toFixed(3)+'% de los pesos entrenables',mx+6,my+12);
+  ctx.textAlign='left';
+}
+updaters[0]=upd;
 
-/* ================= SLIDE 4 : calidad vs r + memoria GPU ================= */
-(function(){
-  const MODELS=[
-    ["Llama 1B",1.24e9,16,2048],
-    ["Llama 3B",3.2e9,28,3072],
-    ["Llama 8B",8.0e9,32,4096],
-    ["Llama 13B",1.3e10,40,5120],
-    ["Llama 70B",7.0e10,80,8192]];
-  const GPUS=[["RTX 4090",24],["A6000",48],["A100",80]];
-  const QINF=91,Q0=62,R0=3;
-  const qual=r=>QINF-(QINF-Q0)*Math.exp(-r/R0);
-  const slr=document.getElementById("sl4r"),slm=document.getElementById("sl4m");
-  slr.oninput=upd;slm.oninput=upd;
-  function upd(){
-    const r=Math.pow(2,+slr.value);
-    const Mi=MODELS[+slm.value],P=Mi[1],L=Mi[2],d=Mi[3];
-    document.getElementById("r4r").textContent=r;
-    document.getElementById("r4m").textContent=Mi[0];
-    const Nad=4*r*d*L;
-    const GiB=x=>x/Math.pow(2,30);
-    const mfull=GiB(16*P),mlora=GiB(2*P+16*Nad),mqlora=GiB(0.55*P+16*Nad);
-    const q=qual(r),dq=qual(2*r)-q;
-    let rdulce=1;while(qual(rdulce)<QINF-1)rdulce*=2;
-    const fits=m=>m<=48?"<span class='badge ok'>cabe en A6000</span>"
-                       :"<span class='badge bad'>no cabe en A6000</span>";
-    document.getElementById("ro4").innerHTML=
-      "calidad q("+r+") = <span class='gold'>"+fmtG(q,3)+"</span> / 91 &nbsp;&middot;&nbsp; "+
-      "&Delta;q de la pr&oacute;xima duplicaci&oacute;n: <b>+"+fmtG(dq,2)+"</b> "+
-      "&nbsp;&middot;&nbsp; punto dulce r = <b>"+rdulce+"</b><br>"+
-      "N<sub>ad</sub> = "+fmtN(Nad)+" ("+fmtG(100*Nad/P,2)+"% de "+Mi[0]+")<br>"+
-      "full FT: <b>"+fmtG(mfull,3)+" GB</b> "+fits(mfull)+" &nbsp;&middot;&nbsp; LoRA: "+
-      "<b>"+fmtG(mlora,3)+" GB</b> "+fits(mlora)+" &nbsp;&middot;&nbsp; QLoRA: "+
-      "<span class='gold'>"+fmtG(mqlora,3)+" GB</span> "+fits(mqlora);
-    /* --- canvas a: curva calidad vs r --- */
-    const c=fitCanvas(document.getElementById("cv4a"));
-    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:6,ymin:58,ymax:95,
-      xticks:[[0,"1"],[1,"2"],[2,"4"],[3,"8"],[4,"16"],[5,"32"],[6,"64"]],
-      yticks:[[62,"62"],[75,"75"],[91,"91"]],
-      xlab:"rango r (escala log₂)",ylab:"calidad (puntos)",
-      title:"q(r): saturación logarítmica — el codo está en r = 8–16"});
-    polyline(c.ctx,[[ax.X(0),ax.Y(QINF)],[ax.X(6),ax.Y(QINF)]],INK,1.2,[5,4]);
-    polyline(c.ctx,[[ax.X(0),ax.Y(Q0)],[ax.X(6),ax.Y(Q0)]],MUTE,1.2,[5,4]);
-    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-    c.ctx.fillStyle=INK;c.ctx.fillText("full fine-tuning = 91",ax.X(0.1),ax.Y(QINF)-5);
-    c.ctx.fillStyle=MUTE;c.ctx.fillText("prompting = 62",ax.X(0.1),ax.Y(Q0)-5);
-    const pts=[];
-    for(let k=0;k<=6;k+=0.05)pts.push([ax.X(k),ax.Y(qual(Math.pow(2,k)))]);
-    polyline(c.ctx,pts,GOLD,2.4);
-    const kd=Math.log2(rdulce);
-    c.ctx.fillStyle=GOLDD;c.ctx.beginPath();
-    c.ctx.arc(ax.X(kd),ax.Y(qual(rdulce)),5,0,7);c.ctx.fill();
-    c.ctx.fillText("punto dulce",ax.X(kd)+8,ax.Y(qual(rdulce))+12);
-    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-    c.ctx.arc(ax.X(+slr.value),ax.Y(q),6,0,7);c.ctx.fill();
-    /* --- canvas b: memoria --- */
-    const c2=fitCanvas(document.getElementById("cv4b"));
-    const fr2={x0:60,y0:24,w:c2.W-80,h:c2.H-62};
-    const lmax=Math.log10(1300);
-    const ax2=axes(c2.ctx,fr2,{xmin:0,xmax:3,ymin:0,ymax:Math.log10(1300),
-      xticks:[[0.5,"full FT"],[1.5,"LoRA"],[2.5,"QLoRA"]],
-      yticks:[[Math.log10(10),"10"],[Math.log10(100),"100"],[Math.log10(1000),"1000"]],
-      ylab:"GB de VRAM (log)",
-      title:"Memoria de entrenamiento, "+Mi[0]+" — líneas: GPUs reales"});
-    GPUS.forEach(g=>{
-      const y=ax2.Y(Math.log10(g[1]));
-      polyline(c2.ctx,[[fr2.x0,y],[fr2.x0+fr2.w,y]],MUTE,1,[4,4]);
-      c2.ctx.font="10px Georgia,serif";c2.ctx.fillStyle=MUTE;c2.ctx.textAlign="left";
-      c2.ctx.fillText(g[0]+" "+g[1]+" GB",fr2.x0+fr2.w-78,y-4);});
-    const bars=[[0.5,mfull,INK],[1.5,mlora,GOLDD],[2.5,mqlora,GOLD]];
-    bars.forEach(b=>{
-      const bw=(ax2.X(0.8)-ax2.X(0.2));
-      const y=ax2.Y(Math.log10(Math.max(b[1],1)));
-      c2.ctx.fillStyle=b[2];
-      c2.ctx.fillRect(ax2.X(b[0])-bw/2,y,bw,ax2.Y(0)-y);
-      c2.ctx.fillStyle=INK;c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="center";
-      c2.ctx.fillText(fmtG(b[1],3)+" GB",ax2.X(b[0]),y-6);});
-  }
-  updaters[4]=upd;
-})();
-</script>
+function drawSchema(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  ctx.textAlign='center';
+  const cy=h/2;
+  // big frozen W matrix (grey, with lock)
+  const Wx=110, Ws=150;
+  ctx.fillStyle='#f2f2f2';ctx.strokeStyle='#8A8A8A';ctx.lineWidth=2;
+  ctx.fillRect(Wx-Ws/2,cy-Ws/2,Ws,Ws);ctx.strokeRect(Wx-Ws/2,cy-Ws/2,Ws,Ws);
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 30px Georgia';ctx.fillText('W',Wx,cy+6);
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('d × d  ·  congelada',Wx,cy+Ws/2+22);
+  ctx.font='20px Georgia';ctx.fillText('🔒',Wx+Ws/2-14,cy-Ws/2+20);
+  // plus sign
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 34px Georgia';
+  ctx.fillText('+',Wx+Ws/2+42,cy+10);
+  // thin B (tall-thin) and A (wide-short) trainable matrices (gold)
+  const Bx=Wx+Ws/2+120, Bw=34, Bh=Ws;
+  ctx.fillStyle='#F5EBD3';ctx.strokeStyle='#B8860B';ctx.lineWidth=2.4;
+  ctx.fillRect(Bx-Bw/2,cy-Bh/2,Bw,Bh);ctx.strokeRect(Bx-Bw/2,cy-Bh/2,Bw,Bh);
+  ctx.fillStyle='#8C6508';ctx.font='bold 22px Georgia';ctx.fillText('B',Bx,cy+6);
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.fillText('d × r',Bx,cy+Bh/2+20);
+  // multiply dot
+  ctx.fillStyle='#8C6508';ctx.font='bold 26px Georgia';
+  ctx.fillText('·',Bx+Bw/2+16,cy+2);
+  const Aw=Ws, Ah=34, Ax=Bx+Bw/2+32+Aw/2;
+  ctx.fillStyle='#F5EBD3';ctx.strokeStyle='#B8860B';ctx.lineWidth=2.4;
+  ctx.fillRect(Ax-Aw/2,cy-Ah/2,Aw,Ah);ctx.strokeRect(Ax-Aw/2,cy-Ah/2,Aw,Ah);
+  ctx.fillStyle='#8C6508';ctx.font='bold 22px Georgia';ctx.fillText('A',Ax,cy+8);
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.fillText('r × d',Ax,cy+Ah/2+22);
+  // caption of trainable block
+  ctx.fillStyle='#8C6508';ctx.font='italic 13px Georgia';
+  ctx.fillText('entrenables (rango r)',(Bx+Ax)/2,cy-Bh/2-14);
+  ctx.textAlign='left';
+}
+updaters[1]=drawSchema;
 
-<script>
-"use strict";
-/* ================= SLIDE 5 : SFT, imitación con saturación ================= */
-(function(){
-  const P=4,V=6,REPS=24,LAM=0.5;
-  const NGRID=[20,40,80,160,320,640,1280,2560];
-  /* verdad p*(y|x): correcta 0.78, genérica (y=4) 0.12, alucinación (y=5) 0.02,
-     resto 0.08/3. Para x=3 la "correcta" es y=3. */
-  const PSTAR=[];
-  for(let x=0;x<P;x++){
-    const row=new Array(V).fill(0.08/3);
-    row[x]=0.78;row[4]=0.12;row[5]=0.02;
-    if(x===4||x===5){/* no ocurre: P=4 */}
-    PSTAR.push(row);
-  }
-  let HSTAR=0;
-  for(let x=0;x<P;x++)for(let y=0;y<V;y++)
-    HSTAR+=-(1/P)*PSTAR[x][y]*Math.log(PSTAR[x][y]);
-  function fitOnce(nEx,rng){
-    const cnt=Array.from({length:P},()=>new Array(V).fill(0));
-    const nx=new Array(P).fill(0);
-    for(let i=0;i<nEx;i++){
-      const x=Math.floor(rng()*P);
-      let u=rng(),y=0,acc=PSTAR[x][0];
-      while(u>acc&&y<V-1){y++;acc+=PSTAR[x][y];}
-      cnt[x][y]++;nx[x]++;}
-    let ce=0;
-    for(let x=0;x<P;x++)
-      for(let y=0;y<V;y++){
-        const ph=(cnt[x][y]+LAM)/(nx[x]+LAM*V);
-        ce+=-(1/P)*PSTAR[x][y]*Math.log(ph);}
-    return {ce:ce,eff:Math.exp(HSTAR-ce)};
-  }
-  let seed=20,CURVE=null;
-  function buildCurve(){
-    CURVE=NGRID.map((nEx,gi)=>{
-      const ces=[],effs=[];
-      for(let rep=0;rep<REPS;rep++){
-        const f=fitOnce(nEx,mulberry32(seed+1000*rep+17*gi));
-        ces.push(f.ce);effs.push(f.eff);}
-      return {n:nEx,
-        ce:ces.reduce((a,b)=>a+b,0)/REPS,
-        eff:effs.reduce((a,b)=>a+b,0)/REPS,
-        ces:ces};});
-  }
-  buildCurve();
-  const sln=document.getElementById("sl5n"),slc=document.getElementById("sl5c");
-  sln.oninput=upd;slc.oninput=upd;
-  document.getElementById("bt5").onclick=()=>{seed+=991;buildCurve();upd();};
-  function upd(){
-    const gi=+sln.value,cE=+slc.value;
-    const cur=CURVE[gi];
-    document.getElementById("r5n").textContent=fmtN(cur.n);
-    document.getElementById("r5c").textContent=cE.toFixed(1);
-    /* punto de rendimiento decreciente: primera transición con <0.5 pts / 100 € */
-    let nStar=null;
-    for(let i=0;i<CURVE.length-1;i++){
-      const dpts=100*(CURVE[i+1].eff-CURVE[i].eff);
-      const deur=(CURVE[i+1].n-CURVE[i].n)*cE;
-      if(dpts/deur<0.5/100){nStar=CURVE[i].n;break;}}
-    if(nStar===null)nStar=CURVE[CURVE.length-1].n;
-    document.getElementById("ro5").innerHTML=
-      "CE de test = <b>"+fmtG(cur.ce,4)+"</b> nats (suelo H* = "+fmtG(HSTAR,4)+")"+
-      " &nbsp;&middot;&nbsp; calidad relativa e<sup>H*&minus;CE</sup> = "+
-      "<span class='gold'>"+fmtG(100*cur.eff,3)+
-      "%</span> &nbsp;&middot;&nbsp; gasto = <b>"+fmtN(cur.n*cE)+" &euro;</b>"+
-      " &nbsp;&middot;&nbsp; rendimiento decreciente desde n* &asymp; <span class='deep'>"+
-      fmtN(nStar)+"</span> ("+fmtN(nStar*cE)+" &euro;)";
-    /* --- canvas a: CE(n) --- */
-    const c=fitCanvas(document.getElementById("cv5a"));
-    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymax=Math.max(...CURVE.map(p=>p.ce))*1.06;
-    const ax=axes(c.ctx,fr,{xmin:Math.log10(15),xmax:Math.log10(3200),
-      ymin:HSTAR*0.92,ymax:ymax,
-      xticks:[[Math.log10(20),"20"],[Math.log10(80),"80"],[Math.log10(320),"320"],
-              [Math.log10(1280),"1280"]],
-      yticks:[[Math.round(HSTAR*100)/100,fmtG(HSTAR,3)],
-              [Math.round(ymax*0.9*100)/100,fmtG(ymax*0.9,2)]],
-      xlab:"n ejemplos etiquetados (escala log)",ylab:"cross-entropy de test",
-      title:"La curva de aprendizaje de la imitación, 24 réplicas por punto"});
-    polyline(c.ctx,[[ax.X(Math.log10(15)),ax.Y(HSTAR)],
-                    [ax.X(Math.log10(3200)),ax.Y(HSTAR)]],MUTE,1.4,[5,4]);
-    c.ctx.font="11px Georgia,serif";c.ctx.fillStyle=MUTE;c.ctx.textAlign="left";
-    c.ctx.fillText("suelo H* (entropía verdadera)",ax.X(Math.log10(700)),ax.Y(HSTAR)-5);
-    /* nube de réplicas del n actual */
-    const jit=mulberry32(3);
-    c.ctx.fillStyle=RULE;
-    for(const v of cur.ces)
-      c.ctx.fillRect(ax.X(Math.log10(cur.n)+(jit()-0.5)*0.06)-1.5,ax.Y(v)-1.5,3,3);
-    polyline(c.ctx,CURVE.map(p=>[ax.X(Math.log10(p.n)),ax.Y(p.ce)]),INK,2);
-    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
-    c.ctx.arc(ax.X(Math.log10(cur.n)),ax.Y(cur.ce),6,0,7);c.ctx.fill();
-    /* --- canvas b: calidad vs gasto --- */
-    const c2=fitCanvas(document.getElementById("cv5b"));
-    const fr2={x0:56,y0:24,w:c2.W-76,h:c2.H-62};
-    const xmax=CURVE[CURVE.length-1].n*cE*1.05;
-    const ax2=axes(c2.ctx,fr2,{xmin:0,xmax:xmax,ymin:72,ymax:102,
-      xticks:[[0,"0"],[Math.round(xmax/3),fmtN(xmax/3)+" €"],
-              [Math.round(2*xmax/3),fmtN(2*xmax/3)+" €"]],
-      yticks:[[75,"75%"],[90,"90%"],[100,"100%"]],
-      xlab:"gasto en etiquetado, n · c (€)",ylab:"calidad relativa",
-      title:"Cada euro compra menos que el anterior: el punto dorado es el corte"});
-    polyline(c2.ctx,[[ax2.X(0),ax2.Y(100)],[ax2.X(xmax),ax2.Y(100)]],MUTE,1,[5,4]);
-    polyline(c2.ctx,CURVE.map(p=>[ax2.X(p.n*cE),ax2.Y(100*p.eff)]),INK,2);
-    CURVE.forEach(p=>{
-      c2.ctx.fillStyle=p.n===nStar?GOLD:INK;
-      c2.ctx.beginPath();
-      c2.ctx.arc(ax2.X(p.n*cE),ax2.Y(100*p.eff),p.n===nStar?6:3,0,7);c2.ctx.fill();});
-    c2.ctx.fillStyle=GOLDD;c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="left";
-    const pSt=CURVE.find(p=>p.n===nStar);
-    if(pSt)c2.ctx.fillText("rendimiento decreciente",
-      ax2.X(pSt.n*cE)+8,ax2.Y(100*pSt.eff)+14);
-  }
-  updaters[5]=upd;
-})();
-
-/* ================= SLIDE 6 : Bradley–Terry con tus votos ================= */
-(function(){
-  const RESP=[
-    "Lamentamos los cargos duplicados. Hemos abierto la incidencia nº 4831, queda anulado el cargo y en 48 h tendrá la devolución en cuenta.",
-    "Eso no es cosa nuestra. Revise su contrato antes de reclamar.",
-    "¡Uy, qué faena! Lo miramos en cuanto podamos y te decimos algo, ¿vale?",
-    "Su solicitud ha sido procesada conforme a los procedimientos establecidos en la normativa interna vigente."];
-  const NAMES=["A formal+resolutiva","B seca","C coloquial","D burocrática"];
-  const RSTAR=[1.6,-1.2,0.2,-0.6];   // verdad para los votos simulados
-  const PAIRS=[[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
-  let votes=[],pairIdx=0,simSeed=101,r=[0,0,0,0];
-  function fit(){
-    r=[0,0,0,0];
-    if(votes.length===0)return;
-    const lr=0.15,reg=0.05;
-    for(let it=0;it<600;it++){
-      const g=[0,0,0,0];
-      for(const v of votes){
-        const p=sigmoid(r[v[0]]-r[v[1]]);
-        g[v[0]]+=(1-p);g[v[1]]-=(1-p);}
-      for(let i=0;i<4;i++)r[i]+=lr*(g[i]/votes.length-reg*r[i]);
-      const m=(r[0]+r[1]+r[2]+r[3])/4;
-      for(let i=0;i<4;i++)r[i]-=m;}
-  }
-  function loglik(){
-    if(votes.length===0)return NaN;
-    let ll=0;
-    for(const v of votes)ll+=Math.log(sigmoid(r[v[0]]-r[v[1]]));
-    return ll/votes.length;
-  }
-  function showPair(){
-    const p=PAIRS[pairIdx%PAIRS.length];
-    document.getElementById("r6p").textContent=
-      (pairIdx%PAIRS.length+1)+" / "+PAIRS.length;
-    document.getElementById("t6a").textContent=RESP[p[0]];
-    document.getElementById("t6b").textContent=RESP[p[1]];
-  }
-  function vote(first){
-    const p=PAIRS[pairIdx%PAIRS.length];
-    votes.push(first?[p[0],p[1]]:[p[1],p[0]]);
-    pairIdx++;showPair();fit();upd();
-  }
-  document.getElementById("bt6a").onclick=()=>vote(true);
-  document.getElementById("bt6b").onclick=()=>vote(false);
-  document.getElementById("bt6sim").onclick=()=>{
-    const rng=mulberry32(simSeed);simSeed+=7;
-    for(let k=0;k<20;k++){
-      let i=Math.floor(rng()*4),j=Math.floor(rng()*4);
-      while(j===i)j=Math.floor(rng()*4);
-      const pw=sigmoid(RSTAR[i]-RSTAR[j]);
-      votes.push(rng()<pw?[i,j]:[j,i]);}
-    fit();upd();};
-  document.getElementById("bt6rst").onclick=()=>{
-    votes=[];pairIdx=0;showPair();fit();upd();};
-  showPair();fit();
-  function upd(){
-    const pab=sigmoid(r[0]-r[1]);
-    document.getElementById("ro6").innerHTML=
-      "votos: <b>"+votes.length+"</b> &nbsp;&middot;&nbsp; r = ["+
-      r.map(v=>fmtG(v,2)).join(", ")+"] &nbsp;&middot;&nbsp; "+
-      "P(A&#8827;B) = <span class='gold'>"+fmtG(pab,3)+"</span> &nbsp;&middot;&nbsp; "+
-      "log-verosimilitud/voto = <b>"+(votes.length?fmtG(loglik(),3):"&mdash;")+"</b>"+
-      (votes.length?"":" &nbsp;<span class='mut'>(vota para empezar)</span>");
-    /* --- canvas a: barras de reward --- */
-    const c=fitCanvas(document.getElementById("cv6a"));
-    const fr={x0:130,y0:24,w:c.W-160,h:c.H-50};
-    const rmax=Math.max(1.5,...r.map(Math.abs))*1.15;
-    const ax=axes(c.ctx,fr,{xmin:-rmax,xmax:rmax,ymin:0,ymax:1,
-      xticks:[[-1,"−1"],[0,"0"],[1,"+1"]],yticks:[],
-      xlab:"reward aprendido r_i",
-      title:"Los rewards que tus votos han entrenado"});
-    polyline(c.ctx,[[ax.X(0),fr.y0],[ax.X(0),fr.y0+fr.h]],MUTE,1,[3,3]);
-    NAMES.forEach((nm,i)=>{
-      const y=fr.y0+10+i*(fr.h-20)/4,bh=(fr.h-20)/4-12;
-      c.ctx.fillStyle=i===0?GOLD:(r[i]>=0?GOLDD:MUTE);
-      const x0=Math.min(ax.X(0),ax.X(r[i]));
-      c.ctx.fillRect(x0,y,Math.max(2,Math.abs(ax.X(r[i])-ax.X(0))),bh);
-      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="right";
-      c.ctx.fillText(nm,fr.x0-8,y+bh/2+4);
-      c.ctx.textAlign="left";
-      c.ctx.fillText(fmtG(r[i],2),ax.X(Math.max(r[i],0))+6,y+bh/2+4);});
-    /* --- canvas b: matriz P(i≻j) --- */
-    const c2=fitCanvas(document.getElementById("cv6b"));
-    const sz=Math.min(c2.H-58,c2.W-210);
-    const x0=150,y0=30,cell=sz/4;
-    c2.ctx.font="bold 12px Georgia,serif";c2.ctx.fillStyle=INK;c2.ctx.textAlign="left";
-    c2.ctx.fillText("P(fila ≻ columna) que implican esos rewards",x0,y0-10);
-    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
-      const p=i===j?0.5:sigmoid(r[i]-r[j]);
-      c2.ctx.fillStyle=i===j?"#f4f4f4":rampColor(p);
-      c2.ctx.fillRect(x0+j*cell,y0+i*cell,cell-2,cell-2);
-      c2.ctx.fillStyle=p>0.72?"#fff":INK;
-      c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="center";
-      c2.ctx.fillText(i===j?"—":fmtG(p,2),x0+j*cell+cell/2,y0+i*cell+cell/2+4);}
-    c2.ctx.fillStyle=INK;c2.ctx.textAlign="right";
-    for(let i=0;i<4;i++)
-      c2.ctx.fillText(NAMES[i],x0-8,y0+i*cell+cell/2+4);
-    c2.ctx.textAlign="center";
-    const letr=["A","B","C","D"];
-    for(let j=0;j<4;j++)
-      c2.ctx.fillText(letr[j],x0+j*cell+cell/2,y0+4*cell+14);
-  }
-  updaters[6]=upd;
-})();
-
-/* ================= SLIDE 7 : RLHF, r − β·KL y reward hacking ================= */
-(function(){
-  const NY=60;
-  const ys=Array.from({length:NY},(_,i)=>i+1);
-  /* π0 : campana en calidad media */
-  const pi0=ys.map(y=>Math.exp(-0.5*Math.pow((y-30)/8,2)));
-  const z0=pi0.reduce((a,b)=>a+b,0);for(let i=0;i<NY;i++)pi0[i]/=z0;
-  const rTrue=ys.map(y=>2*sigmoid((y-30)/6));
-  function rHat(hack){
-    return ys.map((y,i)=>rTrue[i]+(hack?2.8*Math.exp(-0.5*Math.pow((y-8)/2,2)):0));
-  }
-  function policy(beta,rh){
-    const lg=ys.map((y,i)=>Math.log(pi0[i])+rh[i]/beta);
-    return softmax(lg);
-  }
-  function stats(pb,rh){
-    let kl=0,erh=0,ert=0,hackMass=0;
-    for(let i=0;i<NY;i++){
-      if(pb[i]>0)kl+=pb[i]*Math.log(pb[i]/pi0[i]);
-      erh+=pb[i]*rh[i];ert+=pb[i]*rTrue[i];
-      if(ys[i]<=14)hackMass+=pb[i];}
-    return {kl:kl,erh:erh,ert:ert,hackMass:hackMass};
-  }
-  const slb=document.getElementById("sl7b"),ck=document.getElementById("ck7");
-  slb.oninput=upd;ck.onchange=upd;
-  function upd(){
-    const beta=Math.pow(10,+slb.value),hack=ck.checked;
-    document.getElementById("r7b").textContent=fmtG(beta,3);
-    const rh=rHat(hack);
-    const pb=policy(beta,rh);
-    const st=stats(pb,rh);
-    const hacking=st.erh-st.ert>0.4;
-    document.getElementById("ro7").innerHTML=
-      "KL(&pi;<sub>&beta;</sub>&#8214;&pi;&#8320;) = <b>"+fmtG(st.kl,3)+"</b> nats "+
-      "&nbsp;&middot;&nbsp; E[r&#770;] (proxy) = <span class='gold'>"+fmtG(st.erh,3)+
-      "</span> &nbsp;&middot;&nbsp; E[r real] = <b>"+fmtG(st.ert,3)+"</b>"+
-      " &nbsp;&middot;&nbsp; masa en el modo raro: <b>"+fmtG(100*st.hackMass,2)+"%</b> "+
-      (hacking?"<span class='badge bad'>reward hacking</span>"
-              :"<span class='badge ok'>proxy y realidad alineados</span>");
-    /* --- canvas a: distribuciones --- */
-    const c=fitCanvas(document.getElementById("cv7a"));
-    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
-    const ymax=Math.max(...pb,...pi0)*1.12;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:NY+1,ymin:0,ymax:ymax,
-      xticks:[[8,"8 (modo raro)"],[30,"30"],[50,"50"]],
-      yticks:[[0,"0"]],
-      xlab:"calidad latente de la respuesta, y",ylab:"probabilidad",
-      title:"π₀ (gris) y π_β ∝ π₀·exp(r̂/β) (oro), calculada exacta"});
-    c.ctx.fillStyle="rgba(138,138,138,0.25)";
-    c.ctx.beginPath();c.ctx.moveTo(ax.X(1),ax.Y(0));
-    for(let i=0;i<NY;i++)c.ctx.lineTo(ax.X(ys[i]),ax.Y(pi0[i]));
-    c.ctx.lineTo(ax.X(NY),ax.Y(0));c.ctx.closePath();c.ctx.fill();
-    polyline(c.ctx,ys.map((y,i)=>[ax.X(y),ax.Y(pi0[i])]),MUTE,1.6);
-    c.ctx.fillStyle="rgba(184,134,11,0.30)";
-    c.ctx.beginPath();c.ctx.moveTo(ax.X(1),ax.Y(0));
-    for(let i=0;i<NY;i++)c.ctx.lineTo(ax.X(ys[i]),ax.Y(pb[i]));
-    c.ctx.lineTo(ax.X(NY),ax.Y(0));c.ctx.closePath();c.ctx.fill();
-    polyline(c.ctx,ys.map((y,i)=>[ax.X(y),ax.Y(pb[i])]),GOLD,2.2);
-    if(hack){
-      polyline(c.ctx,[[ax.X(8),fr.y0],[ax.X(8),fr.y0+fr.h]],GOLDD,1,[3,3]);
-      c.ctx.font="10px Georgia,serif";c.ctx.fillStyle=GOLDD;c.ctx.textAlign="left";
-      c.ctx.fillText("pico falso del RM",ax.X(8)+4,fr.y0+12);}
-    /* --- canvas b: E[r] vs β --- */
-    const c2=fitCanvas(document.getElementById("cv7b"));
-    const fr2={x0:52,y0:24,w:c2.W-72,h:c2.H-62};
-    const ax2=axes(c2.ctx,fr2,{xmin:-1.3,xmax:0.7,ymin:0,ymax:3.8,
-      xticks:[[-1,"0.1"],[Math.log10(0.5),"0.5"],[0,"1"],[Math.log10(5),"5"]],
-      yticks:[[0,"0"],[1,"1"],[2,"2"],[3,"3"]],
-      xlab:"β (escala log)",ylab:"reward esperado",
-      title:"Proxy E[r̂] (oro) vs realidad E[r real] (tinta): la divergencia es el hackeo"});
-    const lp=[],lt=[];
-    for(let lb=-1.3;lb<=0.7001;lb+=0.04){
-      const pbb=policy(Math.pow(10,lb),rh),s=stats(pbb,rh);
-      lp.push([ax2.X(lb),ax2.Y(s.erh)]);lt.push([ax2.X(lb),ax2.Y(s.ert)]);}
-    polyline(c2.ctx,lp,GOLD,2.2);
-    polyline(c2.ctx,lt,INK,2.2);
-    polyline(c2.ctx,[[ax2.X(+slb.value),fr2.y0],[ax2.X(+slb.value),fr2.y0+fr2.h]],
-      GOLDD,1.2,[3,3]);
-    c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="left";
-    c2.ctx.fillStyle=GOLD;c2.ctx.fillText("E[r̂] proxy",lp[6][0],lp[6][1]-8);
-    c2.ctx.fillStyle=INK;c2.ctx.fillText("E[r real]",lt[6][0],lt[6][1]+16);
-  }
-  updaters[7]=upd;
-})();
-
-/* ================= SLIDE 8 : DPO con descenso por gradiente real ================= */
-(function(){
-  const LABELS=["formal","seca","coloquial","burocrát.","disculpa+sol.","alucina"];
-  const ZREF=[1.1,0.7,0.4,0.9,0.1,0.5];
-  /* pares (winner, loser): las resolutivas ganan; la alucinación siempre pierde */
-  const PAIRS=[[0,1],[0,3],[4,1],[0,5],[2,5],[4,3],[0,2],[4,5]];
-  const piRef=softmax(ZREF);
-  let z=ZREF.slice(),steps=0,lossHist=[];
-  function loss(beta){
-    let L=0;
-    for(const p of PAIRS){
-      const s=beta*((z[p[0]]-z[p[1]])-(ZREF[p[0]]-ZREF[p[1]]));
-      L+=-Math.log(sigmoid(s));}
-    return L/PAIRS.length;
-  }
-  function step100(beta){
-    const lr=0.3;
-    for(let it=0;it<100;it++){
-      const g=new Array(6).fill(0);
-      for(const p of PAIRS){
-        const s=beta*((z[p[0]]-z[p[1]])-(ZREF[p[0]]-ZREF[p[1]]));
-        const f=sigmoid(-s)*beta/PAIRS.length;
-        g[p[0]]+=f;g[p[1]]-=f;}
-      for(let k=0;k<6;k++)z[k]+=lr*g[k];
-      steps++;lossHist.push(loss(beta));}
-  }
-  const slb=document.getElementById("sl8b");
-  slb.oninput=upd;
-  document.getElementById("bt8s").onclick=()=>{step100(+slb.value);upd();};
-  document.getElementById("bt8r").onclick=()=>{
-    z=ZREF.slice();steps=0;lossHist=[];upd();};
-  function upd(){
-    const beta=+slb.value;
-    document.getElementById("r8b").textContent=beta.toFixed(2);
-    const pi=softmax(z);
-    const L=loss(beta);
-    let okp=0;
-    for(const p of PAIRS){
-      const s=beta*((z[p[0]]-z[p[1]])-(ZREF[p[0]]-ZREF[p[1]]));
-      if(s>0)okp++;}
-    const rImp=z.map((zz,k)=>beta*(Math.log(pi[k])-Math.log(piRef[k])));
-    document.getElementById("ro8").innerHTML=
-      "pasos: <b>"+steps+"</b> &nbsp;&middot;&nbsp; L<sub>DPO</sub> = "+
-      "<span class='gold'>"+fmtG(L,4)+"</span> &nbsp;&middot;&nbsp; pares bien "+
-      "ordenados: <b>"+okp+"/"+PAIRS.length+"</b> &nbsp;&middot;&nbsp; "+
-      "&Sigma;&pi;<sub>&theta;</sub> = "+pi.reduce((a,b)=>a+b,0).toFixed(3)+
-      " &nbsp;&middot;&nbsp; &pi;(alucina): "+fmtG(piRef[5],3)+" &rarr; "+
-      "<span class='deep'>"+fmtG(pi[5],3)+"</span>";
-    /* --- canvas a: π_ref vs π_θ --- */
-    const c=fitCanvas(document.getElementById("cv8a"));
-    const fr={x0:52,y0:24,w:c.W-72,h:c.H-66};
-    const ymax=Math.max(...pi,...piRef)*1.18;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:6,ymin:0,ymax:ymax,
-      xticks:[],yticks:[[0,"0"],[0.2,"0.2"],[0.4,"0.4"]],
-      ylab:"probabilidad",
-      title:"π_ref (contorno gris) vs π_θ tras tus pasos (oro)"});
-    for(let k=0;k<6;k++){
-      const xc=k+0.5,bw=0.30;
-      c.ctx.strokeStyle=MUTE;c.ctx.lineWidth=1.6;
-      c.ctx.strokeRect(ax.X(xc-bw),ax.Y(piRef[k]),
-        ax.X(xc)-ax.X(xc-bw),ax.Y(0)-ax.Y(piRef[k]));
-      c.ctx.fillStyle=k===5?GOLDD:GOLD;
-      c.ctx.fillRect(ax.X(xc),ax.Y(pi[k]),
-        ax.X(xc+bw)-ax.X(xc),ax.Y(0)-ax.Y(pi[k]));
-      c.ctx.fillStyle=INK;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(LABELS[k],ax.X(xc),ax.Y(0)+14);
-      c.ctx.fillText("y"+(k+1),ax.X(xc),ax.Y(0)+26);}
-    /* --- canvas b: pérdida + rewards implícitos --- */
-    const c2=fitCanvas(document.getElementById("cv8b"));
-    const half=(c2.W-120)/2;
-    const fr1={x0:52,y0:24,w:half,h:c2.H-58};
-    const nh=Math.max(lossHist.length,1);
-    const lmaxv=lossHist.length?Math.max(...lossHist):Math.log(2);
-    const ax1=axes(c2.ctx,fr1,{xmin:0,xmax:Math.max(nh,100),ymin:0,ymax:lmaxv*1.1+0.02,
-      xticks:[[0,"0"],[Math.max(nh,100),String(Math.max(nh,100))]],
-      yticks:[[0,"0"],[Math.round(lmaxv*100)/100,fmtG(lmaxv,2)]],
-      xlab:"paso de gradiente",title:"L_DPO baja de verdad"});
-    if(lossHist.length>1)
-      polyline(c2.ctx,lossHist.map((v,i)=>[ax1.X(i),ax1.Y(v)]),GOLD,1.8);
-    else{c2.ctx.font="11px Georgia,serif";c2.ctx.fillStyle=MUTE;c2.ctx.textAlign="left";
-      c2.ctx.fillText("pulsa «100 pasos»",fr1.x0+10,fr1.y0+30);}
-    const fr2={x0:52+half+58,y0:24,w:half,h:c2.H-58};
-    const rmax=Math.max(0.3,...rImp.map(Math.abs))*1.2;
-    const ax2=axes(c2.ctx,fr2,{xmin:0,xmax:6,ymin:-rmax,ymax:rmax,
-      xticks:[],yticks:[[0,"0"]],
-      title:"reward implícito β·log(π_θ/π_ref)"});
-    polyline(c2.ctx,[[fr2.x0,ax2.Y(0)],[fr2.x0+fr2.w,ax2.Y(0)]],MUTE,1,[3,3]);
-    for(let k=0;k<6;k++){
-      const xc=k+0.5,bw=0.3;
-      c2.ctx.fillStyle=rImp[k]>=0?GOLD:MUTE;
-      c2.ctx.fillRect(ax2.X(xc-bw),Math.min(ax2.Y(0),ax2.Y(rImp[k])),
-        ax2.X(xc+bw)-ax2.X(xc-bw),Math.max(1,Math.abs(ax2.Y(rImp[k])-ax2.Y(0))));
-      c2.ctx.fillStyle=INK;c2.ctx.font="10px Georgia,serif";c2.ctx.textAlign="center";
-      c2.ctx.fillText("y"+(k+1),ax2.X(xc),fr2.y0+fr2.h+14);}
-  }
-  updaters[8]=upd;
-})();
-
-/* ================= SLIDE 9 : árbol de decisión ================= */
-(function(){
-  const cks=[document.getElementById("ck9a"),document.getElementById("ck9b"),
-             document.getElementById("ck9c"),document.getElementById("ck9d")];
-  cks.forEach(ck=>ck.onchange=upd);
-  function decide(){
-    const [know,tone,pref,gpu]=cks.map(ck=>ck.checked);
-    const stack=[{name:"Prompt + few-shot",cost:300,on:true}];
-    stack.push({name:"RAG (conocimiento fresco)",cost:680,on:know});
-    if(tone&&gpu)stack.push({name:"LoRA (tono/formato)",cost:2050,on:true});
-    else stack.push({name:tone?"Plantillas few-shot (sin GPU)":"LoRA (tono/formato)",
-                     cost:tone?300:2050,on:tone});
-    if(pref&&gpu)stack.push({name:"DPO (comportamiento)",cost:30500,on:true});
-    else stack.push({name:pref?"API alineada gestionada":"DPO (comportamiento)",
-                     cost:pref?1200:30500,on:pref});
-    return {know:know,tone:tone,pref:pref,gpu:gpu,stack:stack};
-  }
-  function upd(){
-    const d=decide();
-    const active=d.stack.filter(s=>s.on);
-    const total=active.reduce((a,s)=>a+s.cost,0);
-    document.getElementById("ro9").innerHTML=
-      "Stack recomendado: <span class='gold'>"+
-      active.map(s=>s.name.split(" (")[0]).join(" + ")+
-      "</span> &nbsp;&middot;&nbsp; TCO a&ntilde;o 1 &asymp; <b>"+fmtN(total)+
-      " &euro;</b>"+(d.pref&&!d.gpu?
-      " &nbsp;<span class='badge bad'>sin GPU: preferencias v&iacute;a API</span>":"");
-    document.getElementById("tb9").innerHTML=d.stack.map(s=>
-      "<tr><td>"+s.name+"</td><td>"+fmtN(s.cost)+" &euro;</td><td>"+
-      (s.on?"<span class='badge ok'>s&iacute;</span>"
-           :"<span class='badge bad'>no</span>")+"</td></tr>").join("");
-    /* --- canvas: árbol con camino iluminado --- */
-    const c=fitCanvas(document.getElementById("cv9a"));
-    const W=c.W,H=c.H;
-    const qx=W*0.30,ax_=W*0.74;
-    const ys=[H*0.14,H*0.38,H*0.62,H*0.86];
-    function box(x,y,w,h,label,lit,question){
-      c.ctx.save();
-      c.ctx.fillStyle=lit?(question?GOLDP:GOLD):"#f6f6f6";
-      c.ctx.strokeStyle=lit?GOLDD:MUTE;c.ctx.lineWidth=lit?2:1;
-      c.ctx.beginPath();
-      c.ctx.roundRect?c.ctx.roundRect(x-w/2,y-h/2,w,h,7)
-                     :c.ctx.rect(x-w/2,y-h/2,w,h);
-      c.ctx.fill();c.ctx.stroke();
-      c.ctx.fillStyle=lit&&!question?"#fff":INK;
-      c.ctx.font=(question?"11px":"bold 11px")+" Georgia,serif";
-      c.ctx.textAlign="center";
-      const lines=label.split("\n");
-      lines.forEach((ln,i)=>c.ctx.fillText(ln,x,y+4+(i-(lines.length-1)/2)*13));
-      c.ctx.restore();
-    }
-    function edge(x1,y1,x2,y2,lit,lbl){
-      polyline(c.ctx,[[x1,y1],[x2,y2]],lit?GOLD:"#cccccc",lit?2.6:1.2);
-      if(lbl){c.ctx.font="italic 10px Georgia,serif";
-        c.ctx.fillStyle=lit?GOLDD:MUTE;c.ctx.textAlign="center";
-        c.ctx.fillText(lbl,(x1+x2)/2+(x2>x1?6:-12),(y1+y2)/2-3);}
-    }
-    const bw=W*0.40,bh=H*0.135,aw=W*0.34;
-    /* preguntas (columna izquierda) */
-    const Q=[
-      "¿El conocimiento cambia\na diario?",
-      "¿Tono / formato\nmuy específico?",
-      "¿≥5.000 pares de\npreferencia?",
-      ""];
-    const flags=[d.know,d.tone,d.pref];
-    /* respuestas (columna derecha) */
-    const A=[
-      "RAG",
-      d.gpu?"LoRA":"plantillas few-shot",
-      d.gpu?"DPO":"API alineada",
-      ""];
-    for(let i=0;i<3;i++){
-      edge(qx,ys[i]+bh/2,qx,ys[i+1]-(i<2?bh/2:bh/2),true,"no / sigue");
-      edge(qx+bw/2,ys[i],ax_-aw/2,ys[i],flags[i],flags[i]?"sí":"");
-      box(qx,ys[i],bw,bh,Q[i],true,true);
-      box(ax_,ys[i],aw,bh*0.82,A[i],flags[i],false);
-    }
-    const active2=d.stack.filter(s=>s.on);
-    box(qx,ys[3],bw*1.15,bh,
-      "STACK: "+active2.map(s=>s.name.split(" (")[0]).join(" + "),true,false);
-    c.ctx.font="italic 10px Georgia,serif";c.ctx.fillStyle=MUTE;c.ctx.textAlign="left";
-    c.ctx.fillText("llave GPU: "+(d.gpu?"activada — los peldaños de entrenamiento están disponibles"
-      :"desactivada — todo lo que toca θ se degrada a su alternativa sin GPU"),12,H-8);
-  }
-  updaters[9]=upd;
-})();
-
-/* ================= SLIDE 10 : glosario ================= */
-(function(){
-  const G=[
-   ["f_θ₀, θ","el LLM base congelado y sus parámetros; adaptar = cambiar lo mínimo posible de θ (o nada, como en prompting y RAG)."],
-   ["W, ΔW","matriz de pesos original (congelada) y la perturbación aditiva aprendida: W′ = W + ΔW."],
-   ["B·A","factorización de rango bajo de ΔW: A ∈ R^{r×d} comprime (down-projection, init gaussiana), B ∈ R^{d×r} expande (up-projection, init 0 para que ΔW = 0 al arrancar)."],
-   ["r","rango del adaptador (típicamente 4, 8, 16, 64): número de direcciones independientes de cambio por matriz."],
-   ["α (LoRA)","factor de escala de ΔW = (α/r)BA; típicamente α = r o 2r. Hiperparámetro fijo, no se aprende. No confundir con el learning rate."],
-   ["r(m+n) vs mn","parámetros entrenables de LoRA frente al full fine-tuning; con m = n = d: 2rd vs d², ahorro d/(2r) ≈ 1000×."],
-   ["SVD, σ_k","descomposición en capas de rango 1 ordenadas por importancia σ₁ ≥ σ₂ ≥ …; Eckart–Young: la SVD truncada es la MEJOR aproximación de rango r y su error es la energía descartada."],
-   ["rango efectivo","cuántas σ_k sobresalen del ruido; el ΔW del fine-tuning real lo tiene bajo: la razón geométrica de que r = 8 baste."],
-   ["QLoRA / NF4","LoRA con el modelo base cuantizado a 4 bits NormalFloat (≈0,55 bytes/parámetro): Llama 70B entrenable en una GPU de 48 GB."],
-   ["16 bytes/parám.","la factura del full fine-tuning: peso fp16 (2) + gradiente (2) + Adam m, v fp32 (8) + copia maestra fp32 (4). Congelar un peso la reduce a 2 (o 0,5 con NF4)."],
-   ["SFT","supervised fine-tuning: minimizar −(1/N)Σ log p_θ(y|x) sobre pares (instrucción, respuesta). Imitación pura de demostraciones."],
-   ["H*","entropía condicional verdadera: el suelo de la pérdida de imitación; con datos infinitos la CE de test llega ahí y no más abajo."],
-   ["RAG","retrieval-augmented generation: indexar documentos y recuperarlos al prompt; no toca θ; ideal cuando el conocimiento caduca a diario."],
-   ["σ(z)","sigmoide 1/(1+e^{−z}): convierte diferencias de reward en probabilidades de preferencia."],
-   ["Bradley–Terry","P(A≻B) = σ(r_A − r_B): convierte comparaciones binarias ruidosas en una escala continua de recompensas con transitividad."],
-   ["r_φ(x,y)","reward model: red que puntúa una respuesta; se entrena con L_RM = −E[log σ(r_φ(x,y_w) − r_φ(x,y_l))]."],
-   ["y_w, y_l","respuesta preferida (winner) y rechazada (loser) de un par de preferencia humana."],
-   ["π_θ, π_SFT/π_ref","la política (el LLM) que se optimiza y la referencia congelada de la que no debe alejarse."],
-   ["KL(π‖π₀)","Σ_y π(y)·log(π(y)/π₀(y)): nats de divergencia respecto a la referencia; el freno del alineamiento."],
-   ["β","peso del freno KL (y temperatura inversa de π_β ∝ π₀e^{r/β}): alto = pegado a SFT; bajo = libertad para perseguir (y hackear) el reward. En DPO, mismo papel."],
-   ["reward hacking","explotar errores del reward model: E[r̂] proxy sube mientras la calidad real cae; se manifiesta como colapso a un modo raro cuando β es pequeño."],
-   ["PPO","el algoritmo de RL del RLHF clásico: 3 modelos en memoria, gradientes delicados; lo que DPO elimina."],
-   ["L_DPO","−E[log σ(β log(π_θ(y_w)/π_ref(y_w)) − β log(π_θ(y_l)/π_ref(y_l)))]: Bradley–Terry con el reward implícito dentro; clasificación supervisada de pares."],
-   ["r̂_θ(y)","reward implícito de DPO: β·log(π_θ(y)/π_ref(y)). 'Your language model is secretly a reward model.'"],
-   ["TCO","coste total de propiedad: fijo + 12·c_q·Q + c_e·n; la métrica del cuadrante y del árbol de decisión."],
-   ["escalera","prompt < RAG < LoRA < SFT total < DPO < RLHF (cómputo): sube solo cuando el peldaño inferior se quede corto; el 90% de los casos acaba en RAG + LoRA."]];
-  const div=document.getElementById("glos");
-  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
-    "</div><div>"+e[1]+"</div></div>").join("");
-  updaters[10]=function(){};
-})();
-
-updaters[11]=function(){};
-
-/* ================= boot ================= */
-function fromHash(){const m=location.hash.match(/^#(\d+)$/);
-  return m?Math.max(0,Math.min(11,+m[1])):0;}
-window.addEventListener("hashchange",()=>go(fromHash()));
-go(fromHash());
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+buildNav();
+hot('r');
+go(0);
 </script>
 </body>
 </html>

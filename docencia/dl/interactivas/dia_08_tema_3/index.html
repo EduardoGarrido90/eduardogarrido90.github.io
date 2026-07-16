@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Día 08 — Embeddings semánticos — slides interactivas</title>
+<title>Día 08 — Embeddings — slide interactiva</title>
 <style>
   :root{
     --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
@@ -12,1856 +12,295 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#fff;color:var(--ink);
     font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:16px;}
-  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
     letter-spacing:0.03em;flex-wrap:wrap}
   #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
   #navstrip span.cur{color:var(--gold);font-weight:bold}
-  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
-  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
-  .slide{display:none;padding:14px 24px 64px 24px;
-    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
   .slide.active{display:grid}
-  .figcol canvas{width:100%;display:block;margin-bottom:10px;
-    border:1px solid #eee;border-radius:2px}
-  .txtcol{font-size:0.9em;line-height:1.4}
-  .txtcol p{margin:0 0 9px 0}
-  .txtcol .hd{font-weight:bold}
-  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:10px 12px;margin-bottom:12px}
-  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
-  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
-  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
-    margin-right:6px}
-  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
-    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
-  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
   .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
-    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
-  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
-    font-size:0.9em;margin:4px 0}
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
   .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.mid{background:#f6f0df;color:#7a6408;border:1px solid #d9c28a}
   .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
-  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
-  .mut{color:var(--mute)}
-  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
-    font-size:0.84em;color:#333}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.5em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.12em;
+    font-variant-numeric:tabular-nums;color:#444}
+  /* highlightable equation terms */
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
   .miniglos b{color:var(--goldDeep)}
-  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
-  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
-    font-weight:bold}
-  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
-    font-variant-numeric:tabular-nums}
-  table.live th:first-child,table.live td:first-child{text-align:left}
-  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
     background:#fff;padding:0 4px}
-  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
     font-style:italic;background:#fff;padding:0 4px}
-  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
-    padding:0 6px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
   #arrows button{font-family:inherit;font-size:1em;background:#fff;
     border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
-    padding:2px 14px;cursor:pointer;margin:0 4px}
+    padding:2px 16px;cursor:pointer;margin:0 4px}
   #arrows button:hover{background:var(--goldPale)}
-  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
-  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
-    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
-  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
-  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
-  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
-  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
-  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
-    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
-  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
-  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
-  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
-  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
-  .eqread b{color:var(--goldDeep)}
-  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
-    font-size:0.93em}
-  .frac .num,.frac .den{display:block;padding:0 4px}
-  .frac .den{border-top:1.1px solid var(--ink)}
-  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:9px 13px;margin:10px 0;font-size:0.88em}
-  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
-  .guide ol{margin:4px 0 4px 18px;padding:0}
-  .guide li{margin:0 0 7px 0;line-height:1.4}
-  .guide .obs{color:var(--goldDeep);font-style:italic}
-  details.check{margin-top:6px}
-  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
-  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
-    border-left:3px solid var(--gold);line-height:1.4}
-  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
-  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
-    grid-template-columns:30% 70%}
-  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
 </style>
 </head>
 <body>
-
 <div id="navstrip"></div>
 <div id="slidetitle"></div>
 <hr id="goldrule">
 
-<!-- ============ SLIDE 0 : one-hot vs denso ============ -->
+<!-- ============ SLIDE 1: interactiva ============ -->
 <section class="slide" id="s0">
   <div class="figcol">
-    <canvas id="cv0a" data-aspect="2.6"></canvas>
-    <canvas id="cv0b" data-aspect="1.85"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">&phi; : <i>V</i> &rarr; &reals;<sup>d</sup>,&nbsp;&nbsp; d &isin; [128, 4096]<span class="eqn">(definición de embedding)</span></div>
-      <div class="eqread">un <b>embedding</b> es una función que asigna a cada token del
-        vocabulario <i>V</i> (palabra, frase, canción, producto&hellip;) un vector denso de
-        dimensión d. El criterio que organiza el espacio: tokens semánticamente cercanos
-        &rArr; vectores cercanos.</div>
-      <div class="eq">e<sub>w</sub> &isin; {0,1}<sup>|V|</sup>,&nbsp;&nbsp; cos(e<sub>u</sub>, e<sub>v</sub>) = 0 &nbsp;si&nbsp; u &ne; v<span class="eqn">(el problema del one-hot)</span></div>
-      <div class="eqread">la codificación <b>one-hot</b> da a cada palabra un vector con un
-        único 1 en su posición del vocabulario. Dos one-hot de palabras distintas son
-        siempre ortogonales: su producto escalar es 0, luego su coseno es 0. "hipoteca" y
-        "préstamo" quedan tan lejos como "hipoteca" y "camiseta": el formato no puede
-        codificar similitud, por construcción.</div>
+    <div class="eqpanel">
+      <div class="eqtitle">La similitud coseno</div>
+      <div class="eq">
+        cos(u,v) =
+        ( 2&middot;<span class="term" id="t_vx">v<sub>x</sub></span> +
+          1&middot;<span class="term" id="t_vy">v<sub>y</sub></span> )
+        / ( &Vert;u&Vert; &middot; &Vert;v&Vert; )
+      </div>
+      <div class="eqnum">
+        u&middot;v = 2&middot;<span class="nterm" id="n_vx">0.0</span> +
+        1&middot;<span class="nterm" id="n_vy">0.0</span>
+        = <b id="n_dot">0.00</b>,
+        &nbsp; cos = <b id="n_cos">0.00</b>
+      </div>
     </div>
+    <canvas id="cv" width="720" height="360"></canvas>
   </div>
   <div class="txtcol">
+    <p><span class="hd">El caso.</span> Spotify representa cada canción como un
+    <b>vector</b>. Dos canciones parecidas apuntan casi en la misma dirección:
+    el <b>ángulo</b> entre sus vectores es pequeño. La similitud coseno mide
+    ese parecido para <b>recomendar</b>.</p>
+
     <div class="ctrlbox">
-      <label>palabra A: <b id="r0a"></b></label>
-      <input type="range" id="sl0a" min="0" max="7" step="1" value="0">
-      <label>palabra B: <b id="r0b"></b></label>
-      <input type="range" id="sl0b" min="0" max="7" step="1" value="1">
-      <label>tamaño del vocabulario real |V| = 10^<b id="r0v"></b></label>
-      <input type="range" id="sl0v" min="3" max="6" step="0.1" value="5">
+      <div class="row"><span class="lab">v<sub>x</sub></span>
+        <input type="range" id="vx" min="-3" max="3" step="0.1" value="1.8"
+          oninput="hot('vx');upd()"><span class="val" id="v_vx">1.8</span></div>
+      <div class="row"><span class="lab">v<sub>y</sub></span>
+        <input type="range" id="vy" min="-3" max="3" step="0.1" value="1.2"
+          oninput="hot('vy');upd()"><span class="val" id="v_vy">1.2</span></div>
     </div>
-    <div class="readout" id="ro0"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Deja A = hipoteca y mueve B por las 8 palabras mirando la fila "coseno one-hot"
-        del lector. <span class="obs">Siempre 0.000 (salvo cuando B = A, que da 1): el
-        one-hot no distingue "casi sinónimo" de "no tiene nada que ver".</span></li>
-      <li>Ahora mira la fila "coseno denso" con A = hipoteca: compara B = préstamo y
-        B = camiseta. <span class="obs">&asymp;0.99 contra &asymp;0.4: el denso ordena por
-        parentesco semántico; el panel inferior lo muestra como ángulo.</span></li>
-      <li>Pon A = turbina, B = panel solar. <span class="obs">Coseno denso alto aunque las
-        cadenas de texto no compartan ni una letra: la similitud vive en el vector, no en
-        la ortografía.</span></li>
-      <li>Sube |V| a 10<sup>6</sup> y lee la comparación de memoria.
-        <span class="obs">Un millón de dimensiones one-hot frente a d = 300 densas: el
-        embedding comprime el vocabulario unas 3300 veces y encima gana la noción de
-        similitud.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué el coseno entre
-        dos one-hot distintos es exactamente 0 y no "pequeño"?</summary><div class="ans">
-        Porque el producto escalar suma producto a producto de coordenadas, y los dos
-        vectores no tienen ningún 1 en la misma posición: cada sumando es 0&middot;1 o
-        1&middot;0 o 0&middot;0. No es que la similitud sea débil: es que el formato la
-        hace estructuralmente imposible. Cualquier noción de parecido tiene que venir de
-        fuera (de los datos de co-ocurrencia, como verás en la slide de skip-gram), y
-        para almacenarla hacen falta coordenadas reales compartidas: eso es el embedding
-        denso.</div></details></div>
-    <p><span class="hd">Setup.</span> Vocabulario de juguete con 8 palabras de tres
-      sectores: banca (hipoteca, préstamo, crédito), retail (camiseta, vestido, zapatos) y
-      energía (turbina, panel solar). Arriba: las dos palabras elegidas como vectores
-      one-hot (8 casillas, un único 1). Abajo: las mismas 8 palabras como embeddings
-      densos de dimensión d = 2, dibujados como flechas en el plano; A y B van resaltadas
-      y el arco marca su ángulo. Spotify hace exactamente esto con 100 millones de
-      canciones: nadie las etiqueta a mano; cada una es un vector y la cercanía es
-      similitud.</p>
-    <p><span class="hd">Juega.</span> Recorre pares dentro del mismo sector y entre
-      sectores. En el one-hot, el coseno es un interruptor (1 si son la misma palabra, 0
-      si no); en el denso es una escala continua que ordena: préstamo está más cerca de
-      hipoteca que de crédito, y los tres lejísimos de camiseta. El slider de |V| no toca
-      la geometría: solo te enseña la factura de memoria de cada formato a escala real.</p>
-    <p><span class="hd">Lee así.</span> El lector da los dos cosenos y la memoria por
-      palabra: |V| números (casi todos 0) en one-hot contra d = 300 números con
-      información en denso. La razón |V|/d es el factor de compresión.</p>
-    <p><span class="hd">Mensaje.</span> Un embedding convierte datos complejos en vectores
-      donde la cercanía es similitud. Todo lo demás del día (coseno, word2vec, búsqueda
-      semántica, recomendación) es explotar esa geometría.</p>
-    <p class="miniglos"><b>Términos.</b> <b>one-hot</b>: vector indicador con un 1 en la
-      posición de la palabra y 0 en el resto. <b>denso</b>: vector de d coordenadas
-      reales, todas informativas. <b>&phi;(w)</b>: el embedding de la palabra w.
-      <b>|V|</b>: tamaño del vocabulario.</p>
+
+    <div class="readout" id="ro"></div>
+
+    <p><span class="hd">Lee así.</span> La canción de referencia u = (2, 1) está
+    fija. Mueve v<sub>x</sub> y v<sub>y</sub>: la componente que tocas se enciende
+    en <span style="color:var(--gold);font-weight:bold">dorado</span> y el vector
+    v gira. Cuanto menor es el ángulo, mayor el coseno y mejor la recomendación.</p>
+
+    <div class="miniglos">
+      <b>u&middot;v</b> producto escalar, suma de productos componente a componente.
+      <b>&Vert;v&Vert;</b> norma: la longitud del vector. <b>cos</b> vive en
+      [&minus;1, 1]: 1 misma dirección, 0 perpendiculares, &minus;1 opuestas.
+    </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 1 : coseno manipulable ============ -->
+<!-- ============ SLIDE 2: cierre ============ -->
 <section class="slide" id="s1">
   <div class="figcol">
-    <canvas id="cv1a" data-aspect="1.55"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">cos(u,v) = <span class="frac"><span class="num">u<sup>&#8868;</sup>v</span><span class="den">&Vert;u&Vert;<sub>2</sub>&thinsp;&Vert;v&Vert;<sub>2</sub></span></span> = <span class="frac"><span class="num">&Sigma;<sub>i</sub> u<sub>i</sub>v<sub>i</sub></span><span class="den">&radic;(&Sigma;<sub>i</sub> u<sub>i</sub>&sup2;)&thinsp;&radic;(&Sigma;<sub>i</sub> v<sub>i</sub>&sup2;)</span></span> &isin; [&minus;1, 1]<span class="eqn">(Ec. coseno)</span></div>
-      <div class="eqread">la similitud estándar entre embeddings: <b>numerador</b> =
-        producto escalar (suma de productos coordenada a coordenada); <b>denominador</b> =
-        las dos normas euclídeas. Dividir por las normas borra la longitud: solo queda el
-        ángulo. Vale 1 si apuntan igual, 0 si son perpendiculares, &minus;1 si son
-        opuestos.</div>
-      <div class="eq">d<sub>cos</sub>(u,v) = 1 &minus; cos(u,v) &isin; [0, 2]<span class="eqn">(distancia coseno)</span></div>
-      <div class="eqread">la <b>distancia</b> asociada: 0 = misma dirección, 1 =
-        perpendiculares, 2 = opuestos. En alta dimensión las normas se concentran y la
-        distancia euclídea pierde discriminación; el ángulo sigue siendo informativo: por
-        eso los embeddings se comparan con coseno.</div>
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">cos(u,v) = (u&middot;v) / ( &Vert;u&Vert; &middot; &Vert;v&Vert; )</div>
     </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
   </div>
   <div class="txtcol">
-    <div class="ctrlbox">
-      <label>ángulo de u: &theta;<sub>u</sub> = <b id="r1tu"></b>&deg;</label>
-      <input type="range" id="sl1tu" min="0" max="360" step="1" value="25">
-      <label>ángulo de v: &theta;<sub>v</sub> = <b id="r1tv"></b>&deg;</label>
-      <input type="range" id="sl1tv" min="0" max="360" step="1" value="65">
-      <label>módulo de u: &Vert;u&Vert; = <b id="r1mu"></b></label>
-      <input type="range" id="sl1mu" min="0.2" max="3" step="0.05" value="1">
-      <label>módulo de v: &Vert;v&Vert; = <b id="r1mv"></b></label>
-      <input type="range" id="sl1mv" min="0.2" max="3" step="0.05" value="1.6">
-      <label>umbral de "similares": cos &ge; <b id="r1th"></b></label>
-      <input type="range" id="sl1th" min="0.50" max="0.95" step="0.01" value="0.80">
-    </div>
-    <div class="readout" id="ro1"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con los ángulos en 25&deg; y 65&deg;, sube &Vert;v&Vert; de 0.2 a 3.
-        <span class="obs">El producto escalar u&middot;v cambia mucho, pero el coseno no
-        se mueve ni una milésima: la división por las normas elimina la longitud.</span></li>
-      <li>Acerca &theta;<sub>v</sub> a &theta;<sub>u</sub>. <span class="obs">El coseno
-        sube hacia 1.000 y el badge pasa a "similares" cuando cruza tu umbral: así decide
-        un buscador semántico si un documento es relevante.</span></li>
-      <li>Pon &theta;<sub>v</sub> = &theta;<sub>u</sub> + 90. <span class="obs">cos =
-        0.000 exacto: perpendiculares = "no tienen nada que ver". Sigue hasta +180 y verás
-        cos = &minus;1: significados opuestos.</span></li>
-      <li>Baja el umbral a 0.50 y vuelve a 0.95 con un ángulo intermedio fijo.
-        <span class="obs">El mismo par pasa de "similares" a "no similares" sin tocar los
-        vectores: el umbral es una decisión de negocio (precisión vs cobertura), no una
-        propiedad de la geometría.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: dos embeddings con normas
-        0.3 y 2.9 dan cos = 0.98, ¿son similares o no?</summary><div class="ans">Similares.
-        El coseno solo mira la dirección, y 0.98 dice que apuntan casi igual. La norma
-        puede codificar otras cosas (frecuencia de la palabra, longitud del documento),
-        pero la semántica de "hablan de lo mismo" vive en el ángulo. Por eso la receta
-        práctica del curso es normalizar los embeddings a norma 1 al guardarlos: entonces
-        el producto escalar YA es el coseno y la comparación se reduce a una
-        multiplicación de matrices, que es exactamente lo que hace la línea
-        <i>sims = embs @ query</i> de la receta del deck.</div></details></div>
-    <p><span class="hd">Setup.</span> Dos vectores 2D, u (tinta) y v (dorado), controlados
-      por su ángulo y su módulo. El arco marca el ángulo entre ambos; la circunferencia
-      gris es la de norma 1, donde viven los embeddings normalizados. El lector calcula en
-      vivo u&middot;v, las normas, el coseno con la fórmula completa y la distancia
-      d<sub>cos</sub> = 1 &minus; cos.</p>
-    <p><span class="hd">Juega.</span> El experimento clave es el primero del guion: cambia
-      los módulos cuanto quieras y comprueba que el coseno no se inmuta. Es la propiedad
-      que lo hace adecuado para embeddings: "lo mismo dicho más alto" (un vector más
-      largo en la misma dirección) sigue siendo lo mismo. Después juega con el ángulo, que
-      es donde vive toda la información.</p>
-    <p><span class="hd">Lee así.</span> En 2D, cos(u,v) coincide con el coseno
-      trigonométrico del ángulo &theta;<sub>u</sub> &minus; &theta;<sub>v</sub>, y el
-      lector te enseña ambos números para que verifiques que la fórmula algebraica y la
-      geometría dicen lo mismo. En dimensión 768 no puedes dibujar el ángulo, pero la
-      fórmula es idéntica.</p>
-    <p><span class="hd">Mensaje.</span> Cuándo dudar: si tus vectores no están
-      normalizados y la magnitud sí codifica algo (por ejemplo frecuencia), la euclídea
-      puede tener sentido. En RAG, sentence-similarity y búsqueda semántica: coseno, y
-      normaliza al guardar.</p>
-    <p class="miniglos"><b>Términos.</b> <b>u&middot;v</b>: producto escalar,
-      &Sigma;u<sub>i</sub>v<sub>i</sub>. <b>&Vert;u&Vert;<sub>2</sub></b>: norma euclídea,
-      &radic;(&Sigma;u<sub>i</sub>&sup2;). <b>normalizar</b>: dividir el vector por su
-      norma para dejarlo en la esfera unidad. <b>umbral</b>: corte de decisión sobre el
-      coseno; lo eliges tú, no el modelo.</p>
+    <p><span class="hd">La idea.</span> Un <b>embedding</b> es un vector que
+    coloca cada objeto (canción, palabra, cliente) en un espacio donde la
+    <b>cercanía geométrica</b> significa parecido. Las direcciones también
+    codifican relaciones: rey &minus; hombre + mujer &asymp; reina.</p>
+    <p><span class="hd">Negocio.</span> Con embeddings, Spotify recomienda por
+    vecindad de vectores en vez de por etiquetas escritas a mano. Más minutos
+    escuchados, menos bajas: cada acierto en la recomendación retiene al
+    suscriptor.</p>
+    <p><span class="hd">Y ahora.</span> Las redes del resto del curso aprenden
+    estos vectores solas. El principio no cambia: convertir objetos en vectores
+    y medir el ángulo entre ellos.</p>
   </div>
 </section>
 
-<!-- ============ SLIDE 2 : coseno a mano ============ -->
-<section class="slide" id="s2">
-  <div class="figcol">
-    <canvas id="cv2a" data-aspect="2.1"></canvas>
-    <canvas id="cv2b" data-aspect="2.4"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">q = (1,0,1):&nbsp;&nbsp; cos(q,d<sub>1</sub>) = <span class="frac"><span class="num">1</span><span class="den">2</span></span> = 0.500,&nbsp;&nbsp; cos(q,d<sub>2</sub>) = <span class="frac"><span class="num">1</span><span class="den">&radic;2</span></span> = 0.707,&nbsp;&nbsp; cos(q,d<sub>3</sub>) = <span class="frac"><span class="num">2</span><span class="den">2</span></span> = 1.000<span class="eqn">(el ejemplo del deck)</span></div>
-      <div class="eqread">con d<sub>1</sub> = (1,1,0), d<sub>2</sub> = (0,0,1),
-        d<sub>3</sub> = (1,0,1): productos escalares 1, 1 y 2; normas
-        &Vert;q&Vert; = &radic;2, &Vert;d<sub>1</sub>&Vert; = &radic;2,
-        &Vert;d<sub>2</sub>&Vert; = 1, &Vert;d<sub>3</sub>&Vert; = &radic;2. El ranking
-        d<sub>3</sub> &gt; d<sub>2</sub> &gt; d<sub>1</sub> es el principio de la búsqueda
-        semántica.</div>
-      <div class="eq">u = (1,2,3), v = (2,4,6):&nbsp;&nbsp; cos(u,v) = <span class="frac"><span class="num">28</span><span class="den">&radic;14&thinsp;&middot;&thinsp;&radic;56</span></span> = 1.000<span class="eqn">(colineales)</span></div>
-      <div class="eqread">u&middot;v = 2+8+18 = 28; &Vert;u&Vert; = &radic;14 &asymp; 3.74,
-        &Vert;v&Vert; = &radic;56 &asymp; 7.48; 28/(3.74&middot;7.48) = 1. v = 2u: misma
-        dirección en distinta escala &rArr; representan lo mismo. Es la verificación
-        numérica de la slide anterior.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>componente 1 de la query, q&#8321; = <b id="r2x"></b></label>
-      <input type="range" id="sl2x" min="0" max="3" step="1" value="1">
-      <label>componente 2 de la query, q&#8322; = <b id="r2y"></b></label>
-      <input type="range" id="sl2y" min="0" max="3" step="1" value="0">
-      <label>componente 3 de la query, q&#8323; = <b id="r2z"></b></label>
-      <input type="range" id="sl2z" min="0" max="3" step="1" value="1">
-    </div>
-    <div class="readout" id="ro2"></div>
-    <table class="live" id="t2"></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con la query por defecto (1,0,1), reproduce a mano la primera fila de la tabla:
-        q&middot;d<sub>1</sub> = 1&middot;1 + 0&middot;1 + 1&middot;0.
-        <span class="obs">Sale 1; con las normas &radic;2&middot;&radic;2 = 2, el coseno es
-        0.500, exactamente lo que pone la tabla. Toda la slide es esta cuenta repetida.</span></li>
-      <li>Sube q&#8322; de 0 a 3. <span class="obs">d<sub>1</sub> = (1,1,0) escala
-        posiciones en el ranking: acabas de mover la query hacia su tema. d<sub>3</sub>
-        pierde el primer puesto sin que d<sub>3</sub> haya cambiado.</span></li>
-      <li>Pon q = (2,0,2). <span class="obs">cos(q,d<sub>3</sub>) = 1.000 otra vez: (2,0,2)
-        es el doble de (1,0,1), misma dirección. Es el ejemplo u = (1,2,3), v = (2,4,6) del
-        panel, en vivo.</span></li>
-      <li>Pon q = (0,0,3). <span class="obs">cos(q,d<sub>2</sub>) = 1.000 y
-        cos(q,d<sub>1</sub>) = 0.000: query y documento perpendiculares no comparten
-        ninguna coordenada activa.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué cos(q,d&#8323;) = 1
-        no significa "documentos idénticos" sino "misma dirección"?</summary><div class="ans">
-        Porque el coseno es ciego a la escala: q = (2,0,2) y d<sub>3</sub> = (1,0,1) dan
-        coseno 1 siendo vectores distintos. En recuperación esto es una virtud: un
-        documento largo que habla de lo mismo que tu query corta debe puntuar alto. Si
-        necesitases distinguir escala (por ejemplo, intensidad de una señal), el coseno
-        sería la métrica equivocada y volverías a la euclídea, como avisaba la slide
-        anterior.</div></details></div>
-    <p><span class="hd">Setup.</span> El ejemplo a mano del deck, hecho manipulable: una
-      query q de 3 componentes (sliders) y tres documentos fijos d<sub>1</sub> = (1,1,0),
-      d<sub>2</sub> = (0,0,1), d<sub>3</sub> = (1,0,1). Piensa cada componente como "cuánto
-      habla de" un tema: 1 = hipotecas, 2 = rebajas, 3 = energía. Arriba: las cuatro
-      barras de componentes. Abajo: los tres cosenos como barras ordenadas. La tabla da la
-      cuenta completa: producto escalar, normas, coseno y ranking.</p>
-    <p><span class="hd">Juega.</span> La gracia está en ver el ranking reordenarse en
-      vivo: cada slider mueve la query por el espacio de temas y los tres documentos,
-      quietos, suben y bajan en la tabla. Eso es literalmente lo que hace un buscador
-      semántico con tu pregunta: la codifica, calcula tres (o tres millones de) cosenos y
-      ordena.</p>
-    <p><span class="hd">Lee así.</span> En la tabla, comprueba que el coseno nunca sale
-      del rango [0,1] aquí: con componentes no negativas no hay ángulos obtusos. El
-      &minus;1 del rango teórico solo aparece con coordenadas negativas, que los
-      embeddings reales sí tienen.</p>
-    <p><span class="hd">Mensaje.</span> No hay magia: la búsqueda semántica de BBVA o de
-      un buscador corporativo es esta tabla con d = 1024 en vez de d = 3 y un millón de
-      documentos en vez de tres. La cuenta por celda es la misma multiplicación y la misma
-      división.</p>
-    <p class="miniglos"><b>Términos.</b> <b>query</b>: la pregunta del usuario, convertida
-      en vector. <b>documento</b>: cada texto del corpus, convertido en vector al indexar.
-      <b>ranking</b>: orden descendente por coseno; el top-k se le enseña al usuario.</p>
-  </div>
-</section>
-<!-- ============ SLIDE 3 : mapa semántico ============ -->
-<section class="slide" id="s3">
-  <div class="figcol">
-    <canvas id="cv3a" data-aspect="1.45"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">vecinos(q) = argmax<sub>w &isin; V</sub>&nbsp; cos(&phi;(q), &phi;(w))<span class="eqn">(búsqueda de vecinos)</span></div>
-      <div class="eqread">la operación elemental sobre un mapa semántico: dada una query q,
-        ordenar TODO el vocabulario por coseno con ella y quedarse con los k primeros. Es
-        la misma fórmula de las slides anteriores aplicada |V| veces.</div>
-      <div class="eq">indexar: &phi;(d<sub>j</sub>) &forall;j &nbsp;&rarr;&nbsp; consultar: &phi;(q) &nbsp;&rarr;&nbsp; ordenar: cos(&phi;(q),&phi;(d<sub>j</sub>))<span class="eqn">(pipeline de 3 pasos)</span></div>
-      <div class="eqread">el pipeline completo de la nota técnica: <b>(1)</b> calcular el
-        embedding de cada elemento del corpus y guardarlo en una base vectorial (FAISS,
-        Milvus, Qdrant); <b>(2)</b> calcular el embedding de la query; <b>(3)</b> devolver
-        los k de mayor coseno. Es la columna vertebral de RAG.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>query, coordenada x = <b id="r3x"></b></label>
-      <input type="range" id="sl3x" min="-1.2" max="1.2" step="0.02" value="0.90">
-      <label>query, coordenada y = <b id="r3y"></b></label>
-      <input type="range" id="sl3y" min="-1.2" max="1.2" step="0.02" value="0.35">
-      <label>vecinos mostrados, k = <b id="r3k"></b></label>
-      <input type="range" id="sl3k" min="3" max="8" step="1" value="5">
-    </div>
-    <div class="readout" id="ro3"></div>
-    <table class="live" id="t3"></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con la query por defecto, lee la tabla. <span class="obs">Los k vecinos son
-        todos de banca (hipoteca, préstamo, ahorro&hellip;): la query apunta hacia ese
-        barrio del mapa.</span></li>
-      <li>Arrastra la query con los sliders hasta el barrio de retail (x &asymp; 0.3,
-        y &asymp; 1.0). <span class="obs">El ranking entero se reordena en vivo:
-        camiseta, rebajas y Zara suben; los términos de banca caen al fondo con cosenos
-        bajos.</span></li>
-      <li>Plántala entre dos barrios (x &asymp; 0.65, y &asymp; 0.65).
-        <span class="obs">La tabla mezcla banca y retail con cosenos parecidos: las
-        fronteras semánticas son graduales, no muros. Aquí es donde un buscador devuelve
-        resultados "de ambos temas".</span></li>
-      <li>Pon y negativa (x &asymp; 0.1, y &asymp; &minus;1.0).
-        <span class="obs">Aparecen serie, película, Netflix: el cuadrante del streaming.
-        Cuatro sectores, cuatro direcciones; el coseno solo mide a qué dirección te
-        pareces más.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: dos palabras del mismo
-        barrio con radios distintos (una más lejos del origen), ¿cuál gana en la
-        tabla?</summary><div class="ans">La que tenga el ángulo más parecido al de la
-        query, sin importar el radio: el coseno normaliza las normas. Una palabra "más
-        lejos del origen" en este mapa no es más relevante, solo tiene un vector más
-        largo. Si quisieras que la popularidad o la frecuencia contara, tendrías que
-        meterla aparte (por ejemplo multiplicando el coseno por un peso de negocio), que
-        es exactamente lo que hacen los buscadores reales con señales de ranking
-        adicionales.</div></details></div>
-    <p><span class="hd">Setup.</span> Veinte términos de negocio con coordenadas fijas en
-      un plano semántico de juguete, agrupados en cuatro barrios direccionales: banca
-      (hipoteca, préstamo, ahorro, interés, BBVA), retail (camiseta, vestido, rebajas,
-      tienda, Zara), energía (turbina, panel solar, gas, red eléctrica, Iberdrola) y
-      streaming (serie, película, playlist, podcast, Netflix). La flecha dorada es tu
-      query; las líneas finas la conectan con sus k vecinos más próximos por coseno, y la
-      tabla da el ranking exacto.</p>
-    <p><span class="hd">Juega.</span> Mueve la query como si fuera la pregunta de un
-      usuario que va cambiando de tema. Fíjate en que el ranking es continuo: no hay un
-      salto brusco al cruzar de barrio, sino un relevo gradual de cosenos. Esa suavidad es
-      la que permite a un buscador semántico responder bien preguntas ambiguas.</p>
-    <p><span class="hd">Lee así.</span> En la tabla, la columna cos es el número que una
-      base vectorial calcula para cada documento del índice; la columna barrio te deja
-      verificar que la geometría coincide con la semántica. En producción el mapa tiene
-      d = 1024 dimensiones y no se puede dibujar, pero el ranking se construye igual.</p>
-    <p><span class="hd">Mensaje.</span> Un mapa semántico es un índice: indexar = colocar
-      cada elemento en su sitio del espacio; buscar = colocar la query y mirar quién cae
-      cerca. Inditex lo hace con productos, Spotify con canciones, BBVA con documentos
-      hipotecarios.</p>
-    <p class="miniglos"><b>Términos.</b> <b>base vectorial</b>: almacén optimizado para
-      "dame los k vectores de mayor coseno con este" (FAISS, Milvus, Qdrant).
-      <b>vecino</b>: elemento del índice con coseno alto respecto a la query.
-      <b>k</b>: cuántos resultados devuelves.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 4 : aritmética de vectores ============ -->
-<section class="slide" id="s4">
-  <div class="figcol">
-    <canvas id="cv4a" data-aspect="1.5"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">&phi;(rey) &minus; &phi;(hombre) + &phi;(mujer) &asymp; &phi;(reina)<span class="eqn">(Ec. aritmética)</span></div>
-      <div class="eqread">el resultado canónico de word2vec: <b>rey</b> y <b>reina</b>
-        comparten el componente "realeza" y difieren en el componente "género"; restar
-        <b>hombre</b> y sumar <b>mujer</b> es un paseo por el eje de género. Si la
-        aritmética funciona, los vectores han capturado relaciones semánticas reales, no
-        solo co-ocurrencia.</div>
-      <div class="eq">respuesta = argmax<sub>w &notin; {a,b,c}</sub>&nbsp; cos(a &minus; b + c, &phi;(w))<span class="eqn">(cómo se evalúa)</span></div>
-      <div class="eqread">en la práctica la analogía se resuelve calculando el vector
-        r = a &minus; b + c y buscando la palabra del vocabulario más cercana por coseno,
-        <b>excluyendo las tres palabras de entrada</b> (si no, a menudo gana la propia a).
-        La tabla de la derecha hace exactamente esto.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>analogía: <b id="r4a"></b></label>
-      <input type="range" id="sl4a" min="0" max="3" step="1" value="0">
-      <label>paseo semántico, t = <b id="r4t"></b> &nbsp;(0 = en a; 1 = paseo completo)</label>
-      <input type="range" id="sl4t" min="0" max="1" step="0.02" value="1">
-    </div>
-    <div class="readout" id="ro4"></div>
-    <table class="live" id="t4"></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con la analogía rey &minus; hombre + mujer, lleva t de 0 a 1 despacio.
-        <span class="obs">El punto dorado sale de rey, recorre una trayectoria paralela
-        al vector hombre&rarr;mujer y aterriza encima de reina: la dirección "género" es
-        la misma en las dos parejas.</span></li>
-      <li>Con t = 1, lee la tabla. <span class="obs">reina gana con coseno &asymp; 1;
-        princesa queda segunda (comparte realeza y género pero no exactamente el mismo
-        punto). El argmax excluye rey, hombre y mujer.</span></li>
-      <li>Cambia a Zara &minus; ropa + banca. <span class="obs">El paseo "quita el sector
-        ropa y pone el sector banca" manteniendo el componente marca: aterriza en BBVA,
-        con Santander cerca. La misma álgebra sirve para marcas.</span></li>
-      <li>Prueba Netflix &minus; película + música y Madrid &minus; España + Francia.
-        <span class="obs">Spotify y París: dos ejes distintos (catálogo&rarr;medio,
-        capital&rarr;país) capturados por la misma resta de vectores.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué funciona la resta?
-        ¿Qué tiene que cumplir el espacio para que a &minus; b + c caiga en el sitio
-        correcto?</summary><div class="ans">Que la relación semántica sea
-        aproximadamente una <b>traslación constante</b>: el vector que va de hombre a
-        mujer debe ser casi el mismo que va de rey a reina (y de actor a actriz&hellip;).
-        Entonces &phi;(reina) &asymp; &phi;(rey) + (&phi;(mujer) &minus; &phi;(hombre)),
-        que es la ecuación del panel reordenada. word2vec produce esta estructura porque
-        palabras que se usan en contextos análogos reciben desplazamientos análogos
-        durante el entrenamiento. Cuando la relación no es lineal (polisemia, jerga), la
-        aritmética falla, y eso motivó los embeddings contextuales.</div></details></div>
-    <p><span class="hd">Setup.</span> Cuatro analogías con vectores 2D de juguete cuyos
-      ejes son interpretables (por ejemplo, eje x = "género / es-marca / es-ciudad", eje
-      y = "realeza / sector / país"). El canvas dibuja las cuatro palabras implicadas, el
-      vector diferencia c &minus; b (flecha discontinua) y el paseo
-      a + t&middot;(c &minus; b), que con t = 1 completa el paralelogramo. Los puntos
-      grises son el resto del vocabulario de esa analogía: los distractores entre los que
-      el argmax tiene que acertar.</p>
-    <p><span class="hd">Juega.</span> El slider t convierte la ecuación en un viaje: en
-      t = 0 estás en a; según creces, le vas restando b y sumando c. Mira cómo la tabla
-      de vecinos del punto móvil se reordena durante el viaje: a mitad de camino el punto
-      está "entre dos significados".</p>
-    <p><span class="hd">Lee así.</span> El lector da el vector r = a &minus; b + c
-      calculado en vivo, su palabra más cercana excluyendo las entradas y el coseno con la
-      respuesta correcta. Si el coseno del ganador es bajo, la analogía es dudosa: con
-      embeddings reales ocurre constantemente, y conviene mirar siempre el número, no solo
-      el argmax.</p>
-    <p><span class="hd">Mensaje.</span> La aritmética es el test de calidad clásico de un
-      espacio de embeddings: verifica que las <i>direcciones</i> codifican relaciones. Para
-      negocio importa porque las mismas direcciones (sector, gama, urgencia) se pueden
-      explotar para navegar catálogos y carteras sin etiquetar nada a mano.</p>
-    <p class="miniglos"><b>Términos.</b> <b>analogía</b>: a es a b lo que c es a ¿?
-      <b>paralelogramo</b>: la figura que completa a &minus; b + c. <b>distractor</b>:
-      palabra del vocabulario que podría ganar el argmax por error.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 5 : skip-gram y co-ocurrencia ============ -->
-<section class="slide" id="s5">
-  <div class="figcol">
-    <canvas id="cv5a" data-aspect="4.2"></canvas>
-    <canvas id="cv5b" data-aspect="1.35"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">L(&theta;) = <big>&Sigma;</big><sub>t=1..T</sub>&nbsp;<big>&Sigma;</big><sub>w<sub>c</sub> &isin; C<sub>t</sub></sub>&nbsp; log&thinsp;p<sub>&theta;</sub>(w<sub>c</sub> | w<sub>t</sub>)<span class="eqn">(Ec. skip-gram)</span></div>
-      <div class="eqread">el objetivo de word2vec (variante skip-gram): para cada posición
-        t del corpus, la palabra central w<sub>t</sub> debe <b>predecir</b> cada palabra de
-        su ventana de contexto C<sub>t</sub>. Maximizar L empuja a que palabras que
-        comparten contextos acaben con embeddings parecidos.</div>
-      <div class="eq">p<sub>&theta;</sub>(w<sub>c</sub> | w<sub>t</sub>) = softmax(&phi;(w<sub>c</sub>)<sup>&#8868;</sup>&phi;(w<sub>t</sub>)) = <span class="frac"><span class="num">exp(&phi;(w<sub>c</sub>)<sup>&#8868;</sup>&phi;(w<sub>t</sub>))</span><span class="den">&Sigma;<sub>w &isin; V</sub>&thinsp;exp(&phi;(w)<sup>&#8868;</sup>&phi;(w<sub>t</sub>))</span></span><span class="eqn">(el softmax caro)</span></div>
-      <div class="eqread">la probabilidad de un contexto es el producto escalar de
-        embeddings pasado por softmax. El <b>denominador recorre todo el vocabulario</b>
-        (10<sup>5</sup>&ndash;10<sup>6</sup> términos) en cada paso de entrenamiento: por
-        eso la slide siguiente lo sustituye por negative sampling.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>tamaño de la ventana de contexto, m = <b id="r5m"></b> &nbsp;(a cada lado)</label>
-      <input type="range" id="sl5m" min="1" max="4" step="1" value="2">
-      <label>frase del corpus: n.º <b id="r5s"></b></label>
-      <input type="range" id="sl5s" min="0" max="6" step="1" value="0">
-      <label>posición de la palabra central, t = <b id="r5i"></b></label>
-      <input type="range" id="sl5i" min="0" max="3" step="1" value="1">
-    </div>
-    <div class="readout" id="ro5"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con m = 2, recorre la frase 1 con el slider de posición.
-        <span class="obs">La franja superior marca en dorado la palabra central y en
-        dorado pálido su ventana: cada posición genera |C<sub>t</sub>| pares
-        (central, contexto). El lector los cuenta.</span></li>
-      <li>Sube m de 1 a 4 con la misma posición. <span class="obs">El heatmap entero se
-        rellena: más ventana = más pares = más co-ocurrencias contadas. El total de pares
-        del corpus en el lector crece de decenas a cientos.</span></li>
-      <li>Busca la celda (banco, hipoteca) en el heatmap con m = 2.
-        <span class="obs">Está encendida porque co-ocurren en las frases 1 y 3; la celda
-        (banco, rebajas) está apagada: nunca comparten ventana. Esta asimetría es TODA la
-        señal de la que aprende word2vec.</span></li>
-      <li>Compara las filas de "hipoteca" y "préstamo". <span class="obs">Patrones de
-        co-ocurrencia casi idénticos (ambas se encienden con banco, cliente, paga&hellip;):
-        palabras con filas parecidas acabarán con embeddings parecidos. Distribucionalismo
-        puro: "dime con quién co-ocurres y te diré qué significas".</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: "hipoteca" y "préstamo" casi
-        nunca aparecen JUNTAS en una misma frase. ¿Por qué acaban cerca en el
-        espacio?</summary><div class="ans">Porque lo que las acerca no es co-ocurrir entre
-        sí, sino co-ocurrir <b>con los mismos terceros</b>: ambas comparten ventana con
-        banco, cliente, paga, concede. En el objetivo skip-gram, ambas necesitan producto
-        escalar alto con esos mismos contextos, y la forma geométrica de lograrlo es
-        apuntar en direcciones parecidas. La similitud emerge de filas parecidas en la
-        matriz de co-ocurrencia, no de celdas individuales. Por eso los sinónimos
-        (que rara vez van juntos en una frase) quedan cerca.</div></details></div>
-    <p><span class="hd">Setup.</span> Corpus de juguete con 7 frases de negocio ("el banco
-      concede la hipoteca", "la tienda lanza rebajas de ropa"&hellip;), con los artículos y
-      preposiciones ya filtrados. Arriba: la frase elegida como tira de tokens, con la
-      palabra central w<sub>t</sub> en dorado y su ventana C<sub>t</sub> (m palabras a cada
-      lado) en dorado pálido. Abajo: la matriz de co-ocurrencia de TODO el corpus
-      construida en vivo con la ventana m: la celda (i,j) cuenta cuántas veces la palabra j
-      cayó en la ventana de la palabra i.</p>
-    <p><span class="hd">Juega.</span> La ventana es el único hiperparámetro y decide qué
-      significa "contexto": con m = 1 solo cuentan los vecinos inmediatos (señal
-      sintáctica); con m = 4 casi toda la frase co-ocurre con casi todo (señal temática,
-      más difusa). Google entrenó el word2vec original con este mismo mecanismo sobre
-      100&thinsp;000 millones de palabras de Google News.</p>
-    <p><span class="hd">Lee así.</span> El lector enumera los pares (central, contexto) de
-      la posición elegida: son exactamente los sumandos de L(&theta;) que esa posición
-      aporta. El heatmap es la "contabilidad" agregada de todos esos pares; el
-      entrenamiento de la slide siguiente no ve la matriz, ve los pares de uno en uno,
-      pero converge a la misma información.</p>
-    <p><span class="hd">Mensaje.</span> Un embedding no sabe diccionario: sabe
-      estadística de compañías. La hipótesis distribucional (palabras que aparecen en
-      contextos parecidos significan cosas parecidas) convertida en un objetivo de
-      predicción es todo el secreto de word2vec.</p>
-    <p class="miniglos"><b>Términos.</b> <b>w<sub>t</sub></b>: palabra central en la
-      posición t. <b>C<sub>t</sub></b>: su ventana de contexto, m palabras a cada lado.
-      <b>co-ocurrencia</b>: número de veces que dos palabras comparten ventana.
-      <b>T</b>: longitud del corpus en tokens.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 6 : negative sampling, entrenamiento real ============ -->
-<section class="slide" id="s6">
-  <div class="figcol">
-    <canvas id="cv6a" data-aspect="1.6"></canvas>
-    <canvas id="cv6b" data-aspect="2.6"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">L = &minus;log&thinsp;&sigma;(v<sub>c</sub><sup>&#8868;</sup>v<sub>t</sub>) &minus; <big>&Sigma;</big><sub>i=1..k</sub>&nbsp;log&thinsp;&sigma;(&minus;v<sub>n<sub>i</sub></sub><sup>&#8868;</sup>v<sub>t</sub>),&nbsp;&nbsp;&nbsp; &sigma;(x) = <span class="frac"><span class="num">1</span><span class="den">1+e<sup>&minus;x</sup></span></span><span class="eqn">(Ec. negative sampling)</span></div>
-      <div class="eqread">la pérdida que sustituye al softmax: el primer término quiere
-        producto escalar <b>alto</b> con el contexto real v<sub>c</sub> (par positivo); el
-        segundo quiere producto escalar <b>bajo</b> con k palabras aleatorias
-        v<sub>n<sub>i</sub></sub> (negativos). Con k = 5&ndash;20 negativos por par,
-        word2vec aprende sobre vocabularios enormes; aproxima la estimación contrastiva de
-        ruido (NCE).</div>
-      <div class="eq">&minus;<span class="frac"><span class="num">&part;L</span><span class="den">&part;v<sub>t</sub></span></span> = (1&minus;&sigma;(v<sub>c</sub><sup>&#8868;</sup>v<sub>t</sub>))&thinsp;v<sub>c</sub> &minus; <big>&Sigma;</big><sub>i</sub>&nbsp;&sigma;(v<sub>n<sub>i</sub></sub><sup>&#8868;</sup>v<sub>t</sub>)&thinsp;v<sub>n<sub>i</sub></sub><span class="eqn">(el gradiente que dibuja el canvas)</span></div>
-      <div class="eqread">el paso de descenso, leído en palabras: <b>acerca</b> v<sub>t</sub>
-        hacia su contexto (con fuerza grande si aún no se parecen: 1&minus;&sigma; grande) y
-        <b>aleja</b> v<sub>t</sub> de cada negativo (con fuerza grande si por azar se
-        parecen: &sigma; grande). El botón "un paso" aplica literalmente esta fórmula a
-        cada embedding 2D del plano.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>negativos por par positivo, k = <b id="r6k"></b></label>
-      <input type="range" id="sl6k" min="1" max="5" step="1" value="3">
-      <label>tasa de aprendizaje &eta; = <b id="r6lr"></b></label>
-      <input type="range" id="sl6lr" min="0.05" max="0.80" step="0.05" value="0.30">
-      <button id="bt6a">un paso de entrenamiento</button>
-      <button id="bt6b">20 pasos</button>
-      <button id="bt6c">reiniciar (otra semilla)</button>
-    </div>
-    <div class="readout" id="ro6"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Pulsa "reiniciar" y mira el plano. <span class="obs">Las 10 palabras caen al
-        azar: banco tan lejos de hipoteca como de rebajas. El coseno medio de los pares
-        positivos del lector ronda el 0: aún no hay semántica.</span></li>
-      <li>Pulsa "un paso de entrenamiento" tres o cuatro veces seguidas.
-        <span class="obs">En cada pulsación los puntos se desplazan: las líneas doradas
-        (pares que co-ocurren) se acortan y la pérdida del panel inferior baja. Estás
-        viendo el gradiente de la ecuación, no una animación.</span></li>
-      <li>Pulsa "20 pasos". <span class="obs">El plano se organiza en tres barrios (banca,
-        retail, música) sin que nadie le haya dicho qué palabra es de qué tema: solo había
-        pares de co-ocurrencia. La separación positivos/aleatorios del lector se
-        abre.</span></li>
-      <li>Reinicia, pon &eta; = 0.8 y dale a "20 pasos". <span class="obs">La pérdida baja
-        a tirones o oscila: un paso demasiado grande sobrepasa el mínimo. Baja a
-        &eta; = 0.1 y verás la bajada suave pero lenta: el dilema clásico del learning
-        rate.</span></li>
-      <li>Reinicia y compara k = 1 contra k = 5 (mismos pasos).
-        <span class="obs">Con k = 5 la nube de "no relacionados" se separa antes: más
-        negativos = mejor señal de contraste por paso, a más coste.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué hacen falta los
-        negativos? ¿Qué pasaría entrenando solo con el término positivo?</summary>
-        <div class="ans">Sin negativos, la pérdida &minus;log&thinsp;&sigma;(v<sub>c</sub><sup>&#8868;</sup>v<sub>t</sub>)
-        se minimiza haciendo TODOS los productos escalares enormes: la solución degenerada
-        es que todos los embeddings colapsen en la misma dirección con norma creciente
-        (coseno 1 entre todo). El espacio sería inútil: todo se parecería a todo. Los
-        negativos son la fuerza repulsiva que lo impide: cada par aleatorio empuja en
-        dirección contraria. El equilibrio entre atracción (co-ocurrencias) y repulsión
-        (azar) es lo que esculpe los barrios semánticos, igual que en cualquier
-        aprendizaje contrastivo moderno (SimCLR, CLIP).</div></details></div>
-    <p><span class="hd">Setup.</span> Diez palabras del corpus de la slide anterior, con
-      embeddings 2D inicializados al azar (semilla reproducible). Los pares positivos son
-      las co-ocurrencias reales del corpus (banco&ndash;hipoteca, tienda&ndash;rebajas,
-      playlist&ndash;música&hellip;), dibujados como líneas doradas. Cada "paso de
-      entrenamiento" recorre todos los pares positivos, muestrea k negativos al azar para
-      cada uno y aplica el gradiente exacto del panel de ecuaciones con tasa &eta;. El
-      panel inferior registra la pérdida media por par en cada paso.</p>
-    <p><span class="hd">Juega.</span> Esta slide es el corazón del día: el plano
-      moviéndose ES word2vec entrenando, a escala 10 palabras y d = 2 en vez de un millón
-      de palabras y d = 300. Todo lo que ajustes (k, &eta;) son los mismos hiperparámetros
-      que ajustaría un ingeniero de Google en 2013.</p>
-    <p><span class="hd">Lee así.</span> El lector da tres números: pérdida media actual,
-      coseno medio de los pares positivos (debe subir hacia 1) y coseno medio de pares no
-      relacionados (debe bajar hacia 0 o negativo). La diferencia entre ambos cosenos es
-      la "calidad semántica" del espacio: cuando se estanca, el modelo ha convergido.</p>
-    <p><span class="hd">Mensaje.</span> Entrenar embeddings = geometría con dos fuerzas:
-      acercar lo que co-ocurre, alejar lo aleatorio. El softmax completo haría la
-      repulsión contra el vocabulario entero en cada paso; el negative sampling la
-      aproxima con k muestras y hace el problema tratable.</p>
-    <p class="miniglos"><b>Términos.</b> <b>v<sub>t</sub>, v<sub>c</sub>,
-      v<sub>n</sub></b>: embeddings de la palabra central, del contexto real y del
-      negativo muestreado. <b>&sigma;</b>: sigmoide, convierte un producto escalar en una
-      probabilidad. <b>&eta;</b>: tasa de aprendizaje. <b>época</b>: una pasada por todos
-      los pares positivos.</p>
-  </div>
-</section>
-<!-- ============ SLIDE 7 : embeddings contextuales ============ -->
-<section class="slide" id="s7">
-  <div class="figcol">
-    <canvas id="cv7a" data-aspect="1.5"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">&phi;<sub>ctx</sub>(w<sub>t</sub>) = Transformer(w<sub>1:T</sub>)<sub>t</sub><span class="eqn">(Ec. contextual)</span></div>
-      <div class="eqread">en word2vec cada token tiene UN vector, sea cual sea la frase;
-        en BERT y descendientes el vector del token t <b>depende de la frase entera</b>
-        w<sub>1:T</sub>: la misma palabra produce vectores distintos en frases distintas.
-        Se entrena con Masked Language Modeling: se oculta el 15% de los tokens y la red
-        los reconstruye mirando todo el contexto bidireccional.</div>
-      <div class="eq">demo: &phi;<sub>ctx</sub>(banco) &prop; &phi;(banco) + &gamma;<big>&Sigma;</big><sub>w &isin; frase</sub>&nbsp;a<sub>w</sub>&thinsp;&phi;(w),&nbsp;&nbsp; a<sub>w</sub> = <span class="frac"><span class="num">exp(&phi;(w)<sup>&#8868;</sup>&phi;(banco)/T&deg;)</span><span class="den">&Sigma;<sub>w&prime;</sub>&thinsp;exp(&phi;(w&prime;)<sup>&#8868;</sup>&phi;(banco)/T&deg;)</span></span><span class="eqn">(atención de juguete)</span></div>
-      <div class="eqread">la maqueta mínima de esa idea, calculada en vivo: el vector
-        estático de "banco" se mezcla con los vectores de sus vecinos de frase, ponderados
-        por una <b>atención softmax</b> (pesos a<sub>w</sub> que suman 1). &gamma; regula
-        cuánto contexto entra y T&deg; cuán concentrada está la atención. Es el germen del
-        mecanismo de atención del Día 09.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>frase: <b id="r7s"></b></label>
-      <input type="range" id="sl7s" min="0" max="2" step="1" value="0">
-      <label>mezcla de contexto &gamma; = <b id="r7g"></b> &nbsp;(0 = embedding estático)</label>
-      <input type="range" id="sl7g" min="0" max="1" step="0.02" value="0.6">
-      <label>temperatura de la atención T&deg; = <b id="r7T"></b></label>
-      <input type="range" id="sl7T" min="0.2" max="3" step="0.05" value="1">
-    </div>
-    <div class="readout" id="ro7"></div>
-    <table class="live" id="t7"></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con la frase 1 ("el banco aprueba la hipoteca con interés fijo"), sube &gamma;
-        de 0 a 1. <span class="obs">El punto dorado sale del "banco" estático (a medio
-        camino entre los dos sentidos) y viaja hacia el ancla "entidad financiera": el
-        coseno con ese sentido sube por encima de 0.95.</span></li>
-      <li>Cambia a la frase 2 ("me senté en el banco de madera del parque") con la misma
-        &gamma;. <span class="obs">El MISMO token viaja ahora hacia el ancla "asiento":
-        dos frases, dos vectores. Esto es lo que word2vec no puede hacer.</span></li>
-      <li>Pon la frase 3 ("junto al parque, el banco ofrece hipotecas") y mira la tabla
-        de atención. <span class="obs">"parque" e "hipotecas" compiten; el vector queda
-        entre los dos sentidos, más cerca del financiero porque "hipotecas" y "ofrece"
-        suman más atención. La ambigüedad real produce vectores intermedios.</span></li>
-      <li>Baja T&deg; a 0.2 en la frase 3. <span class="obs">La atención se concentra
-        casi toda en la palabra más afín y el vector se decanta de golpe; con T&deg; = 3
-        la atención se reparte casi uniforme y el vector apenas se decide. La temperatura
-        controla cuán "tajante" es el contexto.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué el "banco" estático
-        de word2vec está condenado a quedar a medio camino entre los dos
-        sentidos?</summary><div class="ans">Porque el entrenamiento le exige un único
-        vector con producto escalar alto a la vez con los contextos financieros (hipoteca,
-        aprueba, interés) y con los de mobiliario (parque, madera, sentarse). La solución
-        de compromiso es un promedio ponderado por frecuencia de los dos sentidos, que no
-        representa bien ninguno. Un buscador semántico construido sobre vectores estáticos
-        devuelve bancos de parque a quien pregunta por hipotecas; el embedding contextual
-        deshace la mezcla frase a frase, y por eso es la pieza fundamental de la búsqueda
-        semántica empresarial moderna.</div></details></div>
-    <p><span class="hd">Setup.</span> El plano muestra dos anclas de sentido (ancla
-      "entidad financiera" y ancla "asiento de parque"), los vectores de las palabras de
-      contexto (gris), el embedding estático de "banco" (tinta, fijo) y su embedding
-      contextual (dorado, móvil), calculado en vivo con la atención de juguete del panel:
-      softmax real sobre productos escalares, mezcla con peso &gamma;, normalización
-      final. La tabla da los pesos de atención a<sub>w</sub> de cada palabra de la frase,
-      que suman 1.000.</p>
-    <p><span class="hd">Juega.</span> El experimento central es el contraste entre las
-      frases 1 y 2: idéntico token, vectores finales opuestos. La frase 3 añade el caso
-      interesante de verdad: contexto mixto, vector intermedio. Con &gamma; = 0 recuperas
-      exactamente word2vec; con &gamma; = 1 el contexto domina.</p>
-    <p><span class="hd">Lee así.</span> En el lector, los dos cosenos (a sentido
-      financiero y a sentido asiento) cuantifican la desambiguación; el badge declara el
-      sentido ganador. En BERT real esto mismo lo hacen 12 capas de atención con cientos
-      de dimensiones, pero la lógica (mezclar el token con sus vecinos ponderados por
-      afinidad) es la que acabas de tocar.</p>
-    <p><span class="hd">Mensaje.</span> Estático &rarr; contextual es el salto de 2013 a
-      2018 (word2vec &rarr; ELMo/BERT) y la razón de que la búsqueda semántica moderna
-      funcione con lenguaje ambiguo. El Día 09 abre la caja del Transformer que calcula
-      esta atención en serio.</p>
-    <p class="miniglos"><b>Términos.</b> <b>MLM</b>: Masked Language Modeling, ocultar
-      tokens y reconstruirlos. <b>atención</b>: pesos softmax con los que un token mira a
-      sus vecinos. <b>T&deg;</b>: temperatura del softmax; baja = atención concentrada.
-      <b>mean pooling</b>: promediar los vectores contextuales de una frase para obtener
-      su embedding de oración (SBERT, MPNet).</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 8 : búsqueda semántica vs léxica ============ -->
-<section class="slide" id="s8">
-  <div class="figcol">
-    <canvas id="cv8a" data-aspect="1.7"></canvas>
-    <canvas id="cv8b" data-aspect="2.0"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">score<sub>sem</sub>(q, d<sub>j</sub>) = cos(&phi;(q), &phi;(d<sub>j</sub>))<span class="eqn">(ranking semántico)</span></div>
-      <div class="eqread">la columna vertebral de RAG: embebe la query, embebe cada
-        documento al indexar, ordena por coseno. No necesita que compartan ni una sola
-        palabra: compara significados.</div>
-      <div class="eq">score<sub>lex</sub>(q, d) = <big>&Sigma;</big><sub>t &isin; q &cap; d</sub>&nbsp; idf(t)&thinsp;<span class="frac"><span class="num">tf&middot;(k&#8321;+1)</span><span class="den">tf + k&#8321;(1 &minus; b + b&thinsp;|d|/&#x2113;&#772;)</span></span>,&nbsp;&nbsp; idf(t) = ln<big>(</big>1+<span class="frac"><span class="num">N&minus;df+0.5</span><span class="den">df+0.5</span></span><big>)</big><span class="eqn">(BM25 simplificado)</span></div>
-      <div class="eqread">el buscador clásico: solo puntúan los términos t que aparecen
-        <b>literalmente</b> en query y documento (q &cap; d); tf = veces que t aparece en
-        d, df = en cuántos documentos aparece (los términos raros valen más), |d|/&#x2113;&#772;
-        penaliza documentos largos; k&#8321; = 1.2, b = 0.75. Si no hay palabras
-        compartidas, la suma es vacía: score 0, por relevante que sea el documento.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>query del usuario: <b id="r8q"></b></label>
-      <input type="range" id="sl8q" min="0" max="3" step="1" value="1">
-    </div>
-    <div class="readout" id="ro8"></div>
-    <table class="live" id="t8"></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Empieza con la query 2 ("gastos de abrir un préstamo bancario").
-        <span class="obs">El léxico solo encuentra el documento que dice "préstamo"; el
-        semántico también levanta "la hipoteca incluye comisión de apertura", que es la
-        respuesta buena y no comparte ni una palabra con la query.</span></li>
-      <li>Pasa a la query 3 ("ropa de mujer barata"). <span class="obs">BM25 = 0.00 en
-        TODOS los documentos: ni "ropa" ni "barata" aparecen literalmente en el corpus.
-        El buscador léxico devuelve la página vacía; el coseno rankea rebajas, camisetas y
-        vestidos sin despeinarse.</span></li>
-      <li>Prueba la query 4 ("oficinas del banco"). <span class="obs">El léxico pica con
-        "el banco del parque es de madera" (¡contiene "banco"!) y lo pone arriba; el
-        semántico lo hunde porque su embedding vive en el barrio del parque, no en el de
-        banca. Es el fallo inverso: coincidencia de caracteres sin coincidencia de
-        significado.</span></li>
-      <li>Vuelve a la query 1 ("costes de una hipoteca"). <span class="obs">Aquí ambos
-        aciertan: cuando query y documento comparten el término clave, el léxico es
-        excelente. La lección no es "BM25 malo": es que cada uno falla donde el otro
-        acierta; los buscadores serios combinan ambos (búsqueda híbrida).</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qué BM25 da
-        exactamente 0 a un documento perfecto que no comparte palabras, y qué propiedad
-        del embedding evita ese colapso?</summary><div class="ans">BM25 suma únicamente
-        sobre q &cap; d, los términos literalmente compartidos: conjunto vacío, suma 0,
-        sin matices. Es una métrica sobre símbolos discretos: "hipoteca" y "préstamo
-        vivienda" son tan distintos como "hipoteca" y "playlist". El embedding rompe esa
-        discreción: proyecta ambos textos a un espacio continuo donde el entrenamiento
-        (co-ocurrencia, contrastivo) ya colocó cerca los significados afines, y el coseno
-        mide esa cercanía aunque el solapamiento léxico sea nulo. La sinonimia se paga en
-        BM25 y es gratis en el espacio semántico.</div></details></div>
-    <p><span class="hd">Setup.</span> Mini-buscador sobre 10 documentos de juguete
-      (frases de banca, retail, energía, streaming, y un "banco del parque" puesto ahí con
-      toda la intención), con embeddings 2D precalculados coherentes con el mapa semántico
-      de la slide 4. Para cada query: el panel superior sitúa documentos y query en el
-      plano; el inferior compara las dos puntuaciones por documento (barra dorada = coseno,
-      barra tinta = BM25 reescalado); la tabla da números y rankings exactos. El BM25 se
-      calcula de verdad sobre los textos tokenizados: tf, df, longitudes y todo.</p>
-    <p><span class="hd">Juega.</span> Las cuatro queries están elegidas para cubrir la
-      casuística completa: ambos aciertan / el léxico se queda corto (sinonimia) / el
-      léxico devuelve vacío (vocabulario disjunto) / el léxico acierta de más (polisemia
-      de "banco"). Recorre las cuatro mirando primero el badge y luego la tabla.</p>
-    <p><span class="hd">Lee así.</span> En la tabla, rk<sub>s</sub> y rk<sub>l</sub> son
-      las posiciones en cada ranking. Las discrepancias grandes entre ambas columnas son
-      exactamente los casos que justifican pagar por un buscador semántico; donde
-      coinciden, BM25 (gratis y rapidísimo) ya bastaba.</p>
-    <p><span class="hd">Mensaje.</span> La receta de 10 líneas del deck
-      (SentenceTransformer + normalize + producto escalar) implementa la columna dorada de
-      esta tabla. En el Día 15 le añadiremos la generación encima: eso es RAG.</p>
-    <p class="miniglos"><b>Términos.</b> <b>tf</b>: frecuencia del término en el
-      documento. <b>df</b>: número de documentos que contienen el término. <b>idf</b>:
-      peso que premia términos raros. <b>búsqueda híbrida</b>: combinar score léxico y
-      semántico (p. ej. suma ponderada o reciprocal rank fusion).</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 9 : recomendación ============ -->
-<section class="slide" id="s9">
-  <div class="figcol">
-    <canvas id="cv9a" data-aspect="1.5"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">afinidad(u, p<sub>i</sub>) = cos(u, p<sub>i</sub>),&nbsp;&nbsp;&nbsp; recomendar = top-k por afinidad<span class="eqn">(usuarios y productos, mismo espacio)</span></div>
-      <div class="eqread">el truco de los recomendadores de embeddings (Netflix, Spotify,
-        Amazon): proyectar <b>usuarios y productos al mismo espacio</b>. El perfil del
-        usuario es un vector (p. ej. el promedio de lo que compró); recomendar es buscar
-        sus vecinos entre los productos: la misma operación del buscador, con personas en
-        vez de queries.</div>
-      <div class="eq">CTR&#770;<sub>i</sub> = &sigma;(8&middot;(cos(u,p<sub>i</sub>) &minus; 0.6)),&nbsp;&nbsp;&nbsp; KPI = <big>&Sigma;</big><sub>i &isin; top-k</sub>&nbsp;CTR&#770;<sub>i</sub>&thinsp;&middot;&thinsp;precio<sub>i</sub>&thinsp;&middot;&thinsp;margen<span class="eqn">(del coseno al euro)</span></div>
-      <div class="eqread">el puente a negocio de esta demo: una curva de respuesta
-        (sigmoide) convierte afinidad en probabilidad de clic, y el KPI esperado por
-        usuario suma probabilidad &times; precio &times; margen (20%) sobre lo
-        recomendado. Calibrar esa curva con datos reales es trabajo del equipo de
-        analytics; la estructura coseno &rarr; propensión &rarr; euros es la
-        estándar.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>perfil del usuario: afinidad a moda = <b id="r9m"></b></label>
-      <input type="range" id="sl9m" min="0" max="1" step="0.02" value="0.80">
-      <label>perfil del usuario: afinidad a tecnología = <b id="r9t"></b></label>
-      <input type="range" id="sl9t" min="0" max="1" step="0.02" value="0.20">
-      <label>productos recomendados, k = <b id="r9k"></b></label>
-      <input type="range" id="sl9k" min="1" max="6" step="1" value="3">
-    </div>
-    <div class="readout" id="ro9"></div>
-    <table class="live" id="t9"></table>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con el perfil por defecto (moda 0.8, tecnología 0.2), lee la tabla.
-        <span class="obs">El top-3 es todo moda (vestido, bolso, abrigo): el usuario
-        apunta hacia ese lado del espacio y el coseno lo sabe.</span></li>
-      <li>Invierte el perfil (moda 0.1, tecnología 0.9). <span class="obs">El top-3 salta
-        a móvil, portátil, auriculares y el KPI esperado se multiplica: la tecnología de
-        este catálogo tiene precios mucho más altos. Mismo algoritmo, cesta más
-        cara.</span></li>
-      <li>Pon un perfil mixto (0.6, 0.6). <span class="obs">Entran productos puente
-        (smartwatch, cámara): comparten dirección con ambos gustos. El recomendador
-        interpola gustos sin reglas escritas a mano.</span></li>
-      <li>Con el perfil mixto, sube k de 1 a 6 mirando el KPI. <span class="obs">Cada
-        producto extra añade cada vez menos: el CTR estimado cae con el coseno (rendimientos
-        decrecientes). Elegir k es equilibrar ingreso esperado contra saturar al usuario:
-        decisión de negocio sobre una curva que ahora sabes leer.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿de dónde sale el vector de
-        un usuario nuevo que aún no ha comprado nada?</summary><div class="ans">No sale: es
-        el problema del <b>arranque en frío</b>. Las soluciones estándar son tres: usar
-        atributos declarados (al registrarse marca "me interesa moda" &rArr; vector
-        inicial como el de tus sliders); usar el embedding de su comportamiento inmediato
-        (las dos primeras búsquedas de la sesión, embebidas y promediadas); o arrancar con
-        el vector medio de la población e ir actualizándolo con cada clic. En cuanto hay
-        historial, el perfil pasa a ser el promedio (a menudo ponderado por recencia) de
-        los embeddings de los productos con los que interactuó: u vive en el mismo espacio
-        que los p<sub>i</sub> por construcción.</div></details></div>
-    <p><span class="hd">Setup.</span> Doce productos de un e-commerce con embeddings 2D
-      fijos en dos ejes interpretables (afinidad a moda, afinidad a tecnología) y un
-      precio cada uno: camisetas de 15&euro; en una esquina, portátiles de 999&euro; en
-      la otra, productos puente (smartwatch, cámara) en medio. Tus dos sliders definen el
-      vector del usuario en ese mismo espacio. El canvas dibuja catálogo, usuario (flecha
-      dorada) y el top-k recomendado (resaltado); la tabla calcula coseno, CTR estimado y
-      contribución en euros de cada recomendación.</p>
-    <p><span class="hd">Juega.</span> Piensa cada movimiento de slider como un segmento de
-      clientes distinto: la fashionista, el gadgetero, el indeciso. El mismo espacio y la
-      misma fórmula sirven para los tres; lo único que cambia es dónde está u. Esto es lo
-      que significa "recomendación personalizada a escala": no hay una regla por cliente,
-      hay un espacio compartido y un coseno.</p>
-    <p><span class="hd">Lee así.</span> El KPI del lector es ingreso esperado por usuario
-      y sesión. Multiplícalo mentalmente por los 5 millones de sesiones mensuales de un
-      retailer mediano: una mejora de céntimos en esta pantalla son millones al año. Por
-      eso Netflix atribuye más de 1000 M$/año a su recomendador.</p>
-    <p><span class="hd">Mensaje.</span> Búsqueda y recomendación son el mismo problema
-      geométrico: vecinos por coseno en un espacio compartido. Si entendiste el buscador
-      de la slide anterior, ya entiendes Discover Weekly: cambia documentos por canciones
-      y queries por tu historial.</p>
-    <p class="miniglos"><b>Términos.</b> <b>u</b>: vector de perfil del usuario.
-      <b>p<sub>i</sub></b>: embedding del producto i. <b>CTR</b>: probabilidad de clic.
-      <b>top-k</b>: los k productos de mayor afinidad. <b>arranque en frío</b>: usuario o
-      producto sin historial.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 10 : glosario ============ -->
-<section class="slide" id="s10">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="glosgrid" id="glos"></div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 11 : síntesis ============ -->
-<section class="slide" id="s11">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="pipe">
-      <div class="pipebox"><div><div class="pname">1 &mdash; Representar: de one-hot a denso</div>
-          <div class="pmap">Slides: One-hot &middot; Mapa</div></div>
-        <div class="pq">"El one-hot hace la similitud imposible (todos los cosenos 0); el embedding &phi; : V &rarr; &reals;<sup>d</sup> la hace geométrica: tokens semánticamente cercanos, vectores cercanos. Veinte palabras de negocio caben en un plano y sus barrios son sectores."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">2 &mdash; Medir: la similitud coseno</div>
-          <div class="pmap">Slides: Coseno &middot; A mano</div></div>
-        <div class="pq">"cos(u,v) = u<sup>&#8868;</sup>v / (&Vert;u&Vert;&thinsp;&Vert;v&Vert;): solo dirección, nunca longitud. Sabes calcularla a mano (q = (1,0,1) contra tres documentos) y sabes que normalizar al guardar convierte la búsqueda en un producto de matrices."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">3 &mdash; Entrenar: co-ocurrencia + contraste</div>
-          <div class="pmap">Slides: Skip-gram &middot; Negativos &middot; Analogías</div></div>
-        <div class="pq">"Skip-gram maximiza &Sigma;&thinsp;log&thinsp;p(w<sub>c</sub>|w<sub>t</sub>) sobre las ventanas; negative sampling sustituye el softmax carísimo por acercar pares reales y alejar k aleatorios. El espacio resultante hace aritmética: rey &minus; hombre + mujer &asymp; reina."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">4 &mdash; Contextualizar: de word2vec a BERT y E5</div>
-          <div class="pmap">Slides: Contexto</div></div>
-        <div class="pq">"&phi;<sub>ctx</sub>(w<sub>t</sub>) = Transformer(w<sub>1:T</sub>)<sub>t</sub>: 'banco' deja de tener un único vector y se desplaza hacia el sentido que dicta la frase. SBERT, E5 y BGE empaquetan esto en un vector por frase: el estado del arte para retrieval (benchmark MTEB)."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">5 &mdash; Explotar: buscador y recomendador</div>
-          <div class="pmap">Slides: Buscador &middot; Recomendar</div></div>
-        <div class="pq">"Indexar &phi;(d<sub>j</sub>), embeber la query, ordenar por coseno: gana donde BM25 no ve nada (sinonimia) y donde BM25 ve de más (polisemia). Con usuarios y productos en el mismo espacio, recomendar es el mismo top-k, y el coseno se convierte en euros vía CTR &times; precio &times; margen."</div></div>
-    </div>
-    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
-      Un embedding convierte significado en geometría; el coseno convierte geometría en
-      ranking; y el ranking, puesto delante de un cliente, convierte semántica en negocio.
-      El Día 09 abre la máquina que fabrica los mejores embeddings: el Transformer.</p>
-  </div>
-</section>
-
-
-<div id="footerL">Garrido-Merchán &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; Día 08 &middot; Embeddings semánticos</div>
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
 <div id="footer"></div>
-<div id="arrows">
-  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
-</div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 08 · Embeddings</div>
+
 <script>
-"use strict";
-/* ================= PALETTE ================= */
-const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
-      MUTE="#8A8A8A", RULE="#D9C28A";
+const SECTIONS=["Embeddings","Para llevar"];
+const TITLES=["Cada canción es un vector: el ángulo entre ellos mide cuánto se parecen.",
+              "Un embedding convierte objetos en vectores donde cercanía significa parecido."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');
+  ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
 
-/* ================= MATH CORE (DOM-free) ================= */
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
-  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
-  return ((t^t>>>14)>>>0)/4294967296;};}
-function dot(u,v){let s=0;for(let i=0;i<u.length;i++)s+=u[i]*v[i];return s;}
-function nrm(u){return Math.sqrt(dot(u,u));}
-function cosv(u,v){const a=nrm(u),b=nrm(v);
-  return (a===0||b===0)?NaN:dot(u,v)/(a*b);}
-function sig(x){return 1/(1+Math.exp(-x));}
-function softmax(xs){const m=Math.max(...xs);
-  const e=xs.map(x=>Math.exp(x-m));const s=e.reduce((a,b)=>a+b,0);
-  return e.map(v=>v/s);}
-function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
+// ---- highlight helper: light up one equation term + its numeric twin ----
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
 
-/* ================= plotting helpers ================= */
+// ---- canvas helper ----
 function fitCanvas(cv){
   const dpr=window.devicePixelRatio||1;
-  const wCss=cv.parentElement.clientWidth;
-  const asp=parseFloat(cv.dataset.aspect)||1.8;
-  const hCss=wCss/asp;
-  cv.style.height=hCss+"px";
-  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
-  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
-  return {ctx:ctx,W:wCss,H:hCss};
-}
-function axes(ctx,fr,opt){
-  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
-  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
-  ctx.save();
-  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
-  ctx.font="11px Georgia, serif";
-  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
-  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
-  ctx.textAlign="center";ctx.textBaseline="top";
-  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
-    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
-  ctx.textAlign="right";ctx.textBaseline="middle";
-  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
-    ctx.fillText(lb,fr.x0-6,Y(v));});
-  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
-    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
-  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
-    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
-    ctx.fillText(opt.ylab,0,0);ctx.restore();}
-  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
-    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
-  ctx.restore();
-  return {X:X,Y:Y};
-}
-function polyline(ctx,pts,color,lw,dash){
-  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
-  if(dash)ctx.setLineDash(dash);
-  ctx.beginPath();let first=true;
-  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
-    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
-  ctx.stroke();ctx.restore();
-}
-function rampColor(t){
-  t=Math.max(0,Math.min(1,t));
-  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
-  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
-  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
-}
-/* equal-scale vector plane: returns mapping + draws the axis cross */
-function vplane(c,xmin,xmax,ymin,ymax,title){
-  const fr={x0:8,y0:title?22:8,w:c.W-16,h:c.H-(title?30:16)};
-  const s=Math.min(fr.w/(xmax-xmin),fr.h/(ymax-ymin));
-  const cx=fr.x0+fr.w/2,cy=fr.y0+fr.h/2,mx=(xmin+xmax)/2,my=(ymin+ymax)/2;
-  const X=v=>cx+(v-mx)*s, Y=v=>cy-(v-my)*s;
-  c.ctx.save();c.ctx.strokeStyle="#eee";c.ctx.lineWidth=1;
-  if(xmin<0&&xmax>0){c.ctx.beginPath();c.ctx.moveTo(X(0),fr.y0);
-    c.ctx.lineTo(X(0),fr.y0+fr.h);c.ctx.stroke();}
-  if(ymin<0&&ymax>0){c.ctx.beginPath();c.ctx.moveTo(fr.x0,Y(0));
-    c.ctx.lineTo(fr.x0+fr.w,Y(0));c.ctx.stroke();}
-  if(title){c.ctx.fillStyle=INK;c.ctx.font="bold 12px Georgia, serif";
-    c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
-    c.ctx.fillText(title,fr.x0+2,fr.y0-6);}
-  c.ctx.restore();
-  return {X:X,Y:Y,s:s,fr:fr};
-}
-function arrow(ctx,x1,y1,x2,y2,color,lw){
-  ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=lw||2;
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
-  const a=Math.atan2(y2-y1,x2-x1),L=8;
-  ctx.beginPath();ctx.moveTo(x2,y2);
-  ctx.lineTo(x2-L*Math.cos(a-0.42),y2-L*Math.sin(a-0.42));
-  ctx.lineTo(x2-L*Math.cos(a+0.42),y2-L*Math.sin(a+0.42));
-  ctx.closePath();ctx.fill();ctx.restore();
-}
-function dotLabel(ctx,x,y,name,color,r,dy){
-  ctx.save();ctx.fillStyle=color;
-  ctx.beginPath();ctx.arc(x,y,r||3.5,0,7);ctx.fill();
-  ctx.font="10.5px Georgia, serif";ctx.textAlign="center";ctx.textBaseline="bottom";
-  ctx.fillText(name,x,y+(dy===undefined?-6:dy));ctx.restore();
+  const w=cv.clientWidth||cv.width, h=cv.height;
+  cv.width=w*dpr; cv.height=h*dpr;
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
 }
 
-/* ================= navigation ================= */
-const SECTIONS=["One-hot","Coseno","A mano","Mapa","Analogías","Skip-gram",
-  "Negativos","Contexto","Buscador","Recomendar","Glosario","Síntesis"];
-const TITLES=[
- "Un one-hot no puede parecerse a nadie: el embedding denso codifica la similitud.",
- "La similitud coseno mide el ángulo entre dos vectores y olvida su longitud.",
- "El coseno se calcula a mano: producto escalar dividido por las dos normas.",
- "En el mapa semántico, buscar es colocar la query y mirar quién cae cerca.",
- "rey − hombre + mujer ≈ reina: las direcciones del espacio codifican relaciones.",
- "Skip-gram aprende de la co-ocurrencia: la ventana decide quién es contexto de quién.",
- "Negative sampling entrena de verdad: acerca lo que co-ocurre y aleja lo aleatorio.",
- "El embedding contextual mueve «banco» hacia el sentido que dicta la frase.",
- "La búsqueda semántica acierta donde la léxica no ve nada, y viceversa.",
- "Usuarios y productos en el mismo espacio: recomendar es ordenar por coseno.",
- "Glosario: todos los símbolos del día, en una página.",
- "Síntesis: del one-hot al euro, todo el día es el mismo coseno."];
-let cur=0;const N=12;
-const nav=document.getElementById("navstrip");
-SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
-  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
-function go(i){
-  cur=(i+N)%N;
-  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
-  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
-  document.getElementById("slidetitle").textContent=TITLES[cur];
-  document.getElementById("footer").textContent=(cur+1)+" / "+N;
-  window.scrollTo(0,0);
-  if(updaters[cur])updaters[cur](true);
+// fixed reference song vector u
+const UX=2, UY=1;
+
+function upd(){
+  const vx=+document.getElementById('vx').value;
+  const vy=+document.getElementById('vy').value;
+  document.getElementById('v_vx').textContent=vx.toFixed(1);
+  document.getElementById('v_vy').textContent=vy.toFixed(1);
+  document.getElementById('n_vx').textContent=vx.toFixed(1);
+  document.getElementById('n_vy').textContent=vy.toFixed(1);
+  // real 2D arithmetic
+  const dot=UX*vx+UY*vy;
+  const nu=Math.hypot(UX,UY), nv=Math.hypot(vx,vy);
+  const cos=(nv<1e-9)?0:dot/(nu*nv);
+  const ang=Math.acos(Math.max(-1,Math.min(1,cos)))*180/Math.PI;
+  document.getElementById('n_dot').textContent=dot.toFixed(2);
+  document.getElementById('n_cos').textContent=cos.toFixed(2);
+  let cls,lab,song;
+  if(cos>=0.6){cls='ok';lab='Muy similar';song='"otra balada de rock" &rarr; recomendar';}
+  else if(cos>-0.3){cls='mid';lab='Poco relacionada';song='"un tema de jazz suave" &rarr; quizá no';}
+  else{cls='bad';lab='Opuesta';song='"reguetón de fiesta" &rarr; no recomendar';}
+  document.getElementById('ro').innerHTML=
+    'Referencia u=(2,&thinsp;1), candidata v=('+vx.toFixed(1)+',&thinsp;'+vy.toFixed(1)+').<br>'+
+    '&Vert;v&Vert; = '+nv.toFixed(2)+', &nbsp; ángulo = '+ang.toFixed(0)+'&deg;, &nbsp; '+
+    'cos = <b>'+cos.toFixed(2)+'</b>.<br>'+
+    '<span class="badge '+cls+'">'+lab+'</span> &nbsp;<span style="color:#8A8A8A">'+song+'</span>';
+  drawVec(vx,vy,cos,ang);
 }
-document.getElementById("prev").onclick=()=>go(cur-1);
-document.getElementById("next").onclick=()=>go(cur+1);
-document.addEventListener("keydown",e=>{
-  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
-  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
-window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
-const updaters={};
+
+function drawVec(vx,vy,cos,ang){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const ox=w*0.5, oy=h*0.55, S=48; // origin & scale (px per unit)
+  const gx=x=>ox+x*S, gy=y=>oy-y*S;
+  // grid
+  ctx.strokeStyle='#f0f0f0';ctx.lineWidth=1;
+  for(let k=-3;k<=3;k++){ctx.beginPath();ctx.moveTo(gx(k),gy(-3.2));ctx.lineTo(gx(k),gy(3.2));ctx.stroke();
+    ctx.beginPath();ctx.moveTo(gx(-3.6),gy(k));ctx.lineTo(gx(3.6),gy(k));ctx.stroke();}
+  // axes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(gx(-3.6),oy);ctx.lineTo(gx(3.6),oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,gy(-3.2));ctx.lineTo(ox,gy(3.2));ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
+  ctx.fillText('dim 1',gx(3.6)-38,oy-6);ctx.fillText('dim 2',ox+6,gy(3.2)+12);
+  // angle arc between u and v
+  const au=Math.atan2(UY,UX), av=Math.atan2(vy,vx);
+  ctx.strokeStyle='#D9C28A';ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.arc(ox,oy,34,-Math.max(au,av),-Math.min(au,av));ctx.stroke();
+  const am=(au+av)/2;
+  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';
+  ctx.fillText(ang.toFixed(0)+'°',ox+52*Math.cos(am),oy-52*Math.sin(am));
+  // arrow drawer
+  function arrow(x,y,col,wd,label){
+    ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=wd;
+    ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(gx(x),gy(y));ctx.stroke();
+    const a=Math.atan2(-(gy(y)-oy),gx(x)-ox), hx=gx(x),hy=gy(y),hs=11;
+    ctx.beginPath();ctx.moveTo(hx,hy);
+    ctx.lineTo(hx-hs*Math.cos(a-0.4),hy+hs*Math.sin(a-0.4));
+    ctx.lineTo(hx-hs*Math.cos(a+0.4),hy+hs*Math.sin(a+0.4));
+    ctx.closePath();ctx.fill();
+    ctx.font='bold 14px Georgia';ctx.fillText(label,hx+8,hy-6);
+  }
+  arrow(UX,UY,'#1A1A1A',2.4,'u (referencia)');
+  arrow(vx,vy,'#B8860B',2.8,'v (candidata)');
+  // cosine badge on canvas
+  ctx.fillStyle='#8C6508';ctx.font='bold 15px Georgia';
+  ctx.fillText('cos = '+cos.toFixed(2),12,20);
+}
+updaters[0]=upd;
+
+function drawMap(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  ctx.font='13px Georgia';ctx.textAlign='center';
+  // three clusters of songs as points; nearby = similar
+  const clusters=[
+    {cx:w*0.24,cy:h*0.34,col:'#B8860B',name:'Rock',pts:[[0,0],[26,14],[-20,20],[10,-22]]},
+    {cx:w*0.70,cy:h*0.30,col:'#8C6508',name:'Pop',pts:[[0,0],[24,-10],[-18,16],[6,26]]},
+    {cx:w*0.48,cy:h*0.74,col:'#8A8A8A',name:'Jazz',pts:[[0,0],[22,12],[-22,10],[4,-24]]}
+  ];
+  clusters.forEach(c=>{
+    // soft halo
+    ctx.fillStyle=c.col+'22';
+    ctx.beginPath();ctx.arc(c.cx,c.cy,48,0,7);ctx.fill();
+    c.pts.forEach(p=>{
+      ctx.fillStyle=c.col;
+      ctx.beginPath();ctx.arc(c.cx+p[0],c.cy+p[1],5,0,7);ctx.fill();
+    });
+    ctx.fillStyle='#1A1A1A';ctx.font='bold 14px Georgia';
+    ctx.fillText(c.name,c.cx,c.cy-56);
+  });
+  // annotation: analogy arrow
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=1.6;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(clusters[0].cx,clusters[0].cy);
+  ctx.lineTo(clusters[1].cx,clusters[1].cy);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#8A8A8A';ctx.font='italic 12px Georgia';
+  ctx.fillText('canciones cercanas = gustos parecidos',w*0.5,h*0.5);
+  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';
+  ctx.fillText('rey − hombre + mujer ≈ reina',w*0.5,h-14);
+  ctx.textAlign='left';
+}
+updaters[1]=drawMap;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+buildNav();
+hot('vx');
+go(0);
 </script>
-
-<script>
-"use strict";
-/* ================= SLIDE 0 : one-hot vs denso ================= */
-(function(){
-  const VOC=[
-    ["hipoteca",0.95,0.20,"banca"],["préstamo",0.90,0.32,"banca"],
-    ["crédito",0.85,0.45,"banca"],["camiseta",0.15,0.95,"retail"],
-    ["vestido",0.28,0.90,"retail"],["zapatos",0.40,0.85,"retail"],
-    ["turbina",-0.80,0.55,"energía"],["panel solar",-0.70,0.68,"energía"]];
-  const sla=document.getElementById("sl0a"),slb=document.getElementById("sl0b"),
-        slv=document.getElementById("sl0v");
-  sla.oninput=upd;slb.oninput=upd;slv.oninput=upd;
-  function upd(){
-    const a=+sla.value,b=+slb.value,vexp=+slv.value;
-    document.getElementById("r0a").textContent=VOC[a][0];
-    document.getElementById("r0b").textContent=VOC[b][0];
-    document.getElementById("r0v").textContent=vexp.toFixed(1);
-    const va=[VOC[a][1],VOC[a][2]],vb=[VOC[b][1],VOC[b][2]];
-    const cOH=(a===b)?1:0,cD=cosv(va,vb);
-    const Vreal=Math.pow(10,vexp),D=300;
-    document.getElementById("ro0").innerHTML=
-      "A = <b>"+VOC[a][0]+"</b> ("+VOC[a][3]+") &nbsp;&middot;&nbsp; B = <b>"+VOC[b][0]+
-      "</b> ("+VOC[b][3]+")<br>coseno one-hot = <b>"+cOH.toFixed(3)+
-      "</b> &nbsp;&middot;&nbsp; coseno denso = <span class='gold'>"+cD.toFixed(3)+
-      "</span><br>memoria por palabra: one-hot = "+fmtG(Vreal,3)+
-      " valores (uno útil) &nbsp;vs&nbsp; denso = "+D+
-      " valores &rarr; compresión &times;"+fmtG(Vreal/D,3);
-    /* --- canvas a: one-hot rows --- */
-    let c=fitCanvas(document.getElementById("cv0a"));
-    const m={x0:84,y0:30,w:c.W-100,h:c.H-44},cw=m.w/8;
-    c.ctx.font="bold 12px Georgia, serif";c.ctx.fillStyle=INK;
-    c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
-    c.ctx.fillText("Las mismas dos palabras como one-hot (|V| = 8)",8,20);
-    c.ctx.font="9.5px Georgia, serif";c.ctx.textAlign="center";
-    for(let j=0;j<8;j++)
-      c.ctx.fillText(VOC[j][0].slice(0,7),m.x0+cw*(j+0.5),m.y0-2);
-    const rows=[[a,"A"],[b,"B"]];
-    rows.forEach((rw,ri)=>{
-      const y=m.y0+ri*(m.h/2)+4,hh=m.h/2-10;
-      c.ctx.textAlign="right";c.ctx.textBaseline="middle";c.ctx.fillStyle=INK;
-      c.ctx.font="10.5px Georgia, serif";
-      c.ctx.fillText(rw[1]+": "+VOC[rw[0]][0],m.x0-6,y+hh/2);
-      for(let j=0;j<8;j++){
-        const on=(j===rw[0]);
-        c.ctx.fillStyle=on?GOLD:"#fff";
-        c.ctx.strokeStyle=RULE;c.ctx.lineWidth=1;
-        c.ctx.fillRect(m.x0+cw*j+2,y,cw-4,hh);
-        c.ctx.strokeRect(m.x0+cw*j+2,y,cw-4,hh);
-        c.ctx.fillStyle=on?"#fff":MUTE;c.ctx.textAlign="center";
-        c.ctx.font="11px Georgia, serif";
-        c.ctx.fillText(on?"1":"0",m.x0+cw*(j+0.5),y+hh/2);}
-    });
-    /* --- canvas b: dense plane --- */
-    c=fitCanvas(document.getElementById("cv0b"));
-    const P=vplane(c,-1.35,1.35,-0.25,1.25,
-      "Las mismas 8 palabras como embeddings densos (d = 2)");
-    c.ctx.save();c.ctx.strokeStyle="#ddd";c.ctx.setLineDash([3,3]);
-    c.ctx.beginPath();c.ctx.arc(P.X(0),P.Y(0),P.s,0,7);c.ctx.stroke();
-    c.ctx.setLineDash([]);c.ctx.restore();
-    VOC.forEach((w,i)=>{
-      if(i===a||i===b)return;
-      arrow(c.ctx,P.X(0),P.Y(0),P.X(w[1]),P.Y(w[2]),MUTE,1.2);
-      dotLabel(c.ctx,P.X(w[1]),P.Y(w[2]),w[0],MUTE,2.5);});
-    arrow(c.ctx,P.X(0),P.Y(0),P.X(VOC[a][1]),P.Y(VOC[a][2]),INK,2.4);
-    dotLabel(c.ctx,P.X(VOC[a][1]),P.Y(VOC[a][2]),VOC[a][0],INK,3.5);
-    if(b!==a){arrow(c.ctx,P.X(0),P.Y(0),P.X(VOC[b][1]),P.Y(VOC[b][2]),GOLD,2.4);
-      dotLabel(c.ctx,P.X(VOC[b][1]),P.Y(VOC[b][2]),VOC[b][0],GOLD,3.5);}
-    const aa=Math.atan2(VOC[a][2],VOC[a][1]),ab=Math.atan2(VOC[b][2],VOC[b][1]);
-    c.ctx.save();c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=1.4;
-    c.ctx.beginPath();c.ctx.arc(P.X(0),P.Y(0),0.3*P.s,-aa,-ab,aa<ab);c.ctx.stroke();
-    c.ctx.fillStyle=GOLDD;c.ctx.font="10.5px Georgia, serif";
-    c.ctx.textAlign="left";c.ctx.textBaseline="top";
-    c.ctx.fillText("cos = "+cD.toFixed(3),P.X(0)+8,P.Y(0)+6);c.ctx.restore();
-  }
-  updaters[0]=upd;upd();
-})();
-
-/* ================= SLIDE 1 : coseno manipulable ================= */
-(function(){
-  const stu=document.getElementById("sl1tu"),stv=document.getElementById("sl1tv"),
-        smu=document.getElementById("sl1mu"),smv=document.getElementById("sl1mv"),
-        sth=document.getElementById("sl1th");
-  [stu,stv,smu,smv,sth].forEach(s=>s.oninput=upd);
-  function upd(){
-    const tu=+stu.value,tv=+stv.value,mu=+smu.value,mv=+smv.value,th=+sth.value;
-    document.getElementById("r1tu").textContent=tu;
-    document.getElementById("r1tv").textContent=tv;
-    document.getElementById("r1mu").textContent=mu.toFixed(2);
-    document.getElementById("r1mv").textContent=mv.toFixed(2);
-    document.getElementById("r1th").textContent=th.toFixed(2);
-    const ru=tu*Math.PI/180,rv=tv*Math.PI/180;
-    const u=[mu*Math.cos(ru),mu*Math.sin(ru)],v=[mv*Math.cos(rv),mv*Math.sin(rv)];
-    const dp=dot(u,v),cs=cosv(u,v),dg=Math.cos(rv-ru);
-    const badge=cs>=th?"<span class='badge ok'>similares (cos &ge; "+th.toFixed(2)+
-      ")</span>":"<span class='badge bad'>no similares (cos &lt; "+th.toFixed(2)+")</span>";
-    document.getElementById("ro1").innerHTML=
-      "u&middot;v = "+fmtG(dp,4)+" &nbsp;&middot;&nbsp; &Vert;u&Vert; = "+fmtG(nrm(u),4)+
-      " &nbsp;&middot;&nbsp; &Vert;v&Vert; = "+fmtG(nrm(v),4)+
-      "<br>cos(u,v) = "+fmtG(dp,4)+" / ("+fmtG(nrm(u),4)+" &middot; "+fmtG(nrm(v),4)+
-      ") = <span class='gold'>"+cs.toFixed(4)+"</span>"+
-      " &nbsp;&middot;&nbsp; cos(&theta;<sub>v</sub>&minus;&theta;<sub>u</sub>) = "+
-      dg.toFixed(4)+
-      "<br>d<sub>cos</sub> = 1 &minus; cos = "+(1-cs).toFixed(4)+" &nbsp; "+badge;
-    const c=fitCanvas(document.getElementById("cv1a"));
-    const R=3.2,P=vplane(c,-R*1.42,R*1.42,-R*1.02,R*1.02,
-      "Dos embeddings 2D: el coseno solo ve el ángulo entre ellos");
-    c.ctx.save();c.ctx.strokeStyle="#ddd";c.ctx.setLineDash([3,3]);
-    c.ctx.beginPath();c.ctx.arc(P.X(0),P.Y(0),P.s,0,7);c.ctx.stroke();
-    c.ctx.setLineDash([]);
-    c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia, serif";
-    c.ctx.textAlign="left";c.ctx.fillText("norma 1",P.X(1)+4,P.Y(0)-6);
-    c.ctx.restore();
-    arrow(c.ctx,P.X(0),P.Y(0),P.X(u[0]),P.Y(u[1]),INK,2.6);
-    arrow(c.ctx,P.X(0),P.Y(0),P.X(v[0]),P.Y(v[1]),GOLD,2.6);
-    dotLabel(c.ctx,P.X(u[0]),P.Y(u[1]),"u",INK,3.5);
-    dotLabel(c.ctx,P.X(v[0]),P.Y(v[1]),"v",GOLD,3.5);
-    c.ctx.save();c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=1.5;
-    c.ctx.beginPath();c.ctx.arc(P.X(0),P.Y(0),0.5*P.s,-ru,-rv,ru<rv);c.ctx.stroke();
-    const mid=(ru+rv)/2;
-    c.ctx.fillStyle=GOLDD;c.ctx.font="11px Georgia, serif";c.ctx.textAlign="center";
-    c.ctx.fillText("θ",P.X(0.68*Math.cos(mid)),P.Y(0.68*Math.sin(mid)));
-    c.ctx.restore();
-  }
-  updaters[1]=upd;upd();
-})();
-
-/* ================= SLIDE 2 : coseno a mano ================= */
-(function(){
-  const DOCS=[["d₁ (1,1,0)",[1,1,0]],["d₂ (0,0,1)",[0,0,1]],["d₃ (1,0,1)",[1,0,1]]];
-  const sx=document.getElementById("sl2x"),sy=document.getElementById("sl2y"),
-        sz=document.getElementById("sl2z");
-  [sx,sy,sz].forEach(s=>s.oninput=upd);
-  function upd(){
-    const q=[+sx.value,+sy.value,+sz.value];
-    document.getElementById("r2x").textContent=q[0];
-    document.getElementById("r2y").textContent=q[1];
-    document.getElementById("r2z").textContent=q[2];
-    const nq=nrm(q);
-    const res=DOCS.map(d=>{const dp=dot(q,d[1]);
-      return {name:d[0],v:d[1],dp:dp,nd:nrm(d[1]),
-              cs:nq===0?NaN:dp/(nq*nrm(d[1]))};});
-    const order=res.slice().sort((a,b)=>(b.cs||-2)-(a.cs||-2));
-    res.forEach(r=>{r.rank=order.indexOf(r)+1;});
-    const badge=nq===0?
-      "<span class='badge bad'>query nula: el coseno no está definido</span>":
-      "<span class='badge ok'>top-1: "+order[0].name+" (cos = "+
-      order[0].cs.toFixed(3)+")</span>";
-    document.getElementById("ro2").innerHTML=
-      "q = ("+q.join(", ")+") &nbsp;&middot;&nbsp; &Vert;q&Vert; = &radic;"+
-      fmtG(nq*nq,3)+" = "+fmtG(nq,4)+" &nbsp; "+badge;
-    document.getElementById("t2").innerHTML=
-      "<tr><th>doc</th><th>q&middot;d</th><th>&Vert;d&Vert;</th><th>cos</th><th>rank</th></tr>"+
-      res.map(r=>"<tr><td>"+r.name+"</td><td>"+fmtG(r.dp,3)+"</td><td>"+
-        fmtG(r.nd,4)+"</td><td><b>"+(isNaN(r.cs)?"—":r.cs.toFixed(3))+
-        "</b></td><td>"+(isNaN(r.cs)?"—":r.rank)+"</td></tr>").join("");
-    /* canvas a: component bars */
-    let c=fitCanvas(document.getElementById("cv2a"));
-    const fr={x0:46,y0:26,w:c.W-60,h:c.H-58};
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:4,ymin:0,ymax:3.2,
-      xticks:[[0.5,"q"],[1.5,"d₁"],[2.5,"d₂"],[3.5,"d₃"]],
-      yticks:[0,1,2,3],xlab:"",ylab:"valor",
-      title:"Componentes: tema 1 = hipotecas, 2 = rebajas, 3 = energía"});
-    const groups=[["q",q,GOLD],["d₁",[1,1,0],INK],["d₂",[0,0,1],MUTE],
-                  ["d₃",[1,0,1],GOLDD]];
-    groups.forEach((g,gi)=>{
-      for(let k=0;k<3;k++){
-        const bx=ax.X(gi+0.14+k*0.26),bw=(ax.X(0.24)-ax.X(0));
-        c.ctx.fillStyle=g[2];c.ctx.globalAlpha=0.45+0.27*k;
-        c.ctx.fillRect(bx,ax.Y(g[1][k]),bw,ax.Y(0)-ax.Y(g[1][k]));
-        c.ctx.globalAlpha=1;}
-    });
-    /* canvas b: cosine bars sorted */
-    c=fitCanvas(document.getElementById("cv2b"));
-    const fr2={x0:96,y0:26,w:c.W-120,h:c.H-40};
-    c.ctx.font="bold 12px Georgia, serif";c.ctx.fillStyle=INK;
-    c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
-    c.ctx.fillText("Ranking por coseno (en vivo)",8,18);
-    order.forEach((r,i)=>{
-      const y=fr2.y0+i*(fr2.h/3)+6,hh=fr2.h/3-14;
-      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia, serif";
-      c.ctx.textAlign="right";c.ctx.textBaseline="middle";
-      c.ctx.fillText(r.name,fr2.x0-8,y+hh/2);
-      c.ctx.strokeStyle=RULE;c.ctx.strokeRect(fr2.x0,y,fr2.w,hh);
-      if(!isNaN(r.cs)){c.ctx.fillStyle=i===0?GOLD:MUTE;
-        c.ctx.fillRect(fr2.x0,y,Math.max(0,r.cs)*fr2.w,hh);
-        c.ctx.fillStyle=INK;c.ctx.textAlign="left";
-        c.ctx.fillText(r.cs.toFixed(3),fr2.x0+Math.max(0,r.cs)*fr2.w+6,y+hh/2);}
-    });
-  }
-  updaters[2]=upd;upd();
-})();
-
-/* ================= SLIDE 3 : mapa semántico ================= */
-(function(){
-  function pol(deg,r){const a=deg*Math.PI/180;
-    return [r*Math.cos(a),r*Math.sin(a)];}
-  const W=[]; /* [name, sector, x, y] */
-  [["hipoteca",8,1.05],["préstamo",18,0.95],["ahorro",28,0.85],
-   ["interés",2,0.80],["BBVA",22,1.15]].forEach(e=>{
-    const p=pol(e[1],e[2]);W.push([e[0],"banca",p[0],p[1]]);});
-  [["camiseta",68,0.95],["vestido",78,1.00],["rebajas",86,0.80],
-   ["tienda",60,0.85],["Zara",74,1.12]].forEach(e=>{
-    const p=pol(e[1],e[2]);W.push([e[0],"retail",p[0],p[1]]);});
-  [["turbina",142,0.95],["panel solar",152,1.00],["gas",162,0.80],
-   ["red eléctrica",135,0.85],["Iberdrola",148,1.10]].forEach(e=>{
-    const p=pol(e[1],e[2]);W.push([e[0],"energía",p[0],p[1]]);});
-  [["serie",272,0.95],["película",262,1.00],["playlist",282,0.85],
-   ["podcast",292,0.80],["Netflix",276,1.10]].forEach(e=>{
-    const p=pol(e[1],e[2]);W.push([e[0],"streaming",p[0],p[1]]);});
-  const sx=document.getElementById("sl3x"),sy=document.getElementById("sl3y"),
-        sk=document.getElementById("sl3k");
-  [sx,sy,sk].forEach(s=>s.oninput=upd);
-  function upd(){
-    const q=[+sx.value,+sy.value],k=+sk.value;
-    document.getElementById("r3x").textContent=q[0].toFixed(2);
-    document.getElementById("r3y").textContent=q[1].toFixed(2);
-    document.getElementById("r3k").textContent=k;
-    const ranked=W.map(w=>({n:w[0],s:w[1],x:w[2],y:w[3],
-      cs:cosv(q,[w[2],w[3]])})).sort((a,b)=>(b.cs||-2)-(a.cs||-2));
-    const nul=nrm(q)===0;
-    document.getElementById("ro3").innerHTML=nul?
-      "<span class='badge bad'>query en el origen: sin dirección no hay coseno</span>":
-      "query = ("+q[0].toFixed(2)+", "+q[1].toFixed(2)+
-      ") &nbsp;&middot;&nbsp; vecino más próximo: <span class='gold'>"+ranked[0].n+
-      "</span> ("+ranked[0].s+", cos = "+ranked[0].cs.toFixed(3)+")";
-    document.getElementById("t3").innerHTML=
-      "<tr><th>#</th><th>palabra</th><th>barrio</th><th>cos</th></tr>"+
-      (nul?"":ranked.slice(0,k).map((r,i)=>"<tr><td>"+(i+1)+"</td><td>"+r.n+
-        "</td><td>"+r.s+"</td><td><b>"+r.cs.toFixed(3)+"</b></td></tr>").join(""));
-    const c=fitCanvas(document.getElementById("cv3a"));
-    const P=vplane(c,-1.45,1.45,-1.30,1.30,
-      "20 términos de negocio + tu query (flecha dorada)");
-    if(!nul)ranked.slice(0,k).forEach(r=>{
-      polyline(c.ctx,[[P.X(q[0]),P.Y(q[1])],[P.X(r.x),P.Y(r.y)]],RULE,1.2);});
-    W.forEach(w=>{
-      const top=!nul&&ranked.slice(0,k).some(r=>r.n===w[0]);
-      dotLabel(c.ctx,P.X(w[2]),P.Y(w[3]),w[0],top?GOLDD:MUTE,top?4:2.8);});
-    if(!nul)arrow(c.ctx,P.X(0),P.Y(0),P.X(q[0]),P.Y(q[1]),GOLD,2.6);
-    dotLabel(c.ctx,P.X(q[0]),P.Y(q[1]),"query",GOLD,4);
-  }
-  updaters[3]=upd;upd();
-})();
-
-/* ================= SLIDE 4 : aritmética de vectores ================= */
-(function(){
-  const A=[
-   {label:"rey − hombre + mujer ≈ reina",a:"rey",b:"hombre",c:"mujer",tg:"reina",
-    voc:[["rey",.90,.90],["hombre",.90,.10],["mujer",.10,.10],["reina",.12,.88],
-         ["príncipe",.78,.80],["princesa",.22,.78],["trono",.55,.97],["coche",.50,.06]]},
-   {label:"Zara − ropa + banca ≈ BBVA",a:"Zara",b:"ropa",c:"banca",tg:"BBVA",
-    voc:[["Zara",.92,.08],["ropa",.12,.10],["banca",.10,.92],["BBVA",.90,.90],
-         ["Santander",.80,.95],["Inditex",.97,.18],["hipoteca",.22,.85],["camiseta",.30,.06]]},
-   {label:"Madrid − España + Francia ≈ París",a:"Madrid",b:"España",c:"Francia",tg:"París",
-    voc:[["Madrid",.90,.12],["España",.12,.12],["Francia",.10,.90],["París",.88,.88],
-         ["Lyon",.75,.93],["Barcelona",.80,.05],["Roma",.85,.70],["país",.05,.50]]},
-   {label:"Netflix − película + música ≈ Spotify",a:"Netflix",b:"película",c:"música",tg:"Spotify",
-    voc:[["Netflix",.90,.10],["película",.10,.10],["música",.10,.90],["Spotify",.90,.88],
-         ["HBO",.80,.05],["playlist",.20,.95],["serie",.15,.20],["cine",.05,.18]]}];
-  const sa=document.getElementById("sl4a"),st=document.getElementById("sl4t");
-  sa.oninput=upd;st.oninput=upd;
-  function getv(an,n){const e=an.voc.find(w=>w[0]===n);return [e[1],e[2]];}
-  function upd(){
-    const ai=+sa.value,t=+st.value,an=A[ai];
-    document.getElementById("r4a").textContent=an.label;
-    document.getElementById("r4t").textContent=t.toFixed(2);
-    const va=getv(an,an.a),vb=getv(an,an.b),vc=getv(an,an.c);
-    const r=[va[0]+t*(vc[0]-vb[0]),va[1]+t*(vc[1]-vb[1])];
-    const excl=[an.a,an.b,an.c];
-    const ranked=an.voc.filter(w=>!excl.includes(w[0]))
-      .map(w=>({n:w[0],cs:cosv(r,[w[1],w[2]])}))
-      .sort((x,y)=>y.cs-x.cs);
-    const csTg=cosv(r,getv(an,an.tg));
-    const hit=ranked[0].n===an.tg;
-    document.getElementById("ro4").innerHTML=
-      "r(t) = "+an.a+" + t&middot;("+an.c+" &minus; "+an.b+") = ("+
-      r[0].toFixed(2)+", "+r[1].toFixed(2)+")<br>"+
-      (hit?"<span class='badge ok'>argmax = "+an.tg+" &#10003; (cos = "+
-        ranked[0].cs.toFixed(3)+")</span>":
-       "<span class='badge bad'>argmax = "+ranked[0].n+" (la respuesta correcta, "+
-        an.tg+", tiene cos = "+csTg.toFixed(3)+")</span>");
-    document.getElementById("t4").innerHTML=
-      "<tr><th>#</th><th>candidata</th><th>cos con r(t)</th></tr>"+
-      ranked.slice(0,5).map((w,i)=>"<tr><td>"+(i+1)+"</td><td>"+
-        (w.n===an.tg?"<b>"+w.n+"</b>":w.n)+"</td><td><b>"+
-        w.cs.toFixed(3)+"</b></td></tr>").join("");
-    const c=fitCanvas(document.getElementById("cv4a"));
-    const P=vplane(c,-0.12,1.22,-0.08,1.12,an.label);
-    /* parallelogram guides */
-    polyline(c.ctx,[[P.X(vb[0]),P.Y(vb[1])],[P.X(vc[0]),P.Y(vc[1])]],MUTE,1.2,[5,4]);
-    polyline(c.ctx,[[P.X(va[0]),P.Y(va[1])],
-                    [P.X(va[0]+vc[0]-vb[0]),P.Y(va[1]+vc[1]-vb[1])]],RULE,1.2,[5,4]);
-    an.voc.forEach(w=>{
-      const main=excl.includes(w[0]),tg=(w[0]===an.tg);
-      dotLabel(c.ctx,P.X(w[1]),P.Y(w[2]),w[0],
-        tg?GOLDD:(main?INK:MUTE),tg?4.5:(main?4:2.8));});
-    arrow(c.ctx,P.X(vb[0]),P.Y(vb[1]),P.X(vc[0]),P.Y(vc[1]),GOLDD,1.6);
-    arrow(c.ctx,P.X(va[0]),P.Y(va[1]),P.X(r[0]),P.Y(r[1]),GOLD,2.2);
-    c.ctx.save();c.ctx.fillStyle=GOLD;
-    c.ctx.beginPath();c.ctx.arc(P.X(r[0]),P.Y(r[1]),6,0,7);c.ctx.fill();
-    c.ctx.fillStyle="#fff";c.ctx.font="bold 8px Georgia, serif";
-    c.ctx.textAlign="center";c.ctx.textBaseline="middle";
-    c.ctx.fillText("r",P.X(r[0]),P.Y(r[1]));c.ctx.restore();
-  }
-  updaters[4]=upd;upd();
-})();
-</script>
-
-<script>
-"use strict";
-/* ================= SLIDE 5 : skip-gram, ventana y co-ocurrencia ============ */
-(function(){
-  const S=[
-    ["banco","concede","hipoteca"],
-    ["banco","aprueba","préstamo"],
-    ["cliente","paga","hipoteca"],
-    ["tienda","lanza","rebajas","ropa"],
-    ["cliente","compra","ropa","rebajas"],
-    ["playlist","recomienda","música","pop"],
-    ["cliente","escucha","música","playlist"]];
-  const VOC=[];S.forEach(s=>s.forEach(w=>{if(!VOC.includes(w))VOC.push(w);}));
-  const sm=document.getElementById("sl5m"),ss=document.getElementById("sl5s"),
-        si=document.getElementById("sl5i");
-  [sm,ss,si].forEach(s=>s.oninput=upd);
-  function cooc(m){
-    const C=VOC.map(()=>VOC.map(()=>0));let total=0;
-    S.forEach(s=>{for(let i=0;i<s.length;i++)
-      for(let j=Math.max(0,i-m);j<=Math.min(s.length-1,i+m);j++){
-        if(j===i)continue;
-        C[VOC.indexOf(s[i])][VOC.indexOf(s[j])]++;total++;}});
-    return {C:C,total:total};
-  }
-  function upd(){
-    const m=+sm.value,sIdx=+ss.value;
-    const sent=S[sIdx];
-    const iRaw=+si.value,i=Math.min(iRaw,sent.length-1);
-    document.getElementById("r5m").textContent=m;
-    document.getElementById("r5s").textContent=(sIdx+1)+" de 7";
-    document.getElementById("r5i").textContent=i+" («"+sent[i]+"»)";
-    const {C,total}=cooc(m);
-    const ctx_=[];
-    for(let j=Math.max(0,i-m);j<=Math.min(sent.length-1,i+m);j++)
-      if(j!==i)ctx_.push(sent[j]);
-    const wi=VOC.indexOf(sent[i]);
-    let best=-1,bv=-1;
-    C[wi].forEach((v,j)=>{if(v>bv){bv=v;best=j;}});
-    document.getElementById("ro5").innerHTML=
-      "central w<sub>t</sub> = <b>"+sent[i]+"</b> &nbsp;&middot;&nbsp; C<sub>t</sub> = {"+
-      ctx_.join(", ")+"} &rarr; "+ctx_.length+" pares (central, contexto)"+
-      "<br>pares totales del corpus con m = "+m+": <span class='gold'>"+total+
-      "</span> &nbsp;&middot;&nbsp; máximo co-ocurrente de «"+sent[i]+"»: <b>"+
-      (bv>0?VOC[best]+"</b> ("+bv+" veces)":"ninguno</b>");
-    /* canvas a: sentence strip */
-    let c=fitCanvas(document.getElementById("cv5a"));
-    const n=sent.length,bw=Math.min(110,(c.W-20)/n),x0=(c.W-bw*n)/2,
-          y0=c.H*0.30,hh=c.H*0.44;
-    sent.forEach((w,j)=>{
-      const inCtx=Math.abs(j-i)<=m&&j!==i;
-      c.ctx.fillStyle=j===i?GOLD:(inCtx?GOLDP:"#fff");
-      c.ctx.strokeStyle=j===i?GOLDD:RULE;c.ctx.lineWidth=j===i?1.6:1;
-      c.ctx.fillRect(x0+j*bw+3,y0,bw-6,hh);
-      c.ctx.strokeRect(x0+j*bw+3,y0,bw-6,hh);
-      c.ctx.fillStyle=j===i?"#fff":INK;
-      c.ctx.font=(j===i?"bold ":"")+"11px Georgia, serif";
-      c.ctx.textAlign="center";c.ctx.textBaseline="middle";
-      c.ctx.fillText(w,x0+j*bw+bw/2,y0+hh/2);
-      c.ctx.fillStyle=MUTE;c.ctx.font="9px Georgia, serif";
-      c.ctx.textBaseline="top";
-      c.ctx.fillText(j===i?"central":(inCtx?"contexto":""),x0+j*bw+bw/2,y0+hh+4);});
-    c.ctx.fillStyle=INK;c.ctx.font="bold 11px Georgia, serif";
-    c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
-    c.ctx.fillText("Frase "+(sIdx+1)+" (artículos y preposiciones ya filtrados)",8,y0-8);
-    /* canvas b: co-occurrence heatmap */
-    c=fitCanvas(document.getElementById("cv5b"));
-    const V=VOC.length;
-    const fr={x0:86,y0:64,w:c.W-100,h:c.H-86};
-    const cw=fr.w/V,ch=fr.h/V;
-    let mx=1;C.forEach(r=>r.forEach(v=>{if(v>mx)mx=v;}));
-    for(let a=0;a<V;a++)for(let b=0;b<V;b++){
-      c.ctx.fillStyle=rampColor(C[a][b]/mx);
-      c.ctx.fillRect(fr.x0+b*cw,fr.y0+a*ch,cw-0.5,ch-0.5);}
-    c.ctx.font="8.5px Georgia, serif";
-    for(let a=0;a<V;a++){
-      c.ctx.fillStyle=a===wi?GOLDD:MUTE;
-      c.ctx.textAlign="right";c.ctx.textBaseline="middle";
-      c.ctx.font=(a===wi?"bold ":"")+"8.5px Georgia, serif";
-      c.ctx.fillText(VOC[a],fr.x0-4,fr.y0+a*ch+ch/2);
-      c.ctx.save();c.ctx.translate(fr.x0+a*cw+cw/2,fr.y0-4);
-      c.ctx.rotate(-Math.PI/2);c.ctx.textAlign="left";c.ctx.textBaseline="middle";
-      c.ctx.fillText(VOC[a],0,0);c.ctx.restore();}
-    c.ctx.strokeStyle=GOLD;c.ctx.lineWidth=1.6;
-    c.ctx.strokeRect(fr.x0,fr.y0+wi*ch,fr.w,ch);
-    c.ctx.fillStyle=INK;c.ctx.font="bold 11px Georgia, serif";
-    c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
-    c.ctx.fillText("Matriz de co-ocurrencia del corpus entero (ventana m = "+m+
-      ") — fila resaltada: «"+VOC[wi]+"»",8,c.H-5);
-  }
-  updaters[5]=upd;upd();
-})();
-
-/* ================= SLIDE 6 : negative sampling, SGD real ================= */
-(function(){
-  const VOC=["banco","hipoteca","préstamo","cliente","tienda",
-             "rebajas","ropa","playlist","música","pop"];
-  const POS=[[0,1],[0,2],[3,1],[3,6],[3,8],[3,7],[4,5],[5,6],[7,8],[8,9]];
-  const NONPAIRS=[];
-  for(let i=0;i<VOC.length;i++)for(let j=i+1;j<VOC.length;j++)
-    if(!POS.some(p=>(p[0]===i&&p[1]===j)||(p[0]===j&&p[1]===i)))
-      NONPAIRS.push([i,j]);
-  let seed=4,emb=null,rngT=null,steps=0,lossHist=[];
-  function init(){
-    const rng=mulberry32(seed);
-    emb=VOC.map(()=>[(rng()*2-1)*1.2,(rng()*2-1)*1.2]);
-    rngT=mulberry32(seed*7+1);steps=0;lossHist=[];
-  }
-  init();
-  function pairLoss(t,cdx,negs){
-    let L=-Math.log(Math.max(1e-12,sig(dot(emb[cdx],emb[t]))));
-    negs.forEach(n=>{L+=-Math.log(Math.max(1e-12,sig(-dot(emb[n],emb[t]))));});
-    return L;
-  }
-  function trainStep(){
-    const k=+document.getElementById("sl6k").value,
-          lr=+document.getElementById("sl6lr").value;
-    let total=0;
-    POS.forEach(p=>{
-      const t=p[0],cdx=p[1];
-      const negs=[];
-      while(negs.length<k){const n=Math.floor(rngT()*VOC.length);
-        if(n!==t&&n!==cdx)negs.push(n);}
-      total+=pairLoss(t,cdx,negs);
-      const vt=emb[t].slice(),vc=emb[cdx].slice();
-      const g=1-sig(dot(vc,vt));            /* atracción */
-      for(let d=0;d<2;d++){emb[t][d]+=lr*g*vc[d];emb[cdx][d]+=lr*g*vt[d];}
-      negs.forEach(n=>{const vn=emb[n].slice();
-        const gn=sig(dot(vn,vt));            /* repulsión */
-        for(let d=0;d<2;d++){emb[t][d]-=lr*gn*vn[d];emb[n][d]-=lr*gn*vt[d];}});
-      for(let d=0;d<2;d++){
-        emb[t][d]=Math.max(-3.4,Math.min(3.4,emb[t][d]));
-        emb[cdx][d]=Math.max(-3.4,Math.min(3.4,emb[cdx][d]));}
-    });
-    steps++;lossHist.push(total/POS.length);
-  }
-  document.getElementById("bt6a").onclick=()=>{trainStep();upd();};
-  document.getElementById("bt6b").onclick=()=>{for(let i=0;i<20;i++)trainStep();upd();};
-  document.getElementById("bt6c").onclick=()=>{seed++;init();upd();};
-  document.getElementById("sl6k").oninput=upd;
-  document.getElementById("sl6lr").oninput=upd;
-  function meanCos(pairs){let s=0;
-    pairs.forEach(p=>{s+=cosv(emb[p[0]],emb[p[1]]);});return s/pairs.length;}
-  function upd(){
-    document.getElementById("r6k").textContent=
-      document.getElementById("sl6k").value;
-    document.getElementById("r6lr").textContent=
-      (+document.getElementById("sl6lr").value).toFixed(2);
-    const cp=meanCos(POS),cr=meanCos(NONPAIRS);
-    document.getElementById("ro6").innerHTML=
-      "paso "+steps+" &nbsp;&middot;&nbsp; pérdida media por par = <span class='gold'>"+
-      (lossHist.length?fmtG(lossHist[lossHist.length-1],4):"—")+"</span>"+
-      "<br>cos medio pares positivos = <b>"+cp.toFixed(3)+
-      "</b> &nbsp;&middot;&nbsp; cos medio no relacionados = "+cr.toFixed(3)+
-      " &nbsp;&middot;&nbsp; separación = "+(cp-cr).toFixed(3);
-    /* canvas a: embedding plane */
-    let c=fitCanvas(document.getElementById("cv6a"));
-    let R=1.6;emb.forEach(v=>{R=Math.max(R,Math.abs(v[0])*1.15,Math.abs(v[1])*1.15);});
-    const P=vplane(c,-R,R,-R,R,
-      "Los 10 embeddings 2D y los pares que co-ocurren (dorado)");
-    POS.forEach(p=>{polyline(c.ctx,
-      [[P.X(emb[p[0]][0]),P.Y(emb[p[0]][1])],
-       [P.X(emb[p[1]][0]),P.Y(emb[p[1]][1])]],RULE,1.4);});
-    emb.forEach((v,i)=>dotLabel(c.ctx,P.X(v[0]),P.Y(v[1]),VOC[i],
-      i<3?GOLDD:(i<7?INK:MUTE),4));
-    /* canvas b: loss curve */
-    c=fitCanvas(document.getElementById("cv6b"));
-    const fr={x0:52,y0:24,w:c.W-70,h:c.H-58};
-    if(lossHist.length<2){
-      axes(c.ctx,fr,{xmin:0,xmax:10,ymin:0,ymax:3,xticks:[0,5,10],
-        yticks:[0,1,2,3],xlab:"paso de entrenamiento",ylab:"pérdida",
-        title:"Pérdida media por par (aún sin pasos)"});
-    }else{
-      const ymax=Math.max(...lossHist)*1.08,ymin=Math.min(...lossHist)*0.92;
-      const ax=axes(c.ctx,fr,{xmin:0,xmax:lossHist.length-1,ymin:ymin,ymax:ymax,
-        xticks:[0,Math.floor((lossHist.length-1)/2),lossHist.length-1],
-        yticks:[[ymin,fmtG(ymin,2)],[ymax,fmtG(ymax,2)]],
-        xlab:"paso de entrenamiento",ylab:"pérdida",
-        title:"Pérdida media por par: el descenso del gradiente, en vivo"});
-      polyline(c.ctx,lossHist.map((v,i)=>[ax.X(i),ax.Y(v)]),GOLD,2);
-    }
-  }
-  updaters[6]=upd;upd();
-})();
-
-/* ================= SLIDE 7 : embeddings contextuales ================= */
-(function(){
-  const FIN=[0.95,0.18],ASI=[0.12,0.95];
-  const CTXV={aprueba:[0.85,0.30],hipoteca:[0.92,0.20],"interés":[0.88,0.26],
-    ofrece:[0.70,0.35],sentarse:[0.20,0.88],madera:[0.08,0.90],parque:[0.15,0.93]};
-  const SENT=[
-    {txt:"«el banco aprueba la hipoteca con interés fijo»",
-     ctx:["aprueba","hipoteca","interés"]},
-    {txt:"«me senté en el banco de madera del parque»",
-     ctx:["sentarse","madera","parque"]},
-    {txt:"«junto al parque, el banco ofrece hipotecas»",
-     ctx:["parque","ofrece","hipoteca"]}];
-  const stat=(function(){const v=[FIN[0]+ASI[0],FIN[1]+ASI[1]];
-    const n=nrm(v);return [0.72*v[0]/n,0.72*v[1]/n];})();
-  const ss=document.getElementById("sl7s"),sg=document.getElementById("sl7g"),
-        sT=document.getElementById("sl7T");
-  [ss,sg,sT].forEach(s=>s.oninput=upd);
-  function upd(){
-    const si=+ss.value,g=+sg.value,T=+sT.value,sn=SENT[si];
-    document.getElementById("r7s").textContent=(si+1)+" de 3";
-    document.getElementById("r7g").textContent=g.toFixed(2);
-    document.getElementById("r7T").textContent=T.toFixed(2);
-    const scores=sn.ctx.map(w=>dot(CTXV[w],stat)/T);
-    const att=softmax(scores);
-    let mix=[stat[0],stat[1]];
-    sn.ctx.forEach((w,i)=>{mix[0]+=g*att[i]*CTXV[w][0];
-                           mix[1]+=g*att[i]*CTXV[w][1];});
-    const nm=nrm(mix);mix=[mix[0]/nm,mix[1]/nm];
-    const cF=cosv(mix,FIN),cA=cosv(mix,ASI);
-    const fin=cF>cA;
-    document.getElementById("ro7").innerHTML=
-      "frase: "+sn.txt+"<br>cos(&phi;<sub>ctx</sub>, financiero) = <b>"+cF.toFixed(3)+
-      "</b> &nbsp;&middot;&nbsp; cos(&phi;<sub>ctx</sub>, asiento) = <b>"+cA.toFixed(3)+
-      "</b> &nbsp; "+(fin?"<span class='badge ok'>sentido: entidad financiera</span>":
-      "<span class='badge ok'>sentido: asiento de parque</span>");
-    document.getElementById("t7").innerHTML=
-      "<tr><th>palabra de contexto</th><th>atención a<sub>w</sub></th></tr>"+
-      sn.ctx.map((w,i)=>"<tr><td>"+w+"</td><td><b>"+att[i].toFixed(3)+
-        "</b></td></tr>").join("")+
-      "<tr><td>suma</td><td>"+att.reduce((a,b)=>a+b,0).toFixed(3)+"</td></tr>";
-    const c=fitCanvas(document.getElementById("cv7a"));
-    const P=vplane(c,-0.08,1.18,-0.06,1.10,
-      "El token «banco»: estático (tinta) y contextual (dorado)");
-    /* anchors */
-    c.ctx.save();c.ctx.fillStyle=GOLDD;
-    c.ctx.fillRect(P.X(FIN[0])-5,P.Y(FIN[1])-5,10,10);
-    c.ctx.fillRect(P.X(ASI[0])-5,P.Y(ASI[1])-5,10,10);
-    c.ctx.font="10.5px Georgia, serif";c.ctx.textAlign="center";
-    c.ctx.textBaseline="bottom";
-    c.ctx.fillText("ancla: entidad financiera",P.X(FIN[0]),P.Y(FIN[1])-8);
-    c.ctx.fillText("ancla: asiento de parque",P.X(ASI[0]),P.Y(ASI[1])-8);
-    c.ctx.restore();
-    Object.keys(CTXV).forEach(w=>{
-      const inS=sn.ctx.includes(w);
-      dotLabel(c.ctx,P.X(CTXV[w][0]),P.Y(CTXV[w][1]),w,
-        inS?INK:"#cccccc",inS?3.2:2.2);});
-    dotLabel(c.ctx,P.X(stat[0]),P.Y(stat[1]),"banco (estático)",INK,4.5,16);
-    polyline(c.ctx,[[P.X(stat[0]),P.Y(stat[1])],[P.X(mix[0]),P.Y(mix[1])]],
-      GOLD,1.4,[4,3]);
-    arrow(c.ctx,P.X(0),P.Y(0),P.X(mix[0]),P.Y(mix[1]),GOLD,2.4);
-    dotLabel(c.ctx,P.X(mix[0]),P.Y(mix[1]),"banco (contextual)",GOLD,5);
-  }
-  updaters[7]=upd;upd();
-})();
-/* ================= SLIDE 8 : búsqueda semántica vs léxica ================= */
-(function(){
-  const STOP=["la","el","de","del","en","es","un","una","sin","este",
-              "los","las","con","tiene","son","cuáles","qué","me","a","y"];
-  function tok(s){return s.toLowerCase().replace(/[¿?¡!,.]/g,"")
-    .split(/\s+/).filter(w=>w&&!STOP.includes(w));}
-  const D=[
-    {t:"la hipoteca incluye comisión de apertura",e:[0.95,0.20]},
-    {t:"el préstamo personal tiene tipo fijo",e:[0.92,0.30]},
-    {t:"cuenta de ahorro sin comisiones",e:[0.88,0.12]},
-    {t:"coste total del crédito vivienda",e:[0.97,0.25]},
-    {t:"rebajas de invierno en camisetas",e:[0.20,0.95]},
-    {t:"nueva colección de vestidos de Zara",e:[0.30,0.90]},
-    {t:"tarifa regulada de la luz",e:[-0.75,0.60]},
-    {t:"instalación de paneles solares en casa",e:[-0.65,0.72]},
-    {t:"estrenos de series este mes",e:[0.12,-0.92]},
-    {t:"el banco del parque es de madera",e:[-0.30,-0.85]}];
-  D.forEach(d=>{d.tok=tok(d.t);});
-  const NQ=D.length,avgLen=D.reduce((a,d)=>a+d.tok.length,0)/NQ;
-  const Q=[
-    {t:"¿cuáles son los costes de una hipoteca?",tok:["costes","hipoteca"],
-     e:[0.96,0.22]},
-    {t:"gastos de abrir un préstamo bancario",
-     tok:["gastos","abrir","préstamo","bancario"],e:[0.94,0.26]},
-    {t:"ropa de mujer barata",tok:["ropa","mujer","barata"],e:[0.25,0.93]},
-    {t:"oficinas del banco",tok:["oficinas","banco"],e:[0.90,0.18]}];
-  function df(term){return D.filter(d=>d.tok.includes(term)).length;}
-  function bm25(qtok,d){
-    const k1=1.2,b=0.75;let s=0;
-    qtok.forEach(t=>{
-      const tf=d.tok.filter(w=>w===t).length;
-      if(tf===0)return;
-      const idf=Math.log(1+(NQ-df(t)+0.5)/(df(t)+0.5));
-      s+=idf*tf*(k1+1)/(tf+k1*(1-b+b*d.tok.length/avgLen));});
-    return s;
-  }
-  const sq=document.getElementById("sl8q");
-  sq.oninput=upd;
-  function upd(){
-    const qi=+sq.value,q=Q[qi];
-    document.getElementById("r8q").textContent="«"+q.t+"»";
-    const rows=D.map((d,i)=>({i:i,t:d.t,e:d.e,
-      cs:cosv(q.e,d.e),bm:bm25(q.tok,d)}));
-    const bySem=rows.slice().sort((a,b)=>b.cs-a.cs),
-          byLex=rows.slice().sort((a,b)=>b.bm-a.bm);
-    rows.forEach(r=>{r.rs=bySem.indexOf(r)+1;r.rl=byLex.indexOf(r)+1;});
-    const allZero=rows.every(r=>r.bm===0);
-    const agree=bySem[0].i===byLex[0].i&&!allZero;
-    const badge=allZero?
-      "<span class='badge bad'>léxico: 0 resultados (ninguna palabra coincide)</span>":
-      (agree?"<span class='badge ok'>ambos rankings coinciden en el top-1</span>":
-       "<span class='badge bad'>los rankings discrepan: el léxico se equivoca o se queda corto</span>");
-    document.getElementById("ro8").innerHTML=
-      "top semántico: <span class='gold'>d"+(bySem[0].i+1)+"</span> «"+
-      bySem[0].t+"» (cos = "+bySem[0].cs.toFixed(3)+")<br>top léxico: "+
-      (allZero?"<b>ninguno</b> (BM25 = 0 en los 10 documentos)":
-       "<b>d"+(byLex[0].i+1)+"</b> «"+byLex[0].t+"» (BM25 = "+
-       byLex[0].bm.toFixed(2)+")")+"<br>"+badge;
-    document.getElementById("t8").innerHTML=
-      "<tr><th>doc</th><th>cos</th><th>rk<sub>s</sub></th><th>BM25</th><th>rk<sub>l</sub></th></tr>"+
-      bySem.map(r=>"<tr><td>d"+(r.i+1)+" "+r.t.split(" ").slice(0,3).join(" ")+
-        "&hellip;</td><td><b>"+r.cs.toFixed(3)+"</b></td><td>"+r.rs+
-        "</td><td>"+r.bm.toFixed(2)+"</td><td>"+(allZero?"—":r.rl)+
-        "</td></tr>").join("");
-    /* canvas a: map */
-    let c=fitCanvas(document.getElementById("cv8a"));
-    const P=vplane(c,-1.30,1.45,-1.20,1.20,
-      "Los 10 documentos y la query en el plano semántico");
-    rows.forEach(r=>{
-      const top=r.rs<=3;
-      dotLabel(c.ctx,P.X(r.e[0]),P.Y(r.e[1]),"d"+(r.i+1),
-        top?GOLDD:MUTE,top?4.5:3);});
-    arrow(c.ctx,P.X(0),P.Y(0),P.X(q.e[0]),P.Y(q.e[1]),GOLD,2.4);
-    dotLabel(c.ctx,P.X(q.e[0]),P.Y(q.e[1]),"query",GOLD,4);
-    /* canvas b: paired bars */
-    c=fitCanvas(document.getElementById("cv8b"));
-    const fr={x0:48,y0:24,w:c.W-165,h:c.H-36};
-    c.ctx.font="bold 11.5px Georgia, serif";c.ctx.fillStyle=INK;
-    c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
-    c.ctx.fillText("Por documento: coseno (dorado) vs BM25 reescalado (tinta)",8,16);
-    const bmMax=Math.max(0.0001,...rows.map(r=>r.bm));
-    rows.forEach((r,i)=>{
-      const y=fr.y0+i*(fr.h/10),hh=fr.h/10-4;
-      c.ctx.fillStyle=INK;c.ctx.font="10px Georgia, serif";
-      c.ctx.textAlign="right";c.ctx.textBaseline="middle";
-      c.ctx.fillText("d"+(r.i+1),fr.x0-6,y+hh/2);
-      const x0v=fr.x0+fr.w*0.5; /* 0 at mid: cosine can be negative */
-      c.ctx.strokeStyle="#eee";c.ctx.beginPath();
-      c.ctx.moveTo(x0v,y);c.ctx.lineTo(x0v,y+hh);c.ctx.stroke();
-      c.ctx.fillStyle=GOLD;
-      c.ctx.fillRect(Math.min(x0v,x0v+r.cs*fr.w*0.48),y,
-        Math.abs(r.cs)*fr.w*0.48,hh*0.46);
-      c.ctx.fillStyle=INK;
-      c.ctx.fillRect(x0v,y+hh*0.54,(r.bm/bmMax)*fr.w*0.48,hh*0.46);
-      c.ctx.fillStyle=MUTE;c.ctx.textAlign="left";c.ctx.font="9px Georgia, serif";
-      c.ctx.fillText("cos "+r.cs.toFixed(2)+" · bm "+r.bm.toFixed(2),
-        fr.x0+fr.w+6,y+hh/2);});
-  }
-  updaters[8]=upd;upd();
-})();
-
-/* ================= SLIDE 9 : recomendación ================= */
-(function(){
-  const P9=[
-    ["camiseta",0.92,0.06,15],["vestido",0.95,0.12,49],["bolso",0.90,0.18,120],
-    ["abrigo",0.88,0.05,150],["cinturón",0.85,0.02,25],["zapatillas",0.80,0.30,79],
-    ["smartwatch",0.50,0.82,199],["cámara",0.34,0.80,549],
-    ["auriculares",0.20,0.94,89],["tablet",0.14,0.90,449],
-    ["móvil",0.10,0.97,699],["portátil",0.06,0.93,999]];
-  const MARGIN=0.20;
-  const sm=document.getElementById("sl9m"),st=document.getElementById("sl9t"),
-        sk=document.getElementById("sl9k");
-  [sm,st,sk].forEach(s=>s.oninput=upd);
-  function upd(){
-    const u=[+sm.value,+st.value],k=+sk.value;
-    document.getElementById("r9m").textContent=u[0].toFixed(2);
-    document.getElementById("r9t").textContent=u[1].toFixed(2);
-    document.getElementById("r9k").textContent=k;
-    const nul=nrm(u)===0;
-    const rows=P9.map(p=>{
-      const cs=nul?NaN:cosv(u,[p[1],p[2]]);
-      const ctr=nul?0:sig(8*(cs-0.6));
-      return {n:p[0],x:p[1],y:p[2],pr:p[3],cs:cs,ctr:ctr,
-              eur:ctr*p[3]*MARGIN};})
-      .sort((a,b)=>(b.cs||-2)-(a.cs||-2));
-    const top=rows.slice(0,k);
-    const kpi=top.reduce((a,r)=>a+r.eur,0);
-    document.getElementById("ro9").innerHTML=nul?
-      "<span class='badge bad'>perfil nulo: sin dirección no hay afinidad</span>":
-      "KPI: ingreso esperado por usuario = <span class='gold'>"+kpi.toFixed(2)+
-      " &euro;</span> (margen 20%)<br>último producto añadido al top-"+k+
-      ": "+top[k-1].n+" aporta "+top[k-1].eur.toFixed(2)+
-      " &euro; (CTR "+(100*top[k-1].ctr).toFixed(1)+"%)";
-    document.getElementById("t9").innerHTML=
-      "<tr><th>#</th><th>producto</th><th>cos</th><th>CTR&#770;</th><th>precio</th><th>&euro; esp.</th></tr>"+
-      (nul?"":top.map((r,i)=>"<tr><td>"+(i+1)+"</td><td>"+r.n+"</td><td><b>"+
-        r.cs.toFixed(3)+"</b></td><td>"+(100*r.ctr).toFixed(1)+"%</td><td>"+
-        r.pr+" &euro;</td><td><b>"+r.eur.toFixed(2)+"</b></td></tr>").join(""));
-    const c=fitCanvas(document.getElementById("cv9a"));
-    const P=vplane(c,-0.10,1.15,-0.06,1.10,
-      "Catálogo (tamaño ∝ precio) y perfil del usuario (flecha dorada)");
-    c.ctx.save();c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia, serif";
-    c.ctx.textAlign="center";
-    c.ctx.fillText("afinidad a moda →",P.X(0.55),P.Y(-0.04));
-    c.ctx.save();c.ctx.translate(P.X(-0.07),P.Y(0.5));c.ctx.rotate(-Math.PI/2);
-    c.ctx.fillText("afinidad a tecnología →",0,0);c.ctx.restore();
-    c.ctx.restore();
-    rows.forEach((r,i)=>{
-      const isTop=!nul&&i<k;
-      if(isTop)polyline(c.ctx,[[P.X(u[0]),P.Y(u[1])],[P.X(r.x),P.Y(r.y)]],RULE,1.2);
-      dotLabel(c.ctx,P.X(r.x),P.Y(r.y),r.n,
-        isTop?GOLDD:MUTE,2.2+2.4*Math.sqrt(r.pr/999));});
-    if(!nul)arrow(c.ctx,P.X(0),P.Y(0),P.X(u[0]),P.Y(u[1]),GOLD,2.6);
-    dotLabel(c.ctx,P.X(u[0]),P.Y(u[1]),"usuario",GOLD,4.5);
-  }
-  updaters[9]=upd;upd();
-})();
-
-/* ================= SLIDE 10 : glosario ================= */
-(function(){
-  const G=[
-   ["φ(w)","el embedding: función φ : V → ℝᵈ que asigna a cada token (palabra, frase, canción, producto) un vector denso. Tokens semánticamente cercanos ⇒ vectores cercanos."],
-   ["V, |V|","vocabulario y su tamaño (10⁵–10⁶ en corpus reales)."],
-   ["d","dimensión del embedding: 300 (word2vec), 768 (BERT/SBERT), 1024 (E5/BGE large), 3072 (text-embedding-3-large). Típicamente d ∈ [128, 4096]."],
-   ["one-hot e_w","vector indicador en {0,1}^|V| con un único 1. Dos one-hot distintos son siempre ortogonales: cos = 0, similitud imposible por construcción."],
-   ["u·v, uᵀv","producto escalar: Σᵢ uᵢvᵢ. Con vectores normalizados, ES el coseno."],
-   ["‖u‖₂","norma euclídea, √(Σᵢ uᵢ²): la longitud del vector."],
-   ["cos(u,v)","similitud coseno: uᵀv/(‖u‖₂‖v‖₂) ∈ [−1,1]. Solo dirección, nunca longitud. 1 = misma dirección, 0 = perpendiculares, −1 = opuestos."],
-   ["d_cos","distancia coseno: 1 − cos(u,v) ∈ [0,2]."],
-   ["normalizar","dividir el vector por su norma al guardarlo: después, la búsqueda por coseno es un producto de matrices (sims = embs @ query)."],
-   ["w_t, C_t","palabra central en la posición t del corpus y su ventana de contexto: las m palabras a cada lado."],
-   ["m (ventana)","radio de la ventana de contexto. Pequeña = señal sintáctica; grande = señal temática difusa."],
-   ["co-ocurrencia","número de veces que dos palabras comparten ventana. Filas parecidas en la matriz de co-ocurrencia ⇒ embeddings parecidos (hipótesis distribucional)."],
-   ["L(θ) skip-gram","Σₜ Σ_{w_c∈C_t} log p_θ(w_c|w_t): la palabra central debe predecir cada palabra de su contexto."],
-   ["softmax","exp(zⱼ)/Σ_w exp(z_w): convierte productos escalares en probabilidades que suman 1. Su denominador recorre todo V: el cuello de botella de word2vec."],
-   ["σ(x)","sigmoide 1/(1+e⁻ˣ): convierte un producto escalar en probabilidad de \"par real\"."],
-   ["negative sampling","sustituye el softmax: −log σ(v_cᵀv_t) − Σᵢ log σ(−v_{n_i}ᵀv_t). Acercar el par real, alejar k pares aleatorios. Aproxima NCE."],
-   ["k (negativos)","cuántos negativos se muestrean por par positivo: 5–20 en la práctica."],
-   ["v_t, v_c, v_n","embeddings de la palabra central, del contexto real y del negativo muestreado."],
-   ["η","tasa de aprendizaje del descenso de gradiente: grande = rápido pero inestable; pequeña = lento pero suave."],
-   ["a − b + c","aritmética de analogías: φ(rey) − φ(hombre) + φ(mujer) ≈ φ(reina); se resuelve con argmax del coseno excluyendo las palabras de entrada."],
-   ["φ_ctx(w_t)","embedding contextual: Transformer(w_{1:T})_t. El vector del token depende de la frase entera; \"banco\" se desambigua frase a frase (BERT, 2018)."],
-   ["MLM","Masked Language Modeling: ocultar el 15% de los tokens y reconstruirlos con contexto bidireccional; así se preentrena BERT."],
-   ["atención, T°","pesos softmax con los que un token mira a sus vecinos de frase; la temperatura T° controla cuán concentrados están. El Día 09 la construye en serio."],
-   ["mean pooling","promediar los vectores contextuales de los tokens para obtener UN vector por frase (SBERT, MPNet)."],
-   ["SBERT / E5 / BGE","modelos de sentence embeddings: frase o párrafo → 1 vector. Estado del arte para retrieval; para castellano, multilingual-e5-large o BGE-M3."],
-   ["MTEB","Massive Text Embedding Benchmark: la tabla pública (Hugging Face) con la que se compara qué embedder funciona mejor por tarea."],
-   ["BM25 (tf, df, idf)","el buscador léxico clásico: suma idf·tf saturado SOLO sobre términos literalmente compartidos. Sin solapamiento de palabras, score 0."],
-   ["búsqueda híbrida","combinar score léxico y semántico (suma ponderada, reciprocal rank fusion): cada uno falla donde el otro acierta."],
-   ["base vectorial","almacén que responde \"los k vectores de mayor coseno con este\" a escala de millones (FAISS, Milvus, Qdrant)."],
-   ["top-k","los k elementos de mayor similitud, que se muestran al usuario; elegir k es una decisión de negocio."],
-   ["CTR","probabilidad de clic estimada; en la demo, σ(8·(cos−0.6)): una curva de respuesta que convierte afinidad en propensión."],
-   ["arranque en frío","usuario o producto sin historial: sin vector propio hasta usar atributos declarados, comportamiento de sesión o el promedio poblacional."],
-   ["RAG","Retrieval-Augmented Generation (Día 15): recuperar por coseno los documentos relevantes y dárselos a un LLM para que responda con ellos."]];
-  const div=document.getElementById("glos");
-  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
-    "</div><div>"+e[1]+"</div></div>").join("");
-  updaters[10]=function(){};
-})();
-
-updaters[11]=function(){};
-
-/* ================= boot ================= */
-function fromHash(){const m=location.hash.match(/^#(\d+)$/);
-  return m?Math.max(0,Math.min(11,+m[1])):0;}
-window.addEventListener("hashchange",()=>go(fromHash()));
-go(fromHash());
-</script>
-
 </body>
 </html>

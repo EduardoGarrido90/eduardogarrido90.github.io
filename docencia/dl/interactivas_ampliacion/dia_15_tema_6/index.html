@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Día 15 — RAG corporativo — slides interactivas</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
+  .slide{display:none;padding:14px 24px 64px 24px;
+    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin-bottom:10px;
+    border:1px solid #eee;border-radius:2px}
+  .txtcol{font-size:0.9em;line-height:1.4}
+  .txtcol p{margin:0 0 9px 0}
+  .txtcol .hd{font-weight:bold}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 12px;margin-bottom:12px}
+  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
+  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
+  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
+    margin-right:6px}
+  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
+  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .ctrlbox select{font-family:inherit;width:100%;border:1px solid var(--rule);
+    background:#fff;color:var(--ink);padding:3px;margin:2px 0;font-size:0.95em}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
+    font-size:0.9em;margin:4px 0}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
+  .mut{color:var(--mute)}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
+    font-size:0.84em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
+  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
+    font-weight:bold}
+  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
+    font-variant-numeric:tabular-nums}
+  table.live th:first-child,table.live td:first-child{text-align:left}
+  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 14px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
+    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
+  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
+  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
+  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
+  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
+  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
+    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
+  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
+  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
+  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
+  .eqread b{color:var(--goldDeep)}
+  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
+    font-size:0.93em}
+  .frac .num,.frac .den{display:block;padding:0 4px}
+  .frac .den{border-top:1.1px solid var(--ink)}
+  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:9px 13px;margin:10px 0;font-size:0.88em}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
+  .guide ol{margin:4px 0 4px 18px;padding:0}
+  .guide li{margin:0 0 7px 0;line-height:1.4}
+  .guide .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:6px}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
+    border-left:3px solid var(--gold);line-height:1.4}
+  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
+  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
+    grid-template-columns:30% 70%}
+  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
+</style>
+</head>
+<body>
+
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 0 : por qué RAG ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <canvas id="cv0a" data-aspect="1.95"></canvas>
+    <canvas id="cv0b" data-aspect="2.5"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">f(t) = e<sup>&minus;&lambda;t</sup><span class="eqn">(vigencia del conocimiento congelado)</span></div>
+      <div class="eqread">fracción de las preguntas del negocio cuya respuesta sigue siendo la
+        que el modelo memorizó en el entrenamiento. <b>t</b> = meses desde la fecha de corte;
+        <b>&lambda;</b> = fracción de la base documental que cambia cada mes. A &lambda; = 5&nbsp;%/mes,
+        a los 14 meses la mitad de lo que "sabe" el modelo ya está desactualizado.</div>
+      <div class="eq">P<sub>sin</sub>(t) = f(t)&middot;a + (1&minus;f(t))&middot;g<span class="eqn">(sin retrieval)</span></div>
+      <div class="eqread">sin RAG el modelo acierta con probabilidad <b>a</b> = 0.92 cuando la
+        respuesta sigue en sus pesos, y con probabilidad <b>g</b> = 0.15 cuando no: entonces
+        responde igual de seguro, pero inventando &mdash; eso es la alucinación.</div>
+      <div class="eq">P<sub>con</sub>(t) = R&middot;F + (1&minus;R)&middot;P<sub>sin</sub>(t)<span class="eqn">(con RAG)</span></div>
+      <div class="eqread">con RAG, con probabilidad <b>R</b> (el recall del retrieval) el chunk
+        correcto y vigente llega al contexto y el modelo responde fiel a él con probabilidad
+        <b>F</b> = 0.95; si el retrieval falla (1&minus;R), caemos al caso sin RAG. La ventaja
+        de RAG es exactamente R&middot;(F&minus;P<sub>sin</sub>): crece con cada mes que pasa.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>frescura: meses desde el corte de entrenamiento, t = <b id="r0t"></b></label>
+      <input type="range" id="sl0t" min="0" max="36" step="1" value="12">
+      <label>ritmo de cambio documental &lambda; = <b id="r0r"></b> %/mes</label>
+      <input type="range" id="sl0r" min="0.5" max="20" step="0.5" value="5">
+      <label>recall del retrieval R = <b id="r0R"></b></label>
+      <input type="range" id="sl0R" min="0.40" max="0.98" step="0.01" value="0.90">
+    </div>
+    <div class="readout" id="ro0"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon t = 0 meses. <span class="obs">Las dos barras casi empatan: recién entrenado,
+        el modelo todavía "sabe" tu negocio y el retrieval aporta poco.</span></li>
+      <li>Sube t a 24 con &lambda; = 5&nbsp;%/mes. <span class="obs">P<sub>sin</sub> se desploma
+        hacia el suelo g = 0.15; la curva dorada apenas se inmuta: los documentos del índice
+        no envejecen, se reindexan.</span></li>
+      <li>Baja R a 0.5. <span class="obs">La ventaja de RAG se reduce a la mitad: un RAG es
+        exactamente tan bueno como su retrieval, de ahí el resto del día.</span></li>
+      <li>Sube &lambda; a 15&nbsp;%/mes (normativa bancaria, precios, catálogo Inditex).
+        <span class="obs">A los 12 meses la brecha ya supera los 40 puntos: cuanto más vivo
+        el dominio, antes se paga el conocimiento congelado.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué la curva dorada casi
+        no depende de t?</summary><div class="ans">Porque la respuesta no sale de los pesos
+        congelados sino del documento vigente que el retrieval mete en el contexto: indexar
+        un documento nuevo cuesta segundos, reentrenar el modelo cuesta semanas. El único
+        canal por el que el tiempo entra en P<sub>con</sub> es el término de fallo
+        (1&minus;R)&middot;P<sub>sin</sub>(t): cuando el retrieval no encuentra el chunk, el
+        modelo vuelve a depender de su memoria, que sí envejece. Por eso la curva dorada cae
+        un poquito, y cae más cuanto peor es R.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Un LLM se entrena con datos hasta una fecha de corte:
+      no conoce tu CRM, tus circulares ni el calendario de la oficina de Burgos, y lo que
+      conocía caduca. Modelizo eso con tres números: la vigencia f(t) decae exponencialmente
+      a ritmo &lambda;, el modelo acierta a = 0.92 sobre conocimiento vigente y g = 0.15
+      cuando alucina, y el RAG acierta F = 0.95 cuando su retrieval (recall R) encuentra el
+      documento. Arriba: P(respuesta correcta) frente a los meses desde el corte, sin RAG
+      (tinta) y con RAG (dorado). Abajo: a la t elegida, de cada 1000 consultas, cuántas
+      salen bien y cuántas mal en cada sistema.</p>
+    <p><span class="hd">Juega.</span> Los tres sliders son las tres palancas del problema:
+      el tiempo (que no controlas), el ritmo de cambio de tu sector (que tampoco) y el
+      recall del retrieval (la única que sí). Observa que la alternativa real a RAG no es
+      "el modelo a pelo", es reentrenar o hacer fine-tuning cada pocos meses: pagar
+      decenas de miles de euros por subir f(t) de golpe a 1&hellip; y verla decaer otra vez.</p>
+    <p><span class="hd">Lee así.</span> La distancia vertical entre las dos curvas es el
+      valor económico del retrieval: a 5000 consultas/día, cada punto porcentual de brecha
+      son 50 respuestas inventadas menos al día que un empleado o un cliente recibiría
+      con total confianza aparente.</p>
+    <p><span class="hd">Mensaje.</span> Para conocimiento corporativo cambiante, RAG gana a
+      fine-tuning el 90&nbsp;% de las veces: las actualizaciones son incrementales (indexar
+      el documento nuevo) y el modelo nunca tiene que "aprender" tus datos, solo leerlos.
+      El examen pasa de libro cerrado a libro abierto.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Fecha de corte</b>: último día cubierto por los
+      datos de entrenamiento. <b>Alucinación</b>: respuesta inventada emitida con la misma
+      confianza que una correcta. <b>Recall R</b>: probabilidad de que el chunk que contiene
+      la respuesta esté entre los recuperados. <b>Faithfulness F</b>: probabilidad de que la
+      respuesta sea fiel al contexto recuperado.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 1 : pipeline ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <canvas id="cv1a" data-aspect="2.1"></canvas>
+    <canvas id="cv1b" data-aspect="2.3"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">top<sub>k</sub>(q) = arg&thinsp;máx<sup>(k)</sup><sub>j&isin;[J]</sub>&nbsp;cos<big>(</big>&phi;(q),&thinsp;&phi;(d<sub>j</sub>)<big>)</big><span class="eqn">(Ec. de retrieval del día)</span></div>
+      <div class="eqread">de los <b>J</b> chunks del corpus, quédate con los <b>k</b> que
+        maximizan el coseno entre el embedding de la query <b>&phi;(q)</b> y el del chunk
+        <b>&phi;(d<sub>j</sub>)</b>. El superíndice (k) significa "los k mejores", no "elevado
+        a k". &phi; es el modelo de embeddings del Día 08: texto &rarr; vector de D números.</div>
+      <div class="eq">&ycirc; &sim; p<sub>&theta;</sub><big>(</big>y&nbsp;|&nbsp;q,&thinsp;d<sub>j<sub>1</sub></sub>,&hellip;,d<sub>j<sub>k</sub></sub><big>)</big><span class="eqn">(generación condicionada)</span></div>
+      <div class="eqread">el LLM (parámetros <b>&theta;</b>, congelados) genera la respuesta
+        <b>&ycirc;</b> condicionando en la query <b>y</b> en los k chunks recuperados, que van
+        pegados en el prompt. Después devuelve los d<sub>j<sub>i</sub></sub> como citas
+        verificables: esa es la etapa de atribución.</div>
+      <div class="eq">Mem = J&middot;D&middot;b bytes,&nbsp;&nbsp;&nbsp; ops<sub>fuerza bruta</sub> = 2&middot;J&middot;D por consulta</div>
+      <div class="eqread">el índice guarda J vectores de D dimensiones a <b>b</b> bytes por
+        número (4 en float32, 1 cuantizado a int8). Buscar por fuerza bruta es un producto
+        escalar contra cada chunk: 2&middot;J&middot;D operaciones. Las bases vectoriales
+        (FAISS, Qdrant, Pinecone, pgvector) existen para no pagar eso: con un índice ANN
+        tipo HNSW se visitan &asymp; ef&middot;log<sub>2</sub>J candidatos.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>etapa del pipeline iluminada: <b id="r1e"></b> / 7</label>
+      <input type="range" id="sl1e" min="1" max="7" step="1" value="1">
+      <label>tamaño del corpus, J = <b id="r1J"></b> chunks</label>
+      <input type="range" id="sl1J" min="3" max="6.5" step="0.05" value="5.5">
+      <label>dimensión del embedding, D = <b id="r1D"></b></label>
+      <input type="range" id="sl1D" min="0" max="5" step="1" value="3">
+      <label><input type="checkbox" id="ck1"> cuantizar el índice a int8 (1 byte por dimensión)</label>
+    </div>
+    <div class="readout" id="ro1"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Recorre la etapa de 1 a 7 leyendo el texto del lector. <span class="obs">Las
+        etapas 1&ndash;4 (ingesta) se pagan una vez; las 5&ndash;7 (consulta) se pagan en
+        cada query. Esa asimetría organiza todo el día.</span></li>
+      <li>Sube J a 1&nbsp;000&nbsp;000 con D = 1024 en float32. <span class="obs">El índice
+        pesa ~4&nbsp;GB y la fuerza bruta tarda cientos de milisegundos por consulta: ya no
+        cabe en "tiempo de chat".</span></li>
+      <li>Activa int8. <span class="obs">La memoria se divide por 4 con pérdida de recall
+        mínima: es la cuantización que BBVA usa en pgvector en el caso final.</span></li>
+      <li>Compara las distancias de fuerza bruta con las del índice ANN en el lector.
+        <span class="obs">Factor de aceleración de cientos a miles: por eso existen las
+        bases vectoriales como producto.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué no pegar el corpus
+        entero en el prompt y ahorrarse el índice?</summary><div class="ans">Por presupuesto
+        y por ventana: J chunks de 400 tokens son J&middot;400 tokens por consulta. Con
+        J = 300&nbsp;000 eso son 120 millones de tokens: no caben en ninguna ventana de
+        contexto y, aunque cupieran, a 3&nbsp;&euro;/millón costarían 360&nbsp;&euro; por
+        pregunta. El índice existe para seleccionar k&middot;400 &asymp; 4000 tokens: el
+        retrieval es, ante todo, un mecanismo de compresión del coste.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> El pipeline canónico tiene dos carriles. Ingesta
+      (offline, una vez): los documentos se trocean en J chunks, cada chunk pasa por el
+      modelo de embeddings &phi; y el vector resultante se guarda en la base vectorial.
+      Consulta (online, cada vez): la query se embebe con el mismo &phi;, el índice devuelve
+      los top-k chunks por coseno y el LLM genera la respuesta condicionada a ellos, con
+      citas. Arriba: el diagrama con la etapa elegida iluminada y las dimensiones de cada
+      pieza. Abajo: la memoria del índice en función de J, en float32 y en int8.</p>
+    <p><span class="hd">Juega.</span> El slider de J recorre de mil a tres millones de
+      chunks (escala log): mira cómo la memoria y el tiempo de búsqueda crecen lineales en
+      J mientras que el coste por consulta del LLM no depende de J en absoluto: solo de k.
+      Esa separación es el diseño entero de RAG.</p>
+    <p><span class="hd">Lee así.</span> El lector da la memoria exacta J&middot;D&middot;b,
+      el número de productos escalares de la fuerza bruta y la estimación ANN
+      (ef = 64 candidatos por nivel, log<sub>2</sub>J niveles). Son los números que pides a
+      un proveedor de vector DB antes de firmar.</p>
+    <p><span class="hd">Mensaje.</span> Indexa una vez, recupera en cada query. Para empezar
+      basta Chroma en local; cuando el corpus crece, Qdrant o Pinecone; si ya tienes
+      Postgres, pgvector. La elección de base vectorial es logística, no ciencia: la ciencia
+      está en el chunking y el retrieval, que vienen ahora.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Chunk d<sub>j</sub></b>: trozo de documento de
+      200&ndash;800 tokens, la unidad que se indexa. <b>&phi;</b>: modelo de embeddings.
+      <b>Vector DB</b>: almacén que busca por similitud de vectores. <b>ANN</b>: búsqueda de
+      vecinos aproximada (HNSW, IVF), sublineal en J.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : chunking ============ -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <canvas id="cv2a" data-aspect="1.7"></canvas>
+    <canvas id="cv2b" data-aspect="2.3"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">n<sub>chunks</sub> = <big>&lceil;</big><span class="frac"><span class="num">L&minus;s</span><span class="den">s&minus;o</span></span><big>&rceil;</big> + 1<span class="eqn">(troceado con solape)</span></div>
+      <div class="eqread">un documento de <b>L</b> palabras troceado en ventanas de <b>s</b>
+        palabras que avanzan de <b>s&minus;o</b> en <b>s&minus;o</b> (cada chunk comparte
+        <b>o</b> palabras con el anterior). Más solape = más chunks = más almacenamiento,
+        a cambio de que ningún corte parta una cláusula por la mitad.</div>
+      <div class="eq">sim(c) = <span class="frac"><span class="num">g<sub>c</sub></span><span class="den">&radic;|c|</span></span><span class="eqn">(retrieval de juguete)</span></div>
+      <div class="eqread">proxy del coseno para esta demo: <b>g<sub>c</sub></b> = palabras de
+        la respuesta anotada que caen dentro del chunk, normalizado por &radic;|c| igual que
+        el coseno normaliza por la longitud del vector. Un chunk largo diluye su señal: esa
+        división es la madre del trade-off.</div>
+      <div class="eq">precision = <span class="frac"><span class="num">|G&cap;C|</span><span class="den">|C|</span></span>,&nbsp;&nbsp;&nbsp; recall = <span class="frac"><span class="num">|G&cap;C|</span><span class="den">|G|</span></span><span class="eqn">(contra la respuesta anotada)</span></div>
+      <div class="eqread"><b>G</b> = palabras de la respuesta correcta (anotadas en dorado),
+        <b>C</b> = palabras enviadas al LLM (los chunks recuperados). Precision = qué parte
+        de lo enviado es respuesta; recall = qué parte de la respuesta llega al contexto.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>tamaño de chunk, s = <b id="r2s"></b> palabras</label>
+      <input type="range" id="sl2s" min="20" max="200" step="5" value="40">
+      <label>solape entre chunks consecutivos, o = <b id="r2o"></b> palabras</label>
+      <input type="range" id="sl2o" min="0" max="60" step="5" value="10">
+      <label>chunks recuperados, k<sub>ret</sub> = <b id="r2k"></b></label>
+      <input type="range" id="sl2k" min="1" max="4" step="1" value="1">
+    </div>
+    <div class="readout" id="ro2"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon s = 25, o = 0, k<sub>ret</sub> = 1. <span class="obs">Precision = 1.00 pero
+        recall = 0.43: el chunk recuperado es pura respuesta, pero la respuesta completa
+        (58 palabras) no cabe en 25 y la excepción del 85&nbsp;% queda fuera.</span></li>
+      <li>Sube k<sub>ret</sub> a 2 y luego a 3. <span class="obs">Recall sube a 0.86 y
+        luego a 1.00 con precision todavía 0.77: los chunks pequeños se compensan
+        recuperando más chunks, no agrandándolos.</span></li>
+      <li>Vuelve a k<sub>ret</sub> = 1 y pon s = 160 con o = 0. <span class="obs">Doble
+        castigo: precision 0.25 (el LLM recibe scoring, tasaciones y tipos que nadie
+        preguntó) y recall 0.69, porque el corte de la palabra 160 parte la respuesta
+        (palabras 142&ndash;199) entre dos chunks.</span></li>
+      <li>Con s = 160, sube o a 30. <span class="obs">Recall salta a 1.00: el solape cura
+        el corte desafortunado. El precio está en el lector: 5 chunks en vez de 4, más
+        almacenamiento por el texto duplicado.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué la nota del día dice
+        que la ventana óptima es "la unidad coherente más pequeña"?</summary><div class="ans">
+        Porque precision y recall se maximizan a la vez cuando el chunk coincide exactamente
+        con la unidad que responde preguntas: la cláusula en un contrato, la sección en un
+        manual, el turno en una conversación. Más pequeño que la unidad, partes respuestas
+        (recall cae); más grande, arrastras vecinos irrelevantes (precision cae). El solape
+        es el seguro contra no saber dónde empieza la unidad.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> El documento de arriba es una política de riesgo de
+      crédito hipotecario de un banco ficticio (~600 palabras, troceada en vivo). La
+      pregunta de juguete es: <i>"¿qué LTV máximo permite la política en vivienda habitual
+      y qué excepción existe?"</i>. Las palabras doradas son la respuesta anotada (dos
+      frases: el límite del 80&nbsp;% y la excepción del 85&nbsp;%). Cada banda gris
+      alterna es un chunk; las zonas color arena pertenecen a dos chunks (solape); el
+      recuadro grueso marca los chunks que el retrieval de juguete selecciona. Abajo:
+      precision, recall y F1 en función del tamaño de chunk, con tu s actual marcada.</p>
+    <p><span class="hd">Juega.</span> Trocear mal es la causa número uno de RAG mediocre,
+      y este es el porqué en una figura: chunks pequeños dan precisión sin contexto (la
+      respuesta se fragmenta), chunks grandes dan contexto con ruido (la respuesta se
+      diluye entre párrafos irrelevantes que además pagas a precio de token).</p>
+    <p><span class="hd">Lee así.</span> El lector da el número de chunks
+      (&lceil;(L&minus;s)/(s&minus;o)&rceil;+1), la precision y el recall contra la
+      respuesta anotada y los tokens enviados al LLM (&asymp; palabras &times; 1.4).</p>
+    <p><span class="hd">Mensaje.</span> Reglas defensivas del día: chunks de 300&ndash;600
+      tokens, solape de 50&ndash;100, conservar metadatos (título, sección, fecha) junto al
+      texto, y no partir tablas ni listas en mitad de fila. La curva de abajo es la razón
+      de cada una.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Chunk</b>: ventana de texto indexada como una
+      unidad. <b>Solape o</b>: palabras compartidas entre chunks consecutivos.
+      <b>Respuesta anotada (gold)</b>: el span que un humano marcó como respuesta correcta,
+      para poder medir. <b>F1</b>: media armónica de precision y recall.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 : coseno ============ -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <canvas id="cv3a" data-aspect="1.55"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">cos<big>(</big>&phi;(q),&phi;(d)<big>)</big> = <span class="frac"><span class="num">&phi;(q)&middot;&phi;(d)</span><span class="den">&Vert;&phi;(q)&Vert;&thinsp;&Vert;&phi;(d)&Vert;</span></span> = <span class="frac"><span class="num">&Sigma;<sub>m</sub>&thinsp;q<sub>m</sub>d<sub>m</sub></span><span class="den">&radic;(&Sigma;q<sub>m</sub>&sup2;)&thinsp;&radic;(&Sigma;d<sub>m</sub>&sup2;)</span></span><span class="eqn">(similitud coseno)</span></div>
+      <div class="eqread">producto escalar de los dos embeddings dividido por sus normas:
+        mide el <b>ángulo</b>, no la longitud. Vale 1 si apuntan igual, 0 si son
+        perpendiculares (nada que ver), &minus;1 si opuestos. Con vectores normalizados a
+        norma 1, el coseno es directamente el producto escalar &mdash; por eso las vector DB
+        normalizan al indexar.</div>
+      <div class="eq">top<sub>k</sub>(q) = arg&thinsp;máx<sup>(k)</sup><sub>j&isin;[J]</sub>&nbsp;cos<big>(</big>&phi;(q),&phi;(d<sub>j</sub>)<big>)</big><span class="eqn">(la misma Ec. del pipeline, ahora en vivo)</span></div>
+      <div class="eqread">aquí J = 15 y los embeddings son 2D para poder dibujarlos (los
+        reales tienen D = 1024; la geometría es la misma). El sector dorado del dibujo es el
+        "cono de recuperación": todos los chunks cuyo ángulo con la query es menor que el
+        del k-ésimo clasificado.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>query del usuario</label>
+      <select id="se3q">
+        <option>¿Qué porcentaje del valor de la vivienda financia el banco?</option>
+        <option>¿Cómo gestiona el banco un préstamo impagado?</option>
+        <option>¿Qué costes tiene usar la tarjeta de crédito?</option>
+        <option>¿Qué obligaciones hay con el regulador y el control interno?</option>
+      </select>
+      <label>chunks recuperados, k = <b id="r3k"></b></label>
+      <input type="range" id="sl3k" min="1" max="10" step="1" value="3">
+    </div>
+    <div class="readout" id="ro3"></div>
+    <table class="live"><thead><tr><th>#</th><th>chunk</th><th>cos</th></tr></thead>
+      <tbody id="tb3"></tbody></table>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con la query de hipotecas y k = 3, mira el plano. <span class="obs">El cono dorado
+        es estrecho y cubre exactamente el cluster de hipotecas: retrieval = geometría.</span></li>
+      <li>Sube k a 8. <span class="obs">El cono se abre y empiezan a entrar chunks de mora y
+        provisiones: similitud baja = contexto ruidoso. k controla la apertura.</span></li>
+      <li>Cambia a la query de tarjetas. <span class="obs">El ranking entero se reordena: el
+        coseno no es una propiedad del chunk sino de la pareja query&ndash;chunk.</span></li>
+      <li>Lee la columna cos de la tabla. <span class="obs">Los tres primeros se apiñan en
+        0.98&ndash;1.00 y luego hay un salto: la separación útil ocurre entre clusters
+        temáticos, no dentro de ellos.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué coseno y no
+        distancia euclídea?</summary><div class="ans">Con embeddings normalizados a norma 1
+        son equivalentes: &Vert;u&minus;v&Vert;&sup2; = 2&minus;2&thinsp;cos(u,v), así que
+        ordenar por coseno descendente y por distancia ascendente da el mismo ranking. La
+        ventaja del coseno es conceptual: ignora la longitud del vector, que en muchos
+        modelos de embeddings refleja longitud o frecuencia del texto y no su tema. Lo que
+        importa es hacia dónde apunta el significado.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Quince chunks reales de documentación bancaria
+      (hipotecas, riesgo y mora, tarjetas, normativa) viven en un plano de embeddings 2D:
+      cada punto es &phi;(d<sub>j</sub>), proyección didáctica de los 1024 números reales.
+      La flecha dorada es &phi;(q) para la query elegida. El JS calcula los 15 cosenos de
+      verdad, ordena, y rellena la tabla con el top-k; el sector sombreado cubre el ángulo
+      hasta el k-ésimo clasificado.</p>
+    <p><span class="hd">Juega.</span> Las queries no comparten palabras con los chunks
+      (pregunta "porcentaje del valor de la vivienda", el chunk dice "80&nbsp;% del valor de
+      tasación, LTV"): el embedding los acerca por significado, que es justo lo que las
+      keywords no saben hacer. Guarda esa idea para la slide de búsqueda híbrida, donde
+      verás el caso contrario.</p>
+    <p><span class="hd">Lee así.</span> El lector da el coseno del mejor y del k-ésimo
+      chunk y la apertura del cono en grados: es la imagen mental correcta de qué significa
+      "subir k" en producción.</p>
+    <p><span class="hd">Mensaje.</span> Recuperar es medir ángulos en un espacio donde el
+      significado es dirección. Todo lo que viene después (recall@k, híbrido, re-ranking)
+      son parches sobre esta geometría cuando la dirección no basta.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Embedding &phi;(x)</b>: vector que representa el
+      significado de un texto. <b>Cluster</b>: grupo de chunks del mismo tema, próximos en
+      ángulo. <b>Cono de recuperación</b>: región angular que el top-k cubre alrededor de
+      la query.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : recall@k / precision@k ============ -->
+<section class="slide" id="s4">
+  <div class="figcol">
+    <canvas id="cv4a" data-aspect="1.95"></canvas>
+    <canvas id="cv4b" data-aspect="2.3"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">Recall@k = <span class="frac"><span class="num">|Rel &cap; top<sub>k</sub>|</span><span class="den">|Rel|</span></span>,&nbsp;&nbsp;&nbsp; Precision@k = <span class="frac"><span class="num">|Rel &cap; top<sub>k</sub>|</span><span class="den">k</span></span><span class="eqn">(calidad del retrieval)</span></div>
+      <div class="eqread"><b>Rel</b> = chunks anotados como relevantes para la query.
+        Recall@k: de todo lo relevante, qué fracción entra en los k recuperados (¿está el
+        chunk gold?). Precision@k: de los k recuperados, qué fracción es relevante (¿cuánto
+        ruido pago?). Al subir k, recall solo puede subir y precision tiende a bajar.</div>
+      <div class="eq">MRR = <span class="frac"><span class="num">1</span><span class="den">|Q|</span></span><big>&Sigma;</big><sub>q&isin;Q</sub>&nbsp;<span class="frac"><span class="num">1</span><span class="den">rank<sub>q</sub></span></span><span class="eqn">(Mean Reciprocal Rank)</span></div>
+      <div class="eqread">media, sobre las queries de evaluación, del inverso de la posición
+        del primer chunk relevante: 1 si siempre sale primero, 0.5 si suele salir segundo.
+        Mide lo que el usuario siente: cuánto hay que bajar para encontrar algo útil.</div>
+      <div class="eq">coste = <span class="frac"><span class="num">T<sub>sys</sub> + k&middot;c + T<sub>q</sub></span><span class="den">10<sup>6</sup></span></span>&middot;p<sub>in</sub><span class="eqn">(el precio de subir k)</span></div>
+      <div class="eqread">cada chunk extra mete <b>c</b> &asymp; 400 tokens en el prompt a
+        precio <b>p<sub>in</sub></b> = 3&nbsp;&euro;/millón (modelo medio). Subir k no es
+        gratis: es la conexión entre la métrica de retrieval y la factura.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>query de evaluación</label>
+      <select id="se4q">
+        <option>¿Qué porcentaje del valor de la vivienda financia el banco?</option>
+        <option>¿Cómo gestiona el banco un préstamo impagado?</option>
+        <option>¿Qué costes tiene usar la tarjeta de crédito?</option>
+        <option>¿Qué obligaciones hay con el regulador y el control interno?</option>
+        <option>media de las 4 queries</option>
+      </select>
+      <label>chunks recuperados, k = <b id="r4k"></b></label>
+      <input type="range" id="sl4k" min="1" max="15" step="1" value="5">
+    </div>
+    <div class="readout" id="ro4"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con la query de hipotecas, sube k de 1 a 4. <span class="obs">Recall trepa rápido
+        hasta 0.8: cuatro de los cinco chunks relevantes están en el cluster que el coseno
+        ve bien.</span></li>
+      <li>Sigue subiendo hasta k = 13. <span class="obs">Recall se queda clavado en 0.8
+        durante muchísimas k: el quinto chunk relevante (la norma FEIN, que vive en el
+        cluster de normativa) está lejos en ángulo y no entra casi hasta el final. Subir k
+        no arregla un embedding que no lo ve.</span></li>
+      <li>Mira el panel de abajo al pasar de k = 4 a k = 14. <span class="obs">El coste por
+        consulta se multiplica por ~2.7 para ganar 0.2 de recall al final: cada barra de
+        ganancia marginal es cero mientras pagas tokens.</span></li>
+      <li>Selecciona "media de las 4 queries". <span class="obs">La curva agregada suaviza
+        los escalones pero el codo sigue en k &asymp; 4&ndash;6: el k razonable de
+        producción para este corpus.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: tu evaluador interno dice
+        Recall@5 = 0.88; ¿inviertes en mejor retrieval o en mejor LLM?</summary><div class="ans">
+        En el LLM (o en el prompt): la regla del día es que con Recall@5 &ge; 0.85 el cuello
+        de botella ya es la generación, no el retrieval &mdash; el chunk correcto casi
+        siempre está en el contexto, así que los fallos vienen de no usarlo bien. Con
+        Recall@5 &lt; 0.7 sería al revés: mejora embedding y chunking antes de tocar el
+        modelo. Medir retrieval por separado existe exactamente para decidir esta
+        inversión.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Mismo corpus de 15 chunks y mismas 4 queries de la
+      slide anterior, ahora con las relevancias anotadas a mano (3&ndash;5 chunks
+      relevantes por query). El ranking sale del coseno real; las curvas de arriba son
+      Recall@k (dorado) y Precision@k (tinta) calculadas contra esas anotaciones para cada
+      k de 1 a 15. Abajo: la ganancia marginal de recall de cada chunk añadido (barras) y
+      el coste acumulado del contexto en céntimos (línea).</p>
+    <p><span class="hd">Juega.</span> La forma de las curvas es universal: recall es
+      monótono creciente con escalones, precision decae en cuanto los relevantes se acaban.
+      Lo que cambia entre sistemas es dónde están los escalones: un buen embedding los
+      adelanta, uno malo los retrasa, y la query de hipotecas enseña el caso típico de
+      empresa: un relevante "huérfano" en otro cluster que ninguna k razonable rescata.</p>
+    <p><span class="hd">Lee así.</span> El lector da Recall@k, Precision@k, el MRR del
+      sistema sobre las 4 queries y los tokens y céntimos del contexto a la k elegida.
+      Coherencia: con k = 15 el recall es 1 en todas las queries (está todo el corpus
+      dentro) y la precision es exactamente |Rel|/15.</p>
+    <p><span class="hd">Mensaje.</span> k grande compra recall con dos monedas: euros (cada
+      chunk son ~400 tokens facturados) y ruido (precision baja = contexto lleno de
+      distractores, que en la slide del presupuesto verás que degrada la propia
+      generación). Las dos slides siguientes son las dos formas profesionales de no pagar
+      ese precio: híbrido y re-ranking.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Rel</b>: conjunto anotado de chunks relevantes
+      (el "gold standard" del evaluador). <b>Ganancia marginal</b>: recall@k menos
+      recall@k&minus;1. <b>MRR</b>: posición media (recíproca) del primer acierto.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : búsqueda híbrida ============ -->
+<section class="slide" id="s5">
+  <div class="figcol">
+    <canvas id="cv5a" data-aspect="1.95"></canvas>
+    <canvas id="cv5b" data-aspect="2.1"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">score<sub>&alpha;</sub>(q,d) = &alpha;&middot;c&ocirc;s(q,d) + (1&minus;&alpha;)&middot;<span style="text-decoration:overline">BM25</span>(q,d)<span class="eqn">(búsqueda híbrida, Ec. del deck)</span></div>
+      <div class="eqread">mezcla lineal del canal semántico (coseno de embeddings) y el
+        canal léxico (BM25 por keywords), ambos re-escalados a [0,1] sobre el corpus
+        (mín&ndash;máx) para que la mezcla tenga sentido. <b>&alpha;</b> = 1 es dense puro;
+        &alpha; = 0 es BM25 puro; en producción &alpha; &asymp; 0.7.</div>
+      <div class="eq">BM25(q,d) = <big>&Sigma;</big><sub>t&isin;q</sub>&nbsp;IDF(t)&middot;<span class="frac"><span class="num">tf<sub>t,d</sub>&middot;(k<sub>1</sub>+1)</span><span class="den">tf<sub>t,d</sub> + k<sub>1</sub>(1&minus;b+b&middot;|d|/L&#772;)</span></span><span class="eqn">(k<sub>1</sub>=1.5, b=0.75)</span></div>
+      <div class="eqread">para cada término <b>t</b> de la query: cuántas veces aparece en el
+        chunk (<b>tf</b>), saturado por k<sub>1</sub> (la décima aparición ya no suma) y
+        penalizado si el chunk es más largo que la media <b>L&#772;</b>.</div>
+      <div class="eq">IDF(t) = ln<big>(</big>1 + <span class="frac"><span class="num">N&minus;df<sub>t</sub>+0.5</span><span class="den">df<sub>t</sub>+0.5</span></span><big>)</big><span class="eqn">(rareza del término)</span></div>
+      <div class="eqread"><b>df<sub>t</sub></b> = en cuántos de los N = 15 chunks aparece t.
+        Un término que está en todas partes ("banco") vale casi 0; un código que aparece en
+        un único chunk ("7832") vale ln(1+14.5/1.5) &asymp; 2.4: BM25 es un detector de
+        términos raros, y los códigos son lo más raro que hay.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>query del usuario</label>
+      <select id="se5q">
+        <option>A — penalización del contrato 2024-BBVA-7832</option>
+        <option>B — dinero para comprar una casa a plazos</option>
+      </select>
+      <label>peso del canal semántico, &alpha; = <b id="r5a"></b></label>
+      <input type="range" id="sl5a" min="0" max="1" step="0.02" value="0.7">
+    </div>
+    <div class="readout" id="ro5"></div>
+    <table class="live"><thead><tr><th>chunk</th><th>c&ocirc;s</th><th><span style="text-decoration:overline">BM25</span></th><th>score</th></tr></thead>
+      <tbody id="tb5"></tbody></table>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Query A con &alpha; = 1 (dense puro). <span class="obs">El contrato gold cae al
+        puesto 5: para el embedding, "contrato 2024-BBVA-7832" es solo "un contrato
+        hipotecario más" y los chunks genéricos de hipotecas le ganan en ángulo.</span></li>
+      <li>Baja &alpha; a 0.3. <span class="obs">El gold salta al puesto 1: los tokens 2024,
+        bbva y 7832 aparecen en un único chunk, su IDF es enorme y BM25 los premia sin
+        dudar.</span></li>
+      <li>Query B con &alpha; = 0 (BM25 puro). <span class="obs">Ningún chunk comparte
+        keywords con "dinero para comprar una casa a plazos": BM25 da 0 a todo y el ranking
+        es ruido &mdash; el gold cae al fondo.</span></li>
+      <li>Busca un &alpha; que deje el gold de ambas queries en el top-3.
+        <span class="obs">La zona &alpha; &asymp; 0.5&ndash;0.8 funciona para las dos: por
+        eso 0.7 es el default de producción que cita el deck.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué hay que normalizar
+        BM25 antes de mezclarlo con el coseno?</summary><div class="ans">Porque viven en
+        escalas incomparables: el coseno está acotado en [&minus;1,1] mientras que BM25 es
+        una suma de IDFs sin tope (aquí llega a ~7 con tres términos raros). Sin re-escalar,
+        &alpha; no significaría nada: con &alpha; = 0.5 el canal BM25 dominaría siempre. El
+        mín&ndash;máx por query pone a los dos canales en [0,1] y convierte &alpha; en lo
+        que promete ser: la fracción de la decisión que confías al significado frente a las
+        keywords. (Alternativa estándar sin normalizar: fusionar rankings con RRF.)</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Mismo corpus de 15 chunks bancarios, ahora con su
+      texto completo: el JS tokeniza (minúsculas, sin tildes, sin stopwords), calcula df,
+      IDF y BM25 de verdad, re-escala ambos canales a [0,1] y mezcla con &alpha;. Arriba:
+      la posición del chunk gold en el ranking según &alpha;, para las dos queries (1 =
+      arriba del todo). Abajo: el top-6 actual como barras apiladas, parte dorada =
+      contribución &alpha;&middot;c&ocirc;s, parte gris = (1&minus;&alpha;)&middot;BM25.</p>
+    <p><span class="hd">Juega.</span> Las dos queries son los dos extremos del mundo real.
+      La A es el caso "siglas y códigos exactos": contratos, referencias de producto, NIFs,
+      tickets &mdash; el embedding los aplana (significan poco) y BM25 los clava (son
+      rarísimos). La B es el caso "paráfrasis": el cliente dice "dinero para comprar una
+      casa a plazos" y el documento dice "hipoteca sobre vivienda habitual" &mdash; cero
+      keywords compartidas, BM25 ciego, embedding perfecto.</p>
+    <p><span class="hd">Lee así.</span> En el panel superior, una curva que baja al bajar
+      &alpha; (la A mejora con keywords) y otra que sube (la B se rompe sin semántica): el
+      &alpha; bueno es el tramo donde ambas están abajo. En la tabla, mira qué canal aporta
+      cada barra del top: el gold de A vive del gris, el de B vive del dorado.</p>
+    <p><span class="hd">Mensaje.</span> En producción, híbrido es el default: dense solo no
+      basta. Query "contrato 2024-BBVA-7832": dense lo pierde, BM25 lo encuentra. Es uno de
+      los tres patrones que suben Recall@5 de 0.65 a 0.90 sin cambiar de modelo; el
+      siguiente es el re-ranking.</p>
+    <p class="miniglos"><b>Términos.</b> <b>BM25</b>: ranking léxico clásico
+      (tf&ndash;IDF saturado y normalizado por longitud). <b>IDF</b>: log-rareza de un
+      término en el corpus. <b>Stopword</b>: palabra vacía que se descarta ("de", "la",
+      "que"). <b>RRF</b>: reciprocal rank fusion, alternativa para fusionar rankings sin
+      normalizar scores.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : re-ranking ============ -->
+<section class="slide" id="s6">
+  <div class="figcol">
+    <canvas id="cv6a" data-aspect="1.95"></canvas>
+    <canvas id="cv6b" data-aspect="2.4"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">fase 1: C = top<sub>k<sub>0</sub></sub> por s<sub>bi</sub>(q,d)&nbsp;&nbsp;&rarr;&nbsp;&nbsp; fase 2: top<sub>5</sub> de C por s<sub>ce</sub>(q,d)<span class="eqn">(retrieve &amp; re-rank)</span></div>
+      <div class="eqread">el <b>bi-encoder</b> (embeddings precalculados, coseno: barato)
+        poda el corpus a k<sub>0</sub> candidatos; el <b>cross-encoder</b> (lee query y chunk
+        juntos, un forward por par: caro) reordena solo esos k<sub>0</sub> y los 5 mejores
+        van al LLM. Toda la arquitectura es una sola idea: gastar el modelo caro únicamente
+        donde el barato ya no distingue.</div>
+      <div class="eq">s = rel + &epsilon;,&nbsp;&nbsp; &epsilon; &sim; N(0,&sigma;&sup2;),&nbsp;&nbsp; &sigma;<sub>ce</sub> = 0.25 &lt;&lt; &sigma;<sub>bi</sub><span class="eqn">(modelo de juguete de los scores)</span></div>
+      <div class="eqread">cada documento tiene relevancia verdadera rel &isin; {0,1} y cada
+        encoder la observa con ruido gaussiano: el cross-encoder ve casi la verdad
+        (&sigma; = 0.25), el bi-encoder la ve borrosa (&sigma; ajustable). La calidad
+        P@5 de abajo es un Monte Carlo real sobre 120 réplicas de este modelo.</div>
+      <div class="eq">lat(k<sub>0</sub>) = 80 + 9&middot;k<sub>0</sub> ms<span class="eqn">(latencia de la cascada)</span></div>
+      <div class="eqread">80 ms de retrieval ANN y formación del batch más 9 ms por cada par
+        (query, candidato) que pasa por el cross-encoder: la factura del re-ranking es
+        lineal en k<sub>0</sub>, la calidad no.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>candidatos que pasan al re-ranker, k<sub>0</sub> = <b id="r6k"></b></label>
+      <input type="range" id="sl6k" min="5" max="100" step="5" value="20">
+      <label>ruido del bi-encoder, &sigma;<sub>bi</sub> = <b id="r6s"></b></label>
+      <input type="range" id="sl6s" min="0.5" max="1.5" step="0.05" value="0.9">
+      <button id="bt6">otra réplica (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro6"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon k<sub>0</sub> = 5. <span class="obs">Equivale a no re-rankear: el conjunto de
+        5 ya quedó fijado por el bi-encoder y el cross-encoder solo puede reordenarlo, no
+        mejorarlo. Es la línea base discontinua.</span></li>
+      <li>Sube k<sub>0</sub> a 40. <span class="obs">P@5 sube con fuerza y se acerca a la
+        meseta: casi todos los relevantes que el bi-encoder dejó entre el puesto 6 y el 40
+        son rescatados por el cross-encoder.</span></li>
+      <li>Sigue hasta 100. <span class="obs">La curva ya es plana pero la latencia sigue
+        subiendo 9 ms por candidato: a partir de la meseta pagas por nada. El codo
+        (k<sub>0</sub> &asymp; 20&ndash;50) es el punto de diseño del deck.</span></li>
+      <li>Sube &sigma;<sub>bi</sub> a 1.4 y repite. <span class="obs">La curva gana
+        pendiente y la meseta se aleja: cuanto peor es tu retrieval barato, más relevantes
+        se esconden en puestos tardíos y más paga el re-ranking.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué no pasar los 200
+        documentos por el cross-encoder y olvidarse del bi-encoder?</summary><div class="ans">
+        Por coste y latencia: el cross-encoder hace un forward completo por cada par
+        (query, documento) &mdash; 200 pares son 80 + 9&middot;200 = 1880 ms por consulta, y
+        en un corpus real serían 350&nbsp;000 forwards: días de GPU por pregunta. El
+        bi-encoder existe porque sus embeddings se precalculan una vez en la ingesta y la
+        consulta es solo un producto escalar: es la única pieza que escala con J. La cascada
+        es la respuesta general: filtro barato sobre todo, modelo caro sobre poco.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> 200 documentos candidatos, de los que 12 son
+      relevantes de verdad. El bi-encoder y el cross-encoder puntúan cada uno con el modelo
+      de ruido del panel de ecuaciones (simulado con semillas reproducibles). Arriba: la
+      calidad final P@5 (fracción de los 5 chunks enviados al LLM que son relevantes),
+      promediada sobre 120 réplicas Monte Carlo, en función de k<sub>0</sub>; en gris, la
+      latencia. Abajo: el embudo de una réplica concreta: 200 &rarr; k<sub>0</sub> &rarr; 5,
+      con el número de relevantes que sobrevive en cada etapa.</p>
+    <p><span class="hd">Juega.</span> El slider de k<sub>0</sub> es el único hiperparámetro
+      del patrón: cuántos candidatos baratos le confías al juez caro. El botón de réplica
+      enseña la variabilidad: en una réplica concreta el embudo puede tener suerte o no,
+      pero la curva (el promedio) es estable: así se decide en ingeniería, sobre la curva,
+      no sobre la anécdota.</p>
+    <p><span class="hd">Lee así.</span> P@5 en la línea base (k<sub>0</sub> = 5, sin
+      re-ranking) contra P@5 en tu k<sub>0</sub>: esa diferencia es lo que el cross-encoder
+      compra; la latencia de al lado es lo que cuesta. El deck lo resume: recuperar 20
+      barato, re-rankear con <i>bge-reranker-large</i>, mandar 5 al LLM.</p>
+    <p><span class="hd">Mensaje.</span> El re-ranking desacopla dos problemas que el coseno
+      mezcla: encontrar candidatos (recall, barato, escala con J) y ordenarlos bien
+      (precision, caro, escala con k<sub>0</sub>). Junto con híbrido y query rewriting, es
+      el tercer patrón que sube Recall@5 de 0.65 a 0.90 sin tocar el modelo generador.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Bi-encoder</b>: embebe query y documento por
+      separado; similitud = coseno; precalculable. <b>Cross-encoder</b>: procesa el par
+      junto y devuelve un score; no precalculable. <b>P@5</b>: precision sobre los 5 chunks
+      finales. <b>Meseta</b>: zona donde subir k<sub>0</sub> ya no mejora la calidad.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7 : presupuesto de contexto ============ -->
+<section class="slide" id="s7">
+  <div class="figcol">
+    <canvas id="cv7a" data-aspect="2.6"></canvas>
+    <canvas id="cv7b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">T<sub>in</sub> = T<sub>sys</sub> + k&middot;c + T<sub>q</sub><span class="eqn">(presupuesto de contexto)</span></div>
+      <div class="eqread">el prompt de un RAG son tres sumandos: el system prompt
+        (<b>T<sub>sys</sub></b> = 400 tokens de instrucciones y formato de cita), los
+        <b>k</b> chunks de <b>c</b> tokens cada uno, y la pregunta del usuario
+        (<b>T<sub>q</sub></b> = 60). Si T<sub>in</sub> + T<sub>out</sub> supera la ventana
+        del modelo, la llamada se rechaza: la ventana es un límite duro, no una preferencia.</div>
+      <div class="eq">cobertura(k) = 1 &minus; <big>&prod;</big><sub>i=1..k</sub>(1&minus;p<sub>i</sub>),&nbsp;&nbsp; p<sub>i</sub> = p<sub>1</sub>&middot;&gamma;<sup>i&minus;1</sup><span class="eqn">(p&#8321;=0.55, &gamma;=0.75)</span></div>
+      <div class="eqread">probabilidad de que la respuesta esté en el contexto: el chunk del
+        puesto i la contiene con probabilidad p<sub>i</sub>, decreciente en el ranking
+        (&gamma;), y basta con que uno acierte. Crece rápido y satura: el chunk 10 ya casi
+        no añade nada.</div>
+      <div class="eq">calidad = cobertura(k)&middot;e<sup>&minus;(T<sub>in</sub>/T<sub>att</sub>)&sup2;</sup>&middot;F,&nbsp;&nbsp;&nbsp; coste = <span class="frac"><span class="num">T<sub>in</sub>&middot;p<sub>in</sub> + T<sub>out</sub>&middot;p<sub>out</sub></span><span class="den">10<sup>6</sup></span></span><span class="eqn">(T<sub>att</sub>=9000, F=0.95)</span></div>
+      <div class="eqread">el factor gaussiano modela el <i>lost in the middle</i>: a más
+        tokens de contexto, menos atención efectiva sobre el chunk correcto. El producto
+        cobertura&times;atención es la curva en U invertida: poco contexto = no sabe,
+        demasiado = se pierde. Y cada token entra en la factura a p<sub>in</sub>.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>chunks en el contexto, k = <b id="r7k"></b></label>
+      <input type="range" id="sl7k" min="1" max="30" step="1" value="6">
+      <label>tamaño de chunk, c = <b id="r7c"></b> tokens</label>
+      <input type="range" id="sl7c" min="100" max="1000" step="50" value="400">
+      <label>modelo generador (precios orientativos)</label>
+      <select id="se7m">
+        <option>compacto — ventana 8k — 0.8 / 4 €/Mtok</option>
+        <option>medio — ventana 32k — 3 / 15 €/Mtok</option>
+        <option>frontera — ventana 128k — 15 / 75 €/Mtok</option>
+      </select>
+    </div>
+    <div class="readout" id="ro7"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon k = 1. <span class="obs">Cobertura 0.55: casi la mitad de las veces el chunk
+        correcto no está y el modelo "no sabe" (o peor: alucina con confianza).</span></li>
+      <li>Sube a k = 6. <span class="obs">Máximo de la curva: cobertura &asymp; 0.90 con la
+        atención todavía &asymp; 0.92. Este es el punto dulce que explica el "k = 3&ndash;10
+        típico" de la nota del día.</span></li>
+      <li>Pon k = 30 y c = 800 con el modelo compacto. <span class="obs">Salta el badge de
+        desbordamiento: 24&nbsp;760 tokens no caben en 8k. La ventana corta la curva antes
+        de que la atención la hunda.</span></li>
+      <li>Cambia al modelo frontera (128k). <span class="obs">El badge desaparece pero la
+        calidad sigue cayendo: la ventana grande quita el error duro, no el blando. Más
+        contexto no es monótonamente mejor ni aunque quepa.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué la calidad tiene
+        forma de U invertida en vez de saturar y quedarse plana?</summary><div class="ans">
+        Porque hay dos fuerzas con signos opuestos: la cobertura crece con k (más chunks =
+        más probable que la respuesta esté dentro) pero satura geométricamente, mientras
+        que la atención efectiva decae con los tokens totales (el modelo diluye su atención
+        entre más distractores: el efecto "lost in the middle" medido en la literatura). El
+        producto de una curva que satura por una que decae siempre tiene un máximo interior.
+        En cuanto la cobertura deja de ganar más de lo que la atención pierde, cada chunk
+        extra resta calidad además de costar dinero.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Arriba: el prompt como barra apilada (system + k
+      chunks + pregunta + respuesta reservada) contra la ventana del modelo elegido; si la
+      suma se pasa, la barra se desborda y el badge avisa. Abajo: la calidad estimada del
+      modelo de juguete frente a k, con la zona prohibida por la ventana sombreada y tu k
+      marcada. Todos los números (tokens, euros, cobertura, atención) salen de las fórmulas
+      del panel, calculadas en vivo.</p>
+    <p><span class="hd">Juega.</span> k y c son los dos diales que ya tocaste en chunking y
+      recall@k; aquí ves su consecuencia final en la generación. Observa la interacción con
+      el precio: en el modelo frontera, pasar de k = 5 a k = 25 con c = 400 sube el coste
+      por consulta de ~0.06&nbsp;&euro; a ~0.18&nbsp;&euro;: multiplicado por 5000
+      consultas/día son 600&nbsp;&euro; diarios por contexto que además resta calidad.</p>
+    <p><span class="hd">Lee así.</span> El lector da T<sub>in</sub> y su desglose, el coste
+      por consulta, la cobertura, la atención y su producto. El badge verde/ámbar es el
+      contrato duro con el proveedor: cabe o no cabe.</p>
+    <p><span class="hd">Mensaje.</span> El contexto es un presupuesto, no un saco: cada
+      token compite por atención y por euros. RAG bien hecho es mandar pocos chunks muy
+      buenos (de ahí híbrido y re-ranking), no muchos chunks por si acaso.</p>
+    <p class="miniglos"><b>Términos.</b> <b>Ventana de contexto</b>: máximo de tokens
+      (entrada + salida) que el modelo acepta. <b>Lost in the middle</b>: degradación
+      empírica del uso de información enterrada en contextos largos.
+      <b>p<sub>in</sub>/p<sub>out</sub></b>: precio por millón de tokens de entrada/salida.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 : caso BBVA ============ -->
+<section class="slide" id="s8">
+  <div class="figcol">
+    <canvas id="cv8a" data-aspect="1.95"></canvas>
+    <canvas id="cv8b" data-aspect="2.6"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">C<sub>emb</sub> = <span class="frac"><span class="num">Tok<sub>corpus</sub></span><span class="den">10<sup>6</sup></span></span>&middot;p<sub>emb</sub>&nbsp;&nbsp;(una sola vez),&nbsp;&nbsp;&nbsp; J = <span class="frac"><span class="num">Tok<sub>corpus</sub></span><span class="den">400</span></span></div>
+      <div class="eqread">indexar el corpus entero: todos sus tokens pasan una vez por el
+        modelo de embeddings a <b>p<sub>emb</sub></b> = 0.10&nbsp;&euro;/millón. Con los
+        12&nbsp;GB de normativa del caso (&asymp; 144 millones de tokens útiles,
+        &asymp; 360&nbsp;000 chunks de 400) son ~14&nbsp;&euro;. Una vez.</div>
+      <div class="eq">c<sub>q</sub> = <span class="frac"><span class="num">T<sub>in</sub>&middot;p<sub>in</sub> + T<sub>out</sub>&middot;p<sub>out</sub></span><span class="den">10<sup>6</sup></span></span> + c<sub>rr</sub>,&nbsp;&nbsp;&nbsp; C<sub>mes</sub> = Q<sub>día</sub>&middot;30&middot;c<sub>q</sub> + C<sub>infra</sub><span class="eqn">(el coste que sí duele)</span></div>
+      <div class="eqread">cada consulta paga su contexto y su respuesta al modelo generador
+        (más <b>c<sub>rr</sub></b> &asymp; 0.0005&nbsp;&euro; de re-ranker si lo usas), y el
+        mes multiplica por Q<sub>día</sub>&middot;30. <b>C<sub>infra</sub></b> = 150&nbsp;&euro;/mes
+        del servidor pgvector. La asimetría una-vez frente a cada-día es la lección entera
+        de la slide.</div>
+      <div class="eq">Almacén = J&middot;(D&middot;1 + 1800)&middot;1.4 bytes<span class="eqn">(vectores int8 + texto + índice)</span></div>
+      <div class="eqread">cada chunk guarda su vector (D = 1024 dimensiones a 1 byte,
+        cuantizado a 8 bits) y su texto con metadatos (&asymp; 1800 bytes); el factor 1.4 es
+        el overhead del índice HNSW. Para el caso BBVA salen ~1.4&nbsp;GB: coincide con el
+        1.5&nbsp;GB en pgvector de la nota técnica.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>corpus documental del banco: <b id="r8g"></b> GB de texto útil</label>
+      <input type="range" id="sl8g" min="1" max="100" step="1" value="12">
+      <label>consultas por día, Q<sub>día</sub> = <b id="r8q"></b></label>
+      <input type="range" id="sl8q" min="100" max="20000" step="100" value="5000">
+      <label>chunks recuperados, k = <b id="r8k"></b></label>
+      <input type="range" id="sl8k" min="3" max="20" step="1" value="10">
+      <label><input type="checkbox" id="ck8" checked> re-ranking: de los k recuperados solo 3 van al LLM</label>
+      <label>modelo generador (precios orientativos)</label>
+      <select id="se8m">
+        <option>compacto — 0.8 / 4 €/Mtok</option>
+        <option selected>medio — 3 / 15 €/Mtok</option>
+        <option>frontera — 15 / 75 €/Mtok</option>
+      </select>
+    </div>
+    <div class="readout" id="ro8"></div>
+    <table class="live"><thead><tr><th>concepto</th><th>cantidad</th><th>coste</th></tr></thead>
+      <tbody id="tb8"></tbody></table>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Deja los valores del caso (12&nbsp;GB, 5000 q/día, k = 10, re-rank, modelo
+        medio). <span class="obs">Embedding inicial ~14&nbsp;&euro; una vez; generación
+        ~1500&nbsp;&euro;/mes: lo caro no es indexar el banco, es atender el día a
+        día.</span></li>
+      <li>Sube el corpus a 100&nbsp;GB. <span class="obs">El embedding inicial sigue por
+        debajo de 150&nbsp;&euro; y el coste mensual casi ni se mueve: el tamaño del corpus
+        no entra en c<sub>q</sub>. Indexa sin miedo.</span></li>
+      <li>Cambia a modelo frontera. <span class="obs">El mensual se multiplica por ~5: la
+        elección del generador es la palanca de coste número uno de un RAG.</span></li>
+      <li>Desactiva el re-ranking. <span class="obs">Van 10 chunks al LLM en vez de 3:
+        T<sub>in</sub> casi se triplica y el mensual sube más de lo que costaba el
+        re-ranker. El cross-encoder se paga solo.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el coste mensual
+        escala con Q<sub>día</sub> y no con J?</summary><div class="ans">Porque J solo
+        aparece en los costes de capital: el embedding inicial (proporcional a los tokens
+        del corpus, una vez) y el almacenamiento (gigabytes, céntimos al mes). En cambio,
+        cada consulta toca exactamente k chunks, da igual que el índice tenga 360&nbsp;000 o
+        36 millones: T<sub>in</sub> = 400 + k&middot;400 + 60 no contiene J. Esa
+        independencia es el contrato económico de RAG: el conocimiento crece sin que crezca
+        el coste marginal de usarlo.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Las dimensiones reales del caso del deck: 12&nbsp;GB
+      de normativa interna, contratos y FAQ; ~350&nbsp;000 chunks de ~400 tokens; embedding
+      multilingüe e5-large de D = 1024; almacenamiento ~1.5&nbsp;GB en pgvector con
+      cuantización a 8 bits; consulta top-10 + re-rank a top-3 + generación; ~1.8&nbsp;s y
+      ~0.02&nbsp;&dollar; por consulta. Los sliders reconstruyen ese presupuesto entero con
+      las fórmulas del panel: arriba, el coste mensual frente a las consultas/día para los
+      tres modelos generadores; abajo, la asimetría entre lo que se paga una vez y lo que
+      se paga cada mes.</p>
+    <p><span class="hd">Juega.</span> Este es el simulador que llevarías a la reunión de
+      presupuesto: mueve consultas/día para ver el punto donde conviene bajar de modelo, y
+      el corpus para comprobar que crecer en conocimiento es casi gratis. La tabla en vivo
+      desglosa cada partida con su fórmula detrás.</p>
+    <p><span class="hd">Lee así.</span> Con los valores por defecto el coste por consulta
+      ronda 0.01&ndash;0.02&nbsp;&euro;, como en la nota técnica; un agente humano que
+      tarda 10 minutos en buscar la misma respuesta cuesta tres órdenes de magnitud más.
+      Ese cociente, no la demo, es lo que aprueba el proyecto.</p>
+    <p><span class="hd">Mensaje.</span> El RAG corporativo es económicamente asimétrico:
+      indexar el banco entero cuesta decenas de euros; servirlo cuesta miles al mes y
+      escala con el uso. Optimiza en este orden: modelo generador, k efectivo (re-ranking),
+      tamaño de chunk &mdash; y deja el corpus crecer.</p>
+    <p class="miniglos"><b>Términos.</b> <b>e5-large</b>: modelo de embeddings multilingüe
+      abierto (D = 1024). <b>pgvector</b>: extensión de Postgres para búsqueda vectorial.
+      <b>Cuantización 8-bit</b>: guardar cada dimensión en 1 byte en vez de 4.
+      <b>Coste de capital vs operativo</b>: una vez (indexar) frente a recurrente (servir).</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 : glosario ============ -->
+<section class="slide" id="s9">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="glosgrid" id="glos"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 : síntesis ============ -->
+<section class="slide" id="s10">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="pipe">
+      <div class="pipebox"><div><div class="pname">Por qué RAG</div>
+          <div class="pmap">Slide: Por qué RAG</div></div>
+        <div class="pq">"El conocimiento del modelo se congela en la fecha de corte y decae como f(t) = e<sup>&minus;&lambda;t</sup>; los documentos viven. P<sub>con</sub> = R&middot;F + (1&minus;R)&middot;P<sub>sin</sub>: la ventaja de RAG crece con cada mes, y vale exactamente lo que valga su retrieval."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Pipeline canónico</div>
+          <div class="pmap">Slide: Pipeline</div></div>
+        <div class="pq">"Ingesta una vez (chunking &rarr; &phi; &rarr; índice de J&times;D), consulta cada vez (top<sub>k</sub> por coseno &rarr; LLM con citas). La memoria y la búsqueda escalan con J; el coste por consulta solo con k: esa separación es el diseño entero."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Chunking</div>
+          <div class="pmap">Slide: Chunking</div></div>
+        <div class="pq">"La ventana óptima es la unidad coherente más pequeña: chunks pequeños fragmentan la respuesta (recall cae), grandes la diluyen entre ruido (precision cae). 300&ndash;600 tokens, solape de 50&ndash;100, metadatos siempre."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Retrieval y sus patrones</div>
+          <div class="pmap">Slides: Coseno &middot; Recall@k &middot; Híbrido &middot; Re-ranking</div></div>
+        <div class="pq">"El coseno ordena por ángulo; recall@k y precision@k miden contra relevancias anotadas; el híbrido &alpha;&middot;cos + (1&minus;&alpha;)&middot;BM25 rescata códigos y siglas que el embedding aplana; el re-ranking gasta el cross-encoder caro solo sobre los k<sub>0</sub> candidatos que el bi-encoder barato ya filtró."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Presupuesto de contexto</div>
+          <div class="pmap">Slide: Contexto</div></div>
+        <div class="pq">"T<sub>in</sub> = T<sub>sys</sub> + k&middot;c + T<sub>q</sub> contra una ventana que es límite duro; la calidad es cobertura &times; atención, una U invertida con máximo en k &asymp; 4&ndash;8. Pocos chunks muy buenos, no muchos por si acaso."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">Caso BBVA dimensionado</div>
+          <div class="pmap">Slide: Caso BBVA</div></div>
+        <div class="pq">"12 GB &rarr; 360&nbsp;000 chunks &rarr; ~14 &euro; de embedding una vez y ~1.4 GB en pgvector; servir 5000 consultas/día &rarr; miles de &euro;/mes que escalan con el uso y con el modelo elegido, nunca con J. Indexa sin miedo; optimiza el generador y el k."</div></div>
+    </div>
+    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
+      RAG convierte el conocimiento corporativo en un sistema auditable con citas: cada
+      pieza del pipeline tiene un dial (s, o, k, &alpha;, k<sub>0</sub>, modelo), cada dial
+      tiene una métrica (recall@k, precision@k, faithfulness) y cada métrica tiene un
+      precio en euros &mdash; y el Día 16 veremos cuándo, pese a todo, hay que ajustar el
+      modelo.</p>
+  </div>
+</section>
+
+<div id="footerL">Garrido-Merchán &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; Día 15 &middot; RAG corporativo</div>
+<div id="footer"></div>
+<div id="arrows">
+  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
+</div>
+
+<script>
+"use strict";
+/* ================= PALETTE ================= */
+const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
+      MUTE="#8A8A8A", RULE="#D9C28A";
+
+/* ================= MATH CORE (DOM-free) ================= */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296;};}
+function randn(rng){let u=0;while(u===0)u=rng();const v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
+function fmtMil(x){ // thousands separator for integers
+  return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g," ");}
+function fmtEUR(x){ // adaptive euro formatting
+  if(x>=1000)return fmtMil(x)+" €";
+  if(x>=10)return x.toFixed(0)+" €";
+  if(x>=1)return x.toFixed(2)+" €";
+  if(x>=0.01)return x.toFixed(3)+" €";
+  return (x*100).toFixed(3)+" c€";}
+
+/* --- corpus compartido: 15 chunks bancarios con embeddings 2D coherentes --- */
+const RAGCH=[
+ {l:"LTV 80% vivienda habitual",x:0.95,y:0.40,
+  t:"Hipoteca sobre vivienda habitual: el préstamo no supera el 80 % del valor de tasación, es decir, un LTV máximo del 80 %."},
+ {l:"Comisión amortización anticipada",x:0.90,y:0.50,
+  t:"La amortización anticipada de la hipoteca conlleva una comisión máxima del 2 % durante los cinco primeros años."},
+ {l:"Hipoteca fija vs variable",x:0.97,y:0.31,
+  t:"Oferta de tipos: hipoteca fija al 2,9 % TAE frente a variable referenciada a euríbor más 0,6 puntos."},
+ {l:"Bonificación por nómina",x:0.86,y:0.54,
+  t:"Bonificación del tipo hipotecario por domiciliar la nómina y contratar seguros de hogar y vida."},
+ {l:"Provisión de dudosos",x:0.42,y:0.91,
+  t:"Las operaciones dudosas se provisionan hasta el 100 % de cobertura a los 21 meses de la entrada en mora."},
+ {l:"Vigilancia especial",x:0.33,y:0.95,
+  t:"Una operación entra en vigilancia especial al acumular dos cuotas impagadas o caer su scoring de comportamiento."},
+ {l:"Scoring SIR-9",x:0.52,y:0.86,
+  t:"El scoring interno SIR-9 combina la ratio de endeudamiento, la antigüedad laboral y el historial de pagos."},
+ {l:"Alertas tempranas",x:0.27,y:0.97,
+  t:"Alertas tempranas de riesgo: impago de recibos, descubiertos recurrentes y caída de la nómina domiciliada."},
+ {l:"Límite de tarjeta",x:-0.36,y:0.93,
+  t:"Las tarjetas de crédito tienen un límite inicial de 3 000 euros, ampliable según el comportamiento de pago."},
+ {l:"TAE revolving",x:-0.50,y:0.87,
+  t:"El pago aplazado revolving de la tarjeta aplica una TAE del 18 % sobre el saldo dispuesto."},
+ {l:"Comisión de cajero",x:-0.43,y:0.90,
+  t:"Las retiradas de efectivo a débito en cajeros de otra red tienen una comisión de 2 euros por operación."},
+ {l:"Entrega de la FEIN",x:-0.87,y:0.49,
+  t:"La normativa de transparencia obliga a entregar la FEIN de la hipoteca al menos diez días antes de la firma."},
+ {l:"Reporte de incidentes",x:-0.94,y:0.35,
+  t:"Los incidentes operativos graves se reportan al regulador en un plazo máximo de 24 horas."},
+ {l:"Auditoría de expedientes",x:-0.90,y:0.44,
+  t:"El comité de auditoría interna revisa trimestralmente una muestra aleatoria de expedientes de crédito."},
+ {l:"Contrato 2024-BBVA-7832",x:0.80,y:0.60,
+  t:"Contrato marco 2024-BBVA-7832: condiciones particulares y penalización por amortización anticipada del 1,5 %."}];
+
+/* queries para coseno + recall@k, con relevancias anotadas */
+const RQ=[
+ {l:"financiación de vivienda",x:0.94,y:0.40,rel:[0,1,2,3,11]},
+ {l:"préstamo impagado",x:0.36,y:0.93,rel:[4,5,7]},
+ {l:"costes de la tarjeta",x:-0.44,y:0.89,rel:[8,9,10]},
+ {l:"regulador y control interno",x:-0.91,y:0.41,rel:[11,12,13]}];
+
+/* queries para búsqueda híbrida */
+const HQ=[
+ {l:"penalización del contrato 2024-BBVA-7832",x:0.91,y:0.41,gold:14},
+ {l:"dinero para comprar una casa a plazos",x:0.93,y:0.42,gold:0}];
+
+function cosv(ax,ay,bx,by){
+  return (ax*bx+ay*by)/(Math.hypot(ax,ay)*Math.hypot(bx,by));}
+function cosRank(qx,qy){ // indices of RAGCH sorted by cosine desc
+  const sc=RAGCH.map((c,i)=>({i:i,s:cosv(qx,qy,c.x,c.y)}));
+  sc.sort((a,b)=>b.s-a.s||a.i-b.i);
+  return sc;}
+
+/* --- BM25 real sobre el corpus de juguete --- */
+const STOP=new Set(("de la el en los las del y a al por que con un una se o no es son "+
+  "para sobre su sus mas como este esta hay si lo le ante entre").split(" "));
+function toks(s){
+  const m=s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .match(/[a-z0-9]+/g)||[];
+  return m.filter(w=>!STOP.has(w));}
+const DTOKS=RAGCH.map(c=>toks(c.t));
+const AVGDL=DTOKS.reduce((a,d)=>a+d.length,0)/DTOKS.length;
+const DF=(function(){const df={};
+  DTOKS.forEach(d=>{new Set(d).forEach(t=>{df[t]=(df[t]||0)+1;});});
+  return df;})();
+function idf(t){const n=RAGCH.length,d=DF[t]||0;
+  return Math.log(1+(n-d+0.5)/(d+0.5));}
+function bm25(qToks,j){
+  const k1=1.5,b=0.75,d=DTOKS[j];
+  const tf={};d.forEach(t=>{tf[t]=(tf[t]||0)+1;});
+  let s=0;
+  for(const t of qToks){const f=tf[t]||0;if(f===0)continue;
+    s+=idf(t)*f*(k1+1)/(f+k1*(1-b+b*d.length/AVGDL));}
+  return s;}
+
+/* --- documento de juguete para chunking: política de riesgos (~600 palabras) --- */
+const POLDOC=[
+ ["Política de Riesgo de Crédito Hipotecario del Banco Cantábrico, edición de marzo de 2026, aprobada por el Comité de Riesgos y de obligado cumplimiento en toda la red de oficinas del grupo.",0],
+ ["El objeto de esta política es fijar los criterios de admisión, seguimiento y recuperación de las operaciones hipotecarias concedidas a personas físicas residentes en España.",0],
+ ["Quedan fuera de su ámbito los préstamos promotor, la financiación de suelo y las operaciones sindicadas, que se rigen por la política de banca mayorista.",0],
+ ["Toda solicitud se evalúa con el scoring interno SIR-9, que combina la ratio de endeudamiento, la antigüedad laboral, el historial de pagos y la estabilidad de los ingresos del titular.",0],
+ ["La ratio de esfuerzo, definida como la cuota mensual sobre los ingresos netos del hogar, no puede superar el treinta y cinco por ciento en el momento de la concesión.",0],
+ ["Para hipotecas sobre vivienda habitual, el importe del préstamo no puede superar el ochenta por ciento del valor de tasación, es decir, un LTV máximo del ochenta por ciento.",1],
+ ["Como única excepción, el LTV puede alcanzar el ochenta y cinco por ciento cuando el titular domicilia su nómina y la vivienda cuenta con calificación energética A o B.",1],
+ ["Para segundas residencias el límite se reduce al setenta por ciento, y para inmuebles situados en zonas de baja liquidez al sesenta por ciento.",0],
+ ["La tasación debe encargarse a una sociedad homologada por el Banco de España y tener una antigüedad inferior a seis meses en la fecha de la firma.",0],
+ ["Los tipos de interés se fijan según el precio de transferencia interno más una prima de riesgo derivada del scoring, con un suelo comercial aprobado por el Comité ALCO.",0],
+ ["Las operaciones con ratio de esfuerzo entre el treinta y cinco y el cuarenta por ciento requieren la firma adicional del director de zona y la aportación de garantías complementarias.",0],
+ ["Se consideran garantías complementarias el aval personal solidario, la pignoración de depósitos y la contratación de un seguro de protección de pagos.",0],
+ ["El seguimiento de la cartera se realiza mensualmente mediante el cuadro de mando de riesgos, con alertas tempranas por impago de recibos, descubiertos recurrentes y caídas de nómina.",0],
+ ["Una operación entra en vigilancia especial cuando acumula dos cuotas impagadas o cuando su scoring de comportamiento cae por debajo del umbral B3.",0],
+ ["La clasificación contable sigue la circular vigente y distingue riesgo normal, riesgo normal en vigilancia especial, riesgo dudoso y riesgo fallido.",0],
+ ["Las operaciones dudosas se provisionan según el calendario interno, alcanzando el cien por cien de cobertura a los veintiún meses de la entrada en mora.",0],
+ ["El departamento de recuperaciones prioriza la renegociación de cuotas, la carencia temporal de capital y, como última instancia, la dación en pago del inmueble.",0],
+ ["Toda refinanciación exige un nuevo análisis completo de la capacidad de pago y queda clasificada en vigilancia especial durante un periodo mínimo de dos años.",0],
+ ["El Comité de Riesgos delega en los directores de oficina la sanción de operaciones de hasta doscientos mil euros que cumplan íntegramente los criterios de esta política.",0],
+ ["Las operaciones que excedan dicho importe, o que incumplan algún criterio de admisión, se elevan al Comité de Créditos Central, que se reúne con frecuencia semanal.",0],
+ ["El área de auditoría interna revisa trimestralmente una muestra aleatoria de expedientes y reporta las excepciones detectadas al Consejo de Administración.",0],
+ ["Los incumplimientos materiales de esta política se comunican al regulador cuando superan los umbrales fijados por la normativa de transparencia bancaria.",0],
+ ["Esta política se revisa con periodicidad anual, o antes si cambios regulatorios o de mercado lo exigen, y su versión vigente se publica en la intranet corporativa.",0]];
+const POLW=(function(){const w=[];
+  POLDOC.forEach(s=>{s[0].split(/\s+/).forEach(t=>{w.push({w:t,rel:s[1]});});});
+  return w;})();
+const POLGOLD=POLW.reduce((a,x)=>a+x.rel,0);
+
+function chunkSpans(L,s,o){ // [start,end) spans, step s-o
+  const st=Math.max(1,s-o),out=[];
+  for(let a=0;;a+=st){const b=Math.min(L,a+s);out.push([a,b]);if(b>=L)break;}
+  return out;}
+function chunkEval(s,o,kret){ // toy retrieval + precision/recall on POLW
+  const L=POLW.length,spans=chunkSpans(L,s,o);
+  const scored=spans.map((sp,i)=>{let g=0;
+    for(let w=sp[0];w<sp[1];w++)g+=POLW[w].rel;
+    return {i:i,sp:sp,g:g,sim:g/Math.sqrt(sp[1]-sp[0])};});
+  const ranked=scored.slice().sort((a,b)=>b.sim-a.sim||a.i-b.i);
+  const sel=ranked.slice(0,Math.min(kret,ranked.length));
+  const cov=new Set();
+  sel.forEach(c=>{for(let w=c.sp[0];w<c.sp[1];w++)cov.add(w);});
+  let gC=0;cov.forEach(w=>{gC+=POLW[w].rel;});
+  const sent=cov.size;
+  return {spans:spans,sel:sel.map(c=>c.i),n:spans.length,
+    prec:sent>0?gC/sent:0,rec:POLGOLD>0?gC/POLGOLD:0,sent:sent,gC:gC};}
+
+/* ================= plotting helpers ================= */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const wCss=cv.parentElement.clientWidth;
+  const asp=parseFloat(cv.dataset.aspect)||1.8;
+  const hCss=wCss/asp;
+  cv.style.height=hCss+"px";
+  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx:ctx,W:wCss,H:hCss};
+}
+function axes(ctx,fr,opt){
+  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
+  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
+  ctx.save();
+  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
+  ctx.font="11px Georgia, serif";
+  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
+  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
+  ctx.textAlign="center";ctx.textBaseline="top";
+  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
+    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
+    ctx.fillText(lb,fr.x0-6,Y(v));});
+  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
+  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
+    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText(opt.ylab,0,0);ctx.restore();}
+  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
+    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
+  ctx.restore();
+  return {X:X,Y:Y};
+}
+function polyline(ctx,pts,color,lw,dash){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
+  if(dash)ctx.setLineDash(dash);
+  ctx.beginPath();let first=true;
+  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
+  ctx.stroke();ctx.restore();
+}
+function rampColor(t){
+  t=Math.max(0,Math.min(1,t));
+  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
+  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
+  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+/* ================= navigation ================= */
+const SECTIONS=["Por qué RAG","Pipeline","Chunking","Coseno","Recall@k","Híbrido",
+  "Re-ranking","Contexto","Caso BBVA","Glosario","Síntesis"];
+const TITLES=[
+ "Sin retrieval, la probabilidad de respuesta correcta cae con cada mes que envejece el modelo.",
+ "El pipeline RAG indexa el corpus una vez y recupera contexto fresco en cada consulta.",
+ "El tamaño de chunk fija el equilibrio entre precisión sin contexto y contexto con ruido.",
+ "Recuperar es geometría: el coseno ordena los chunks por el ángulo que forman con la query.",
+ "Recall@k sube con k y precision@k baja: cada chunk extra cuesta tokens y mete ruido.",
+ "La búsqueda híbrida combina coseno y BM25 porque cada canal falla donde el otro acierta.",
+ "El re-ranking pasa pocos candidatos por un modelo caro y compra calidad pagando latencia.",
+ "El contexto es un presupuesto: con poco el modelo no sabe, con demasiado se pierde.",
+ "Indexar el banco entero cuesta decenas de euros; lo caro es la generación de cada día.",
+ "Glosario: todos los símbolos del día, en una página y en cristiano.",
+ "RAG es un pipeline auditable: cada pieza tiene un dial, cada dial una métrica y un precio."];
+let cur=0;const N=11;
+const nav=document.getElementById("navstrip");
+SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
+  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
+function go(i){
+  cur=(i+N)%N;
+  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
+  document.getElementById("slidetitle").textContent=TITLES[cur];
+  document.getElementById("footer").textContent=(cur+1)+" / "+N;
+  window.scrollTo(0,0);
+  if(updaters[cur])updaters[cur](true);
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
+window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
+const updaters={};
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 0 : por qué RAG ================= */
+(function(){
+  const A=0.92,G=0.15,F=0.95;
+  const slt=document.getElementById("sl0t"),slr=document.getElementById("sl0r"),
+        slR=document.getElementById("sl0R");
+  slt.oninput=upd;slr.oninput=upd;slR.oninput=upd;
+  function psin(t,lam){const f=Math.exp(-lam*t);return f*A+(1-f)*G;}
+  function pcon(t,lam,R){return R*F+(1-R)*psin(t,lam);}
+  function upd(){
+    const t=+slt.value,lam=+slr.value/100,R=+slR.value;
+    document.getElementById("r0t").textContent=t;
+    document.getElementById("r0r").textContent=(+slr.value).toFixed(1);
+    document.getElementById("r0R").textContent=R.toFixed(2);
+    const f=Math.exp(-lam*t),ps=psin(t,lam),pc=pcon(t,lam,R);
+    document.getElementById("ro0").innerHTML=
+      "conocimiento aún vigente f(t) = "+(100*f).toFixed(1)+"% &nbsp;&middot;&nbsp; "+
+      "P<sub>sin</sub> = "+(100*ps).toFixed(1)+"% &nbsp;&middot;&nbsp; "+
+      "<span class='gold'>P<sub>con</sub> = "+(100*pc).toFixed(1)+"%</span>"+
+      "<br>de cada 1000 consultas: <b>"+Math.round(1000*(1-ps))+
+      "</b> falladas sin RAG &nbsp;vs&nbsp; <span class='gold'>"+
+      Math.round(1000*(1-pc))+"</span> con RAG &nbsp;&middot;&nbsp; brecha = "+
+      (100*(pc-ps)).toFixed(1)+" puntos";
+    /* top: curves vs t */
+    let c=fitCanvas(document.getElementById("cv0a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:36,ymin:0,ymax:1,
+      xticks:[0,6,12,18,24,30,36],
+      yticks:[[0,"0"],[0.25,"0.25"],[0.5,"0.50"],[0.75,"0.75"],[1,"1"]],
+      xlab:"meses desde el corte de entrenamiento, t",
+      ylab:"P(respuesta correcta)",
+      title:"Conocimiento congelado (tinta) vs documentos vivos (dorado)"});
+    const psPts=[],pcPts=[];
+    for(let i=0;i<=144;i++){const tt=36*i/144;
+      psPts.push([ax.X(tt),ax.Y(psin(tt,lam))]);
+      pcPts.push([ax.X(tt),ax.Y(pcon(tt,lam,R))]);}
+    polyline(c.ctx,[[ax.X(0),ax.Y(G)],[ax.X(36),ax.Y(G)]],MUTE,1,[4,4]);
+    c.ctx.fillStyle=MUTE;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("suelo de alucinación g = 0.15",ax.X(13),ax.Y(G)-5);
+    polyline(c.ctx,psPts,INK,2);
+    polyline(c.ctx,pcPts,GOLD,2.4);
+    polyline(c.ctx,[[ax.X(t),fr.y0],[ax.X(t),fr.y0+fr.h]],GOLDD,1.1,[5,4]);
+    c.ctx.fillStyle=INK;c.ctx.fillText("sin RAG",ax.X(27),ax.Y(psin(27,lam))+14);
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("con RAG",ax.X(27),ax.Y(pcon(27,lam,R))-7);
+    /* bottom: bars at current t */
+    c=fitCanvas(document.getElementById("cv0b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:1,ymin:0,ymax:1000,
+      xticks:[],yticks:[[0,"0"],[500,"500"],[1000,"1000"]],
+      ylab:"de 1000 consultas",
+      title:"A los "+t+" meses: correctas (relleno) y falladas (hueco)"});
+    const bw=fr2.w*0.22;
+    [[0.28,ps,"sin RAG",INK],[0.72,pc,"con RAG",GOLD]].forEach(b=>{
+      const x=fr2.x0+fr2.w*b[0]-bw/2;
+      c.ctx.strokeStyle=b[3];c.ctx.lineWidth=1.4;
+      c.ctx.strokeRect(x,ax2.Y(1000),bw,fr2.h);
+      c.ctx.fillStyle=b[3];
+      c.ctx.fillRect(x,ax2.Y(1000*b[1]),bw,fr2.h-(ax2.Y(1000*b[1])-fr2.y0));
+      c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
+      c.ctx.fillText(b[2]+": "+Math.round(1000*b[1]),x+bw/2,ax2.Y(0)+18);
+      c.ctx.fillStyle="#fff";
+      if(b[1]>0.12)c.ctx.fillText(Math.round(1000*b[1]),x+bw/2,ax2.Y(1000*b[1]/2)+4);});
+  }
+  updaters[0]=upd;
+})();
+
+/* ================= SLIDE 1 : pipeline ================= */
+(function(){
+  const DIMS=[256,384,512,768,1024,1536];
+  const slJ=document.getElementById("sl1J"),slD=document.getElementById("sl1D"),
+        sle=document.getElementById("sl1e"),ck=document.getElementById("ck1");
+  slJ.oninput=upd;slD.oninput=upd;sle.oninput=upd;ck.onchange=upd;
+  const STG=[
+    ["Documentos","12 GB pdf/html"],["Chunking","J chunks · ~400 tok"],
+    ["Embeddings φ","matriz J×D"],["Índice vectorial","J·D·b bytes"],
+    ["Query q","vector 1×D"],["Retrieval top-k","k chunks"],
+    ["LLM + citas","respuesta ŷ"]];
+  const DESC=[
+    "1 · Documentos: el corpus crudo del negocio (normativa, contratos, FAQ). Se paga una vez.",
+    "2 · Chunking: trocear en J unidades coherentes de ~400 tokens (slide siguiente). Una vez.",
+    "3 · Embeddings: cada chunk pasa por φ y se convierte en un vector de D números. Una vez.",
+    "4 · Índice vectorial: los J vectores se guardan en la base vectorial (pgvector, Qdrant). Una vez.",
+    "5 · Query: la pregunta del usuario se embebe con el MISMO φ. En cada consulta.",
+    "6 · Retrieval: el índice devuelve los top-k chunks por coseno. En cada consulta.",
+    "7 · Generación: el LLM responde condicionado a los k chunks y devuelve citas. En cada consulta."];
+  function upd(){
+    const J=Math.round(Math.pow(10,+slJ.value)),D=DIMS[+slD.value],
+          b=ck.checked?1:4,et=+sle.value;
+    document.getElementById("r1J").textContent=fmtMil(J);
+    document.getElementById("r1D").textContent=D;
+    document.getElementById("r1e").textContent=et;
+    const mem=J*D*b,memTxt=mem>=1e9?(mem/1e9).toFixed(2)+" GB":(mem/1e6).toFixed(1)+" MB";
+    const opsBF=2*J*D,msBF=opsBF/5e9*1000;
+    const distANN=64*Math.log2(J),msANN=2*distANN*D/5e9*1000;
+    document.getElementById("ro1").innerHTML=
+      "<span class='deep'>"+DESC[et-1]+"</span><br>"+
+      "índice: J·D·b = "+memTxt+" ("+(ck.checked?"int8":"float32")+") &nbsp;&middot;&nbsp; "+
+      "fuerza bruta: "+fmtMil(J)+" distancias &asymp; "+
+      (msBF>=1?msBF.toFixed(0)+" ms":(1000*msBF).toFixed(0)+" µs")+
+      " &nbsp;&middot;&nbsp; ANN: &asymp;"+fmtMil(distANN)+" distancias"+
+      " &nbsp;&middot;&nbsp; <span class='gold'>aceleración &times;"+
+      fmtG(J/distANN,2)+"</span>";
+    /* top: pipeline diagram */
+    let c=fitCanvas(document.getElementById("cv1a"));
+    const W=c.W,H=c.H,ctx=c.ctx;
+    ctx.font="bold 12px Georgia,serif";ctx.textAlign="center";
+    ctx.fillStyle=MUTE;ctx.textAlign="left";ctx.font="italic 11px Georgia,serif";
+    ctx.fillText("INGESTA — una vez",14,20);
+    ctx.fillText("CONSULTA — cada query",14,H/2+14);
+    const lane1=STG.slice(0,4),lane2=STG.slice(4);
+    function box(x,y,w,h,i){
+      const on=(i+1)===et;
+      ctx.fillStyle=on?GOLD:"#fff";
+      ctx.strokeStyle=on?GOLDD:RULE;ctx.lineWidth=on?2:1.2;
+      ctx.fillRect(x,y,w,h);ctx.strokeRect(x,y,w,h);
+      ctx.fillStyle=on?"#fff":INK;ctx.font="bold 12px Georgia,serif";
+      ctx.textAlign="center";
+      ctx.fillText(STG[i][0],x+w/2,y+h/2-3);
+      ctx.fillStyle=on?"#fff":MUTE;ctx.font="10px Georgia,serif";
+      ctx.fillText(STG[i][1],x+w/2,y+h/2+13);}
+    const bw1=(W-60-3*26)/4,bh=H*0.30,y1=28,y2=H/2+22;
+    for(let i=0;i<4;i++){const x=30+i*(bw1+26);box(x,y1,bw1,bh,i);
+      if(i<3){ctx.fillStyle=GOLDD;ctx.font="14px Georgia,serif";ctx.textAlign="center";
+        ctx.fillText("→",x+bw1+13,y1+bh/2+4);}}
+    const bw2=(W-60-2*26)/3;
+    for(let i=0;i<3;i++){const x=30+i*(bw2+26);box(x,y2,bw2,bh,4+i);
+      if(i<2){ctx.fillStyle=GOLDD;ctx.font="14px Georgia,serif";ctx.textAlign="center";
+        ctx.fillText("→",x+bw2+13,y2+bh/2+4);}}
+    /* vertical link index -> retrieval */
+    ctx.strokeStyle=RULE;ctx.lineWidth=1.2;ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    ctx.moveTo(30+3*(bw1+26)+bw1/2,y1+bh);
+    ctx.lineTo(30+1*(bw2+26)+bw2/2,y2);ctx.stroke();ctx.setLineDash([]);
+    /* bottom: memory vs J */
+    c=fitCanvas(document.getElementById("cv1b"));
+    const fr={x0:56,y0:24,w:c.W-74,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:3,xmax:6.5,ymin:0,ymax:10,
+      xticks:[[3,"10³"],[4,"10⁴"],[5,"10⁵"],[6,"10⁶"]],
+      yticks:[[0,"0"],[2,"2"],[4,"4"],[6,"6"],[8,"8"],[10,"10"]],
+      xlab:"n.º de chunks J (escala log)",ylab:"memoria del índice (GB)",
+      title:"Memoria = J·D·b: float32 (tinta) vs int8 (dorado), D = "+D});
+    const p32=[],p8=[];
+    for(let i=0;i<=140;i++){const lj=3+3.5*i/140,JJ=Math.pow(10,lj);
+      p32.push([ax.X(lj),ax.Y(Math.min(10,JJ*D*4/1e9))]);
+      p8.push([ax.X(lj),ax.Y(Math.min(10,JJ*D*1/1e9))]);}
+    polyline(c.ctx,p32,INK,2);polyline(c.ctx,p8,GOLD,2.4);
+    const lj=+slJ.value;
+    c.ctx.fillStyle=ck.checked?GOLD:INK;c.ctx.beginPath();
+    c.ctx.arc(ax.X(lj),ax.Y(Math.min(10,J*D*b/1e9)),5,0,7);c.ctx.fill();
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillStyle=INK;c.ctx.fillText("float32",ax.X(6.05),ax.Y(Math.min(10,Math.pow(10,6.05)*D*4/1e9))-6);
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("int8",ax.X(6.2),ax.Y(Math.min(10,Math.pow(10,6.2)*D/1e9))-6);
+  }
+  updaters[1]=upd;
+})();
+
+/* ================= SLIDE 2 : chunking ================= */
+(function(){
+  const sls=document.getElementById("sl2s"),slo=document.getElementById("sl2o"),
+        slk=document.getElementById("sl2k");
+  sls.oninput=upd;slo.oninput=upd;slk.oninput=upd;
+  function upd(){
+    const s=+sls.value,o=Math.min(+slo.value,s-10),k=+slk.value;
+    document.getElementById("r2s").textContent=s;
+    document.getElementById("r2o").textContent=o;
+    document.getElementById("r2k").textContent=k;
+    const ev=chunkEval(s,o,k);
+    const f1=(ev.prec+ev.rec>0)?2*ev.prec*ev.rec/(ev.prec+ev.rec):0;
+    const tok=Math.round(ev.sent*1.4);
+    document.getElementById("ro2").innerHTML=
+      "n.º de chunks = <b>"+ev.n+"</b> &nbsp;&middot;&nbsp; palabras enviadas al LLM = "+
+      ev.sent+" (&asymp; "+tok+" tokens) &nbsp;&middot;&nbsp; respuesta capturada: "+
+      ev.gC+"/"+POLGOLD+" palabras<br>"+
+      "precision = <b>"+ev.prec.toFixed(2)+"</b> &nbsp;&middot;&nbsp; "+
+      "recall = <span class='gold'>"+ev.rec.toFixed(2)+"</span> &nbsp;&middot;&nbsp; "+
+      "F1 = "+f1.toFixed(2);
+    /* top: word grid */
+    let c=fitCanvas(document.getElementById("cv2a"));
+    const ctx=c.ctx,L=POLW.length;
+    ctx.font="bold 12px Georgia,serif";ctx.fillStyle=INK;ctx.textAlign="left";
+    ctx.fillText("Política de riesgos ("+L+" palabras) — cortes, solapes y respuesta anotada",10,16);
+    const mx=10,my=26,cw=Math.max(6,Math.floor((c.W-2*mx)/64)),cols=Math.floor((c.W-2*mx)/cw),
+          ch=Math.max(9,Math.min(14,Math.floor((c.H-my-46)/Math.ceil(L/cols))));
+    /* membership */
+    const memb=new Array(L).fill(0).map(()=>[]);
+    ev.spans.forEach((sp,i)=>{for(let w=sp[0];w<sp[1];w++)memb[w].push(i);});
+    const selSet=new Set(ev.sel);
+    for(let i=0;i<L;i++){
+      const col=i%cols,row=Math.floor(i/cols);
+      const x=mx+col*cw,y=my+row*ch;
+      const inSel=memb[i].some(j=>selSet.has(j));
+      let fill=memb[i].length>1?RULE:(memb[i][0]%2===0?"#efefef":"#dcdcdc");
+      ctx.fillStyle=fill;ctx.fillRect(x,y,cw-1,ch-2);
+      if(inSel){ctx.fillStyle="rgba(184,134,11,0.35)";ctx.fillRect(x,y,cw-1,ch-2);}
+      if(POLW[i].rel){ctx.fillStyle=GOLDD;ctx.fillRect(x,y+ch-5,cw-1,3);}
+      /* chunk start tick */
+      if(memb[i].length&&ev.spans[memb[i][0]][0]===i){
+        ctx.fillStyle=INK;ctx.fillRect(x,y,1.5,ch-2);}
+    }
+    const ly=my+Math.ceil(L/cols)*ch+14;
+    ctx.font="10px Georgia,serif";ctx.textAlign="left";
+    ctx.fillStyle="#dcdcdc";ctx.fillRect(10,ly-8,18,9);
+    ctx.fillStyle=INK;ctx.fillText("chunk (gris alterno)",32,ly);
+    ctx.fillStyle=RULE;ctx.fillRect(150,ly-8,18,9);
+    ctx.fillStyle=INK;ctx.fillText("solape (2 chunks)",172,ly);
+    ctx.fillStyle="rgba(184,134,11,0.45)";ctx.fillRect(282,ly-8,18,9);
+    ctx.fillStyle=INK;ctx.fillText("recuperado",304,ly);
+    ctx.fillStyle=GOLDD;ctx.fillRect(380,ly-5,18,3);
+    ctx.fillStyle=INK;ctx.fillText("respuesta anotada (LTV 80% + excepción 85%)",402,ly);
+    /* bottom: curves vs s */
+    c=fitCanvas(document.getElementById("cv2b"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:20,xmax:200,ymin:0,ymax:1.02,
+      xticks:[20,60,100,140,200],
+      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      xlab:"tamaño de chunk s (palabras), con o = "+o+" y k = "+k,
+      title:"Trade-off del chunking: precision (tinta), recall (dorado), F1 (gris)"});
+    const pp=[],rr=[],ff=[];
+    for(let ss=20;ss<=200;ss+=4){
+      const e2=chunkEval(ss,Math.min(o,ss-10),k);
+      const f2=(e2.prec+e2.rec>0)?2*e2.prec*e2.rec/(e2.prec+e2.rec):0;
+      pp.push([ax.X(ss),ax.Y(e2.prec)]);rr.push([ax.X(ss),ax.Y(e2.rec)]);
+      ff.push([ax.X(ss),ax.Y(f2)]);}
+    polyline(c.ctx,ff,MUTE,1.4,[5,4]);
+    polyline(c.ctx,pp,INK,2);polyline(c.ctx,rr,GOLD,2.4);
+    polyline(c.ctx,[[ax.X(s),fr.y0],[ax.X(s),fr.y0+fr.h]],GOLDD,1.1,[5,4]);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();c.ctx.arc(ax.X(s),ax.Y(ev.rec),4.5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=INK;c.ctx.beginPath();c.ctx.arc(ax.X(s),ax.Y(ev.prec),4.5,0,7);c.ctx.fill();
+  }
+  updaters[2]=upd;
+})();
+
+/* ================= SLIDE 3 : coseno ================= */
+(function(){
+  const se=document.getElementById("se3q"),slk=document.getElementById("sl3k");
+  se.onchange=upd;slk.oninput=upd;
+  function upd(){
+    const qi=se.selectedIndex,k=+slk.value,q=RQ[qi];
+    document.getElementById("r3k").textContent=k;
+    const rk=cosRank(q.x,q.y);
+    const angQ=Math.atan2(q.y,q.x);
+    const angK=Math.acos(Math.max(-1,Math.min(1,rk[k-1].s)));
+    document.getElementById("ro3").innerHTML=
+      "mejor chunk: cos = <span class='gold'>"+rk[0].s.toFixed(3)+"</span> ("+
+      RAGCH[rk[0].i].l+")<br>k-ésimo (k = "+k+"): cos = "+rk[k-1].s.toFixed(3)+
+      " &nbsp;&middot;&nbsp; apertura del cono = &plusmn;"+
+      (angK*180/Math.PI).toFixed(1)+"&deg;";
+    const tb=document.getElementById("tb3");
+    tb.innerHTML=rk.slice(0,k).map((r,j)=>
+      "<tr><td>"+(j+1)+"</td><td>"+RAGCH[r.i].l+"</td><td><b>"+
+      r.s.toFixed(3)+"</b></td></tr>").join("");
+    /* plane */
+    const c=fitCanvas(document.getElementById("cv3a"));
+    const fr={x0:46,y0:22,w:c.W-64,h:c.H-58};
+    const ax=axes(c.ctx,fr,{xmin:-1.25,xmax:1.25,ymin:-0.08,ymax:1.22,
+      xticks:[[-1,"-1"],[0,"0"],[1,"1"]],yticks:[[0,"0"],[1,"1"]],
+      xlab:"dimensión 1 del embedding",ylab:"dimensión 2",
+      title:"15 chunks bancarios y la query en el plano de embeddings (2D didáctico)"});
+    const ctx=c.ctx;
+    /* unit semicircle */
+    ctx.strokeStyle="#e8e8e8";ctx.lineWidth=1;ctx.beginPath();
+    for(let i=0;i<=120;i++){const a=Math.PI*i/120;
+      const px=ax.X(Math.cos(a)),py=ax.Y(Math.sin(a));
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+    ctx.stroke();
+    /* retrieval cone */
+    ctx.fillStyle="rgba(184,134,11,0.14)";
+    ctx.beginPath();ctx.moveTo(ax.X(0),ax.Y(0));
+    for(let i=0;i<=60;i++){const a=angQ-angK+2*angK*i/60;
+      ctx.lineTo(ax.X(1.18*Math.cos(a)),ax.Y(1.18*Math.sin(a)));}
+    ctx.closePath();ctx.fill();
+    /* chunks */
+    const top=new Set(rk.slice(0,k).map(r=>r.i));
+    RAGCH.forEach((d,i)=>{
+      ctx.strokeStyle="#e0e0e0";ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.moveTo(ax.X(0),ax.Y(0));ctx.lineTo(ax.X(d.x),ax.Y(d.y));ctx.stroke();
+      ctx.fillStyle=top.has(i)?GOLD:MUTE;
+      ctx.beginPath();ctx.arc(ax.X(d.x),ax.Y(d.y),top.has(i)?5.5:4,0,7);ctx.fill();
+      if(top.has(i)){ctx.strokeStyle=GOLDD;ctx.lineWidth=1.2;
+        ctx.beginPath();ctx.arc(ax.X(d.x),ax.Y(d.y),7.5,0,7);ctx.stroke();}
+    });
+    /* query arrow */
+    ctx.strokeStyle=GOLDD;ctx.lineWidth=2.6;
+    ctx.beginPath();ctx.moveTo(ax.X(0),ax.Y(0));ctx.lineTo(ax.X(q.x),ax.Y(q.y));ctx.stroke();
+    const ah=8,aA=Math.atan2(ax.Y(q.y)-ax.Y(0),ax.X(q.x)-ax.X(0));
+    ctx.fillStyle=GOLDD;ctx.beginPath();
+    ctx.moveTo(ax.X(q.x),ax.Y(q.y));
+    ctx.lineTo(ax.X(q.x)-ah*Math.cos(aA-0.4),ax.Y(q.y)-ah*Math.sin(aA-0.4));
+    ctx.lineTo(ax.X(q.x)-ah*Math.cos(aA+0.4),ax.Y(q.y)-ah*Math.sin(aA+0.4));
+    ctx.closePath();ctx.fill();
+    ctx.font="bold 11px Georgia,serif";ctx.textAlign="left";
+    ctx.fillText("φ(q): "+q.l,ax.X(q.x)+8,ax.Y(q.y)-6);
+    /* cluster labels */
+    ctx.font="italic 10px Georgia,serif";ctx.fillStyle=MUTE;
+    ctx.fillText("hipotecas",ax.X(0.93),ax.Y(0.22));
+    ctx.fillText("riesgo y mora",ax.X(0.30),ax.Y(1.10));
+    ctx.fillText("tarjetas",ax.X(-0.60),ax.Y(1.02));
+    ctx.fillText("normativa",ax.X(-1.18),ax.Y(0.30));
+  }
+  updaters[3]=upd;
+})();
+
+/* ================= SLIDE 4 : recall@k / precision@k ================= */
+(function(){
+  const se=document.getElementById("se4q"),slk=document.getElementById("sl4k");
+  se.onchange=upd;slk.oninput=upd;
+  const TSYS=400,TQ=60,CTOK=400,PIN=3; // €/Mtok modelo medio
+  function curves(qi){ // recall@k, precision@k arrays k=1..15
+    const q=RQ[qi],rk=cosRank(q.x,q.y),rel=new Set(q.rel);
+    const rec=[],pre=[];let hit=0;
+    for(let k=1;k<=15;k++){if(rel.has(rk[k-1].i))hit++;
+      rec.push(hit/rel.size);pre.push(hit/k);}
+    return {rec:rec,pre:pre};}
+  function mrr(){let s=0;
+    RQ.forEach(q=>{const rk=cosRank(q.x,q.y),rel=new Set(q.rel);
+      for(let j=0;j<rk.length;j++)if(rel.has(rk[j].i)){s+=1/(j+1);break;}});
+    return s/RQ.length;}
+  function upd(){
+    const k=+slk.value,sel=se.selectedIndex,avg=sel===4;
+    document.getElementById("r4k").textContent=k;
+    let rec,pre;
+    if(avg){rec=new Array(15).fill(0);pre=new Array(15).fill(0);
+      for(let qi=0;qi<4;qi++){const cv=curves(qi);
+        for(let j=0;j<15;j++){rec[j]+=cv.rec[j]/4;pre[j]+=cv.pre[j]/4;}}}
+    else {const cv=curves(sel);rec=cv.rec;pre=cv.pre;}
+    const tin=TSYS+k*CTOK+TQ,eur=tin/1e6*PIN;
+    document.getElementById("ro4").innerHTML=
+      "Recall@"+k+" = <span class='gold'>"+rec[k-1].toFixed(2)+"</span> &nbsp;&middot;&nbsp; "+
+      "Precision@"+k+" = <b>"+pre[k-1].toFixed(2)+"</b> &nbsp;&middot;&nbsp; "+
+      "MRR (4 queries) = "+mrr().toFixed(2)+"<br>"+
+      "contexto: "+fmtMil(tin)+" tokens &nbsp;&middot;&nbsp; coste de entrada &asymp; "+
+      (100*eur).toFixed(2)+" c&euro;/consulta &nbsp;&middot;&nbsp; "+
+      fmtEUR(1000*eur)+" por cada 1000 consultas";
+    /* top: curves */
+    let c=fitCanvas(document.getElementById("cv4a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:1,xmax:15,ymin:0,ymax:1.04,
+      xticks:[1,3,5,7,9,11,13,15],
+      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      xlab:"k (chunks recuperados)",
+      title:"Recall@k (dorado) y Precision@k (tinta) — "+(avg?"media de 4 queries":RQ[sel].l)});
+    polyline(c.ctx,rec.map((r,j)=>[ax.X(j+1),ax.Y(r)]),GOLD,2.4);
+    polyline(c.ctx,pre.map((p,j)=>[ax.X(j+1),ax.Y(p)]),INK,2);
+    rec.forEach((r,j)=>{c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+      c.ctx.arc(ax.X(j+1),ax.Y(r),3,0,7);c.ctx.fill();});
+    pre.forEach((p,j)=>{c.ctx.fillStyle=INK;c.ctx.beginPath();
+      c.ctx.arc(ax.X(j+1),ax.Y(p),3,0,7);c.ctx.fill();});
+    polyline(c.ctx,[[ax.X(k),fr.y0],[ax.X(k),fr.y0+fr.h]],GOLDD,1.1,[5,4]);
+    /* bottom: marginal gain bars + cost line */
+    c=fitCanvas(document.getElementById("cv4b"));
+    const fr2={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const maxC=(TSYS+15*CTOK+TQ)/1e6*PIN*100;
+    const ax2=axes(c.ctx,fr2,{xmin:0.5,xmax:15.5,ymin:0,ymax:1.0,
+      xticks:[1,5,10,15],yticks:[[0,"0"],[0.5,""],[1,""]],
+      xlab:"k — barras: ganancia marginal de recall · línea: coste (escala 0–"+maxC.toFixed(1)+" c€)",
+      title:"Cada chunk extra: qué recall añade (barras) y qué cuesta (línea)"});
+    const bw=fr2.w/15*0.55;
+    for(let j=0;j<15;j++){
+      const gain=j===0?rec[0]:rec[j]-rec[j-1];
+      c.ctx.fillStyle=j+1<=k?GOLD:RULE;
+      c.ctx.fillRect(ax2.X(j+1)-bw/2,ax2.Y(gain),bw,fr2.h-(ax2.Y(gain)-fr2.y0));}
+    const cost=[];
+    for(let j=1;j<=15;j++){const e=(TSYS+j*CTOK+TQ)/1e6*PIN*100;
+      cost.push([ax2.X(j),ax2.Y(e/maxC)]);}
+    polyline(c.ctx,cost,INK,2);
+    c.ctx.fillStyle=INK;c.ctx.beginPath();
+    c.ctx.arc(ax2.X(k),ax2.Y(((TSYS+k*CTOK+TQ)/1e6*PIN*100)/maxC),4.5,0,7);c.ctx.fill();
+  }
+  updaters[4]=upd;
+})();
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 5 : búsqueda híbrida ================= */
+(function(){
+  const se=document.getElementById("se5q"),sla=document.getElementById("sl5a");
+  se.onchange=upd;sla.oninput=upd;
+  function channels(qi){ // normalized cos + bm25 over the 15 chunks
+    const q=HQ[qi],qt=toks(q.l);
+    const cs=RAGCH.map(d=>cosv(q.x,q.y,d.x,d.y));
+    const bs=RAGCH.map((d,j)=>bm25(qt,j));
+    function nrm(a){const mn=Math.min(...a),mx=Math.max(...a);
+      return mx>mn?a.map(v=>(v-mn)/(mx-mn)):a.map(()=>0);}
+    return {cn:nrm(cs),bn:nrm(bs),craw:cs,braw:bs};}
+  function rankGold(qi,alpha){
+    const ch=channels(qi),q=HQ[qi];
+    const sc=RAGCH.map((d,j)=>({j:j,s:alpha*ch.cn[j]+(1-alpha)*ch.bn[j]}));
+    sc.sort((a,b)=>b.s-a.s||b.j-a.j); // ties: arbitrary reverse-index
+    return sc.findIndex(e=>e.j===q.gold)+1;}
+  function upd(){
+    const qi=se.selectedIndex,alpha=+sla.value,q=HQ[qi];
+    document.getElementById("r5a").textContent=alpha.toFixed(2);
+    const ch=channels(qi);
+    const sc=RAGCH.map((d,j)=>({j:j,s:alpha*ch.cn[j]+(1-alpha)*ch.bn[j],
+      c:ch.cn[j],b:ch.bn[j]}));
+    sc.sort((a,b)=>b.s-a.s||b.j-a.j);
+    const rg=sc.findIndex(e=>e.j===q.gold)+1;
+    const allZero=Math.max(...ch.braw)===0;
+    document.getElementById("ro5").innerHTML=
+      "chunk correcto: <b>"+RAGCH[q.gold].l+"</b> &nbsp;&middot;&nbsp; "+
+      "posición en el ranking híbrido: <span class='gold'>"+rg+"</span> de 15"+
+      (allZero?"<br><span class='mut'>BM25 sin señal: ninguna keyword de la query aparece en el corpus</span>"
+              :"<br>BM25 máx = "+fmtG(Math.max(...ch.braw),3)+
+               " &nbsp;&middot;&nbsp; IDF de los términos raros &asymp; "+fmtG(idf("7832"),3));
+    const tb=document.getElementById("tb5");
+    tb.innerHTML=sc.slice(0,6).map(e=>
+      "<tr"+(e.j===q.gold?" style='background:#fdf6e3'":"")+"><td>"+
+      RAGCH[e.j].l+(e.j===q.gold?" ★":"")+"</td><td>"+e.c.toFixed(2)+
+      "</td><td>"+e.b.toFixed(2)+"</td><td><b>"+e.s.toFixed(3)+"</b></td></tr>").join("");
+    /* top: rank of gold vs alpha, both queries */
+    let c=fitCanvas(document.getElementById("cv5a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:15.5,ymax:0.5,
+      xticks:[[0,"0 (BM25)"],[0.5,"0.5"],[1,"1 (dense)"]],
+      yticks:[[1,"1"],[5,"5"],[10,"10"],[15,"15"]],
+      xlab:"α — peso del canal semántico",ylab:"posición del gold",
+      title:"Dónde queda el chunk correcto según α (1 = arriba del todo)"});
+    [0,1].forEach(qq=>{
+      const pts=[];
+      for(let i=0;i<=50;i++){const a=i/50;pts.push([ax.X(a),ax.Y(rankGold(qq,a))]);}
+      polyline(c.ctx,pts,qq===0?GOLD:INK,qq===qi?2.6:1.6);});
+    polyline(c.ctx,[[ax.X(alpha),fr.y0],[ax.X(alpha),fr.y0+fr.h]],GOLDD,1.1,[5,4]);
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("A: código exacto",ax.X(0.66),ax.Y(rankGold(0,0.66))-8);
+    c.ctx.fillStyle=INK;c.ctx.fillText("B: paráfrasis",ax.X(0.12),ax.Y(rankGold(1,0.12))-8);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(alpha),ax.Y(rg),5,0,7);c.ctx.fill();
+    /* bottom: stacked contributions of top-6 */
+    c=fitCanvas(document.getElementById("cv5b"));
+    const fr2={x0:160,y0:24,w:c.W-180,h:c.H-50};
+    const ctx=c.ctx;
+    ctx.font="bold 12px Georgia,serif";ctx.fillStyle=INK;ctx.textAlign="left";
+    ctx.fillText("Top-6 con α = "+alpha.toFixed(2)+": parte semántica (dorado) + parte BM25 (gris)",10,16);
+    const top6=sc.slice(0,6),smax=Math.max(...top6.map(e=>e.s),1e-9);
+    const bh=fr2.h/6*0.62;
+    top6.forEach((e,r)=>{
+      const y=fr2.y0+r*(fr2.h/6)+6;
+      const wc=alpha*e.c/smax*fr2.w,wb=(1-alpha)*e.b/smax*fr2.w;
+      ctx.fillStyle=GOLD;ctx.fillRect(fr2.x0,y,wc,bh);
+      ctx.fillStyle=MUTE;ctx.fillRect(fr2.x0+wc,y,wb,bh);
+      if(e.j===HQ[qi].gold){ctx.strokeStyle=GOLDD;ctx.lineWidth=2;
+        ctx.strokeRect(fr2.x0-2,y-2,Math.max(wc+wb,2)+4,bh+4);}
+      ctx.fillStyle=INK;ctx.font="10px Georgia,serif";ctx.textAlign="right";
+      ctx.fillText(RAGCH[e.j].l.slice(0,24)+(e.j===HQ[qi].gold?" ★":""),fr2.x0-6,y+bh/2+3);});
+  }
+  updaters[5]=upd;
+})();
+
+/* ================= SLIDE 6 : re-ranking ================= */
+(function(){
+  const NDOC=200,NREL=12,B=120,SCE=0.25,K0S=[];
+  for(let k=5;k<=100;k+=5)K0S.push(k);
+  let reps=null,repShow=0,curSbi=null;
+  const slk=document.getElementById("sl6k"),sls=document.getElementById("sl6s");
+  document.getElementById("bt6").onclick=()=>{repShow=(repShow+1)%B;upd();};
+  slk.oninput=upd;sls.oninput=upd;
+  function gen(sbi){
+    reps=[];
+    for(let b=0;b<B;b++){const rng=mulberry32(900+b);
+      const bi=new Array(NDOC),ce=new Array(NDOC);
+      for(let i=0;i<NDOC;i++){const rel=i<NREL?1:0;
+        bi[i]=rel+sbi*randn(rng);ce[i]=rel+SCE*randn(rng);}
+      reps.push({bi:bi,ce:ce});}
+    curSbi=sbi;}
+  function p5(rep,k0){
+    const idx=Array.from({length:NDOC},(_,i)=>i);
+    idx.sort((a,b)=>rep.bi[b]-rep.bi[a]);
+    const cand=idx.slice(0,k0);
+    cand.sort((a,b)=>rep.ce[b]-rep.ce[a]);
+    let cnt=0;for(let j=0;j<5;j++)if(cand[j]<NREL)cnt++;
+    return {p:cnt/5,relK0:cand.filter(i=>i<NREL).length,rel5:cnt};}
+  function upd(){
+    const k0=+slk.value,sbi=+sls.value;
+    if(curSbi!==sbi)gen(sbi);
+    document.getElementById("r6k").textContent=k0;
+    document.getElementById("r6s").textContent=sbi.toFixed(2);
+    const meanP=K0S.map(k=>{let s=0;
+      for(let b=0;b<B;b++)s+=p5(reps[b],k).p;return s/B;});
+    const base=meanP[0]; // k0 = 5: sin re-ranking efectivo
+    const here=meanP[K0S.indexOf(k0)];
+    const lat=80+9*k0;
+    const f=p5(reps[repShow],k0);
+    document.getElementById("ro6").innerHTML=
+      "P@5 sin re-ranking (k₀ = 5) = "+base.toFixed(3)+" &nbsp;&middot;&nbsp; "+
+      "P@5 con k₀ = "+k0+" = <span class='gold'>"+here.toFixed(3)+"</span>"+
+      " &nbsp;&middot;&nbsp; ganancia = +"+((here-base)*100).toFixed(1)+" puntos<br>"+
+      "latencia = <b>"+lat+" ms</b> &nbsp;&middot;&nbsp; réplica mostrada: "+
+      (repShow+1)+"/"+B+" &nbsp;&middot;&nbsp; relevantes 200 → "+f.relK0+
+      " → "+f.rel5;
+    /* top: quality vs k0 + latency */
+    let c=fitCanvas(document.getElementById("cv6a"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:100,ymin:0,ymax:1.02,
+      xticks:[5,20,40,60,80,100],
+      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      xlab:"k₀ — candidatos que pasan al cross-encoder",
+      title:"Calidad P@5 (dorado, Monte Carlo 120 réplicas) y latencia (gris, 0–1 s)"});
+    polyline(c.ctx,[[ax.X(0),ax.Y(base)],[ax.X(100),ax.Y(base)]],MUTE,1.1,[5,4]);
+    c.ctx.fillStyle=MUTE;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("sin re-ranking",ax.X(58),ax.Y(base)-5);
+    polyline(c.ctx,K0S.map((k,j)=>[ax.X(k),ax.Y((80+9*k)/1000)]),MUTE,1.6);
+    polyline(c.ctx,K0S.map((k,j)=>[ax.X(k),ax.Y(meanP[j])]),GOLD,2.4);
+    K0S.forEach((k,j)=>{c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+      c.ctx.arc(ax.X(k),ax.Y(meanP[j]),3,0,7);c.ctx.fill();});
+    polyline(c.ctx,[[ax.X(k0),fr.y0],[ax.X(k0),fr.y0+fr.h]],GOLDD,1.1,[5,4]);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();c.ctx.arc(ax.X(k0),ax.Y(here),5.5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=MUTE;c.ctx.fillText("latencia",ax.X(84),ax.Y((80+9*84)/1000)-7);
+    /* bottom: funnel of shown replica */
+    c=fitCanvas(document.getElementById("cv6b"));
+    const ctx=c.ctx,W=c.W,H=c.H;
+    ctx.font="bold 12px Georgia,serif";ctx.fillStyle=INK;ctx.textAlign="left";
+    ctx.fillText("Embudo de la réplica "+(repShow+1)+": corpus → bi-encoder → cross-encoder",10,16);
+    const stages=[["corpus",NDOC,NREL],["top-k₀ (bi)",k0,f.relK0],["top-5 (ce)",5,f.rel5]];
+    const maxW=W-220;
+    stages.forEach((st,r)=>{
+      const y=30+r*((H-44)/3),bh=(H-44)/3*0.58;
+      const w=Math.max(14,maxW*st[1]/NDOC);
+      ctx.fillStyle="#eee";ctx.fillRect(120,y,w,bh);
+      const wr=w*st[2]/Math.max(st[1],1);
+      ctx.fillStyle=GOLD;ctx.fillRect(120,y,wr,bh);
+      ctx.strokeStyle=RULE;ctx.strokeRect(120,y,w,bh);
+      ctx.fillStyle=INK;ctx.font="11px Georgia,serif";ctx.textAlign="right";
+      ctx.fillText(st[0],112,y+bh/2+4);
+      ctx.textAlign="left";
+      ctx.fillText(st[1]+" docs · "+st[2]+" relevantes ("+
+        Math.round(100*st[2]/st[1])+"%)",126+w,y+bh/2+4);});
+  }
+  updaters[6]=upd;
+})();
+
+/* ================= SLIDE 7 : presupuesto de contexto ================= */
+(function(){
+  const TSYS=400,TQ=60,TOUT=300,TATT=9000,FF=0.95,P1=0.55,GAM=0.75;
+  const MODELS=[{n:"compacto",w:8192,pin:0.8,pout:4},
+                {n:"medio",w:32768,pin:3,pout:15},
+                {n:"frontera",w:131072,pin:15,pout:75}];
+  const slk=document.getElementById("sl7k"),slc=document.getElementById("sl7c"),
+        se=document.getElementById("se7m");
+  slk.oninput=upd;slc.oninput=upd;se.onchange=upd;
+  function cobertura(k){let pr=1;
+    for(let i=1;i<=k;i++)pr*=(1-P1*Math.pow(GAM,i-1));return 1-pr;}
+  function qual(k,ctok,win){
+    const tin=TSYS+k*ctok+TQ;
+    if(tin+TOUT>win)return 0;
+    return cobertura(k)*Math.exp(-Math.pow(tin/TATT,2))*FF;}
+  function upd(){
+    const k=+slk.value,ctok=+slc.value,m=MODELS[se.selectedIndex];
+    document.getElementById("r7k").textContent=k;
+    document.getElementById("r7c").textContent=ctok;
+    const tin=TSYS+k*ctok+TQ,tot=tin+TOUT,over=tot>m.w;
+    const cob=cobertura(k),att=Math.exp(-Math.pow(tin/TATT,2));
+    const cal=over?0:cob*att*FF;
+    const eur=tin/1e6*m.pin+TOUT/1e6*m.pout;
+    document.getElementById("ro7").innerHTML=
+      "T<sub>in</sub> = "+TSYS+" + "+k+"&middot;"+ctok+" + "+TQ+" = <b>"+fmtMil(tin)+
+      "</b> tokens &nbsp;&middot;&nbsp; coste = <span class='gold'>"+
+      fmtEUR(eur)+"/consulta</span><br>"+
+      "cobertura = "+cob.toFixed(3)+" &nbsp;&middot;&nbsp; atención = "+att.toFixed(3)+
+      " &nbsp;&middot;&nbsp; calidad = <b>"+cal.toFixed(3)+"</b> &nbsp; "+
+      (over?"<span class='badge bad'>desbordamiento: "+fmtMil(tot)+" &gt; "+
+            fmtMil(m.w)+" — llamada rechazada</span>"
+           :"<span class='badge ok'>cabe: "+fmtMil(tot)+" de "+fmtMil(m.w)+" tokens</span>");
+    /* top: stacked budget bar */
+    let c=fitCanvas(document.getElementById("cv7a"));
+    const ctx=c.ctx,W=c.W,H=c.H;
+    ctx.font="bold 12px Georgia,serif";ctx.fillStyle=INK;ctx.textAlign="left";
+    ctx.fillText("El prompt contra la ventana del modelo "+m.n+" ("+fmtMil(m.w)+" tokens)",10,16);
+    const bx=20,by=H*0.36,bw=W-40,bh=H*0.30;
+    const scale=bw/Math.max(m.w,tot*1.05);
+    const seg=[[TSYS,GOLDD,"system"],[k*ctok,GOLD,"k·c chunks"],
+               [TQ,MUTE,"pregunta"],[TOUT,RULE,"respuesta"]];
+    let x=bx;
+    seg.forEach(s=>{ctx.fillStyle=s[1];
+      ctx.fillRect(x,by,s[0]*scale,bh);x+=s[0]*scale;});
+    ctx.strokeStyle=INK;ctx.lineWidth=1.6;
+    const wx=bx+m.w*scale;
+    ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(wx,by-16);ctx.lineTo(wx,by+bh+16);
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.font="11px Georgia,serif";ctx.textAlign="center";
+    ctx.fillStyle=INK;ctx.fillText("ventana",wx,by-20);
+    if(over){ctx.fillStyle="#7a3c00";ctx.font="bold 12px Georgia,serif";
+      ctx.fillText("DESBORDA",Math.min(wx+60,W-50),by+bh/2+4);}
+    let lx=bx;ctx.font="10px Georgia,serif";
+    seg.forEach(s=>{if(s[0]*scale>34){ctx.fillStyle=INK;
+      ctx.fillText(s[2],lx+s[0]*scale/2,by+bh+14);}lx+=s[0]*scale;});
+    /* bottom: U-curve quality vs k */
+    c=fitCanvas(document.getElementById("cv7b"));
+    const fr={x0:52,y0:24,w:c.W-70,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:1,xmax:30,ymin:0,ymax:1,
+      xticks:[1,5,10,15,20,25,30],
+      yticks:[[0,"0"],[0.5,"0.5"],[1,"1"]],
+      xlab:"k (chunks), con c = "+ctok+" tokens",
+      title:"Calidad estimada = cobertura × atención × F — la U invertida"});
+    /* forbidden zone by window */
+    let kOver=null;
+    for(let kk=1;kk<=30;kk++)if(TSYS+kk*ctok+TQ+TOUT>m.w){kOver=kk;break;}
+    if(kOver!==null){c.ctx.fillStyle="rgba(217,194,138,0.25)";
+      c.ctx.fillRect(ax.X(kOver),fr.y0,fr.x0+fr.w-ax.X(kOver),fr.h);
+      c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
+      c.ctx.fillText("no cabe en la ventana",ax.X(kOver)+4,fr.y0+12);}
+    const cobPts=[],attPts=[],qPts=[];
+    for(let kk=1;kk<=30;kk++){
+      const ti=TSYS+kk*ctok+TQ;
+      cobPts.push([ax.X(kk),ax.Y(cobertura(kk))]);
+      attPts.push([ax.X(kk),ax.Y(Math.exp(-Math.pow(ti/TATT,2)))]);
+      qPts.push([ax.X(kk),ax.Y(qual(kk,ctok,m.w))]);}
+    polyline(c.ctx,cobPts,MUTE,1.3,[5,4]);
+    polyline(c.ctx,attPts,MUTE,1.3,[2,3]);
+    polyline(c.ctx,qPts,GOLD,2.6);
+    polyline(c.ctx,[[ax.X(k),fr.y0],[ax.X(k),fr.y0+fr.h]],GOLDD,1.1,[5,4]);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(k),ax.Y(qual(k,ctok,m.w)),5,0,7);c.ctx.fill();
+    c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";c.ctx.fillStyle=MUTE;
+    c.ctx.fillText("cobertura",ax.X(24),ax.Y(cobertura(24))-5);
+    c.ctx.fillText("atención",ax.X(20),ax.Y(Math.exp(-Math.pow((TSYS+20*ctok+TQ)/TATT,2)))+13);
+    c.ctx.fillStyle=GOLDD;
+    c.ctx.fillText("calidad",ax.X(8),ax.Y(qual(8,ctok,m.w))-8);
+  }
+  updaters[7]=upd;
+})();
+
+/* ================= SLIDE 8 : caso BBVA ================= */
+(function(){
+  const TOKGB=12e6,CHTOK=400,D=1024,PEMB=0.10,TSYS=400,TQ=60,TOUT=300,
+        CINFRA=150,CRR=0.0005;
+  const MODELS=[{n:"compacto",pin:0.8,pout:4},{n:"medio",pin:3,pout:15},
+                {n:"frontera",pin:15,pout:75}];
+  const slg=document.getElementById("sl8g"),slq=document.getElementById("sl8q"),
+        slk=document.getElementById("sl8k"),ck=document.getElementById("ck8"),
+        se=document.getElementById("se8m");
+  slg.oninput=upd;slq.oninput=upd;slk.oninput=upd;ck.onchange=upd;se.onchange=upd;
+  function perQuery(k,rr,m){
+    const kEff=rr?3:k;
+    const tin=TSYS+kEff*CHTOK+TQ;
+    return tin/1e6*m.pin+TOUT/1e6*m.pout+(rr?CRR:0);}
+  function upd(){
+    const gb=+slg.value,qd=+slq.value,k=+slk.value,rr=ck.checked,
+          m=MODELS[se.selectedIndex];
+    document.getElementById("r8g").textContent=gb;
+    document.getElementById("r8q").textContent=fmtMil(qd);
+    document.getElementById("r8k").textContent=k;
+    const tok=gb*TOKGB,J=Math.round(tok/CHTOK);
+    const cemb=tok/1e6*PEMB;
+    const stor=J*(D+1800)*1.4/1e9;
+    const cq=perQuery(k,rr,m);
+    const kEff=rr?3:k,tin=TSYS+kEff*CHTOK+TQ;
+    const cgen=qd*30*cq,cmes=cgen+CINFRA;
+    document.getElementById("ro8").innerHTML=
+      "embedding inicial (una vez) = <b>"+fmtEUR(cemb)+"</b> &nbsp;&middot;&nbsp; "+
+      "coste por consulta = "+fmtEUR(cq)+"<br>"+
+      "coste mensual total = <span class='gold'>"+fmtEUR(cmes)+
+      "/mes</span> &nbsp;&middot;&nbsp; "+
+      "&asymp; "+fmtEUR(cmes*12)+"/año";
+    const tb=document.getElementById("tb8");
+    tb.innerHTML=[
+      ["chunks indexados J",fmtMil(J),"—"],
+      ["tokens del corpus",fmtMil(tok/1e6)+" M","—"],
+      ["embedding inicial (una vez)",fmtMil(tok/1e6)+" M tok &times; 0.10 €/M",fmtEUR(cemb)],
+      ["almacenamiento pgvector",stor.toFixed(2)+" GB","incl. en infra"],
+      ["contexto por consulta",fmtMil(tin)+" tok ("+kEff+" chunks al LLM)",fmtEUR(tin/1e6*m.pin)],
+      ["respuesta por consulta",TOUT+" tok",fmtEUR(TOUT/1e6*m.pout)],
+      ["re-ranker por consulta",rr?(k+" pares"):"desactivado",rr?fmtEUR(CRR):"0 €"],
+      ["generación mensual",fmtMil(qd*30)+" consultas",fmtEUR(cgen)],
+      ["infraestructura (pgvector)","servidor dedicado",fmtEUR(CINFRA)],
+      ["TOTAL mensual","",fmtEUR(cmes)]
+    ].map(r=>"<tr><td>"+r[0]+"</td><td>"+r[1]+"</td><td><b>"+r[2]+"</b></td></tr>").join("");
+    /* top: monthly cost vs queries/day, 3 models */
+    let c=fitCanvas(document.getElementById("cv8a"));
+    const fr={x0:62,y0:24,w:c.W-80,h:c.H-62};
+    const maxY=20000*30*perQuery(k,rr,MODELS[2])+CINFRA;
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:20000,ymin:0,ymax:maxY,
+      xticks:[[0,"0"],[5000,"5k"],[10000,"10k"],[15000,"15k"],[20000,"20k"]],
+      yticks:[[0,"0"],[maxY/2,fmtMil(maxY/2)+" €"],[maxY,fmtMil(maxY)+" €"]],
+      xlab:"consultas por día",ylab:"coste mensual",
+      title:"Coste mensual según el volumen, para los tres modelos generadores"});
+    MODELS.forEach((mm,i)=>{
+      const pts=[];
+      for(let qq=0;qq<=20000;qq+=500)
+        pts.push([ax.X(qq),ax.Y(qq*30*perQuery(k,rr,mm)+CINFRA)]);
+      polyline(c.ctx,pts,i===se.selectedIndex?GOLD:MUTE,
+        i===se.selectedIndex?2.6:1.4);
+      c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
+      c.ctx.fillStyle=i===se.selectedIndex?GOLDD:MUTE;
+      c.ctx.fillText(mm.n,ax.X(18200),ax.Y(18200*30*perQuery(k,rr,mm)+CINFRA)-6);});
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(qd),ax.Y(cmes),5.5,0,7);c.ctx.fill();
+    /* bottom: one-off vs recurring bars */
+    c=fitCanvas(document.getElementById("cv8b"));
+    const ctx=c.ctx,W=c.W,H=c.H;
+    ctx.font="bold 12px Georgia,serif";ctx.fillStyle=INK;ctx.textAlign="left";
+    ctx.fillText("La asimetría: lo que se paga una vez vs cada mes",10,16);
+    const rows=[["embedding inicial (UNA VEZ)",cemb,GOLDD],
+                ["generación (CADA MES)",cgen,GOLD],
+                ["infraestructura (cada mes)",CINFRA,MUTE]];
+    const maxV=Math.max(...rows.map(r=>r[1]),1);
+    rows.forEach((r,i)=>{
+      const y=30+i*((H-42)/3),bh=(H-42)/3*0.56;
+      const w=Math.max(3,(W-280)*r[1]/maxV);
+      ctx.fillStyle=r[2];ctx.fillRect(196,y,w,bh);
+      ctx.fillStyle=INK;ctx.font="11px Georgia,serif";ctx.textAlign="right";
+      ctx.fillText(r[0],190,y+bh/2+4);
+      ctx.textAlign="left";ctx.fillText(fmtEUR(r[1]),202+w,y+bh/2+4);});
+  }
+  updaters[8]=upd;
+})();
+
+/* ================= SLIDE 9 : glosario ================= */
+(function(){
+  const G=[
+   ["q","query del usuario: la pregunta en texto libre que entra al sistema en cada consulta."],
+   ["d_j","chunk j del corpus: trozo de documento de 200–800 tokens, la unidad que se indexa y se recupera."],
+   ["φ(·)","modelo de embeddings (Día 08): convierte un texto en un vector de D números que codifica su significado. Query y chunks usan el MISMO φ."],
+   ["D","dimensión del embedding (e5-large: D = 1024). Fija la memoria del índice: J·D·b bytes."],
+   ["J","tamaño del corpus indexado en chunks (caso BBVA: ~350 000). La memoria y la búsqueda escalan con J; el coste por consulta no."],
+   ["cos(u,v)","similitud coseno: u·v/(‖u‖‖v‖). Mide el ángulo entre embeddings: 1 = mismo significado, 0 = nada que ver."],
+   ["top_k(q)","los k chunks con mayor coseno con φ(q): la ecuación de retrieval del día. k típico: 3–10."],
+   ["p_θ(y | q, d…)","el LLM generador (parámetros θ congelados) produce la respuesta condicionada a la query y a los k chunks del contexto, y devuelve citas."],
+   ["s, o","tamaño de chunk y solape del chunking (en palabras/tokens): n_chunks = ⌈(L−s)/(s−o)⌉+1. Regla del día: 300–600 tokens, solape 50–100."],
+   ["Recall@k","de todos los chunks relevantes anotados, fracción que entra en el top-k. Si ≥ 0.85, el cuello de botella ya es la generación."],
+   ["Precision@k","de los k chunks recuperados, fracción relevante: mide el ruido (y los tokens inútiles) que mandas al LLM."],
+   ["MRR","Mean Reciprocal Rank: media de 1/posición del primer chunk relevante. 1 = siempre sale el primero."],
+   ["BM25","ranking léxico por keywords: tf saturado por k₁, normalizado por longitud y ponderado por IDF. Imbatible con códigos y siglas exactas."],
+   ["IDF(t)","log-rareza del término t en el corpus: ln(1+(N−df+0.5)/(df+0.5)). Un código que aparece en un solo chunk vale ~2.4; 'banco' vale ~0."],
+   ["α","peso del canal semántico en la búsqueda híbrida: score = α·côs + (1−α)·BM25 (normalizados). Default de producción: α ≈ 0.7."],
+   ["bi-encoder","embebe query y documento por separado (coseno, precalculable, barato): la fase 1 del retrieval. Es el φ de siempre."],
+   ["cross-encoder","lee el par (query, chunk) junto y devuelve un score fiel (un forward por par, caro): la fase 2, el re-ranker (ej. bge-reranker-large)."],
+   ["k₀","candidatos que pasan del bi-encoder al cross-encoder (típico 20–50): el único hiperparámetro del patrón retrieve & re-rank."],
+   ["query rewriting","el LLM reformula la query del usuario en una (o m) más eficaces para retrieval: descomposición, step-back prompting, multi-query."],
+   ["T_in","tokens de entrada del prompt RAG: T_sys + k·c + T_q. Junto con T_out debe caber en la ventana de contexto, que es un límite duro."],
+   ["ventana de contexto","máximo de tokens (entrada + salida) que acepta el modelo (8k / 32k / 128k). Desbordarla = llamada rechazada."],
+   ["lost in the middle","degradación empírica del uso de información enterrada en contextos largos: la razón de que la calidad sea una U invertida en k."],
+   ["faithfulness","métrica de generación: ¿la respuesta está soportada por los chunks recuperados? La clave en sectores regulados (banca)."],
+   ["answer correctness","métrica end-to-end: ¿la respuesta es correcta? La única que ve el cliente; retrieval y generación son sus dos sumandos."],
+   ["p_in / p_out","precio por millón de tokens de entrada / salida del modelo generador: la palanca de coste nº 1 de un RAG en producción."],
+   ["pgvector","extensión de Postgres para búsqueda vectorial: la opción 'reusa tu BBDD'. Alternativas: Chroma (dev), Qdrant (self-hosted), Pinecone (gestionado)."],
+   ["e5-large","intfloat/multilingual-e5-large: el modelo de embeddings multilingüe del caso BBVA, D = 1024, open source."],
+   ["ANN / HNSW","búsqueda aproximada de vecinos: visita ~ef·log₂J candidatos en vez de J. Lo que hace viable consultar 350 000 chunks en milisegundos."],
+   ["cuantización 8-bit","guardar cada dimensión del vector en 1 byte en vez de 4: memoria ÷4 con pérdida de recall mínima."],
+   ["fine-tuning","la alternativa a RAG: reentrenar (o LoRA) con tus datos. Gana solo con estilo muy específico, latencia <200 ms o conocimiento que se consulta entero (Día 16)."]];
+  const div=document.getElementById("glos");
+  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
+    "</div><div>"+e[1]+"</div></div>").join("");
+  updaters[9]=function(){};
+})();
+
+updaters[10]=function(){};
+
+/* ================= boot ================= */
+function fromHash(){const m=location.hash.match(/^#(\d+)$/);
+  return m?Math.max(0,Math.min(10,+m[1])):0;}
+window.addEventListener("hashchange",()=>go(fromHash()));
+go(fromHash());
+</script>
+</body>
+</html>

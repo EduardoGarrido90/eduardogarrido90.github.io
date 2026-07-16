@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Día 17 — Multi-agente en producción — slides interactivas</title>
+<title>Día 17 — Coste y latencia en producción — slide interactiva</title>
 <style>
   :root{
     --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
@@ -12,1732 +12,324 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#fff;color:var(--ink);
     font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
-    font-size:16px;}
-  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
     letter-spacing:0.03em;flex-wrap:wrap}
   #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
   #navstrip span.cur{color:var(--gold);font-weight:bold}
-  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
-  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
-  .slide{display:none;padding:14px 24px 64px 24px;
-    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
   .slide.active{display:grid}
-  .figcol canvas{width:100%;display:block;margin-bottom:10px;
-    border:1px solid #eee;border-radius:2px}
-  .txtcol{font-size:0.9em;line-height:1.4}
-  .txtcol p{margin:0 0 9px 0}
-  .txtcol .hd{font-weight:bold}
-  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:10px 12px;margin-bottom:12px}
-  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
-  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
-  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
-    margin-right:6px}
-  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
-    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
-  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
   .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
-    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
-  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
-    font-size:0.9em;margin:4px 0}
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
   .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
   .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
-  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
-  .mut{color:var(--mute)}
-  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
-    font-size:0.84em;color:#333}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.32em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.02em;
+    font-variant-numeric:tabular-nums;color:#444}
+  /* highlightable equation terms */
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
   .miniglos b{color:var(--goldDeep)}
-  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
-  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
-    font-weight:bold}
-  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
-    font-variant-numeric:tabular-nums}
-  table.live th:first-child,table.live td:first-child{text-align:left}
-  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
     background:#fff;padding:0 4px}
-  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
     font-style:italic;background:#fff;padding:0 4px}
-  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
-    padding:0 6px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
   #arrows button{font-family:inherit;font-size:1em;background:#fff;
     border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
-    padding:2px 14px;cursor:pointer;margin:0 4px}
+    padding:2px 16px;cursor:pointer;margin:0 4px}
   #arrows button:hover{background:var(--goldPale)}
-  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
-  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
-    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
-  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
-  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
-  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
-  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
-  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
-    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
-  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
-  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
-  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
-  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
-  .eqread b{color:var(--goldDeep)}
-  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
-    font-size:0.93em}
-  .frac .num,.frac .den{display:block;padding:0 4px}
-  .frac .den{border-top:1.1px solid var(--ink)}
-  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
-    padding:9px 13px;margin:10px 0;font-size:0.88em}
-  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
-  .guide ol{margin:4px 0 4px 18px;padding:0}
-  .guide li{margin:0 0 7px 0;line-height:1.4}
-  .guide .obs{color:var(--goldDeep);font-style:italic}
-  details.check{margin-top:6px}
-  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
-  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
-    border-left:3px solid var(--gold);line-height:1.4}
-  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
-  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
-    grid-template-columns:30% 70%}
-  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
 </style>
 </head>
 <body>
-
 <div id="navstrip"></div>
 <div id="slidetitle"></div>
 <hr id="goldrule">
 
-<!-- ============ SLIDE 0 : coste por petición ============ -->
+<!-- ============ SLIDE 1: interactiva ============ -->
 <section class="slide" id="s0">
   <div class="figcol">
-    <canvas id="cv0a" data-aspect="1.95"></canvas>
-    <canvas id="cv0b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">C<sub>pet</sub> = <big>&Sigma;</big><sub>e&isin;etapas</sub>&nbsp;<big>(</big><span class="frac"><span class="num">n<sup>in</sup><sub>e</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sup>in</sup><sub>m(e)</sub> + <span class="frac"><span class="num">n<sup>out</sup><sub>e</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sup>out</sup><sub>m(e)</sub><big>)</big><span class="eqn">(coste por etapa)</span></div>
-      <div class="eqread">cada <b>etapa</b> e del pipeline (router &rarr; recuperador &rarr;
-        generador &rarr; validador) consume n<sup>in</sup> tokens de entrada y produce
-        n<sup>out</sup> de salida, facturados a los precios por mill&oacute;n
-        p<sup>in</sup>, p<sup>out</sup> del modelo m(e) asignado a esa etapa. El coste de la
-        petici&oacute;n es la suma de etapas.</div>
-      <div class="eq">C<sub>d&iacute;a</sub> = Q&middot;<big>(</big>C&#772;<sub>LLM</sub> + C&#772;<sub>tool</sub><big>)</big>,&nbsp;&nbsp;&nbsp; C&#772;<sub>LLM</sub> = <span class="frac"><span class="num">n&#772;<sub>in</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>in</sub> + <span class="frac"><span class="num">n&#772;<sub>out</sub></span><span class="den">10<sup>6</sup></span></span>&thinsp;p<sub>out</sub><span class="eqn">(nota t&eacute;cnica)</span></div>
-      <div class="eqread">a escala: Q peticiones/d&iacute;a por el coste medio de cada una.
-        El ejemplo a mano del deck: 0,0001 + 0,001 + 0,0005 + 0,012 + 0,008 + 0,0001 =
-        <b>$0,022</b> por petici&oacute;n; con 110&thinsp;000 peticiones/mes salen
-        <b>$2&thinsp;420/mes</b>.</div>
+    <div class="eqpanel">
+      <div class="eqtitle">El coste esperado de la cascada</div>
+      <div class="eq">
+        E[coste] =
+        <span class="term" id="t_p">p</span>&middot;c<sub>barato</sub> +
+        (1&minus;p)&middot;(c<sub>barato</sub> +
+        <span class="term" id="t_cc">c<sub>caro</sub></span>)
+      </div>
+      <div class="eqnum">
+        E[coste] =
+        <span class="nterm" id="n_p">0.50</span>&middot;0.5 +
+        (1&minus;<span id="n_p2">0.50</span>)&middot;(0.5 +
+        <span class="nterm" id="n_cc">30</span>) =
+        <b id="n_res">15.50</b> &euro; / consulta
+      </div>
     </div>
+    <canvas id="cv" width="720" height="360"></canvas>
   </div>
   <div class="txtcol">
+    <p><span class="hd">El caso.</span> El servicio de atención al cliente recibe miles
+    de consultas. Una <b>cascada</b> manda todo primero a un modelo <b>barato y rápido</b>;
+    solo las consultas difíciles escalan al modelo <b>caro y lento</b>. Hay que equilibrar
+    coste, latencia y calidad.</p>
+
     <div class="ctrlbox">
-      <label>contexto RAG que entra al generador, n<sup>in</sup> = <b id="r0in"></b> tokens</label>
-      <input type="range" id="sl0in" min="500" max="20000" step="250" value="6000">
-      <label>respuesta del generador, n<sup>out</sup> = <b id="r0out"></b> tokens</label>
-      <input type="range" id="sl0out" min="100" max="2000" step="50" value="600">
-      <label>peticiones por día, Q = <b id="r0q"></b></label>
-      <input type="range" id="sl0q" min="500" max="50000" step="500" value="5000">
-      <label><input type="checkbox" id="ck0g" checked> generador con modelo caro (3 / 15 $ por Mtok)</label>
-      <label><input type="checkbox" id="ck0v"> validador con modelo caro (si no: 0,25 / 1,25 $)</label>
+      <div class="row"><span class="lab">p</span>
+        <input type="range" id="p" min="0" max="1" step="0.01" value="0.5"
+          oninput="hot('p');upd()"><span class="val" id="v_p">0.50</span></div>
+      <div class="row"><span class="lab">c<sub>caro</sub></span>
+        <input type="range" id="cc" min="5" max="60" step="1" value="30"
+          oninput="hot('cc');upd()"><span class="val" id="v_cc">30</span></div>
     </div>
-    <div class="readout" id="ro0"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con los valores por defecto, mira qu&eacute; barra domina el panel superior.
-        <span class="obs">El generador se lleva m&aacute;s del 80% del coste: el router y
-        el recuperador son casi gratis. Optimizar lo barato no mueve la factura.</span></li>
-      <li>Sube el contexto RAG de 6&thinsp;000 a 20&thinsp;000 tokens.
-        <span class="obs">El coste por petici&oacute;n casi se duplica sin tocar la
-        respuesta: la entrada tambi&eacute;n se factura, y el RAG generoso se paga.</span></li>
-      <li>Activa el validador caro. <span class="obs">Una segunda llamada cara a&ntilde;ade
-        varios milid&oacute;lares por petici&oacute;n; en el panel inferior la recta mensual
-        se encarece miles de euros al a&ntilde;o. Cada LLM extra en el pipeline es una
-        decisi&oacute;n de presupuesto.</span></li>
-      <li>Lleva Q a 50&thinsp;000 peticiones/d&iacute;a. <span class="obs">El coste mensual
-        escala lineal con el volumen: el punto dorado sube por la recta. Tu pitch al CFO
-        depende de estos dos sliders, no de la demo del laboratorio.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; duplicar el
-        contexto RAG encarece m&aacute;s que duplicar la respuesta?</summary>
-        <div class="ans">Porque aunque el token de salida es ~5 veces m&aacute;s caro que el
-        de entrada, aqu&iacute; la entrada son 6&thinsp;000&ndash;20&thinsp;000 tokens y la
-        salida solo 100&ndash;2&thinsp;000: el volumen gana al precio unitario. Con 12&thinsp;000
-        de contexto y 600 de salida en el modelo caro, la entrada cuesta
-        12&thinsp;000/10<sup>6</sup>&times;3 = $0,036 y la salida
-        600/10<sup>6</sup>&times;15 = $0,009. Por eso el prompt caching y el filtrado de
-        contexto (re-ranking, top-k peque&ntilde;o) son las palancas reales de coste en un
-        RAG corporativo.</div></details></div>
-    <p><span class="hd">Setup.</span> El asistente comercial de BBVA del deck: una
-      petici&oacute;n atraviesa router (clasifica, modelo barato, ~300 tokens), recuperador
-      (embedding + b&uacute;squeda vectorial, coste fijo peque&ntilde;o), generador (el LLM
-      grande que redacta con el contexto RAG) y validador (segunda pasada que revisa
-      cumplimiento). Cada barra del panel superior es el coste real de esa etapa con los
-      precios por mill&oacute;n de tokens del modelo asignado; el panel inferior proyecta
-      el coste mensual (22 d&iacute;as laborables) seg&uacute;n el volumen Q.</p>
-    <p><span class="hd">Juega.</span> Mueve los sliders y observa que el desglose no es
-      uniforme: el pipeline tiene un cuello de coste claro (el generador) y dos etapas casi
-      gratuitas. La decisi&oacute;n cara no es "usar IA", es <i>cu&aacute;ntos tokens caros
-      pasan por el modelo caro</i>.</p>
-    <p><span class="hd">Lee as&iacute;.</span> El lector da el coste por petici&oacute;n,
-      el reparto porcentual y la factura mensual en d&oacute;lares. Comp&aacute;ralo con la
-      alternativa humana: una gesti&oacute;n del call center de ING cuesta ~€5,50; aqu&iacute;
-      hablamos de c&eacute;ntimos.</p>
-    <p><span class="hd">Mensaje.</span> Conocer el desglose es imprescindible para saber
-      d&oacute;nde cortar: cach&eacute; de prompt para el contexto repetido, modelo
-      peque&ntilde;o donde baste, validador solo para respuestas de riesgo. Las tres
-      slides siguientes cuantifican cada palanca.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>etapa</b>: cada paso del pipeline con
-      su modelo y sus tokens. <b>p<sub>in</sub>, p<sub>out</sub></b>: precio por
-      mill&oacute;n de tokens de entrada / salida. <b>Q</b>: volumen de peticiones por
-      d&iacute;a. <b>Mtok</b>: mill&oacute;n de tokens.</p>
+
+    <div class="readout" id="ro"></div>
+
+    <p><span class="hd">Lee así.</span> Mueve un slider: su símbolo se enciende en
+    <span style="color:var(--gold);font-weight:bold">dorado</span> dentro de la ecuación
+    y su número cambia. Sube <b>p</b> y el coste baja porque menos consultas escalan al
+    modelo caro; pero si el barato falla, la calidad cae.</p>
+
+    <div class="miniglos">
+      <b>p</b> fracción que resuelve el modelo barato. <b>c<sub>barato</sub></b> coste
+      del modelo barato (fijo, 0.5 &euro;). <b>c<sub>caro</sub></b> coste del modelo caro
+      (&euro; / 1000 tokens). Todas las consultas pasan por el barato; una fracción
+      (1&minus;p) escala además al caro.
+    </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 1 : cascada de modelos ============ -->
+<!-- ============ SLIDE 2: cierre ============ -->
 <section class="slide" id="s1">
   <div class="figcol">
-    <canvas id="cv1a" data-aspect="1.95"></canvas>
-    <canvas id="cv1b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">E[C] = p&middot;C<sub>b</sub> + (1&minus;p)&middot;(C<sub>b</sub> + C<sub>c</sub>)<span class="eqn">(cascada de dos niveles)</span></div>
-      <div class="eqread">todas las consultas pasan primero por el modelo <b>barato</b>
-        (coste C<sub>b</sub>); la fracci&oacute;n p se resuelve ah&iacute; y la
-        1&minus;p restante <b>escala</b> al caro y paga ambos: C<sub>b</sub> + C<sub>c</sub>.
-        El ahorro frente a enviarlo todo al caro es 1 &minus; E[C]/C<sub>c</sub>.</div>
-      <div class="eq">E[coste] = 0,70&times;0,001 + 0,25&times;0,03 + 0,05&times;0,15 = $0,016<span class="eqn">(deck: tres niveles)</span></div>
-      <div class="eqread">la versi&oacute;n del deck con router de tres niveles: 70% simple
-        &rarr; Haiku ($0,001), 25% media &rarr; Sonnet ($0,03), 5% compleja &rarr; Opus
-        ($0,15). Frente a siempre-Sonnet ($0,03), <b>ahorro del 47%</b>.</div>
-      <div class="eq">Q&#772; = (1 &minus; (1&minus;p)&middot;e)&middot;q<sub>ok</sub> + (1&minus;p)&middot;e&middot;q<sub>mal</sub><span class="eqn">(calidad esperada)</span></div>
-      <div class="eqread">el detector de insuficiencia falla con tasa <b>e</b>: una
-        fracci&oacute;n (1&minus;p)&middot;e de consultas complejas se queda en el barato y
-        sale con calidad q<sub>mal</sub> en vez de q<sub>ok</sub>. El ahorro tiene un precio
-        en calidad, y este es su modelo.</div>
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">E[coste] = p&middot;c<sub>barato</sub> + (1&minus;p)&middot;(c<sub>barato</sub> + c<sub>caro</sub>)</div>
     </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
   </div>
   <div class="txtcol">
-    <div class="ctrlbox">
-      <label>fracci&oacute;n resuelta por el barato, p = <b id="r1p"></b></label>
-      <input type="range" id="sl1p" min="0" max="1" step="0.01" value="0.70">
-      <label>coste del modelo caro, C<sub>c</sub> = $<b id="r1cc"></b> por consulta</label>
-      <input type="range" id="sl1cc" min="0.01" max="0.20" step="0.005" value="0.03">
-      <label>tasa de error del detector, e = <b id="r1e"></b></label>
-      <input type="range" id="sl1e" min="0" max="0.30" step="0.01" value="0.05">
-    </div>
-    <div class="readout" id="ro1"></div>
-    <div id="badge1"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con p = 0,70, lee el ahorro en el lector. <span class="obs">Cerca del 60% con
-        C<sub>c</sub> = $0,03: m&aacute;s de la mitad de la factura desaparece sin tocar
-        las consultas dif&iacute;ciles.</span></li>
-      <li>Mueve p de 0 a 1 mirando el panel superior. <span class="obs">La recta dorada
-        baja linealmente desde C<sub>b</sub>+C<sub>c</sub> (todo escala) hasta
-        C<sub>b</sub> (nada escala). Cada punto de p que ganas con un router mejor es
-        ahorro directo.</span></li>
-      <li>Sube e hasta 0,30 con p = 0,70. <span class="obs">En el panel inferior la calidad
-        esperada cae: el 9% del tr&aacute;fico (30% de errores sobre el 30% complejo) sale
-        mal. El badge se pone rojo al cruzar el umbral de calidad 0,90.</span></li>
-      <li>Busca la p m&aacute;xima que mantiene la calidad &ge; 0,90 con e = 0,10.
-        <span class="obs">No es 1: enviar todo al barato es gratis pero falla. El router
-        &oacute;ptimo equilibra euros y calidad, no minimiza solo euros.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: en la cascada, la consulta
-        compleja paga C<sub>b</sub> + C<sub>c</sub>. ¿Cu&aacute;ndo compensa a&uacute;n
-        as&iacute;?</summary><div class="ans">Compensa siempre que
-        p&middot;C<sub>c</sub> &gt; C<sub>b</sub>: lo que ahorras en las p consultas que NO
-        escalan supera el peaje C<sub>b</sub> que pagan todas. Con C<sub>b</sub> = $0,001 y
-        C<sub>c</sub> = $0,03 basta p &gt; 3,3%: casi cualquier router razonable compensa.
-        Por eso el routing es la palanca de coste m&aacute;s potente en producci&oacute;n:
-        el peaje del intento barato es despreciable frente al precio del caro.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> El patr&oacute;n de fallback en cascada del deck: un
-      clasificador de complejidad (o el propio modelo barato con autoevaluaci&oacute;n)
-      intenta resolver cada consulta del asistente; si la confianza es baja, escala al
-      modelo caro. Panel superior: coste esperado por consulta E[C] en funci&oacute;n de p,
-      con las l&iacute;neas de referencia "todo al caro" y "todo al barato"; el punto
-      dorado es tu configuraci&oacute;n. Panel inferior: la calidad esperada Q&#772; en
-      funci&oacute;n de la tasa de error e del detector, con q<sub>ok</sub> = 0,95 y
-      q<sub>mal</sub> = 0,55.</p>
-    <p><span class="hd">Juega.</span> El tri&aacute;ngulo de la slide es
-      (p, C<sub>c</sub>, e): m&aacute;s p = m&aacute;s ahorro; m&aacute;s C<sub>c</sub> =
-      m&aacute;s incentivo a la cascada; m&aacute;s e = m&aacute;s consultas complejas mal
-      atendidas. En un churn telco con 80% de consultas repetitivas ("&iquest;cu&aacute;nto
-      pago este mes?") la cascada es oro; en un asesor fiscal con todo complejo, no.</p>
-    <p><span class="hd">Mensaje.</span> El routing inteligente es la palanca de coste
-      m&aacute;s potente en producci&oacute;n, pero se dimensiona con dos n&uacute;meros
-      (p y e) que hay que <i>medir</i> sobre tr&aacute;fico real, no suponer.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>cascada</b>: intentar primero el modelo
-      barato y escalar si no basta. <b>p</b>: fracci&oacute;n de consultas que el barato
-      resuelve bien. <b>e</b>: tasa de fallo del detector de insuficiencia.
-      <b>q<sub>ok</sub>/q<sub>mal</sub></b>: calidad cuando la consulta acaba en el modelo
-      adecuado / inadecuado.</p>
+    <p><span class="hd">La idea.</span> Una cascada enruta: el modelo barato responde
+    si <b>confía</b>; si no, <b>escala</b> al caro. Ajustando el umbral de confianza
+    mueves <b>p</b> y con ella el coste y la latencia esperados.</p>
+    <p><span class="hd">Negocio.</span> Poner <b>p</b> alto abarata la factura y acelera
+    la respuesta media, pero cada consulta mal resuelta por el barato es un cliente
+    insatisfecho. El punto óptimo equilibra coste, latencia y calidad, no minimiza uno solo.</p>
+    <p><span class="hd">Y ahora.</span> En producción se vigila la <b>cola</b> (una M/M/1
+    se satura si llegan más consultas de las que el sistema procesa) y la latencia por
+    <b>percentiles</b>: no basta la media, el <b>p95</b> es lo que sufre el peor cliente.</p>
   </div>
 </section>
 
-<!-- ============ SLIDE 2 : coste-calidad ============ -->
-<section class="slide" id="s2">
-  <div class="figcol">
-    <canvas id="cv2a" data-aspect="1.6"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">Q($) &asymp; Q<sub>max</sub>&middot;<big>(</big>1 &minus; e<sup>&minus;$/$<sub>0</sub></sup><big>)</big><span class="eqn">(saturaci&oacute;n coste-calidad)</span></div>
-      <div class="eqread">la calidad de respuesta <b>satura</b> con el coste por consulta:
-        Q<sub>max</sub> es el techo alcanzable en la tarea y $<sub>0</sub> es la
-        <b>escala del codo</b>, espec&iacute;fica de cada tarea: gastar $<sub>0</sub> compra
-        el 63% del techo; gastar 3&middot;$<sub>0</sub>, el 95%.</div>
-      <div class="eq"><span class="frac"><span class="num">dQ</span><span class="den">d$</span></span> = <span class="frac"><span class="num">Q<sub>max</sub></span><span class="den">$<sub>0</sub></span></span>&middot;e<sup>&minus;$/$<sub>0</sub></sup><span class="eqn">(calidad marginal por d&oacute;lar)</span></div>
-      <div class="eqread">la derivada decae exponencialmente: cada d&oacute;lar extra compra
-        cada vez menos calidad. Pasar de Haiku ($0,005) a Sonnet ($0,03) sube mucho; de
-        Sonnet a Opus ($0,15) sube poco salvo razonamiento complejo. <b>La elecci&oacute;n
-        por defecto en 2026 es Sonnet</b> (nota t&eacute;cnica).</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>codo de la tarea, $<sub>0</sub> = $<b id="r2s0"></b> por consulta</label>
-      <input type="range" id="sl2s0" min="0.002" max="0.08" step="0.002" value="0.02">
-      <label>tu presupuesto por consulta, $ = $<b id="r2b"></b></label>
-      <input type="range" id="sl2b" min="0.001" max="0.20" step="0.001" value="0.03">
-    </div>
-    <div class="readout" id="ro2"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con $<sub>0</sub> = 0,02, mueve el presupuesto de 0,001 a 0,20.
-        <span class="obs">El punto dorado sube r&aacute;pido hasta ~$0,05 y luego repta: a
-        la derecha del codo, cada d&oacute;lar compra d&eacute;cimas de punto.</span></li>
-      <li>Lee la calidad marginal en el lector con $ = 0,005, 0,03 y 0,15.
-        <span class="obs">Cae un orden de magnitud entre Haiku y Opus: el mismo d&oacute;lar
-        compra ~30 veces menos calidad en el extremo caro.</span></li>
-      <li>Sube $<sub>0</sub> a 0,08 (tarea de razonamiento dif&iacute;cil).
-        <span class="obs">El codo se desplaza a la derecha y Opus vuelve a tener sentido:
-        la curva es de la TAREA, no del proveedor. Por eso hay que medirla con tu
-        golden set.</span></li>
-      <li>Con $<sub>0</sub> = 0,01, compara Q(0,03) y Q(0,15) en el lector.
-        <span class="obs">Diferencia de ~5 puntos porcentuales por 5 veces el precio: en
-        tareas f&aacute;ciles, pagar Opus es tirar el presupuesto.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿qu&eacute; significa
-        operativamente que $<sub>0</sub> sea peque&ntilde;o?</summary><div class="ans">Que
-        la tarea es barata de saturar: con muy poco gasto ya est&aacute;s cerca del techo
-        Q<sub>max</sub>, y subir de modelo no a&ntilde;ade casi nada. Un $<sub>0</sub>
-        peque&ntilde;o (FAQ de empleados, clasificaci&oacute;n de tickets) pide modelo
-        barato + cascada; un $<sub>0</sub> grande (an&aacute;lisis regulatorio, SQL
-        complejo) justifica el modelo caro. Estimar $<sub>0</sub> con 50&ndash;500 golden
-        conversations es la primera decisi&oacute;n econ&oacute;mica del proyecto, antes
-        de elegir proveedor.</div></details></div>
-    <p><span class="hd">Setup.</span> La curva coste-calidad de la nota t&eacute;cnica,
-      con los tres puntos de referencia del mercado 2026 marcados sobre ella: Haiku
-      ($0,005/consulta), Sonnet ($0,03) y Opus ($0,15). La l&iacute;nea discontinua es el
-      techo Q<sub>max</sub> = 1; el punto dorado es tu presupuesto elegido y la zona
-      sombreada es la calidad que ya has comprado.</p>
-    <p><span class="hd">Juega.</span> El slider de $<sub>0</sub> cambia de tarea: con el
-      codo a la izquierda (tareas simples) los tres modelos est&aacute;n casi al mismo
-      nivel de calidad y gana el barato; con el codo a la derecha (razonamiento), la
-      brecha entre puntos se abre y el caro se justifica.</p>
-    <p><span class="hd">Mensaje.</span> "&iquest;Qu&eacute; modelo uso?" es una pregunta
-      mal planteada; la buena es "&iquest;d&oacute;nde est&aacute; el codo de MI tarea?".
-      Se responde midiendo calidad sobre un golden set a varios niveles de gasto, y de ahi
-      sale la cascada de la slide anterior con n&uacute;meros propios.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Q<sub>max</sub></b>: techo de calidad
-      alcanzable en la tarea. <b>$<sub>0</sub></b>: escala del codo; gasto que compra el
-      63% del techo. <b>golden set</b>: conjunto de conversaciones ideales con las que se
-      mide la calidad (D&iacute;a 16).</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 3 : latencia por percentiles ============ -->
-<section class="slide" id="s3">
-  <div class="figcol">
-    <canvas id="cv3a" data-aspect="1.95"></canvas>
-    <canvas id="cv3b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">T<sup>LLM</sup> = TTFT + <span class="frac"><span class="num">N<sup>out</sup></span><span class="den">tps</span></span>,&nbsp;&nbsp;&nbsp; T &sim; LogNormal(&mu;, &sigma;&sup2;):&nbsp; T = e<sup>&mu;+&sigma;Z</sup>,&nbsp; Z&sim;N(0,1)<span class="eqn">(nota t&eacute;cnica + modelo)</span></div>
-      <div class="eqread">la llamada al LLM tarda el <b>time-to-first-token</b> (red +
-        prefill) m&aacute;s la decodificaci&oacute;n a tps tokens/segundo. La latencia total
-        observada es aleatoria y asim&eacute;trica: el modelo lognormal (exponencial de una
-        normal) reproduce su cola derecha larga. e<sup>&mu;</sup> es la mediana;
-        &sigma; controla cu&aacute;nto pesa la cola.</div>
-      <div class="eq">p95: P(T &le; t<sub>95</sub>) = 0,95&nbsp;&nbsp;&rArr;&nbsp;&nbsp; t<sub>95</sub> = e<sup>&mu;+1,645&sigma;</sup>,&nbsp;&nbsp;&nbsp; E[T] = e<sup>&mu;+&sigma;&sup2;/2</sup><span class="eqn">(percentil vs media)</span></div>
-      <div class="eqread">el <b>percentil 95</b> es el valor que el 95% de las peticiones no
-        supera: es lo que se firma en el SLA (p95 &lt; 3 s en el caso ING del deck). La
-        media est&aacute; SIEMPRE por debajo del p95 en una lognormal: prometer la media es
-        enga&ntilde;arse, porque 1 de cada 20 usuarios vive en la cola.</div>
-      <div class="eq">T<sub>total</sub> = <big>&Sigma;</big><sub>t=1..N</sub>&nbsp;<big>(</big>T<sup>LLM</sup><sub>t</sub> + T<sup>tool</sup><sub>t</sub><big>)</big><span class="eqn">(Ec. 1 de la nota)</span></div>
-      <div class="eqread">una sesi&oacute;n de N turnos <b>suma</b> latencias de LLM y de
-        tools: las colas se acumulan turno a turno. El ejemplo a mano del deck:
-        40 + 280 + 350 + 520 + 460 + 80 = <b>1&thinsp;730 ms</b> end-to-end. El panel
-        inferior muestra c&oacute;mo crece el p95 de la suma al encadenar S etapas.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>mediana de la etapa, e<sup>&mu;</sup> = <b id="r3mu"></b> ms</label>
-      <input type="range" id="sl3mu" min="100" max="1500" step="25" value="500">
-      <label>dispersi&oacute;n de la cola, &sigma; = <b id="r3sg"></b></label>
-      <input type="range" id="sl3sg" min="0.1" max="1.2" step="0.02" value="0.5">
-      <label>etapas encadenadas en el pipeline, S = <b id="r3S"></b></label>
-      <input type="range" id="sl3S" min="1" max="8" step="1" value="3">
-      <button id="bt3">otra muestra (otra semilla)</button>
-    </div>
-    <div class="readout" id="ro3"></div>
-    <div id="badge3"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con mediana 500 ms y &sigma; = 0,5, lee p50, media, p95 y p99.
-        <span class="obs">La media ya supera la mediana y el p95 casi duplica la mediana:
-        en una lognormal la cola tira de todo hacia arriba.</span></li>
-      <li>Sube &sigma; a 1,0 sin tocar la mediana. <span class="obs">El p50 apenas se mueve
-        pero el p99 se multiplica: la mitad "t&iacute;pica" de tus usuarios no nota nada y
-        el 1% espera 10 segundos. El SLA se rompe por la cola, no por el centro.</span></li>
-      <li>Con S = 3 etapas, mira el panel inferior. <span class="obs">El p95 de la suma
-        crece m&aacute;s que 3 veces el p50 de una etapa: las colas de las etapas se
-        suman y alguna siempre sale lenta.</span></li>
-      <li>Pulsa "otra muestra" varias veces. <span class="obs">p50 estable, p99 bailando:
-        los percentiles profundos se estiman con pocas observaciones efectivas, igual que
-        los cuantiles extremos en riesgo. Monitorizar p99 exige volumen.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; el SLA se
-        firma en p95 y no en la media?</summary><div class="ans">Porque la media es
-        invisible para el usuario individual: nadie experimenta "la media", cada uno
-        experimenta SU petici&oacute;n. Con cola lognormal, la media puede ser excelente
-        mientras el 5% de los usuarios espera el triple: exactamente los que abandonan,
-        llaman al call center (€5,50 en ING) o tuitean la captura. El p95 acota la
-        experiencia del 95% de las peticiones reales; el p99 protege a los heavy users,
-        que suelen ser los clientes m&aacute;s valiosos.</div></details></div>
-    <p><span class="hd">Setup.</span> Simulo 4&thinsp;000 peticiones reales del chatbot
-      (muestreadas con generador reproducible, semilla fija) cuya latencia por etapa es
-      lognormal: mediana e<sup>&mu;</sup> y dispersi&oacute;n &sigma;. Arriba: el
-      histograma de latencias de UNA etapa con las marcas p50 (tinta), media (gris), p95
-      (dorado) y p99 (dorado oscuro), y la l&iacute;nea del SLA en 3&thinsp;000 ms. Abajo:
-      el p50 y el p95 del pipeline completo al encadenar S etapas en secuencia (cada punto
-      se calcula sumando S muestras independientes, no con una f&oacute;rmula
-      pre-cocinada).</p>
-    <p><span class="hd">Juega.</span> &sigma; es el slider importante: representa tools
-      externos inestables, reintentos ocultos, picos de carga del proveedor. Con
-      &sigma; alta, la distancia media&ndash;p99 se abre; eso es lo que el dashboard de
-      producci&oacute;n vigila y lo que el incidente de ING del deck (picos a 12 s)
-      ilustra.</p>
-    <p><span class="hd">Mensaje.</span> En producci&oacute;n se piensa en percentiles. La
-      media es una m&eacute;trica de coste (factura = volumen &times; media); la
-      experiencia y el SLA son percentiles. Y al encadenar etapas, la cola de la suma la
-      domina la etapa m&aacute;s dispersa: optimiza la varianza, no solo la media.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>TTFT</b>: time-to-first-token, latencia
-      antes del primer token (~0,7 s en Sonnet v&iacute;a API). <b>tps</b>: tokens por
-      segundo de decodificaci&oacute;n (~60). <b>p50/p95/p99</b>: percentiles de latencia.
-      <b>SLA</b>: acuerdo de nivel de servicio, contractual.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 4 : paralelo vs secuencial ============ -->
-<section class="slide" id="s4">
-  <div class="figcol">
-    <canvas id="cv4a" data-aspect="1.95"></canvas>
-    <canvas id="cv4b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">T<sub>sec</sub> = <big>&Sigma;</big><sub>i=1..n</sub>&nbsp;T<sub>i</sub>,&nbsp;&nbsp;&nbsp; T<sub>par</sub> = m&aacute;x<sub>i=1..n</sub>&nbsp;T<sub>i</sub><span class="eqn">(orquestaci&oacute;n)</span></div>
-      <div class="eqread">si el orquestador lanza los n subagentes <b>uno tras otro</b>, la
-        latencia es la suma; si los lanza <b>a la vez</b> (son independientes), espera solo
-        al m&aacute;s lento: el m&aacute;ximo. La suma crece lineal con n; el m&aacute;ximo
-        crece despacio (como el percentil 1&minus;1/n de una etapa).</div>
-      <div class="eq">C<sub>sec</sub> = C<sub>par</sub> = <big>&Sigma;</big><sub>i=1..n</sub>&nbsp;C<sub>i</sub><span class="eqn">(el coste no cambia)</span></div>
-      <div class="eqread">paralelizar <b>no ahorra dinero</b>: se consumen los mismos
-        tokens en ambos casos. Compra latencia, no coste. Es la estrategia "tools en
-        paralelo" de la nota t&eacute;cnica: lanzar concurrentemente las k tools
-        independientes que el agente decida invocar.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>n&uacute;mero de subagentes, n = <b id="r4n"></b></label>
-      <input type="range" id="sl4n" min="1" max="12" step="1" value="4">
-      <label>dispersi&oacute;n de cada subagente, &sigma; = <b id="r4sg"></b></label>
-      <input type="range" id="sl4sg" min="0.1" max="1.2" step="0.02" value="0.5">
-      <button id="bt4">otra simulaci&oacute;n</button>
-    </div>
-    <div class="readout" id="ro4"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con n = 4, compara las dos curvas del panel superior.
-        <span class="obs">La secuencial (tinta) ya cuadruplica la mediana de una etapa; la
-        paralela (dorada) apenas la duplica. Misma factura, mitad de espera.</span></li>
-      <li>Sube n hasta 12. <span class="obs">La suma sigue recta hacia arriba; el
-        m&aacute;ximo se aplana: pasar de 8 a 12 subagentes paralelos casi no a&ntilde;ade
-        latencia. El m&aacute;ximo crece como un percentil, no como una suma.</span></li>
-      <li>Sube &sigma; a 1,0 con n = 6. <span class="obs">La ventaja del paralelo se
-        ESTRECHA en t&eacute;rminos relativos al p95: con colas pesadas, el m&aacute;s
-        lento de 6 es lento de verdad. Paralelizar no te exime de vigilar la cola de cada
-        subagente.</span></li>
-      <li>Mira el histograma inferior con n = 6. <span class="obs">La distribuci&oacute;n
-        del m&aacute;ximo (dorada) est&aacute; pegada a la derecha de la de UNA etapa pero
-        lejos de la suma: pagas "el peor de n", nunca "n veces uno".</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; el
-        m&aacute;ximo de n lognormales crece tan despacio con n?</summary><div class="ans">
-        Porque P(m&aacute;x &le; t) = P(T &le; t)<sup>n</sup> (independencia): el
-        m&aacute;ximo de n muestras se comporta como el percentil 1&minus;1/n de una sola.
-        Pasar de n = 4 a n = 8 mueve ese percentil del 75% al 87,5%: unos cientos de ms en
-        una lognormal moderada. La suma, en cambio, a&ntilde;ade una mediana entera por
-        subagente. De ah&iacute; la regla de dise&ntilde;o: todo lo que sea independiente
-        (buscar en CRM, buscar en Confluence, consultar BigQuery) se lanza a la vez; solo
-        lo dependiente se encadena.</div></details></div>
-    <p><span class="hd">Setup.</span> El asistente corporativo BBVA del deck tiene 4
-      subagentes (buscador, investigador, analista, redactor). Cuando el orquestador
-      necesita varios a la vez puede encadenarlos o lanzarlos en paralelo. Simulo
-      3&thinsp;000 peticiones (semilla reproducible): cada subagente tarda una lognormal
-      con mediana 500 ms y la &sigma; del slider. Arriba: latencia p50 y p95 de ambas
-      estrategias en funci&oacute;n de n, calculadas sobre la simulaci&oacute;n. Abajo:
-      las tres distribuciones para el n elegido (una etapa, m&aacute;ximo de n, suma
-      de n).</p>
-    <p><span class="hd">Juega.</span> El contraste es la imagen del d&iacute;a 15
-      (orquestador-subagentes) hecha n&uacute;mero: la arquitectura en estrella no es
-      est&eacute;tica, es la que permite paralelizar; una cadena lineal de subagentes
-      hereda la suma de latencias completa.</p>
-    <p><span class="hd">Mensaje.</span> El paralelismo es la &uacute;nica optimizaci&oacute;n
-      de latencia que es gratis en coste. Su l&iacute;mite es la dependencia l&oacute;gica
-      (el redactor necesita lo que encuentre el buscador) y el rate limit del proveedor.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>orquestador</b>: agente principal que
-      delega en subagentes (D&iacute;a 15). <b>fan-out</b>: lanzar n subagentes a la vez.
-      <b>m&aacute;x de n</b>: latencia del paralelo; equivale al percentil 1&minus;1/n de
-      una etapa.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 5 : reintentos y fallbacks ============ -->
-<section class="slide" id="s5">
-  <div class="figcol">
-    <canvas id="cv5a" data-aspect="1.95"></canvas>
-    <canvas id="cv5b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">P<sub>&eacute;xito</sub>(r) = 1 &minus; (1&minus;q)<sup>r</sup><span class="eqn">(reintentos independientes)</span></div>
-      <div class="eqread">si cada intento tiene probabilidad q de funcionar (el error 429 o
-        503 es transitorio), fallar r veces seguidas tiene probabilidad
-        (1&minus;q)<sup>r</sup>: con q = 0,90 y r = 3, el fallo compuesto baja al 0,1%. La
-        disponibilidad compuesta sube exponencialmente con r... si los fallos son
-        independientes.</div>
-      <div class="eq">espera<sub>i</sub> = b&middot;2<sup>i&minus;1</sup>,&nbsp;&nbsp;&nbsp; E[T] = <big>&Sigma;</big><sub>i=1..r</sub>&nbsp;(1&minus;q)<sup>i&minus;1</sup><big>[</big>q&middot;T<sub>i</sub><sup>ok</sup> + 1<sub>{i=r}</sub>(1&minus;q)&middot;T<sub>r</sub><sup>fail</sup><big>]</big><span class="eqn">(backoff exponencial)</span></div>
-      <div class="eqread">tras el intento i fallido se espera b&middot;2<sup>i&minus;1</sup>
-        (1&times;, 2&times;, 4&times;... la base b) antes de reintentar: el <b>backoff
-        exponencial</b> de la nota t&eacute;cnica, que evita martillear un servicio
-        ca&iacute;do. La latencia esperada pondera cada escenario (&eacute;xito al intento
-        i, o agotar los r intentos) por su probabilidad exacta.</div>
-      <div class="eq">E[intentos] = <span class="frac"><span class="num">1 &minus; (1&minus;q)<sup>r</sup></span><span class="den">q</span></span>&nbsp;&nbsp;&rArr;&nbsp;&nbsp; E[C] = E[intentos]&middot;C<sub>llamada</sub><span class="eqn">(coste de reintentar)</span></div>
-      <div class="eqread">cada reintento se factura: el coste esperado es el n&uacute;mero
-        esperado de intentos por el precio de la llamada. Con q alto apenas se nota; con q
-        bajo, reintentar es pagar varias veces por la misma respuesta.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>probabilidad de &eacute;xito por intento, q = <b id="r5q"></b></label>
-      <input type="range" id="sl5q" min="0.30" max="0.99" step="0.01" value="0.90">
-      <label>m&aacute;ximo de intentos, r = <b id="r5r"></b></label>
-      <input type="range" id="sl5r" min="1" max="6" step="1" value="3">
-      <label>base del backoff, b = <b id="r5b"></b> ms</label>
-      <input type="range" id="sl5b" min="100" max="2000" step="100" value="500">
-    </div>
-    <div class="readout" id="ro5"></div>
-    <div id="badge5"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con q = 0,90, sube r de 1 a 3 mirando el panel superior.
-        <span class="obs">La disponibilidad salta de 90% a 99,9%: dos reintentos convierten
-        un servicio mediocre en uno respetable. El badge pasa a verde al cruzar el
-        99,5% del SLA.</span></li>
-      <li>Sigue subiendo r hasta 6. <span class="obs">La curva ya est&aacute; plana: el
-        cuarto reintento a&ntilde;ade casi nada de disponibilidad pero s&iacute; cola de
-        latencia (panel inferior, esperas 8b y 16b). Reintentar m&aacute;s no siempre es
-        mejor.</span></li>
-      <li>Baja q a 0,50 (proveedor degradado). <span class="obs">Ni con r = 6 llegas al
-        99,5%, la latencia esperada se dispara por las esperas y el coste esperado casi
-        duplica el de una llamada: reintentar contra un servicio roto es pagar m&aacute;s
-        por esperar m&aacute;s. Eso pide circuit breaker, no m&aacute;s paciencia.</span></li>
-      <li>Con q = 0,90 y r = 3, sube b a 2&thinsp;000 ms. <span class="obs">La
-        disponibilidad no cambia (b no toca la probabilidad) pero el p-latencia del caso
-        "&eacute;xito al 3.&ordm; intento" suma 6 segundos de esperas: el backoff se
-        dimensiona contra el SLA, no al azar.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; el backoff
-        es exponencial y no espera fija?</summary><div class="ans">Por dos razones. Primera:
-        si el servicio est&aacute; ca&iacute;do, mil clientes reintentando cada 500 ms fijos
-        lo rematan en cuanto vuelve (thundering herd); duplicar la espera dispersa la carga
-        y le da aire para recuperarse. Segunda: los fallos transitorios reales no son
-        independientes, vienen en r&aacute;fagas; esperar 1b, 2b, 4b hace que los intentos
-        sucesivos muestreen momentos cada vez m&aacute;s alejados de la r&aacute;faga, y la
-        independencia que asume 1&minus;(1&minus;q)<sup>r</sup> se vuelve aproximadamente
-        cierta. El backoff no solo espera: hace verdadera la f&oacute;rmula.</div>
-      </details></div>
-    <p><span class="hd">Setup.</span> El patr&oacute;n retry-con-backoff de la nota
-      t&eacute;cnica, con su aritm&eacute;tica completa. Arriba: la disponibilidad
-      compuesta 1&minus;(1&minus;q)<sup>r</sup> en funci&oacute;n de r, con la
-      l&iacute;nea del SLA de disponibilidad (99,5%, el contrato del caso ING del deck).
-      Abajo: la latencia de cada escenario (&eacute;xito al intento 1, 2, ..., r) con sus
-      probabilidades como barras, y la latencia esperada total. Todo se calcula con la
-      enumeraci&oacute;n exacta de escenarios, no por aproximaci&oacute;n.</p>
-    <p><span class="hd">Juega.</span> La pol&iacute;tica de reintentos tiene tres mandos y
-      esta slide los hace visibles: r compra disponibilidad con rendimientos decrecientes,
-      b compra estabilidad del proveedor a costa de latencia de cola, y q no lo controlas
-      t&uacute;: lo controla el circuit breaker, que corta cuando q se hunde para no
-      pagar la zona roja de esta slide.</p>
-    <p><span class="hd">Mensaje.</span> Los cinco patrones del deck (timeout, retry,
-      circuit breaker, fallback de modelo, mensaje can&oacute;nico) son capas de la misma
-      cebolla: cada una corta las p&eacute;rdidas cuando la anterior no basta. Reintentar
-      errores 4xx (l&oacute;gicos) no entra: si el JSON era inv&aacute;lido, lo
-      seguir&aacute; siendo a la tercera.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>q</b>: probabilidad de &eacute;xito de
-      un intento. <b>r</b>: m&aacute;ximo de intentos. <b>backoff</b>: espera creciente
-      entre reintentos (b, 2b, 4b...). <b>circuit breaker</b>: dejar de llamar a un
-      servicio que falla repetidamente. <b>429/503</b>: errores transitorios (rate limit /
-      servicio no disponible); s&iacute; se reintentan.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 6 : colas y throughput ============ -->
-<section class="slide" id="s6">
-  <div class="figcol">
-    <canvas id="cv6a" data-aspect="1.95"></canvas>
-    <canvas id="cv6b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">L = &lambda;&middot;W<span class="eqn">(ley de Little)</span></div>
-      <div class="eqread">v&aacute;lida para CUALQUIER sistema estable, sin supuestos de
-        distribuci&oacute;n: el n&uacute;mero medio de peticiones dentro del sistema (L) es
-        la tasa de llegadas (&lambda;, peticiones/s) por el tiempo medio que cada una pasa
-        dentro (W, segundos). Si miras el dashboard y hay 40 sesiones vivas con &lambda; = 10/s,
-        cada una est&aacute; tardando 4 s: Little te deja inferir lo que no mides.</div>
-      <div class="eq">&rho; = <span class="frac"><span class="num">&lambda;</span><span class="den">&mu;</span></span>,&nbsp;&nbsp;&nbsp; W = <span class="frac"><span class="num">1</span><span class="den">&mu;&minus;&lambda;</span></span>,&nbsp;&nbsp;&nbsp; L<sub>q</sub> = <span class="frac"><span class="num">&rho;&sup2;</span><span class="den">1&minus;&rho;</span></span><span class="eqn">(cola M/M/1)</span></div>
-      <div class="eqread">con llegadas Poisson y servicio exponencial a capacidad &mu;
-        (peticiones/s): la <b>utilizaci&oacute;n</b> &rho; es la fracci&oacute;n de la
-        capacidad usada, y el tiempo total en el sistema W tiene un denominador
-        &mu;&minus;&lambda; que <b>explota cuando &rho;&rarr;1</b>: al 50% de uso esperas
-        2/&mu;; al 90%, 10/&mu;; al 99%, 100/&mu;. La curva no es lineal: es un codo.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>llegadas en hora punta, &lambda; = <b id="r6l"></b> peticiones/s</label>
-      <input type="range" id="sl6l" min="0.5" max="19.5" step="0.25" value="8">
-      <label>capacidad aprovisionada, &mu; = <b id="r6m"></b> peticiones/s</label>
-      <input type="range" id="sl6m" min="2" max="20" step="0.5" value="10">
-    </div>
-    <div class="readout" id="ro6"></div>
-    <div id="badge6"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con &lambda; = 8 y &mu; = 10 (&rho; = 0,8), lee W.
-        <span class="obs">500 ms: el qu&iacute;ntuple del tiempo de servicio puro (100 ms). Al 80% de
-        utilizaci&oacute;n ya pagas un 400% de espera extra. La cola cuesta antes de
-        saturar.</span></li>
-      <li>Sube &lambda; de 8 a 9,5 (un +19% de tr&aacute;fico).
-        <span class="obs">W salta de 0,5 s a 2 s: +300%. Cerca del codo, un incremento
-        peque&ntilde;o de demanda multiplica la espera. Este es el mecanismo exacto del
-        incidente ING del deck: un pico desborda y la latencia pasa a 12 s.</span></li>
-      <li>Restaura &lambda; = 8 y baja &mu; a 8,5. <span class="obs">Mismo efecto por el
-        otro lado: perder capacidad (una zona del proveedor ca&iacute;da, rate limit
-        reducido) te empuja al codo aunque el tr&aacute;fico no cambie.</span></li>
-      <li>Busca la &mu; m&iacute;nima que mantiene W &le; 300 ms con &lambda; = 8.
-        <span class="obs">Sale &mu; &asymp; 11,3: dimensionar es despejar
-        &mu; &ge; &lambda; + 1/W<sub>objetivo</sub>, no "&mu; = &lambda; y que aguante".
-        El margen sobre la demanda ES el producto que compras.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; W explota
-        en &rho; = 1 si "en media" la capacidad da exactamente para la demanda?</summary>
-        <div class="ans">Porque las llegadas no vienen en media: vienen en r&aacute;fagas
-        aleatorias. Cuando &rho; &lt; 1, los ratos tranquilos permiten vaciar la cola que
-        las r&aacute;fagas crean; cuando &rho; = 1 no hay ratos tranquilos que compensen:
-        cada r&aacute;faga deja un poso de cola que nunca se drena, y la espera crece sin
-        l&iacute;mite aunque el sistema "d&eacute; abasto" en media. Por eso ning&uacute;n
-        equipo de infraestructura serio planifica por encima del 70&ndash;80% de
-        utilizaci&oacute;n sostenida: el 20&ndash;30% restante no es derroche, es el
-        amortiguador que mantiene W finito.</div></details></div>
-    <p><span class="hd">Setup.</span> El asistente de BBVA en hora punta: las peticiones
-      llegan a tasa &lambda; y el despliegue (instancias del orquestador + cuota de API)
-      procesa a capacidad &mu;. Arriba: la curva codo W(&lambda;) con tu punto de operaci&oacute;n
-      dorado y la as&iacute;ntota vertical en &lambda; = &mu;; la l&iacute;nea discontinua
-      es el objetivo de 300 ms de espera interna. Abajo: L = &lambda;W y
-      L<sub>q</sub> (en cola) en funci&oacute;n de la utilizaci&oacute;n &rho;, con tu
-      &rho; marcada.</p>
-    <p><span class="hd">Juega.</span> La pareja (&lambda;, &mu;) resume todas las
-      decisiones de capacidad: autoscaling (sube &mu; con la demanda), rate limiting
-      (recorta &lambda; para proteger W), colas de prioridad (reparte el W disponible).
-      F&iacute;jate en que TODO pasa cerca de &rho; = 1; lejos del codo, la
-      infraestructura es aburrida, que es como debe ser.</p>
-    <p><span class="hd">Mensaje.</span> El SLA de latencia de las slides anteriores se
-      gana o se pierde aqu&iacute;: puedes tener el pipeline m&aacute;s r&aacute;pido del
-      mundo y arruinarlo con &rho; = 0,95. Dimensionar = fijar W objetivo en el p95 y
-      despejar &mu; con margen para la r&aacute;faga.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>&lambda;</b>: tasa de llegadas.
-      <b>&mu;</b>: capacidad de servicio. <b>&rho;</b>: utilizaci&oacute;n &lambda;/&mu;.
-      <b>W</b>: tiempo medio en el sistema (espera + servicio). <b>L, L<sub>q</sub></b>:
-      peticiones dentro del sistema / esperando en cola. <b>M/M/1</b>: cola con llegadas
-      Poisson, servicio exponencial, un servidor.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 7 : caché de respuestas ============ -->
-<section class="slide" id="s7">
-  <div class="figcol">
-    <canvas id="cv7a" data-aspect="1.95"></canvas>
-    <canvas id="cv7b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">C<sub>ef</sub> = (1&minus;h)&middot;C,&nbsp;&nbsp;&nbsp; T<sub>ef</sub> = h&middot;T<sub>cache</sub> + (1&minus;h)&middot;T<sub>LLM</sub><span class="eqn">(coste y latencia efectivos)</span></div>
-      <div class="eqread">con tasa de acierto h, solo la fracci&oacute;n 1&minus;h de
-        consultas paga el LLM completo; los aciertos salen de la cach&eacute; en
-        ~30 ms. El ahorro mensual es h&middot;C&middot;volumen: lineal en h, y h se compra
-        con TTL.</div>
-      <div class="eq">h(TTL) = h<sub>max</sub>&middot;<big>(</big>1 &minus; e<sup>&minus;TTL/&tau;<sub>rep</sub></sup><big>)</big>,&nbsp;&nbsp;&nbsp; s(TTL) = 1 &minus; <span class="frac"><span class="num">&tau;<sub>upd</sub></span><span class="den">TTL</span></span><big>(</big>1 &minus; e<sup>&minus;TTL/&tau;<sub>upd</sub></sup><big>)</big><span class="eqn">(frescura vs ahorro)</span></div>
-      <div class="eqread">subir el TTL captura m&aacute;s repeticiones (h crece hacia el
-        techo h<sub>max</sub>, la repetitividad real del tr&aacute;fico, con escala
-        &tau;<sub>rep</sub> = tiempo t&iacute;pico entre repeticiones) pero sirve respuestas
-        m&aacute;s viejas: s es la probabilidad de servir contenido <b>obsoleto</b> si la
-        fuente cambia cada &tau;<sub>upd</sub> en media (entrada de edad uniforme en
-        [0,TTL], cambios Poisson). Las dos curvas se cruzan: ese cruce es la
-        decisi&oacute;n.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>TTL de la cach&eacute; = <b id="r7ttl"></b> h</label>
-      <input type="range" id="sl7ttl" min="0.25" max="168" step="0.25" value="24">
-      <label>repetitividad del tr&aacute;fico, h<sub>max</sub> = <b id="r7hm"></b></label>
-      <input type="range" id="sl7hm" min="0.1" max="0.9" step="0.02" value="0.6">
-      <label>vida media del contenido, &tau;<sub>upd</sub> = <b id="r7tu"></b> h</label>
-      <input type="range" id="sl7tu" min="6" max="720" step="6" value="240">
-      <label>volumen mensual = <b id="r7v"></b> consultas</label>
-      <input type="range" id="sl7v" min="10000" max="500000" step="10000" value="110000">
-    </div>
-    <div class="readout" id="ro7"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con TTL = 24 h, lee h y el ahorro mensual. <span class="obs">Con h<sub>max</sub> = 0,6
-        y tr&aacute;fico que se repite en horas, h ronda 0,5: la mitad de la factura LLM
-        desaparece por guardar respuestas ya pagadas.</span></li>
-      <li>Sube TTL hacia 168 h mirando el panel inferior. <span class="obs">h ya
-        est&aacute; saturada en h<sub>max</sub> pero la curva de obsolescencia sigue
-        subiendo: a partir del codo, m&aacute;s TTL no compra ahorro, solo respuestas
-        viejas.</span></li>
-      <li>Baja &tau;<sub>upd</sub> a 6 h (contenido que cambia a diario: precios,
-        disponibilidad). <span class="obs">La curva de obsolescencia se dispara y el cruce
-        con h se mueve a TTL de minutos-horas: la pol&iacute;tica de cach&eacute; depende
-        del contenido, no es un n&uacute;mero global.</span></li>
-      <li>Sube el volumen a 500&thinsp;000. <span class="obs">El ahorro escala lineal: con
-        volumen alto, la cach&eacute; es la optimizaci&oacute;n con mejor ratio
-        esfuerzo/euros de toda la slide-deck. Por eso se implementa ANTES que el
-        fine-tuning.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; h no llega
-        nunca a 1 por mucho TTL que pongas?</summary><div class="ans">Porque el techo es
-        h<sub>max</sub>, la repetitividad intr&iacute;nseca del tr&aacute;fico: la
-        fracci&oacute;n de consultas que son repetici&oacute;n (sem&aacute;ntica) de otra ya
-        vista. Una consulta genuinamente nueva ("&iquest;puedo amortizar mi hipoteca
-        parcialmente si...?") no est&aacute; en ninguna cach&eacute; por definici&oacute;n.
-        El TTL solo decide cu&aacute;ntas de las repeticiones ATRAPAS antes de que
-        caduquen. Medir h<sub>max</sub> (agrupando consultas por embedding y contando
-        duplicados) es lo primero: si tu tr&aacute;fico es 90% &uacute;nico, la cach&eacute;
-        no es tu palanca.</div></details></div>
-    <p><span class="hd">Setup.</span> El asistente interno de empleados (caso 1 de la
-      tabla del deck): muchas consultas se repiten ("&iquest;d&iacute;as de vacaciones?",
-      "&iquest;c&oacute;mo pido el certificado?"). Una cach&eacute; sem&aacute;ntica guarda
-      la respuesta y la sirve en ~30 ms sin tocar el LLM ($0,022/petici&oacute;n, el
-      ejemplo a mano del deck). Arriba: factura mensual sin cach&eacute; vs con
-      cach&eacute; para tu TTL (barras), con el ahorro en euros. Abajo: las dos curvas
-      enfrentadas en funci&oacute;n del TTL, acierto h (dorado) y obsolescencia s (tinta),
-      con tu TTL marcado.</p>
-    <p><span class="hd">Juega.</span> Los cuatro sliders son las cuatro preguntas de
-      negocio: &iquest;cu&aacute;nto se repite mi tr&aacute;fico? (h<sub>max</sub>),
-      &iquest;cada cu&aacute;nto cambia la verdad? (&tau;<sub>upd</sub>), &iquest;cu&aacute;nto
-      arriesgo a servir viejo? (TTL) y &iquest;cu&aacute;nto facturo? (volumen). El cruce
-      del panel inferior responde la pregunta del TTL para CADA tipo de contenido: FAQ de
-      RRHH, TTL semanas; precios de Inditex, TTL minutos.</p>
-    <p><span class="hd">Mensaje.</span> La cach&eacute; es la palanca de coste n.&ordm; 2
-      tras el routing, y adem&aacute;s mejora la latencia (los aciertos son
-      instant&aacute;neos: suben el p50 de experiencia sin tocar el p95). Su riesgo no es
-      t&eacute;cnico sino de frescura, y se gestiona por tipo de contenido.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>h</b>: tasa de acierto de cach&eacute;.
-      <b>TTL</b>: time-to-live, caducidad de cada entrada. <b>h<sub>max</sub></b>:
-      repetitividad del tr&aacute;fico (techo de h). <b>obsolescencia s</b>: probabilidad
-      de servir una respuesta cuya fuente ya cambi&oacute;. <b>cach&eacute;
-      sem&aacute;ntica</b>: indexa por embedding, no por igualdad literal.</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 8 : observabilidad ============ -->
-<section class="slide" id="s8">
-  <div class="figcol">
-    <canvas id="cv8a" data-aspect="1.95"></canvas>
-    <canvas id="cv8b" data-aspect="1.95"></canvas>
-    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
-      <div class="eq">e&#772;<sub>t</sub> = <span class="frac"><span class="num">1</span><span class="den">w</span></span><big>&Sigma;</big><sub>i=t&minus;w+1..t</sub>&nbsp;e<sub>i</sub>,&nbsp;&nbsp;&nbsp; alerta<sub>t</sub> = 1<big>{</big>e&#772;<sub>t</sub> &gt; &theta;<big>}</big><span class="eqn">(media m&oacute;vil + umbral)</span></div>
-      <div class="eqread">el monitor m&aacute;s simple que funciona: suaviza la tasa de
-        error con una ventana m&oacute;vil de w minutos y dispara cuando cruza el umbral
-        &theta;. La ventana filtra el ruido minuto a minuto; el umbral decide qu&eacute;
-        es "anormal". Toda la slide es la tensi&oacute;n entre esas dos decisiones.</div>
-      <div class="eq">FP(&theta;) = #<big>{</big>t &lt; t<sub>deg</sub> : e&#772;<sub>t</sub> &gt; &theta;<big>}</big>,&nbsp;&nbsp;&nbsp; D(&theta;) = m&iacute;n<big>{</big>t &ge; t<sub>deg</sub> : e&#772;<sub>t</sub> &gt; &theta;<big>}</big> &minus; t<sub>deg</sub><span class="eqn">(falsos positivos vs detecci&oacute;n)</span></div>
-      <div class="eqread">subir &theta; reduce los <b>falsos positivos</b> (alertas sin
-        incidente, que queman al equipo de guardia) pero alarga el <b>tiempo de
-        detecci&oacute;n</b> D del incidente real, y cada minuto sin detectar cuesta
-        dinero medible (€27,50/min en el caso ING del deck: 5 llamadas overflow &times;
-        €5,50). El panel inferior calcula ambas curvas sobre ESTA serie, punto a punto.</div>
-    </div>
-  </div>
-  <div class="txtcol">
-    <div class="ctrlbox">
-      <label>umbral de alerta sobre tasa de error, &theta; = <b id="r8th"></b>%</label>
-      <input type="range" id="sl8th" min="1" max="10" step="0.1" value="3">
-      <label>ventana de la media m&oacute;vil, w = <b id="r8w"></b> min</label>
-      <input type="range" id="sl8w" min="1" max="15" step="1" value="5">
-      <label><input type="checkbox" id="ck8" checked> inyectar degradaci&oacute;n en t = 120 min (tool ca&iacute;do)</label>
-      <button id="bt8">otro d&iacute;a de tr&aacute;fico (otra semilla)</button>
-    </div>
-    <div class="readout" id="ro8"></div>
-    <div id="badge8"></div>
-    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
-      <li>Con &theta; = 3% y w = 5, mira el panel superior. <span class="obs">La serie
-        cruda (gris) es ruidosa; la media m&oacute;vil (tinta) la sigue limpia; tras t = 120
-        la degradaci&oacute;n inyectada la lleva a ~6% y aparecen los rombos dorados de
-        alerta. Lee FP y D en el lector.</span></li>
-      <li>Baja &theta; a 1,5%. <span class="obs">Detectas el incidente en 1&ndash;2 min...
-        y acumulas falsos positivos en la ma&ntilde;ana tranquila. Un equipo que recibe 8
-        alertas falsas al d&iacute;a deja de mirar la novena: el coste del FP es la
-        credibilidad del monitor.</span></li>
-      <li>Sube &theta; a 8%. <span class="obs">Cero falsos positivos y detecci&oacute;n
-        tard&iacute;a o nula: el incidente corre minutos facturando llamadas a €5,50. El
-        panel inferior muestra el codo donde las dos curvas se cruzan: ah&iacute; vive el
-        &theta; razonable.</span></li>
-      <li>Desactiva la degradaci&oacute;n y pulsa "otro d&iacute;a" varias veces con tu
-        &theta; elegido. <span class="obs">Estimas la tasa de falsas alarmas en d&iacute;as
-        sanos: la prueba de fuego de un umbral es el d&iacute;a SIN incidente.</span></li>
-      <li>Sube w a 12 con &theta; = 3%. <span class="obs">Los FP bajan (m&aacute;s
-        suavizado) pero D crece: la ventana es un segundo umbral disfrazado. (FP, D) se
-        elige en pareja (w, &theta;), no por separado.</span></li></ol>
-      <details class="check"><summary>Comprueba que entiendes: ¿por qu&eacute; no poner
-        &theta; justo encima del m&aacute;ximo hist&oacute;rico de los d&iacute;as sanos?</summary>
-        <div class="ans">Porque el m&aacute;ximo hist&oacute;rico es una muestra de la cola
-        de la distribuci&oacute;n sana: el pr&oacute;ximo d&iacute;a sano lo superar&aacute;
-        con probabilidad no despreciable (es la misma lecci&oacute;n del p99 de latencia:
-        los extremos muestrales bailan). Adem&aacute;s, una degradaci&oacute;n real puede
-        ser PEQUE&Ntilde;A (del 1% al 2,5% de error: miles de usuarios afectados) y quedar
-        por debajo de ese m&aacute;ximo para siempre. Lo correcto es elegir &theta; sobre
-        las curvas FP/D como aqu&iacute;, y complementar el umbral fijo con
-        detecci&oacute;n de cambio relativo (&iquest;ha doblado la media m&oacute;vil su
-        nivel de la &uacute;ltima hora?).</div></details></div>
-    <p><span class="hd">Setup.</span> Ocho horas (480 min) del dashboard del asistente en
-      producci&oacute;n, generadas con semilla reproducible: tasa de error por minuto con
-      base 1% + ruido + un pico espor&aacute;dico inocuo, y una degradaci&oacute;n real
-      inyectable en t = 120 (un MCP externo ca&iacute;do que eleva la tasa a ~6% con
-      rampa de 10 min). Arriba: serie cruda, media m&oacute;vil, umbral &theta; y alertas.
-      Abajo: las curvas FP(&theta;) y D(&theta;) calculadas barriendo &theta; sobre esta
-      misma serie, con tu &theta; marcado. Nada est&aacute; pre-cocinado: cambiar la
-      semilla recalcula todo.</p>
-    <p><span class="hd">Juega.</span> Esto es el panel de "tasa de error" del dashboard de
-      cuatro paneles del deck (faithfulness, latencia p95, coste/sesi&oacute;n, fallbacks).
-      Cada panel tiene su versi&oacute;n de esta misma tensi&oacute;n FP/D; el de coste,
-      por ejemplo, vigila el presupuesto por sesi&oacute;n del error 2 del deck (loops que
-      queman $1 por conversaci&oacute;n).</p>
-    <p><span class="hd">Mensaje.</span> "No usar nunca un agente sin observabilidad en
-      producci&oacute;n: depurar a oscuras es imposible" (nota t&eacute;cnica). Y
-      observar no es solo loggear: es elegir umbrales con criterio econ&oacute;mico
-      expl&iacute;cito. El equipo que mide gana al equipo que improvisa.</p>
-    <p class="miniglos"><b>T&eacute;rminos.</b> <b>&theta;</b>: umbral de alerta.
-      <b>w</b>: ventana de la media m&oacute;vil. <b>FP</b>: falsos positivos (alertas sin
-      incidente). <b>D</b>: tiempo de detecci&oacute;n del incidente real.
-      <b>traza</b>: registro completo {(contexto, acci&oacute;n, resultado)} de cada
-      sesi&oacute;n (Langfuse, Phoenix, Helicone).</p>
-  </div>
-</section>
-
-<!-- ============ SLIDE 9 : glosario ============ -->
-<section class="slide" id="s9">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="glosgrid" id="glos"></div>
-  </div>
-</section>
-
-<!-- ============ SLIDE 10 : síntesis ============ -->
-<section class="slide" id="s10">
-  <div class="figcol" style="grid-column:1/3">
-    <div class="pipe">
-      <div class="pipebox"><div><div class="pname">Arquitectura &mdash; orquestador + subagentes + MCP + monitor</div>
-          <div class="pmap">Slides: Coste &middot; Paralelo</div></div>
-        <div class="pq">"Un asistente corporativo serio es un grafo: router &rarr; recuperador &rarr; generador &rarr; validador, con subagentes en paralelo donde no hay dependencia l&oacute;gica. La forma del grafo determina la latencia (m&aacute;x vs suma) y la factura (qu&eacute; tokens pasan por qu&eacute; modelo)."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">Coste &mdash; desglose por etapa y palancas</div>
-          <div class="pmap">Slides: Coste &middot; Cascada &middot; Calidad &middot; Cach&eacute;</div></div>
-        <div class="pq">"C<sub>d&iacute;a</sub> = Q&middot;(C&#772;<sub>LLM</sub>+C&#772;<sub>tool</sub>); el generador domina. Palanca 1: routing en cascada, E[C] = p&middot;C<sub>b</sub>+(1&minus;p)(C<sub>b</sub>+C<sub>c</sub>), ahorro ~47%. Palanca 2: cach&eacute;, C<sub>ef</sub> = (1&minus;h)&middot;C. Y la calidad satura: Q($) = Q<sub>max</sub>(1&minus;e<sup>&minus;$/$&#8320;</sup>), no pagues a la derecha del codo."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">Latencia &mdash; percentiles, paralelismo y colas</div>
-          <div class="pmap">Slides: Percentiles &middot; Paralelo &middot; Colas</div></div>
-        <div class="pq">"El SLA se firma en p95 = e<sup>&mu;+1,645&sigma;</sup>, no en media: la cola manda. Subagentes independientes en paralelo: latencia = m&aacute;x, coste id&eacute;ntico. Y bajo carga, W = 1/(&mu;&minus;&lambda;) explota cuando &rho;&rarr;1: dimensiona con margen o el codo te dimensiona a ti."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">Robustez &mdash; reintentos, backoff y cortafuegos</div>
-          <div class="pmap">Slides: Reintentos</div></div>
-        <div class="pq">"P<sub>&eacute;xito</sub> = 1&minus;(1&minus;q)<sup>r</sup> con backoff b&middot;2<sup>i&minus;1</sup>: dos reintentos convierten 90% en 99,9%. Pero contra un servicio roto, reintentar es pagar m&aacute;s por esperar m&aacute;s: timeout, circuit breaker, fallback de modelo y mensaje can&oacute;nico, en ese orden."</div></div>
-      <div class="pipearrow">&darr;</div>
-      <div class="pipebox"><div><div class="pname">Monitor &mdash; observabilidad con criterio econ&oacute;mico</div>
-          <div class="pmap">Slides: Monitor</div></div>
-        <div class="pq">"Media m&oacute;vil + umbral &theta;: los falsos positivos queman al equipo, la detecci&oacute;n tard&iacute;a quema dinero (€27,50/min en ING). &theta; y w se eligen sobre las curvas FP/D medidas, no a ojo. Sin observabilidad no hay producci&oacute;n: el equipo que mide gana al que improvisa."</div></div>
-    </div>
-    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
-      Producci&oacute;n no es "funciona en el lab": es un sistema con factura desglosada
-      por etapa, latencia prometida en percentiles, fallbacks en capas y un monitor cuyos
-      umbrales tienen justificaci&oacute;n econ&oacute;mica. Todo lo de hoy son seis
-      f&oacute;rmulas cortas y la disciplina de medirlas sobre TU tr&aacute;fico.</p>
-  </div>
-</section>
-
-<div id="footerL">Garrido-Merch&aacute;n &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; D&iacute;a 17 &middot; Multi-agente en producci&oacute;n</div>
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
 <div id="footer"></div>
-<div id="arrows">
-  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
-</div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 17 · Producción</div>
 
 <script>
-"use strict";
-/* ================= PALETTE ================= */
-const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
-      MUTE="#8A8A8A", RULE="#D9C28A";
+const SECTIONS=["Cascada","Para llevar"];
+const TITLES=["La cascada abarata el servicio: el modelo barato filtra y solo lo difícil escala al caro.",
+              "El diseño en producción equilibra coste, latencia y calidad, no minimiza uno solo."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');
+  ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
 
-/* ================= MATH CORE (DOM-free) ================= */
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
-  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
-  return ((t^t>>>14)>>>0)/4294967296;};}
-function randn(rng){let u=0;while(u===0)u=rng();const v=rng();
-  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-function lognSample(n,mu,sg,rng){const x=new Array(n);
-  for(let i=0;i<n;i++)x[i]=Math.exp(mu+sg*randn(rng));return x;}
-function quantileSorted(asc,level){const n=asc.length,t=level*(n-1),
-  i=Math.floor(t),f=t-i;return i>=n-1?asc[n-1]:asc[i]*(1-f)+asc[i+1]*f;}
-function meanArr(a){let s=0;for(const v of a)s+=v;return a.length?s/a.length:0;}
-function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
-function fmtMoney(x){ // $ with thousands separator, 0 decimals if big
-  const neg=x<0?"-":"";x=Math.abs(x);
-  if(x>=100)return neg+Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g," ");
-  if(x>=1)return neg+x.toFixed(2);
-  return neg+x.toFixed(4);}
+// ---- highlight helper: light up one equation term + its numeric twin ----
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
 
-/* ================= plotting helpers ================= */
+// ---- canvas helper ----
 function fitCanvas(cv){
   const dpr=window.devicePixelRatio||1;
-  const wCss=cv.parentElement.clientWidth;
-  const asp=parseFloat(cv.dataset.aspect)||1.8;
-  const hCss=wCss/asp;
-  cv.style.height=hCss+"px";
-  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
-  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
-  return {ctx:ctx,W:wCss,H:hCss};
-}
-function axes(ctx,fr,opt){
-  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
-  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
-  ctx.save();
-  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
-  ctx.font="11px Georgia, serif";
-  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
-  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
-  ctx.textAlign="center";ctx.textBaseline="top";
-  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
-    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
-  ctx.textAlign="right";ctx.textBaseline="middle";
-  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
-    lb=Array.isArray(t)?t[1]:String(t);
-    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
-    ctx.fillText(lb,fr.x0-6,Y(v));});
-  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
-    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
-  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
-    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
-    ctx.fillText(opt.ylab,0,0);ctx.restore();}
-  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
-    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
-  ctx.restore();
-  return {X:X,Y:Y};
-}
-function polyline(ctx,pts,color,lw,dash){
-  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
-  if(dash)ctx.setLineDash(dash);
-  ctx.beginPath();let first=true;
-  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
-    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
-  ctx.stroke();ctx.restore();
-}
-function rampColor(t){
-  t=Math.max(0,Math.min(1,t));
-  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
-  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
-  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
-  return `rgb(${c[0]},${c[1]},${c[2]})`;
-}
-function dot(ctx,x,y,r,color){ctx.save();ctx.fillStyle=color;
-  ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();ctx.restore();}
-function labelAt(ctx,txt,x,y,color,align){ctx.save();
-  ctx.font="11px Georgia,serif";ctx.fillStyle=color||INK;
-  ctx.textAlign=align||"left";ctx.fillText(txt,x,y);ctx.restore();}
-
-/* ================= navigation ================= */
-const SECTIONS=["Coste","Cascada","Calidad","Percentiles","Paralelo",
-  "Reintentos","Colas","Caché","Monitor","Glosario","Síntesis"];
-const TITLES=[
- "El coste de una petición multi-agente se desglosa etapa a etapa, y el generador domina.",
- "La cascada de modelos resuelve lo fácil con el barato: la palanca de coste más potente.",
- "La calidad satura con el coste por consulta: pagar a la derecha del codo apenas compra nada.",
- "La latencia se promete en p95, no en media: la cola de la distribución manda.",
- "Subagentes independientes en paralelo: la latencia es el máximo, no la suma, y el coste no cambia.",
- "Reintentar con backoff compone disponibilidad, y su precio en latencia y coste es calculable.",
- "Ley de Little y M/M/1: la espera explota cuando la utilización se acerca a 1.",
- "La caché de respuestas solo factura los fallos: el TTL negocia ahorro contra frescura.",
- "El umbral de alerta es una decisión económica: falsos positivos contra minutos sin detectar.",
- "Glosario: todos los símbolos del día, en una página.",
- "Producción = arquitectura + coste + latencia + robustez + monitor, todo medido sobre tu tráfico."];
-let cur=0;const N=11;
-const nav=document.getElementById("navstrip");
-SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
-  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
-function go(i){
-  cur=(i+N)%N;
-  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
-  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
-  document.getElementById("slidetitle").textContent=TITLES[cur];
-  document.getElementById("footer").textContent=(cur+1)+" / "+N;
-  window.scrollTo(0,0);
-  if(updaters[cur])updaters[cur](true);
-}
-document.getElementById("prev").onclick=()=>go(cur-1);
-document.getElementById("next").onclick=()=>go(cur+1);
-document.addEventListener("keydown",e=>{
-  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
-  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
-window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
-const updaters={};
-</script>
-
-<script>
-"use strict";
-/* shared pricing (USD per million tokens, cheap vs expensive tier) */
-const PRICE={cheap:{pin:0.25,pout:1.25},exp:{pin:3,pout:15}};
-function llmCost(nin,nout,m){return nin/1e6*m.pin+nout/1e6*m.pout;}
-
-/* ================= SLIDE 0 : coste por petición ================= */
-(function(){
-  const sin=document.getElementById("sl0in"),sout=document.getElementById("sl0out"),
-        sq=document.getElementById("sl0q"),cg=document.getElementById("ck0g"),
-        cv=document.getElementById("ck0v");
-  sin.oninput=upd;sout.oninput=upd;sq.oninput=upd;cg.onchange=upd;cv.onchange=upd;
-  function upd(){
-    const nin=+sin.value,nout=+sout.value,Q=+sq.value;
-    const mg=cg.checked?PRICE.exp:PRICE.cheap;
-    const mv=cv.checked?PRICE.exp:PRICE.cheap;
-    document.getElementById("r0in").textContent=nin;
-    document.getElementById("r0out").textContent=nout;
-    document.getElementById("r0q").textContent=Q;
-    /* the four stages: name, cost */
-    const cRouter=llmCost(300,30,PRICE.cheap);
-    const cRag=0.0012;                              // embedding + vector search
-    const cGen=llmCost(nin,nout,mg);
-    const cVal=llmCost(nout+500,150,mv);
-    const stages=[["router",cRouter],["recuperador",cRag],
-                  ["generador",cGen],["validador",cVal]];
-    const cPet=cRouter+cRag+cGen+cVal;
-    const cDay=Q*cPet,cMonth=22*cDay;
-    const pctGen=100*cGen/cPet;
-    document.getElementById("ro0").innerHTML=
-      "C<sub>pet</sub> = $"+cPet.toFixed(4)+" &nbsp;&middot;&nbsp; generador: "+
-      pctGen.toFixed(0)+"% del coste"+
-      "<br>C<sub>d&iacute;a</sub> = $"+fmtMoney(cDay)+
-      " &nbsp;&middot;&nbsp; <span class='gold'>C<sub>mes</sub> (22 d&iacute;as) = $"+
-      fmtMoney(cMonth)+"</span> &nbsp;&middot;&nbsp; a&ntilde;o &asymp; $"+
-      fmtMoney(12*cMonth);
-    /* top: cost per stage, bars */
-    let c=fitCanvas(document.getElementById("cv0a"));
-    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymax=Math.max(...stages.map(s=>s[1]))*1.18+1e-6;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:4,ymin:0,ymax:ymax,
-      xticks:[],yticks:[[0,"0"],[ymax*0.5,"$"+fmtG(ymax*0.5,2)],[ymax*0.95,"$"+fmtG(ymax*0.95,2)]],
-      xlab:"etapa del pipeline",ylab:"$ por petición",
-      title:"Coste por etapa de una petición (pipeline BBVA)"});
-    stages.forEach((s,i)=>{
-      const x1=ax.X(i+0.18),x2=ax.X(i+0.82);
-      c.ctx.fillStyle=(i===2)?GOLD:(i===3?GOLDD:MUTE);
-      c.ctx.fillRect(x1,ax.Y(s[1]),x2-x1,ax.Y(0)-ax.Y(s[1]));
-      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(s[0],(x1+x2)/2,ax.Y(0)+16);
-      c.ctx.fillText("$"+s[1].toFixed(4),(x1+x2)/2,ax.Y(s[1])-5);});
-    /* bottom: monthly cost vs Q */
-    c=fitCanvas(document.getElementById("cv0b"));
-    const fr2={x0:64,y0:24,w:c.W-84,h:c.H-62};
-    const Qmax=50000,Mmax=22*Qmax*cPet*1.1;
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:Qmax,ymin:0,ymax:Mmax,
-      xticks:[[10000,"10k"],[25000,"25k"],[50000,"50k"]],
-      yticks:[[0,"0"],[Mmax/2,"$"+fmtMoney(Mmax/2)],[Mmax*0.95,"$"+fmtMoney(Mmax*0.95)]],
-      xlab:"peticiones por día, Q",ylab:"$ por mes",
-      title:"Factura mensual según el volumen (22 días laborables)"});
-    polyline(c.ctx,[[ax2.X(0),ax2.Y(0)],[ax2.X(Qmax),ax2.Y(22*Qmax*cPet)]],GOLD,2.2);
-    polyline(c.ctx,[[ax2.X(0),ax2.Y(2420)],[ax2.X(Qmax),ax2.Y(2420)]],MUTE,1.2,[5,4]);
-    labelAt(c.ctx,"ejemplo del deck: $2 420/mes",ax2.X(Qmax*0.45),ax2.Y(2420)-6,MUTE);
-    dot(c.ctx,ax2.X(Q),ax2.Y(cMonth),5.5,GOLDD);
-    labelAt(c.ctx,"$"+fmtMoney(cMonth)+"/mes",ax2.X(Q)+8,ax2.Y(cMonth)-8,GOLDD);
-  }
-  updaters[0]=upd;
-})();
-
-/* ================= SLIDE 1 : cascada de modelos ================= */
-(function(){
-  const CB=0.001,QOK=0.95,QMAL=0.55,QMIN=0.90;
-  const sp=document.getElementById("sl1p"),scc=document.getElementById("sl1cc"),
-        se=document.getElementById("sl1e");
-  sp.oninput=upd;scc.oninput=upd;se.oninput=upd;
-  function upd(){
-    const p=+sp.value,Cc=+scc.value,e=+se.value;
-    document.getElementById("r1p").textContent=p.toFixed(2);
-    document.getElementById("r1cc").textContent=Cc.toFixed(3);
-    document.getElementById("r1e").textContent=e.toFixed(2);
-    const EC=p*CB+(1-p)*(CB+Cc);
-    const ahorro=1-EC/Cc;
-    const qbar=(1-(1-p)*e)*QOK+(1-p)*e*QMAL;
-    document.getElementById("ro1").innerHTML=
-      "E[C] = "+p.toFixed(2)+"&times;$"+CB.toFixed(3)+" + "+(1-p).toFixed(2)+
-      "&times;$"+(CB+Cc).toFixed(3)+" = <span class='gold'>$"+EC.toFixed(4)+"</span>"+
-      " &nbsp;&middot;&nbsp; ahorro vs todo-caro: <b>"+(100*ahorro).toFixed(0)+"%</b>"+
-      "<br>calidad esperada Q&#772; = "+qbar.toFixed(3)+
-      " &nbsp;&middot;&nbsp; mal atendidas: "+(100*(1-p)*e).toFixed(1)+"% del tr&aacute;fico";
-    document.getElementById("badge1").innerHTML=qbar>=QMIN?
-      "<span class='badge ok'>calidad &ge; 0,90: cascada aceptable</span>":
-      "<span class='badge bad'>calidad &lt; 0,90: router insuficiente para este reparto</span>";
-    /* top: E[C] as a function of p */
-    let c=fitCanvas(document.getElementById("cv1a"));
-    const fr={x0:60,y0:24,w:c.W-80,h:c.H-62};
-    const ymax=(CB+Cc)*1.12;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:0,ymax:ymax,
-      xticks:[[0,"0"],[0.25,"0,25"],[0.5,"0,5"],[0.75,"0,75"],[1,"1"]],
-      yticks:[[0,"0"],[Cc,"$"+fmtG(Cc,2)],[ymax*0.95,"$"+fmtG(ymax*0.95,2)]],
-      xlab:"fracción resuelta por el barato, p",ylab:"$ por consulta",
-      title:"Coste esperado de la cascada según p"});
-    polyline(c.ctx,[[ax.X(0),ax.Y(Cc)],[ax.X(1),ax.Y(Cc)]],INK,1.3,[6,4]);
-    labelAt(c.ctx,"todo al caro: $"+fmtG(Cc,2),ax.X(0.03),ax.Y(Cc)-6,INK);
-    polyline(c.ctx,[[ax.X(0),ax.Y(CB)],[ax.X(1),ax.Y(CB)]],MUTE,1.3,[6,4]);
-    labelAt(c.ctx,"todo al barato: $"+fmtG(CB,2),ax.X(0.6),ax.Y(CB)-6,MUTE);
-    const pts=[];for(let i=0;i<=100;i++){const pp=i/100;
-      pts.push([ax.X(pp),ax.Y(pp*CB+(1-pp)*(CB+Cc))]);}
-    polyline(c.ctx,pts,GOLD,2.4);
-    dot(c.ctx,ax.X(p),ax.Y(EC),5.5,GOLDD);
-    labelAt(c.ctx,"tú: $"+EC.toFixed(4),ax.X(p)+8,ax.Y(EC)-8,GOLDD);
-    /* bottom: expected quality vs router error */
-    c=fitCanvas(document.getElementById("cv1b"));
-    const fr2={x0:60,y0:24,w:c.W-80,h:c.H-62};
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:0.3,ymin:0.75,ymax:1.0,
-      xticks:[[0,"0"],[0.1,"0,10"],[0.2,"0,20"],[0.3,"0,30"]],
-      yticks:[[0.8,"0,80"],[0.9,"0,90"],[0.95,"0,95"],[1,"1"]],
-      xlab:"tasa de error del detector, e",ylab:"calidad esperada",
-      title:"Calidad esperada según el error del router (p fijo)"});
-    polyline(c.ctx,[[ax2.X(0),ax2.Y(QMIN)],[ax2.X(0.3),ax2.Y(QMIN)]],INK,1.2,[6,4]);
-    labelAt(c.ctx,"umbral de calidad 0,90",ax2.X(0.17),ax2.Y(QMIN)-6,INK);
-    const pts2=[];for(let i=0;i<=100;i++){const ee=0.3*i/100;
-      const qq=(1-(1-p)*ee)*QOK+(1-p)*ee*QMAL;
-      pts2.push([ax2.X(ee),ax2.Y(Math.max(0.75,qq))]);}
-    polyline(c.ctx,pts2,GOLD,2.4);
-    dot(c.ctx,ax2.X(e),ax2.Y(Math.max(0.75,qbar)),5.5,GOLDD);
-    labelAt(c.ctx,"tú: "+qbar.toFixed(3),ax2.X(e)+8,ax2.Y(Math.max(0.75,qbar))-8,GOLDD);
-  }
-  updaters[1]=upd;
-})();
-
-/* ================= SLIDE 2 : coste-calidad ================= */
-(function(){
-  const QMAX=1;
-  const MODELS=[["Haiku",0.005],["Sonnet",0.03],["Opus",0.15]];
-  const ss0=document.getElementById("sl2s0"),sb=document.getElementById("sl2b");
-  ss0.oninput=upd;sb.oninput=upd;
-  function Qof(x,s0){return QMAX*(1-Math.exp(-x/s0));}
-  function upd(){
-    const s0=+ss0.value,b=+sb.value;
-    document.getElementById("r2s0").textContent=s0.toFixed(3);
-    document.getElementById("r2b").textContent=b.toFixed(3);
-    const Qb=Qof(b,s0),dQ=QMAX/s0*Math.exp(-b/s0);
-    document.getElementById("ro2").innerHTML=
-      "Q($"+b.toFixed(3)+") = <span class='gold'>"+Qb.toFixed(3)+"</span>"+
-      " &nbsp;&middot;&nbsp; calidad marginal dQ/d$ = "+fmtG(dQ,3)+" por $"+
-      "<br>Haiku: Q = "+Qof(MODELS[0][1],s0).toFixed(3)+
-      " &nbsp;&middot;&nbsp; Sonnet: Q = "+Qof(MODELS[1][1],s0).toFixed(3)+
-      " &nbsp;&middot;&nbsp; Opus: Q = "+Qof(MODELS[2][1],s0).toFixed(3);
-    const c=fitCanvas(document.getElementById("cv2a"));
-    const fr={x0:56,y0:26,w:c.W-76,h:c.H-64};
-    const xmax=0.2;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:xmax,ymin:0,ymax:1.08,
-      xticks:[[0,"0"],[0.05,"$0,05"],[0.1,"$0,10"],[0.15,"$0,15"],[0.2,"$0,20"]],
-      yticks:[[0.25,"0,25"],[0.5,"0,50"],[0.75,"0,75"],[1,"1"]],
-      xlab:"coste por consulta, $",ylab:"calidad Q($)",
-      title:"Saturación coste-calidad con los tres modelos 2026 marcados"});
-    /* shaded area up to budget */
-    c.ctx.save();c.ctx.globalAlpha=0.18;c.ctx.fillStyle=GOLD;
-    c.ctx.beginPath();c.ctx.moveTo(ax.X(0),ax.Y(0));
-    for(let i=0;i<=120;i++){const x=b*i/120;c.ctx.lineTo(ax.X(x),ax.Y(Qof(x,s0)));}
-    c.ctx.lineTo(ax.X(b),ax.Y(0));c.ctx.closePath();c.ctx.fill();c.ctx.restore();
-    polyline(c.ctx,[[ax.X(0),ax.Y(QMAX)],[ax.X(xmax),ax.Y(QMAX)]],MUTE,1.2,[6,4]);
-    labelAt(c.ctx,"techo Qₘₐₓ",ax.X(xmax*0.86),ax.Y(QMAX)-6,MUTE);
-    const pts=[];for(let i=0;i<=240;i++){const x=xmax*i/240;
-      pts.push([ax.X(x),ax.Y(Qof(x,s0))]);}
-    polyline(c.ctx,pts,GOLD,2.6);
-    MODELS.forEach(m=>{
-      dot(c.ctx,ax.X(m[1]),ax.Y(Qof(m[1],s0)),5,INK);
-      labelAt(c.ctx,m[0]+" ($"+m[1]+")",ax.X(m[1])+7,ax.Y(Qof(m[1],s0))+14,INK);});
-    dot(c.ctx,ax.X(b),ax.Y(Qb),6,GOLDD);
-    labelAt(c.ctx,"tu presupuesto",ax.X(b)+8,ax.Y(Qb)-10,GOLDD);
-    /* marker of the elbow scale $0 */
-    polyline(c.ctx,[[ax.X(s0),ax.Y(0)],[ax.X(s0),ax.Y(Qof(s0,s0))]],GOLDD,1.2,[3,3]);
-    labelAt(c.ctx,"$₀ (63% del techo)",ax.X(s0)+5,ax.Y(0.18),GOLDD);
-  }
-  updaters[2]=upd;
-})();
-</script>
-
-<script>
-"use strict";
-/* ================= helpers for histograms (block 3) ================= */
-function histCounts(vals,lo,hi,nb){
-  const cnt=new Array(nb).fill(0),d=(hi-lo)/nb;
-  for(const v of vals){let i=Math.floor((v-lo)/d);
-    if(i<0)i=0;if(i>=nb)i=nb-1;cnt[i]++;}
-  return cnt;
-}
-function drawHistBars(ctx,ax,cnt,lo,hi,ymax,color,alpha){
-  const nb=cnt.length,d=(hi-lo)/nb;
-  ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;
-  for(let i=0;i<nb;i++){if(!cnt[i])continue;
-    const x1=ax.X(lo+i*d),x2=ax.X(lo+(i+1)*d);
-    ctx.fillRect(x1,ax.Y(Math.min(cnt[i],ymax)),Math.max(1,x2-x1-0.6),
-      ax.Y(0)-ax.Y(Math.min(cnt[i],ymax)));}
-  ctx.restore();
-}
-function vline(ctx,ax,x,y0v,y1v,color,lw,dash,lbl){
-  polyline(ctx,[[ax.X(x),ax.Y(y0v)],[ax.X(x),ax.Y(y1v)]],color,lw,dash);
-  if(lbl)labelAt(ctx,lbl,ax.X(x)+4,ax.Y(y1v)+11,color);
+  const w=cv.clientWidth||cv.width, h=cv.height;
+  cv.width=w*dpr; cv.height=h*dpr;
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
 }
 
-/* ================= SLIDE 3 : latencia por percentiles ================= */
-(function(){
-  const NS=4000,NS2=1500,SLA=3000;
-  let seed=17;
-  const smu=document.getElementById("sl3mu"),ssg=document.getElementById("sl3sg"),
-        sS=document.getElementById("sl3S");
-  document.getElementById("bt3").onclick=()=>{seed+=1;upd();};
-  smu.oninput=upd;ssg.oninput=upd;sS.oninput=upd;
-  function upd(){
-    const med=+smu.value,sg=+ssg.value,S=+sS.value;
-    document.getElementById("r3mu").textContent=med;
-    document.getElementById("r3sg").textContent=sg.toFixed(2);
-    document.getElementById("r3S").textContent=S;
-    const mu=Math.log(med);
-    /* one-stage sample, really drawn */
-    const T=lognSample(NS,mu,sg,mulberry32(seed));
-    const asc=T.slice().sort((a,b)=>a-b);
-    const p50=quantileSorted(asc,0.5),p95=quantileSorted(asc,0.95),
-          p99=quantileSorted(asc,0.99),mean=meanArr(T);
-    /* chained pipeline: cumulative sums of s=1..8 independent stages */
-    const rng2=mulberry32(seed+1000);
-    const acc=new Array(NS2).fill(0);
-    const chain50=[],chain95=[];
-    for(let s=1;s<=8;s++){
-      for(let i=0;i<NS2;i++)acc[i]+=Math.exp(mu+sg*randn(rng2));
-      const a2=acc.slice().sort((x,y)=>x-y);
-      chain50.push(quantileSorted(a2,0.5));
-      chain95.push(quantileSorted(a2,0.95));
-    }
-    const pipe50=chain50[S-1],pipe95=chain95[S-1];
-    document.getElementById("ro3").innerHTML=
-      "una etapa: p50 = "+Math.round(p50)+" ms &nbsp;&middot;&nbsp; media = "+
-      Math.round(mean)+" ms &nbsp;&middot;&nbsp; <span class='gold'>p95 = "+
-      Math.round(p95)+" ms</span> &nbsp;&middot;&nbsp; p99 = "+Math.round(p99)+" ms"+
-      "<br>pipeline de "+S+" etapas: p50 = "+Math.round(pipe50)+
-      " ms &nbsp;&middot;&nbsp; <span class='gold'>p95 = "+Math.round(pipe95)+" ms</span>"+
-      " &nbsp;&middot;&nbsp; SLA: 3&thinsp;000 ms";
-    document.getElementById("badge3").innerHTML=pipe95<=SLA?
-      "<span class='badge ok'>p95 del pipeline = "+Math.round(pipe95)+
-      " ms &le; 3 s: SLA cumplido</span>":
-      "<span class='badge bad'>p95 del pipeline = "+Math.round(pipe95)+
-      " ms &gt; 3 s: SLA roto por la cola</span>";
-    /* top: histogram of one stage */
-    let c=fitCanvas(document.getElementById("cv3a"));
-    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
-    const xmax=Math.max(p99*1.25,SLA*1.06);
-    const cnt=histCounts(T,0,xmax,70);
-    const ymax=Math.max(...cnt)*1.15;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:xmax,ymin:0,ymax:ymax,
-      xticks:[[0,"0"],[1000,"1 s"],[2000,"2 s"],[3000,"3 s"],[Math.round(xmax/1000)*1000,Math.round(xmax/1000)+" s"]],
-      yticks:[],xlab:"latencia de la etapa (ms)",ylab:"peticiones",
-      title:"Histograma de 4 000 peticiones de una etapa (lognormal muestreada)"});
-    drawHistBars(c.ctx,ax,cnt,0,xmax,ymax,MUTE,0.55);
-    vline(c.ctx,ax,p50,0,ymax*0.92,INK,1.8,null,"p50");
-    vline(c.ctx,ax,mean,0,ymax*0.80,MUTE,1.4,[4,3],"media");
-    vline(c.ctx,ax,p95,0,ymax*0.92,GOLD,2.2,null,"p95");
-    vline(c.ctx,ax,p99,0,ymax*0.92,GOLDD,2.2,null,"p99");
-    vline(c.ctx,ax,SLA,0,ymax*0.70,INK,1.2,[6,4],"SLA 3 s");
-    /* bottom: percentiles of the chained sum vs number of stages */
-    c=fitCanvas(document.getElementById("cv3b"));
-    const fr2={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymax2=Math.max(chain95[7]*1.12,SLA*1.1);
-    const ax2=axes(c.ctx,fr2,{xmin:1,xmax:8,ymin:0,ymax:ymax2,
-      xticks:[1,2,3,4,5,6,7,8],
-      yticks:[[0,"0"],[SLA,"3 s"],[Math.round(ymax2*0.9/1000)*1000,Math.round(ymax2*0.9/1000)+" s"]],
-      xlab:"etapas encadenadas, S",ylab:"latencia (ms)",
-      title:"p50 y p95 de la SUMA de S etapas (simulado, no fórmula)"});
-    polyline(c.ctx,[[ax2.X(1),ax2.Y(SLA)],[ax2.X(8),ax2.Y(SLA)]],INK,1.2,[6,4]);
-    labelAt(c.ctx,"SLA 3 s",ax2.X(7.3),ax2.Y(SLA)-6,INK);
-    polyline(c.ctx,chain50.map((v,i)=>[ax2.X(i+1),ax2.Y(v)]),INK,2);
-    polyline(c.ctx,chain95.map((v,i)=>[ax2.X(i+1),ax2.Y(v)]),GOLD,2.4);
-    labelAt(c.ctx,"p50 de la suma",ax2.X(5.1),ax2.Y(chain50[4])+14,INK);
-    labelAt(c.ctx,"p95 de la suma",ax2.X(3.1),ax2.Y(chain95[2])-8,GOLD);
-    dot(c.ctx,ax2.X(S),ax2.Y(pipe95),5.5,GOLDD);
-    dot(c.ctx,ax2.X(S),ax2.Y(pipe50),4.5,INK);
-  }
-  updaters[3]=upd;
-})();
+// fixed parameters (illustrative units: € y s por 1000 tokens ~ una consulta)
+const CB=0.5;        // coste modelo barato (fijo, €/consulta)
+const TB=0.2;        // latencia modelo barato (s)
+const TC=2.0;        // latencia modelo caro (s)
+const N=1000;        // consultas de referencia
 
-/* ================= SLIDE 4 : paralelo vs secuencial ================= */
-(function(){
-  const MED=500,NS=3000,NMAX=12;
-  let seed=4;
-  const sn=document.getElementById("sl4n"),ssg=document.getElementById("sl4sg");
-  document.getElementById("bt4").onclick=()=>{seed+=1;upd();};
-  sn.oninput=upd;ssg.oninput=upd;
-  function upd(){
-    const n=+sn.value,sg=+ssg.value;
-    document.getElementById("r4n").textContent=n;
-    document.getElementById("r4sg").textContent=sg.toFixed(2);
-    const mu=Math.log(MED),rng=mulberry32(seed);
-    /* real simulation: NS requests, each with NMAX subagent latencies */
-    const sumK=[],maxK=[];for(let k=0;k<NMAX;k++){sumK.push(new Array(NS));maxK.push(new Array(NS));}
-    const one=new Array(NS);
-    for(let i=0;i<NS;i++){
-      let s=0,m=0;
-      for(let k=0;k<NMAX;k++){
-        const t=Math.exp(mu+sg*randn(rng));
-        if(k===0)one[i]=t;
-        s+=t;if(t>m)m=t;
-        sumK[k][i]=s;maxK[k][i]=m;
-      }
-    }
-    function pcts(arr){const a=arr.slice().sort((x,y)=>x-y);
-      return [quantileSorted(a,0.5),quantileSorted(a,0.95)];}
-    const seq50=[],seq95=[],par50=[],par95=[];
-    for(let k=0;k<NMAX;k++){
-      const ps=pcts(sumK[k]),pm=pcts(maxK[k]);
-      seq50.push(ps[0]);seq95.push(ps[1]);par50.push(pm[0]);par95.push(pm[1]);
-    }
-    const sp50=seq50[n-1],sp95=seq95[n-1],pp50=par50[n-1],pp95=par95[n-1];
-    document.getElementById("ro4").innerHTML=
-      "secuencial: p50 = "+Math.round(sp50)+" ms &nbsp;&middot;&nbsp; p95 = "+
-      Math.round(sp95)+" ms<br>"+
-      "<span class='gold'>paralelo: p50 = "+Math.round(pp50)+" ms &nbsp;&middot;&nbsp; p95 = "+
-      Math.round(pp95)+" ms</span>"+
-      "<br>aceleraci&oacute;n en p50: &times;"+(sp50/pp50).toFixed(2)+
-      " &nbsp;&middot;&nbsp; coste: id&eacute;ntico (mismos tokens)";
-    /* top: percentiles vs n */
-    let c=fitCanvas(document.getElementById("cv4a"));
-    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymax=seq95[NMAX-1]*1.1;
-    const ax=axes(c.ctx,fr,{xmin:1,xmax:NMAX,ymin:0,ymax:ymax,
-      xticks:[1,2,4,6,8,10,12],
-      yticks:[[0,"0"],[2000,"2 s"],[4000,"4 s"],[Math.round(ymax*0.9/1000)*1000,Math.round(ymax*0.9/1000)+" s"]],
-      xlab:"número de subagentes, n",ylab:"latencia (ms)",
-      title:"Secuencial (suma, tinta) vs paralelo (máximo, dorado): p50 y p95"});
-    polyline(c.ctx,seq50.map((v,i)=>[ax.X(i+1),ax.Y(v)]),INK,2);
-    polyline(c.ctx,seq95.map((v,i)=>[ax.X(i+1),ax.Y(v)]),INK,1.6,[5,4]);
-    polyline(c.ctx,par50.map((v,i)=>[ax.X(i+1),ax.Y(v)]),GOLD,2.4);
-    polyline(c.ctx,par95.map((v,i)=>[ax.X(i+1),ax.Y(v)]),GOLD,1.8,[5,4]);
-    labelAt(c.ctx,"suma p95",ax.X(8.2),ax.Y(seq95[7])-8,INK);
-    labelAt(c.ctx,"suma p50",ax.X(9.2),ax.Y(seq50[8])+14,INK);
-    labelAt(c.ctx,"máx p95",ax.X(10.2),ax.Y(par95[9])-8,GOLDD);
-    labelAt(c.ctx,"máx p50",ax.X(5.2),ax.Y(par50[4])+14,GOLDD);
-    dot(c.ctx,ax.X(n),ax.Y(sp50),5,INK);
-    dot(c.ctx,ax.X(n),ax.Y(pp50),5,GOLDD);
-    /* bottom: the three distributions at the chosen n */
-    c=fitCanvas(document.getElementById("cv4b"));
-    const fr2={x0:52,y0:24,w:c.W-72,h:c.H-62};
-    const ascS=sumK[n-1].slice().sort((x,y)=>x-y);
-    const xmax2=quantileSorted(ascS,0.99)*1.08;
-    const nb=70;
-    const cOne=histCounts(one,0,xmax2,nb),
-          cMax=histCounts(maxK[n-1],0,xmax2,nb),
-          cSum=histCounts(sumK[n-1],0,xmax2,nb);
-    const ymax2=Math.max(...cOne,...cMax,...cSum)*1.12;
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:xmax2,ymin:0,ymax:ymax2,
-      xticks:[[0,"0"],[1000,"1 s"],[2000,"2 s"],[Math.round(xmax2/1000)*1000,Math.round(xmax2/1000)+" s"]],
-      yticks:[],xlab:"latencia (ms)",ylab:"peticiones",
-      title:"Una etapa (gris) · máximo de n (dorado) · suma de n (tinta)"});
-    drawHistBars(c.ctx,ax2,cOne,0,xmax2,ymax2,MUTE,0.45);
-    drawHistBars(c.ctx,ax2,cMax,0,xmax2,ymax2,GOLD,0.55);
-    drawHistBars(c.ctx,ax2,cSum,0,xmax2,ymax2,INK,0.30);
-  }
-  updaters[4]=upd;
-})();
+function upd(){
+  const p =+document.getElementById('p').value;
+  const cc=+document.getElementById('cc').value;
+  document.getElementById('v_p').textContent=p.toFixed(2);
+  document.getElementById('v_cc').textContent=cc.toFixed(0);
+  document.getElementById('n_p').textContent=p.toFixed(2);
+  document.getElementById('n_p2').textContent=p.toFixed(2);
+  document.getElementById('n_cc').textContent=cc.toFixed(0);
+  const costPer=CB+(1-p)*cc;            // € por consulta
+  document.getElementById('n_res').textContent=costPer.toFixed(2);
+  const cost1000=N*costPer;             // € por 1000 consultas
+  const latMean=TB+(1-p)*TC;            // s por consulta (media)
+  document.getElementById('ro').innerHTML=
+    'Coste esperado: <b>'+cost1000.toLocaleString('es-ES',{maximumFractionDigits:0})+' &euro;</b> / 1000 consultas.<br>'+
+    'Latencia media: <b>'+latMean.toFixed(2)+' s</b> (barato '+TB.toFixed(1)+' s + '+
+    (100*(1-p)).toFixed(0)+'% escala '+TC.toFixed(1)+' s).<br>'+
+    '<span class="badge '+(p>=0.6?'ok':'bad')+'">'+
+    (p>=0.6?'p alto: barato y rápido — vigila la calidad del barato'
+           :'p bajo: gran calidad pero caro y lento')+'</span>';
+  drawCost(p,cc);
+}
 
-/* ================= SLIDE 5 : reintentos y backoff ================= */
-(function(){
-  const TCALL=800,CCALL=0.022,SLAA=0.995;
-  const sq=document.getElementById("sl5q"),sr=document.getElementById("sl5r"),
-        sb=document.getElementById("sl5b");
-  sq.oninput=upd;sr.oninput=upd;sb.oninput=upd;
-  function upd(){
-    const q=+sq.value,r=+sr.value,b=+sb.value;
-    document.getElementById("r5q").textContent=q.toFixed(2);
-    document.getElementById("r5r").textContent=r;
-    document.getElementById("r5b").textContent=b;
-    /* exact scenario enumeration */
-    const scen=[];let ET=0,Eatt=0;
-    for(let i=1;i<=r;i++){
-      const prob=Math.pow(1-q,i-1)*q;
-      const lat=i*TCALL+b*(Math.pow(2,i-1)-1);
-      scen.push(["éxito int. "+i,prob,lat,false]);
-      ET+=prob*lat;Eatt+=Math.pow(1-q,i-1); // sum of P(N>=i): E[attempts]
-    }
-    const pFail=Math.pow(1-q,r),latFail=r*TCALL+b*(Math.pow(2,r-1)-1);
-    scen.push(["agota r",pFail,latFail,true]);
-    ET+=pFail*latFail;
-    const avail=1-pFail,EC=Eatt*CCALL;
-    document.getElementById("ro5").innerHTML=
-      "P<sub>&eacute;xito</sub> = 1 &minus; "+(1-q).toFixed(2)+"<sup>"+r+
-      "</sup> = <span class='gold'>"+(100*avail).toFixed(avail>0.99?2:1)+"%</span>"+
-      " &nbsp;&middot;&nbsp; fallo compuesto: "+(100*pFail).toFixed(2)+"%"+
-      "<br>E[intentos] = "+Eatt.toFixed(3)+" &nbsp;&middot;&nbsp; E[C] = "+
-      Eatt.toFixed(3)+"&times;$"+CCALL.toFixed(3)+" = <b>$"+EC.toFixed(4)+"</b>"+
-      " &nbsp;&middot;&nbsp; E[T] = "+Math.round(ET)+" ms";
-    document.getElementById("badge5").innerHTML=avail>=SLAA?
-      "<span class='badge ok'>disponibilidad "+(100*avail).toFixed(2)+
-      "% &ge; 99,5%: SLA cumplido</span>":
-      "<span class='badge bad'>disponibilidad "+(100*avail).toFixed(2)+
-      "% &lt; 99,5%: SLA incumplido</span>";
-    /* top: availability vs r */
-    let c=fitCanvas(document.getElementById("cv5a"));
-    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymin=Math.min(0.85,q*0.95);
-    const ax=axes(c.ctx,fr,{xmin:1,xmax:6,ymin:ymin,ymax:1.004,
-      xticks:[1,2,3,4,5,6],
-      yticks:[[ymin,(100*ymin).toFixed(0)+"%"],[SLAA,"99,5%"],[1,"100%"]],
-      xlab:"máximo de intentos, r",ylab:"disponibilidad compuesta",
-      title:"1 − (1−q)^r : la disponibilidad compone con los reintentos"});
-    polyline(c.ctx,[[ax.X(1),ax.Y(SLAA)],[ax.X(6),ax.Y(SLAA)]],INK,1.2,[6,4]);
-    labelAt(c.ctx,"SLA 99,5%",ax.X(1.1),ax.Y(SLAA)-6,INK);
-    const pts=[];for(let rr=1;rr<=6;rr++)
-      pts.push([ax.X(rr),ax.Y(Math.max(ymin,1-Math.pow(1-q,rr)))]);
-    polyline(c.ctx,pts,GOLD,2.4);
-    for(let rr=1;rr<=6;rr++)
-      dot(c.ctx,ax.X(rr),ax.Y(Math.max(ymin,1-Math.pow(1-q,rr))),3.4,GOLD);
-    dot(c.ctx,ax.X(r),ax.Y(Math.max(ymin,avail)),6,GOLDD);
-    labelAt(c.ctx,"tú: "+(100*avail).toFixed(2)+"%",ax.X(r)+8,ax.Y(Math.max(ymin,avail))+14,GOLDD);
-    /* bottom: scenario probabilities and latencies */
-    c=fitCanvas(document.getElementById("cv5b"));
-    const fr2={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const pmax=Math.max(...scen.map(s=>s[1]))*1.2;
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:scen.length,ymin:0,ymax:pmax,
-      xticks:[],yticks:[[0,"0"],[pmax*0.5,(100*pmax*0.5).toFixed(0)+"%"],[pmax*0.95,(100*pmax*0.95).toFixed(0)+"%"]],
-      xlab:"escenario (con su latencia total, esperas de backoff incluidas)",ylab:"probabilidad",
-      title:"Enumeración exacta de escenarios · E[T] = "+Math.round(ET)+" ms"});
-    scen.forEach((s,i)=>{
-      const x1=ax2.X(i+0.16),x2=ax2.X(i+0.84);
-      c.ctx.fillStyle=s[3]?MUTE:(i===0?GOLD:GOLDD);
-      c.ctx.fillRect(x1,ax2.Y(s[1]),x2-x1,ax2.Y(0)-ax2.Y(s[1]));
-      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(s[0],(x1+x2)/2,ax2.Y(0)+16);
-      c.ctx.fillText((100*s[1]).toFixed(1)+"%",(x1+x2)/2,ax2.Y(s[1])-18);
-      c.ctx.fillText(Math.round(s[2])+" ms",(x1+x2)/2,ax2.Y(s[1])-5);});
-  }
-  updaters[5]=upd;
-})();
+function drawCost(p,cc){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=58,my=24, W=w*0.56-mx, H=h-my-40;
+  const cmax=N*(CB+cc);                 // coste con p=0 (todo escala)
+  const px=pp=>mx+pp*W;
+  const py=cc1000=>my+(1-cc1000/cmax)*H;
+  const costAt=pp=>N*(CB+(1-pp)*cc);
+  // axes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
+  ctx.fillText('€ / 1000 consultas',4,my-8);
+  ctx.fillText('p (fracción resuelta por el barato)',mx+6,my+H+26);
+  ctx.textAlign='right';
+  ctx.fillText(cmax.toLocaleString('es-ES',{maximumFractionDigits:0}),mx-6,my+6);
+  ctx.fillText((N*CB).toLocaleString('es-ES'),mx-6,my+H+4);
+  ctx.textAlign='center';
+  ['0','0.5','1'].forEach((t,k)=>ctx.fillText(t,px(k*0.5),my+H+16));
+  ctx.textAlign='left';
+  // floor line (coste mínimo, p=1)
+  ctx.strokeStyle='#eee';ctx.beginPath();ctx.moveTo(mx,py(N*CB));ctx.lineTo(mx+W,py(N*CB));ctx.stroke();
+  // coste line
+  ctx.strokeStyle='#1A1A1A';ctx.lineWidth=2;ctx.beginPath();
+  for(let i=0;i<=200;i++){const pp=i/200;const x=px(pp),y=py(costAt(pp));
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+  ctx.stroke();
+  // current point
+  const c=costAt(p);
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=1.4;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(px(p),my+H);ctx.lineTo(px(p),py(c));ctx.lineTo(mx,py(c));ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#B8860B';ctx.beginPath();ctx.arc(px(p),py(c),6,0,7);ctx.fill();
 
-/* ================= SLIDE 6 : Little y M/M/1 ================= */
-(function(){
-  const WTGT=0.3; // s
-  const sl=document.getElementById("sl6l"),sm=document.getElementById("sl6m");
-  sl.oninput=upd;sm.oninput=upd;
-  function upd(){
-    const lam=+sl.value,mu=+sm.value,rho=lam/mu;
-    document.getElementById("r6l").textContent=lam.toFixed(2);
-    document.getElementById("r6m").textContent=mu.toFixed(1);
-    const stable=lam<mu;
-    const W=stable?1/(mu-lam):Infinity;
-    const L=stable?lam*W:Infinity;
-    const Lq=stable?rho*rho/(1-rho):Infinity;
-    const muMin=lam+1/WTGT;
-    document.getElementById("ro6").innerHTML=
-      "&rho; = "+lam.toFixed(2)+"/"+mu.toFixed(1)+" = <b>"+rho.toFixed(2)+"</b>"+
-      " &nbsp;&middot;&nbsp; <span class='gold'>W = "+(stable?Math.round(1000*W)+" ms":"&infin;")+
-      "</span> &nbsp;&middot;&nbsp; L = &lambda;W = "+(stable?L.toFixed(1):"&infin;")+
-      " &nbsp;&middot;&nbsp; L<sub>q</sub> = "+(stable?Lq.toFixed(1):"&infin;")+
-      "<br>&mu; m&iacute;nima para W &le; 300 ms: &mu; &ge; "+lam.toFixed(2)+
-      " + 1/0,3 = "+muMin.toFixed(1)+" peticiones/s";
-    document.getElementById("badge6").innerHTML=!stable?
-      "<span class='badge bad'>&rho; &ge; 1: cola inestable, la espera crece sin l&iacute;mite</span>":
-      (W<=WTGT?
-        "<span class='badge ok'>W = "+Math.round(1000*W)+" ms &le; 300 ms: objetivo cumplido</span>":
-        "<span class='badge bad'>W = "+Math.round(1000*W)+" ms &gt; 300 ms: sube &mu; o recorta &lambda;</span>");
-    /* top: W(lambda) elbow curve */
-    let c=fitCanvas(document.getElementById("cv6a"));
-    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymaxMs=2500;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:20,ymin:0,ymax:ymaxMs,
-      xticks:[0,5,10,15,20],
-      yticks:[[0,"0"],[300,"300"],[1000,"1 000"],[2000,"2 000"]],
-      xlab:"tasa de llegadas, λ (peticiones/s)",ylab:"W (ms)",
-      title:"W = 1/(μ−λ): el codo explota al acercarse λ a μ"});
-    polyline(c.ctx,[[ax.X(0),ax.Y(300)],[ax.X(20),ax.Y(300)]],INK,1.2,[6,4]);
-    labelAt(c.ctx,"objetivo 300 ms",ax.X(0.4),ax.Y(300)-6,INK);
-    const pts=[];
-    for(let i=0;i<=400;i++){const ll=mu*i/401;
-      const w=1000/(mu-ll);if(w>ymaxMs*1.02)break;
-      pts.push([ax.X(ll),ax.Y(w)]);}
-    polyline(c.ctx,pts,GOLD,2.4);
-    polyline(c.ctx,[[ax.X(mu),ax.Y(0)],[ax.X(mu),ax.Y(ymaxMs)]],MUTE,1.2,[3,3]);
-    labelAt(c.ctx,"asíntota λ = μ",ax.X(mu)+5,ax.Y(ymaxMs*0.93),MUTE);
-    if(stable&&1000*W<=ymaxMs){
-      dot(c.ctx,ax.X(lam),ax.Y(1000*W),6,GOLDD);
-      labelAt(c.ctx,"tú: "+Math.round(1000*W)+" ms",ax.X(lam)-8,ax.Y(1000*W)-10,GOLDD,"right");
-    }else{
-      labelAt(c.ctx,stable?"W fuera de escala":"INESTABLE: λ ≥ μ",ax.X(lam>18?14:lam),ax.Y(ymaxMs*0.84),GOLDD);
-    }
-    /* bottom: L and Lq vs rho */
-    c=fitCanvas(document.getElementById("cv6b"));
-    const fr2={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ymax2=20;
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:1,ymin:0,ymax:ymax2,
-      xticks:[[0,"0"],[0.25,"0,25"],[0.5,"0,5"],[0.75,"0,75"],[1,"1"]],
-      yticks:[[0,"0"],[5,"5"],[10,"10"],[20,"20"]],
-      xlab:"utilización, ρ = λ/μ",ylab:"peticiones",
-      title:"L = ρ/(1−ρ) (tinta) y Lq = ρ²/(1−ρ) (dorado) según ρ"});
-    const ptsL=[],ptsQ=[];
-    for(let i=0;i<=400;i++){const rr=i/401;
-      const Lv=rr/(1-rr),Lqv=rr*rr/(1-rr);
-      if(Lv<=ymax2*1.02)ptsL.push([ax2.X(rr),ax2.Y(Lv)]);
-      if(Lqv<=ymax2*1.02)ptsQ.push([ax2.X(rr),ax2.Y(Lqv)]);}
-    polyline(c.ctx,ptsL,INK,2);
-    polyline(c.ctx,ptsQ,GOLD,2.4);
-    labelAt(c.ctx,"L (en el sistema)",ax2.X(0.62),ax2.Y(2.6),INK);
-    labelAt(c.ctx,"Lq (en cola)",ax2.X(0.84),ax2.Y(1.6),GOLDD);
-    if(stable){
-      polyline(c.ctx,[[ax2.X(rho),ax2.Y(0)],[ax2.X(rho),ax2.Y(Math.min(ymax2,L))]],GOLDD,1.2,[3,3]);
-      if(L<=ymax2)dot(c.ctx,ax2.X(rho),ax2.Y(L),5,INK);
-      if(Lq<=ymax2)dot(c.ctx,ax2.X(rho),ax2.Y(Lq),5,GOLDD);
-      labelAt(c.ctx,"tu ρ = "+rho.toFixed(2),ax2.X(rho)+5,ax2.Y(ymax2*0.93),GOLDD);
-    }
-  }
-  updaters[6]=upd;
-})();
+  // ---- stacked bar (composición del coste en p actual) ----
+  const bx=w*0.72, bw=64, bBot=my+H, bTop=my;
+  const barPart=N*CB, escPart=N*(1-p)*cc, tot=barPart+escPart;
+  const bh=(bTop-bBot)/(cmax)* -1;      // px por €
+  const yBar=bh*barPart, yEsc=bh*escPart;
+  // segmento barato (constante)
+  ctx.fillStyle='#8A8A8A';
+  ctx.fillRect(bx,bBot-yBar,bw,yBar);
+  // segmento escalado (variable, dorado)
+  ctx.fillStyle='#B8860B';
+  ctx.fillRect(bx,bBot-yBar-yEsc,bw,yEsc);
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;ctx.strokeRect(bx,bBot-yBar-yEsc,bw,yBar+yEsc);
+  ctx.fillStyle='#1A1A1A';ctx.font='12px Georgia';ctx.textAlign='center';
+  ctx.fillText('Composición',bx+bw/2,my-8);
+  ctx.fillText(tot.toLocaleString('es-ES',{maximumFractionDigits:0})+' €',bx+bw/2,bBot-yBar-yEsc-6);
+  ctx.textAlign='left';
+  ctx.fillStyle='#8A8A8A';ctx.fillRect(bx+bw+10,bBot-14,12,12);
+  ctx.fillStyle='#1A1A1A';ctx.fillText('barato',bx+bw+26,bBot-4);
+  ctx.fillStyle='#B8860B';ctx.fillRect(bx+bw+10,bBot-34,12,12);
+  ctx.fillStyle='#1A1A1A';ctx.fillText('escalado',bx+bw+26,bBot-24);
+}
+updaters[0]=upd;
 
-/* ================= SLIDE 7 : caché de respuestas ================= */
-(function(){
-  const CQ=0.022,TLLM=1730,TCACHE=30,TAUREP=8;
-  const sttl=document.getElementById("sl7ttl"),shm=document.getElementById("sl7hm"),
-        stu=document.getElementById("sl7tu"),sv=document.getElementById("sl7v");
-  sttl.oninput=upd;shm.oninput=upd;stu.oninput=upd;sv.oninput=upd;
-  function hitRate(ttl,hm){return hm*(1-Math.exp(-ttl/TAUREP));}
-  function stale(ttl,tu){return 1-(tu/ttl)*(1-Math.exp(-ttl/tu));}
-  function upd(){
-    const ttl=+sttl.value,hm=+shm.value,tu=+stu.value,V=+sv.value;
-    document.getElementById("r7ttl").textContent=ttl<2?ttl.toFixed(2):Math.round(ttl);
-    document.getElementById("r7hm").textContent=hm.toFixed(2);
-    document.getElementById("r7tu").textContent=tu;
-    document.getElementById("r7v").textContent=V.toLocaleString("es-ES");
-    const h=hitRate(ttl,hm),s=stale(ttl,tu);
-    const cef=(1-h)*CQ,tef=h*TCACHE+(1-h)*TLLM;
-    const mSin=V*CQ,mCon=V*cef,ahorro=mSin-mCon;
-    document.getElementById("ro7").innerHTML=
-      "h = "+h.toFixed(3)+" &nbsp;&middot;&nbsp; obsolescencia s = "+(100*s).toFixed(1)+"%"+
-      " &nbsp;&middot;&nbsp; C<sub>ef</sub> = $"+cef.toFixed(4)+
-      " &nbsp;&middot;&nbsp; T<sub>ef</sub> = "+Math.round(tef)+" ms (LLM: 1&thinsp;730 ms)"+
-      "<br>factura: $"+fmtMoney(mSin)+" &rarr; $"+fmtMoney(mCon)+
-      " &nbsp;&middot;&nbsp; <span class='gold'>ahorro = $"+fmtMoney(ahorro)+"/mes</span>";
-    /* top: monthly bill bars */
-    let c=fitCanvas(document.getElementById("cv7a"));
-    const fr={x0:64,y0:24,w:c.W-84,h:c.H-62};
-    const ymax=mSin*1.18;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:2,ymin:0,ymax:ymax,
-      xticks:[],yticks:[[0,"0"],[ymax*0.5,"$"+fmtMoney(ymax*0.5)],[ymax*0.95,"$"+fmtMoney(ymax*0.95)]],
-      xlab:"",ylab:"$ por mes",
-      title:"Factura mensual: sin caché vs con caché (TTL elegido)"});
-    const bars=[["sin caché",mSin,MUTE],["con caché",mCon,GOLD]];
-    bars.forEach((bb,i)=>{
-      const x1=ax.X(i+0.22),x2=ax.X(i+0.78);
-      c.ctx.fillStyle=bb[2];
-      c.ctx.fillRect(x1,ax.Y(bb[1]),x2-x1,ax.Y(0)-ax.Y(bb[1]));
-      c.ctx.fillStyle=INK;c.ctx.font="12px Georgia,serif";c.ctx.textAlign="center";
-      c.ctx.fillText(bb[0],(x1+x2)/2,ax.Y(0)+16);
-      c.ctx.fillText("$"+fmtMoney(bb[1]),(x1+x2)/2,ax.Y(bb[1])-6);});
-    labelAt(c.ctx,"ahorro: $"+fmtMoney(ahorro)+"/mes ("+(100*h).toFixed(0)+"% de aciertos)",
-      ax.X(1.0),ax.Y(ymax*0.9),GOLDD,"center");
-    /* bottom: h(TTL) vs s(TTL) */
-    c=fitCanvas(document.getElementById("cv7b"));
-    const fr2={x0:56,y0:24,w:c.W-76,h:c.H-62};
-    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:168,ymin:0,ymax:1.05,
-      xticks:[[24,"24 h"],[72,"72 h"],[120,"120 h"],[168,"168 h"]],
-      yticks:[[0.25,"0,25"],[0.5,"0,5"],[0.75,"0,75"],[1,"1"]],
-      xlab:"TTL de la caché (horas)",ylab:"probabilidad",
-      title:"Acierto h(TTL) (dorado) contra obsolescencia s(TTL) (tinta)"});
-    const ptsH=[],ptsS=[];
-    for(let i=1;i<=336;i++){const t=168*i/336;
-      ptsH.push([ax2.X(t),ax2.Y(hitRate(t,hm))]);
-      ptsS.push([ax2.X(t),ax2.Y(stale(t,tu))]);}
-    polyline(c.ctx,ptsH,GOLD,2.4);
-    polyline(c.ctx,ptsS,INK,2);
-    labelAt(c.ctx,"acierto h",ax2.X(100),ax2.Y(hitRate(100,hm))-8,GOLDD);
-    labelAt(c.ctx,"obsolescencia s",ax2.X(96),ax2.Y(stale(96,tu))+15,INK);
-    polyline(c.ctx,[[ax2.X(ttl),ax2.Y(0)],[ax2.X(ttl),ax2.Y(1)]],GOLDD,1.2,[3,3]);
-    labelAt(c.ctx,"tu TTL",ax2.X(ttl)+5,ax2.Y(0.97),GOLDD);
-    dot(c.ctx,ax2.X(ttl),ax2.Y(h),5,GOLD);
-    dot(c.ctx,ax2.X(ttl),ax2.Y(s),5,INK);
+function drawCascade(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  ctx.textAlign='center';
+  const cy=h*0.42;
+  function box(x,y,bw,bh,txt,sub,gold){
+    ctx.strokeStyle=gold?'#B8860B':'#8A8A8A';ctx.lineWidth=gold?2.2:1.4;
+    ctx.fillStyle=gold?'#F5EBD3':'#fff';
+    ctx.beginPath();ctx.rect(x-bw/2,y-bh/2,bw,bh);ctx.fill();ctx.stroke();
+    ctx.fillStyle=gold?'#8C6508':'#1A1A1A';ctx.font='bold 14px Georgia';
+    ctx.fillText(txt,x,y+(sub?-2:5));
+    if(sub){ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.fillText(sub,x,y+14);}
   }
-  updaters[7]=upd;
-})();
+  function arrow(x1,y1,x2,y2){
+    ctx.strokeStyle='#1A1A1A';ctx.lineWidth=1.6;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+    const a=Math.atan2(y2-y1,x2-x1);
+    ctx.beginPath();ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-9*Math.cos(a-0.4),y2-9*Math.sin(a-0.4));
+    ctx.lineTo(x2-9*Math.cos(a+0.4),y2-9*Math.sin(a+0.4));
+    ctx.closePath();ctx.fillStyle='#1A1A1A';ctx.fill();
+  }
+  // Consulta
+  box(70,cy,90,44,'Consulta','llega','');
+  arrow(116,cy,150,cy);
+  // Modelo barato
+  box(210,cy,110,48,'Modelo barato','0.2 s · 0.5 €','');
+  arrow(266,cy,300,cy);
+  // Diamante ¿confía?
+  const dx=352,dy=cy,ds=34;
+  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1.4;ctx.fillStyle='#fff';
+  ctx.beginPath();ctx.moveTo(dx,dy-ds);ctx.lineTo(dx+ds,dy);ctx.lineTo(dx,dy+ds);ctx.lineTo(dx-ds,dy);ctx.closePath();
+  ctx.fill();ctx.stroke();
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 12px Georgia';ctx.fillText('¿confía?',dx,dy+4);
+  // rama SÍ (arriba): responde
+  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1.6;
+  arrow(dx,dy-ds,dx+90,cy-90);
+  ctx.fillStyle='#3c5a2a';ctx.font='bold 12px Georgia';ctx.fillText('sí (p)',dx+40,cy-58);
+  box(dx+150,cy-90,110,44,'Responde','fracción p','');
+  // rama NO (abajo): modelo caro
+  arrow(dx,dy+ds,dx+90,cy+90);
+  ctx.fillStyle='#7a3c00';ctx.font='bold 12px Georgia';ctx.fillText('no (1−p)',dx+40,cy+58);
+  box(dx+150,cy+90,110,48,'Modelo caro','2.0 s · c_caro','gold');
+  arrow(dx+205,cy+90,dx+250,cy+90);
+  box(dx+300,cy+90,90,44,'Responde','','');
+  ctx.textAlign='left';
+}
+updaters[1]=drawCascade;
 
-/* ================= SLIDE 8 : observabilidad y umbral ================= */
-(function(){
-  const TT=480,TDEG=120,CPM=27.5,BASE=0.01,DEG=0.05,RAMP=10;
-  let seed=8;
-  const sth=document.getElementById("sl8th"),sw=document.getElementById("sl8w"),
-        ck=document.getElementById("ck8");
-  document.getElementById("bt8").onclick=()=>{seed+=1;upd();};
-  sth.oninput=upd;sw.oninput=upd;ck.onchange=upd;
-  function genBase(){
-    const rng=mulberry32(seed);
-    const spikeT=30+Math.floor(rng()*60); // innocuous 3-min spike in the calm morning
-    const e=new Array(TT);
-    for(let t=0;t<TT;t++){
-      let v=BASE+0.004*randn(rng);
-      if(t>=spikeT&&t<spikeT+3)v+=0.02+0.01*rng();
-      e[t]=Math.max(0.0005,v);
-    }
-    return e;
-  }
-  function withDeg(base,on){
-    return base.map((v,t)=>on&&t>=TDEG?v+DEG*Math.min((t-TDEG)/RAMP,1):v);
-  }
-  function movavg(e,w){
-    const m=new Array(TT);let s=0;
-    for(let t=0;t<TT;t++){s+=e[t];if(t>=w)s-=e[t-w];
-      m[t]=s/Math.min(t+1,w);}
-    return m;
-  }
-  function fpAndD(m,th,degOn){
-    let fp=0,D=null;
-    for(let t=0;t<TT;t++){
-      if(m[t]>th){
-        if(!degOn||t<TDEG)fp++;
-        else if(D===null)D=t-TDEG;
-      }
-    }
-    return {fp:fp,D:D};
-  }
-  function upd(){
-    const th=+sth.value/100,w=+sw.value,degOn=ck.checked;
-    document.getElementById("r8th").textContent=(+sth.value).toFixed(1);
-    document.getElementById("r8w").textContent=w;
-    const base=genBase(),e=withDeg(base,degOn),m=movavg(e,w);
-    const res=fpAndD(m,th,degOn);
-    const alerts=[];for(let t=0;t<TT;t++)if(m[t]>th)alerts.push(t);
-    const costD=res.D!==null?res.D*CPM:null;
-    document.getElementById("ro8").innerHTML=
-      "alertas: "+alerts.length+" min &nbsp;&middot;&nbsp; falsos positivos FP = <b>"+res.fp+"</b>"+
-      (degOn?
-        " &nbsp;&middot;&nbsp; detecci&oacute;n D = "+(res.D!==null?
-          "<span class='gold'>"+res.D+" min</span> &nbsp;&middot;&nbsp; coste del retardo &asymp; "+
-          res.D+"&times;€27,50 = <b>€"+costD.toFixed(0)+"</b>":
-          "<span class='gold'>no detectado</span> (incidente facturando sin l&iacute;mite)"):
-        " &nbsp;&middot;&nbsp; d&iacute;a sin incidente: toda alerta es falsa");
-    document.getElementById("badge8").innerHTML=degOn?
-      (res.D!==null&&res.D<=8&&res.fp<=3?
-        "<span class='badge ok'>D = "+res.D+" min &le; 8 y FP = "+res.fp+" &le; 3: umbral operable</span>":
-        "<span class='badge bad'>"+(res.D===null?"incidente NO detectado":
-          (res.D>8?"detecci&oacute;n lenta (D = "+res.D+" min)":"demasiadas falsas alarmas (FP = "+res.fp+")"))+"</span>"):
-      (res.fp===0?
-        "<span class='badge ok'>d&iacute;a sano sin falsas alarmas con este &theta;</span>":
-        "<span class='badge bad'>"+res.fp+" falsas alarmas en un d&iacute;a sano</span>");
-    /* top: the time series */
-    let c=fitCanvas(document.getElementById("cv8a"));
-    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
-    const ymax=0.11;
-    const ax=axes(c.ctx,fr,{xmin:0,xmax:TT,ymin:0,ymax:ymax,
-      xticks:[[0,"0"],[120,"120"],[240,"240"],[360,"360"],[480,"480"]],
-      yticks:[[0.02,"2%"],[0.05,"5%"],[0.08,"8%"]],
-      xlab:"minuto del día",ylab:"tasa de error",
-      title:"Serie cruda (gris), media móvil (tinta), umbral θ y alertas (rombos)"});
-    polyline(c.ctx,e.map((v,t)=>[ax.X(t),ax.Y(Math.min(v,ymax))]),"#c9c9c9",1);
-    polyline(c.ctx,m.map((v,t)=>[ax.X(t),ax.Y(Math.min(v,ymax))]),INK,1.8);
-    polyline(c.ctx,[[ax.X(0),ax.Y(th)],[ax.X(TT),ax.Y(th)]],GOLD,1.6,[6,4]);
-    labelAt(c.ctx,"θ = "+(+sth.value).toFixed(1)+"%",ax.X(6),ax.Y(th)-6,GOLDD);
-    if(degOn){
-      polyline(c.ctx,[[ax.X(TDEG),ax.Y(0)],[ax.X(TDEG),ax.Y(ymax)]],MUTE,1.2,[3,3]);
-      labelAt(c.ctx,"degradación t = 120",ax.X(TDEG)+5,ax.Y(ymax*0.95),MUTE);
-    }
-    c.ctx.save();c.ctx.fillStyle=GOLD;
-    for(const t of alerts){
-      const x=ax.X(t),y=ax.Y(Math.min(m[t],ymax))-8;
-      c.ctx.beginPath();c.ctx.moveTo(x,y-4);c.ctx.lineTo(x+4,y);
-      c.ctx.lineTo(x,y+4);c.ctx.lineTo(x-4,y);c.ctx.closePath();c.ctx.fill();}
-    c.ctx.restore();
-    /* bottom: FP(theta) and D(theta) swept over THIS series */
-    c=fitCanvas(document.getElementById("cv8b"));
-    const fr2={x0:52,y0:24,w:c.W-86,h:c.H-62};
-    const ths=[],fps=[],ds=[];
-    for(let v=0.5;v<=10.001;v+=0.25){
-      const rr=fpAndD(m,v/100,degOn);
-      ths.push(v);fps.push(rr.fp);ds.push(degOn?rr.D:null);
-    }
-    const fpMax=Math.max(5,...fps)*1.15,dMax=60;
-    const ax2=axes(c.ctx,fr2,{xmin:0.5,xmax:10,ymin:0,ymax:fpMax,
-      xticks:[[1,"1%"],[3,"3%"],[5,"5%"],[8,"8%"],[10,"10%"]],
-      yticks:[[0,"0"],[Math.round(fpMax*0.5),String(Math.round(fpMax*0.5))],[Math.round(fpMax*0.92),String(Math.round(fpMax*0.92))]],
-      xlab:"umbral θ",ylab:"falsos positivos (min)",
-      title:degOn?"FP(θ) en tinta · D(θ) en dorado (escala derecha, min)":"FP(θ) en tinta (sin incidente: no hay D)"});
-    polyline(c.ctx,ths.map((v,i)=>[ax2.X(v),ax2.Y(Math.min(fps[i],fpMax))]),INK,2);
-    if(degOn){
-      const ptsD=[];
-      for(let i=0;i<ths.length;i++){
-        if(ds[i]===null){ptsD.push([NaN,NaN]);continue;}
-        ptsD.push([ax2.X(ths[i]),ax2.Y(Math.min(ds[i],dMax)/dMax*fpMax)]);
-      }
-      polyline(c.ctx,ptsD,GOLD,2.4);
-      /* right-hand axis for D, drawn by hand */
-      c.ctx.save();c.ctx.strokeStyle=GOLDD;c.ctx.fillStyle=GOLDD;
-      c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
-      c.ctx.beginPath();c.ctx.moveTo(fr2.x0+fr2.w,fr2.y0);
-      c.ctx.lineTo(fr2.x0+fr2.w,fr2.y0+fr2.h);c.ctx.stroke();
-      [0,20,40,60].forEach(v=>{
-        const y=ax2.Y(v/dMax*fpMax);
-        c.ctx.beginPath();c.ctx.moveTo(fr2.x0+fr2.w,y);
-        c.ctx.lineTo(fr2.x0+fr2.w+4,y);c.ctx.stroke();
-        c.ctx.fillText(String(v),fr2.x0+fr2.w+6,y+4);});
-      c.ctx.restore();
-    }
-    polyline(c.ctx,[[ax2.X(+sth.value),ax2.Y(0)],[ax2.X(+sth.value),ax2.Y(fpMax)]],GOLDD,1.2,[3,3]);
-    labelAt(c.ctx,"tu θ",ax2.X(+sth.value)+4,ax2.Y(fpMax*0.95),GOLDD);
-  }
-  updaters[8]=upd;
-})();
-
-/* ================= SLIDE 9 : glosario ================= */
-(function(){
-  const G=[
-   ["C_pet, C_día","coste de una petición (suma de etapas) y coste diario C_día = Q·(C̄_LLM + C̄_tool); el ejemplo a mano del deck: $0,022/petición, $2 420/mes."],
-   ["p_in, p_out","precio por millón de tokens de entrada / salida del modelo; el token de salida es ~5 veces más caro."],
-   ["n_in, n_out","tokens de entrada (prompt + contexto RAG) y de salida (respuesta) de una etapa; se facturan por separado."],
-   ["Q","volumen: peticiones por día; la factura mensual es lineal en Q (22 días laborables)."],
-   ["etapa","cada paso del pipeline con su modelo y sus tokens: router → recuperador → generador → validador."],
-   ["cascada, p","intentar primero el modelo barato y escalar el resto: E[C] = p·C_b + (1−p)·(C_b + C_c); p = fracción que el barato resuelve."],
-   ["e","tasa de error del detector de insuficiencia: la fracción (1−p)·e de consultas complejas se queda mal atendida en el barato."],
-   ["q_ok, q_mal","calidad cuando la consulta acaba en el modelo adecuado / inadecuado; la calidad esperada Q̄ las pondera."],
-   ["Q($), Q_max, $₀","curva de saturación coste-calidad Q($) = Q_max(1−e^(−$/$₀)); $₀ es el codo de la tarea: gastar $₀ compra el 63% del techo."],
-   ["T_total","latencia de una sesión de N turnos: Σ_t (T_LLM + T_tool); el ejemplo del deck: 1 730 ms end-to-end."],
-   ["TTFT, tps","time-to-first-token (red + prefill, ~0,7 s) y velocidad de decodificación (~60 tokens/s): T_LLM = TTFT + n_out/tps."],
-   ["LogNormal(μ,σ²)","modelo de latencia T = e^(μ+σZ): e^μ es la mediana y σ gobierna la cola derecha; la media e^(μ+σ²/2) siempre supera la mediana."],
-   ["p50 / p95 / p99","percentiles de latencia: el valor que el 50% / 95% / 99% de las peticiones no supera; p95 = e^(μ+1,645σ) en la lognormal."],
-   ["SLA","acuerdo de nivel de servicio, contractual: p95 < 3 s y disponibilidad > 99,5% en el caso ING del deck."],
-   ["T_sec, T_par","latencia de n subagentes en serie (suma) o en paralelo (máximo de n ≈ percentil 1−1/n de una etapa); el coste es idéntico."],
-   ["fan-out","lanzar a la vez los subagentes o tools independientes; solo lo dependiente se encadena."],
-   ["q, r","probabilidad de éxito de un intento y máximo de intentos: P_éxito = 1−(1−q)^r; E[intentos] = (1−(1−q)^r)/q."],
-   ["backoff b","espera creciente b·2^(i−1) entre reintentos (b, 2b, 4b…): dispersa la carga y hace casi independientes los intentos."],
-   ["circuit breaker","dejar de llamar a un servicio que falla repetidamente; corta el régimen en que reintentar es pagar más por esperar más."],
-   ["429 / 503 vs 4xx","errores transitorios (rate limit, servicio caído): se reintentan; errores lógicos: no, porque el JSON inválido seguirá inválido."],
-   ["λ, μ, ρ","tasa de llegadas, capacidad de servicio y utilización ρ = λ/μ; el sistema es estable solo si ρ < 1."],
-   ["L = λ·W","ley de Little, válida para cualquier sistema estable: peticiones dentro = llegadas por tiempo medio dentro."],
-   ["W, L_q","tiempo medio en el sistema W = 1/(μ−λ) (M/M/1) y cola media L_q = ρ²/(1−ρ): ambos explotan cuando ρ → 1."],
-   ["M/M/1","cola con llegadas Poisson, servicio exponencial y un servidor: el modelo mínimo que ya muestra el codo."],
-   ["h, h_max, TTL","tasa de acierto de caché, repetitividad intrínseca del tráfico (techo de h) y caducidad de cada entrada: h(TTL) = h_max(1−e^(−TTL/τ_rep))."],
-   ["τ_upd, s","vida media del contenido y probabilidad de servir respuesta obsoleta: s = 1−(τ_upd/TTL)(1−e^(−TTL/τ_upd))."],
-   ["C_ef, T_ef","coste y latencia efectivos con caché: C_ef = (1−h)·C; T_ef = h·T_cache + (1−h)·T_LLM (~30 ms el acierto)."],
-   ["ē_t, w","media móvil de la tasa de error con ventana de w minutos: filtra el ruido minuto a minuto antes de comparar con el umbral."],
-   ["θ, FP, D","umbral de alerta, falsos positivos (alertas sin incidente) y tiempo de detección del incidente real; cada minuto de D cuesta €27,50 en el caso ING."],
-   ["traza","registro completo {(contexto, acción, resultado)} de cada sesión, con session_id, métricas y veredicto humano (Langfuse, Phoenix, Helicone)."],
-   ["golden set","50–500 conversaciones ideales para evaluación offline; el A/B con métricas de negocio es la evaluación online."],
-   ["HITL","human-in-the-loop: el piloto humano que toma el control cuando la IA alucina o un edge case escapa al sistema."]];
-  const div=document.getElementById("glos");
-  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
-    "</div><div>"+e[1]+"</div></div>").join("");
-  updaters[9]=function(){};
-})();
-
-updaters[10]=function(){};
-
-/* ================= boot ================= */
-function fromHash(){const m=location.hash.match(/^#(\d+)$/);
-  return m?Math.max(0,Math.min(10,+m[1])):0;}
-window.addEventListener("hashchange",()=>go(fromHash()));
-go(fromHash());
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+buildNav();
+hot('p');
+go(0);
 </script>
 </body>
 </html>

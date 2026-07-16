@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slides interactivas de ampliación · Deep Learning</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="crumbs"><a href="../../index.html">Asignaturas</a><span class="sep">/</span><a href="../index.html">Deep Learning</a><span class="sep">/</span><a href="../interactivas/index.html">Slides interactivas</a><span class="sep">/</span><span>Ampliación</span></div>
+<h1>Slides interactivas de ampliación</h1>
+<p class="sub"><b>Material opcional de ampliación.</b> Estos decks desarrollan cada tema con simulaciones completas: muchas ecuaciones, muchos controles y todos los matices. Son para quien quiera profundizar; <b>no</b> entran en el examen (para las preguntas de examen, usa las <a href="../interactivas/index.html">slides interactivas</a> del día). Cada deck explica las ecuaciones del día con simulaciones manipulables: mueve los sliders, sigue el guion paso a paso y comprueba que entiendes. Se abren en cualquier navegador sin instalación ni conexión; navega con las flechas del teclado.</p>
+<hr class="rule">
+<div class="bloque">Tema 1 — Fundamentos</div>
+<div class="grid">
+<a class="card" href="dia_02_tema_1/index.html"><div class="dia">Día 02</div><div class="tit">Fundamentos: neurona, MLP y backpropagation</div><div class="desc">Frontera de decisión en vivo, forward y backward a mano, superficie de pérdida, SGD vs momentum vs Adam, churn telco en euros.</div></a>
+<a class="card" href="dia_03_tema_1/index.html"><div class="dia">Día 03</div><div class="tit">Regularización, schedules y dashboards</div><div class="desc">Overfitting polinómico, weight decay, dropout, early stopping, cosine y warmup, dashboard del experimentador.</div></a>
+</div>
+<div class="bloque">Tema 2 — Visión y secuencias</div>
+<div class="grid">
+<a class="card" href="dia_04_tema_2/index.html"><div class="dia">Día 04</div><div class="tit">Convolución, pooling y transfer learning</div><div class="desc">Kernel 3×3 sobre píxeles editables, padding/stride, pooling, campo receptivo, ResNet y caso retail con coste de error.</div></a>
+<a class="card" href="dia_05_tema_2/index.html"><div class="dia">Día 05</div><div class="tit">Transfer learning en profundidad y el Hub de Hugging Face</div><div class="desc">Curvas con y sin pretraining, congelar capas, catastrophic forgetting medible, coste-beneficio frente a API y desde-cero.</div></a>
+<a class="card" href="dia_06_tema_2/index.html"><div class="dia">Día 06</div><div class="tit">Datos secuenciales: RNN, LSTM y GRU</div><div class="desc">Recurrencia en vivo, gradientes que explotan o se desvanecen, las puertas del LSTM paso a paso, forecast de demanda en euros.</div></a>
+<a class="card" href="dia_07_tema_2/index.html"><div class="dia">Día 07</div><div class="tit">Del cuello de botella RNN a la atención</div><div class="desc">El cuello de botella de la RNN, scores y softmax manipulables, temperatura, alineamiento de traducción, atención sobre el historial de un cliente.</div></a>
+</div>
+<div class="bloque">Tema 3 — El Transformer y sus rivales</div>
+<div class="grid">
+<a class="card" href="dia_08_tema_3/index.html"><div class="dia">Día 08</div><div class="tit">Embeddings: word2vec, distancias y vectores contextuales</div><div class="desc">De one-hot a denso, coseno manipulable, aritmética de vectores, skip-gram entrenado en vivo, buscador semántico vs léxico.</div></a>
+<a class="card" href="dia_09_tema_3/index.html"><div class="dia">Día 09</div><div class="tit">Self-attention, multi-head y el bloque Transformer</div><div class="desc">Q, K, V con números, softmax(QKᵀ/√d)V completo, máscara causal, multi-head, positional encoding, residual + LayerNorm, leyes de escala.</div></a>
+<a class="card" href="dia_10_tema_3/index.html"><div class="dia">Día 10</div><div class="tit">Alternativas al Transformer: Mamba y MoE</div><div class="desc">FLOPs n² vs n, KV-cache en GB, la recurrencia SSM y su dualidad convolucional, routing top-k de expertos, balanceo de carga.</div></a>
+</div>
+<div class="bloque">Tema 4 — LLMs y multimodal</div>
+<div class="grid">
+<a class="card" href="dia_11_tema_4/index.html"><div class="dia">Día 11</div><div class="tit">Cómo funciona un LLM: sampling y context engineering</div><div class="desc">Next-token con softmax real, temperatura, top-k/top-p, generación autorregresiva, calculadora de coste, lost in the middle, elección de modelo.</div></a>
+<a class="card" href="dia_12_tema_4/index.html"><div class="dia">Día 12</div><div class="tit">Difusión y modelos multimodales</div><div class="desc">Forward noising píxel a píxel, schedules β, reverse denoising real en 2D, classifier-free guidance, difusión latente y coste por imagen.</div></a>
+</div>
+<div class="bloque">Tema 6 — Sistemas en producción</div>
+<div class="grid">
+<a class="card" href="dia_15_tema_6/index.html"><div class="dia">Día 15</div><div class="tit">RAG: recuperación aumentada con generación</div><div class="desc">Chunking con trade-off medible, retrieval por coseno, recall@k, búsqueda híbrida BM25+denso, re-ranking, presupuesto de contexto, caso BBVA dimensionado.</div></a>
+<a class="card" href="dia_16_tema_6/index.html"><div class="dia">Día 16</div><div class="tit">Adaptación de LLMs: prompting, LoRA, RLHF, DPO</div><div class="desc">ΔW = BA con SVD real, memoria GPU, Bradley–Terry con tus propios votos, reward hacking con β bajo, la pérdida DPO optimizada en vivo.</div></a>
+<a class="card" href="dia_17_tema_6/index.html"><div class="dia">Día 17</div><div class="tit">Sistemas agénticos en producción: coste, latencia, observabilidad</div><div class="desc">Cascada de modelos, percentiles de latencia, paralelo vs secuencial, reintentos con backoff, colas M/M/1, caché y observabilidad.</div></a>
+</div>
+<div class="nota"><b>Nota.</b> Los días 01, 13, 14 y 18 no tienen deck interactivo porque su contenido no es ecuacional (presentación, agentes y regulación); su material está en las demás secciones.</div>
+<p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027</p>
+</body>
+</html>

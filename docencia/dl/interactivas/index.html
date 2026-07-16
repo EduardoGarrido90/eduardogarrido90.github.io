@@ -9,38 +9,39 @@
 <body>
 <div class="crumbs"><a href="../../index.html">Asignaturas</a><span class="sep">/</span><a href="../index.html">Deep Learning</a><span class="sep">/</span><span>Slides interactivas</span></div>
 <h1>Slides interactivas</h1>
-<p class="sub">Cada deck explica las ecuaciones del día con simulaciones manipulables: mueve los sliders, sigue el guion paso a paso y comprueba que entiendes. Se abren en cualquier navegador sin instalación ni conexión; navega con las flechas del teclado.</p>
+<p class="sub">Una slide por sesión, muy sencilla: el <b>caso de negocio</b> del día y <b>la ecuación</b> que lo resuelve. Mueve un slider y su símbolo se enciende en dorado dentro de la ecuación, con su valor actualizado, para que veas exactamente qué palanca estás tocando. De estas slides pueden caer preguntas en el examen. Se abren en cualquier navegador sin instalación ni conexión; navega con las flechas del teclado.</p>
+<p class="sub" style="font-size:0.92em">¿Quieres más? Las <a href="../interactivas_ampliacion/index.html">slides interactivas de ampliación</a> desarrollan cada tema con simulaciones completas. Son material opcional: <b>no</b> entran en el examen.</p>
 <hr class="rule">
 <div class="bloque">Tema 1 — Fundamentos</div>
 <div class="grid">
-<a class="card" href="dia_02_tema_1/index.html"><div class="dia">Día 02</div><div class="tit">Fundamentos: neurona, MLP y backpropagation</div><div class="desc">Frontera de decisión en vivo, forward y backward a mano, superficie de pérdida, SGD vs momentum vs Adam, churn telco en euros.</div></a>
-<a class="card" href="dia_03_tema_1/index.html"><div class="dia">Día 03</div><div class="tit">Regularización, schedules y dashboards</div><div class="desc">Overfitting polinómico, weight decay, dropout, early stopping, cosine y warmup, dashboard del experimentador.</div></a>
+<a class="card" href="dia_02_tema_1/index.html"><div class="dia">Día 02</div><div class="tit">La neurona decide un préstamo</div><div class="desc">Banca (BBVA). ŷ = σ(w₁x₁+w₂x₂+b): mueve los pesos y el sesgo y mira cómo cambia la probabilidad de impago.</div></a>
+<a class="card" href="dia_03_tema_1/index.html"><div class="dia">Día 03</div><div class="tit">Regularización contra el sobreajuste</div><div class="desc">Seguros (Mapfre). L = L_datos + λ‖w‖²: el slider λ decide cuánto se penaliza la complejidad del modelo.</div></a>
 </div>
 <div class="bloque">Tema 2 — Visión y secuencias</div>
 <div class="grid">
-<a class="card" href="dia_04_tema_2/index.html"><div class="dia">Día 04</div><div class="tit">Convolución, pooling y transfer learning</div><div class="desc">Kernel 3×3 sobre píxeles editables, padding/stride, pooling, campo receptivo, ResNet y caso retail con coste de error.</div></a>
-<a class="card" href="dia_05_tema_2/index.html"><div class="dia">Día 05</div><div class="tit">Transfer learning en profundidad y el Hub de Hugging Face</div><div class="desc">Curvas con y sin pretraining, congelar capas, catastrophic forgetting medible, coste-beneficio frente a API y desde-cero.</div></a>
-<a class="card" href="dia_06_tema_2/index.html"><div class="dia">Día 06</div><div class="tit">Datos secuenciales: RNN, LSTM y GRU</div><div class="desc">Recurrencia en vivo, gradientes que explotan o se desvanecen, las puertas del LSTM paso a paso, forecast de demanda en euros.</div></a>
-<a class="card" href="dia_07_tema_2/index.html"><div class="dia">Día 07</div><div class="tit">Del cuello de botella RNN a la atención</div><div class="desc">El cuello de botella de la RNN, scores y softmax manipulables, temperatura, alineamiento de traducción, atención sobre el historial de un cliente.</div></a>
+<a class="card" href="dia_04_tema_2/index.html"><div class="dia">Día 04</div><div class="tit">Convolución que detecta defectos</div><div class="desc">Retail (Inditex). yᵢ = k₁xᵢ₋₁+k₂xᵢ+k₃xᵢ₊₁: los pesos del kernel encuentran bordes en una línea de escaneo.</div></a>
+<a class="card" href="dia_05_tema_2/index.html"><div class="dia">Día 05</div><div class="tit">Transfer learning frente a empezar de cero</div><div class="desc">Teledetección agrícola. La tasa η y las capas descongeladas deciden lo rápido que aprende una red preentrenada.</div></a>
+<a class="card" href="dia_06_tema_2/index.html"><div class="dia">Día 06</div><div class="tit">La memoria de una red recurrente</div><div class="desc">Energía (Iberdrola). hₜ = tanh(Wₓxₜ+W_h hₜ₋₁+b): W_h controla cuánto recuerda la demanda del pasado.</div></a>
+<a class="card" href="dia_07_tema_2/index.html"><div class="dia">Día 07</div><div class="tit">La atención mira a las palabras que importan</div><div class="desc">Turismo. αᵢ = softmax(eᵢ/τ): la temperatura τ afila o reparte la atención sobre el texto.</div></a>
 </div>
 <div class="bloque">Tema 3 — El Transformer y sus rivales</div>
 <div class="grid">
-<a class="card" href="dia_08_tema_3/index.html"><div class="dia">Día 08</div><div class="tit">Embeddings: word2vec, distancias y vectores contextuales</div><div class="desc">De one-hot a denso, coseno manipulable, aritmética de vectores, skip-gram entrenado en vivo, buscador semántico vs léxico.</div></a>
-<a class="card" href="dia_09_tema_3/index.html"><div class="dia">Día 09</div><div class="tit">Self-attention, multi-head y el bloque Transformer</div><div class="desc">Q, K, V con números, softmax(QKᵀ/√d)V completo, máscara causal, multi-head, positional encoding, residual + LayerNorm, leyes de escala.</div></a>
-<a class="card" href="dia_10_tema_3/index.html"><div class="dia">Día 10</div><div class="tit">Alternativas al Transformer: Mamba y MoE</div><div class="desc">FLOPs n² vs n, KV-cache en GB, la recurrencia SSM y su dualidad convolucional, routing top-k de expertos, balanceo de carga.</div></a>
+<a class="card" href="dia_08_tema_3/index.html"><div class="dia">Día 08</div><div class="tit">Embeddings y similitud coseno</div><div class="desc">Streaming (Spotify). cos(u,v) = u·v/(‖u‖‖v‖): mueve el vector de una canción y mira cómo cambia el parecido.</div></a>
+<a class="card" href="dia_09_tema_3/index.html"><div class="dia">Día 09</div><div class="tit">Self-attention en una reseña</div><div class="desc">E-commerce (Amazon). softmax(QKᵀ/√d)V: el escalado 1/√d evita que la atención se vuelva demasiado dura.</div></a>
+<a class="card" href="dia_10_tema_3/index.html"><div class="dia">Día 10</div><div class="tit">Mixture of Experts: enrutar el cómputo</div><div class="desc">Plataforma (Netflix). El router elige los k mejores expertos y ahorra cálculo en cada petición.</div></a>
 </div>
 <div class="bloque">Tema 4 — LLMs y multimodal</div>
 <div class="grid">
-<a class="card" href="dia_11_tema_4/index.html"><div class="dia">Día 11</div><div class="tit">Cómo funciona un LLM: sampling y context engineering</div><div class="desc">Next-token con softmax real, temperatura, top-k/top-p, generación autorregresiva, calculadora de coste, lost in the middle, elección de modelo.</div></a>
-<a class="card" href="dia_12_tema_4/index.html"><div class="dia">Día 12</div><div class="tit">Difusión y modelos multimodales</div><div class="desc">Forward noising píxel a píxel, schedules β, reverse denoising real en 2D, classifier-free guidance, difusión latente y coste por imagen.</div></a>
+<a class="card" href="dia_11_tema_4/index.html"><div class="dia">Día 11</div><div class="tit">La temperatura de un chatbot</div><div class="desc">Atención al cliente. pᵢ = exp(zᵢ/T)/Σexp(zⱼ/T): T decide si la respuesta es segura o creativa.</div></a>
+<a class="card" href="dia_12_tema_4/index.html"><div class="dia">Día 12</div><div class="tit">Difusión: de la imagen al ruido</div><div class="desc">Publicidad y moda. xₜ = √ᾱₜ x₀ + √(1−ᾱₜ)ε: el nivel de ruido t transforma la imagen paso a paso.</div></a>
 </div>
 <div class="bloque">Tema 6 — Sistemas en producción</div>
 <div class="grid">
-<a class="card" href="dia_15_tema_6/index.html"><div class="dia">Día 15</div><div class="tit">RAG: recuperación aumentada con generación</div><div class="desc">Chunking con trade-off medible, retrieval por coseno, recall@k, búsqueda híbrida BM25+denso, re-ranking, presupuesto de contexto, caso BBVA dimensionado.</div></a>
-<a class="card" href="dia_16_tema_6/index.html"><div class="dia">Día 16</div><div class="tit">Adaptación de LLMs: prompting, LoRA, RLHF, DPO</div><div class="desc">ΔW = BA con SVD real, memoria GPU, Bradley–Terry con tus propios votos, reward hacking con β bajo, la pérdida DPO optimizada en vivo.</div></a>
-<a class="card" href="dia_17_tema_6/index.html"><div class="dia">Día 17</div><div class="tit">Sistemas agénticos en producción: coste, latencia, observabilidad</div><div class="desc">Cascada de modelos, percentiles de latencia, paralelo vs secuencial, reintentos con backoff, colas M/M/1, caché y observabilidad.</div></a>
+<a class="card" href="dia_15_tema_6/index.html"><div class="dia">Día 15</div><div class="tit">RAG: recuperar los documentos que importan</div><div class="desc">Banca (BBVA). score = cos(q,d): recupera los k fragmentos más parecidos a la pregunta como contexto del LLM.</div></a>
+<a class="card" href="dia_16_tema_6/index.html"><div class="dia">Día 16</div><div class="tit">LoRA: adaptar un LLM barato</div><div class="desc">SaaS. W' = W + (α/r)BA: el rango r fija cuántos parámetros se entrenan y cuánto se ahorra.</div></a>
+<a class="card" href="dia_17_tema_6/index.html"><div class="dia">Día 17</div><div class="tit">Cascada de modelos: coste y latencia</div><div class="desc">Operaciones. E[coste] = p·c_barato + (1−p)·c_caro: la fracción p que resuelve el modelo barato marca el gasto.</div></a>
 </div>
-<div class="nota"><b>Nota.</b> Los días 01, 13, 14 y 18 no tienen deck interactivo porque su contenido no es ecuacional (presentación, agentes y regulación); su material está en las demás secciones.</div>
+<div class="nota"><b>Nota.</b> Los días 01, 13, 14 y 18 no tienen slide interactiva porque su contenido no es ecuacional (presentación, agentes y regulación); su material está en las demás secciones.</div>
 <p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027</p>
 </body>
 </html>

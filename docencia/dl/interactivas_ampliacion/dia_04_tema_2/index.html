@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Día 04 — CNN para visión y retail — slides interactivas</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
+  .slide{display:none;padding:14px 24px 64px 24px;
+    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin-bottom:10px;
+    border:1px solid #eee;border-radius:2px}
+  .txtcol{font-size:0.9em;line-height:1.4}
+  .txtcol p{margin:0 0 9px 0}
+  .txtcol .hd{font-weight:bold}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 12px;margin-bottom:12px}
+  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
+  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
+  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
+    margin-right:6px}
+  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
+  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
+    font-size:0.9em;margin:4px 0}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
+  .mut{color:var(--mute)}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
+    font-size:0.84em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
+  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
+    font-weight:bold}
+  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
+    font-variant-numeric:tabular-nums}
+  table.live th:first-child,table.live td:first-child{text-align:left}
+  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 14px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
+    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
+  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
+  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
+  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
+  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
+  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
+    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
+  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
+  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
+  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
+  .eqread b{color:var(--goldDeep)}
+  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
+    font-size:0.93em}
+  .frac .num,.frac .den{display:block;padding:0 4px}
+  .frac .den{border-top:1.1px solid var(--ink)}
+  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:9px 13px;margin:10px 0;font-size:0.88em}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
+  .guide ol{margin:4px 0 4px 18px;padding:0}
+  .guide li{margin:0 0 7px 0;line-height:1.4}
+  .guide .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:6px}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
+    border-left:3px solid var(--gold);line-height:1.4}
+  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
+  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
+    grid-template-columns:30% 70%}
+  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
+</style>
+</head>
+<body>
+
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 0 : por qué no un MLP ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <canvas id="cv0a" data-aspect="1.95"></canvas>
+    <canvas id="cv0b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">W<sub>1</sub> &isin; &#8477;<sup>D&times;HWC</sup>,&nbsp;&nbsp;
+        #pesos<sub>MLP</sub> = D&middot;H&middot;W&middot;C&nbsp;(+D sesgos)<span class="eqn">(nota, &sect;1)</span></div>
+      <div class="eqread">aplanar la imagen H&times;W&times;C da HWC entradas; la primera
+        capa de un MLP de anchura <b>D</b> necesita un peso por cada par
+        (neurona, p&iacute;xel). Para 224&times;224&times;3 y D = 1024 son
+        1.5&middot;10<sup>8</sup> par&aacute;metros solo en la primera capa.</div>
+      <div class="eq">#pesos<sub>conv</sub> = (k&middot;k&middot;C<sub>in</sub>+1)&middot;C<sub>out</sub><span class="eqn">(pesos compartidos)</span></div>
+      <div class="eqread">una capa convolucional reusa el mismo kernel k&times;k en todas
+        las posiciones: su coste <b>no depende de H ni de W</b>. La CNN peque&ntilde;a de
+        esta demo (32&ndash;64&ndash;128 filtros 3&times;3 + cabeza de 10 clases) se
+        calcula con esta f&oacute;rmula capa a capa.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>resoluci&oacute;n de la imagen, R&times;R con R = <b id="r0r"></b></label>
+      <input type="range" id="sl0r" min="28" max="512" step="4" value="224">
+      <label>neuronas ocultas del MLP, D = <b id="r0d"></b></label>
+      <input type="range" id="sl0d" min="64" max="4096" step="64" value="1024">
+      <label>canales C = <b id="r0c"></b> (1 = gris, 3 = color)</label>
+      <input type="range" id="sl0c" min="1" max="3" step="2" value="3">
+    </div>
+    <div class="readout" id="ro0"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Deja D = 1024 y C = 3 y sube R de 28 a 224. <span class="obs">La curva tinta
+        (MLP) sube dos &oacute;rdenes de magnitud; la dorada (CNN) ni se inmuta: el coste
+        de la conv no depende de la resoluci&oacute;n.</span></li>
+      <li>Con R = 224, lee el lector: deber&iacute;as ver &asymp;1.5&middot;10<sup>8</sup>
+        pesos de MLP, el n&uacute;mero exacto de la nota t&eacute;cnica.
+        <span class="obs">A 4 bytes por peso son &asymp;590 MB solo de primera capa.</span></li>
+      <li>Duplica D a 2048. <span class="obs">El MLP se duplica; la CNN no cambia:
+        D solo existe en el mundo MLP.</span></li>
+      <li>Baja R a 28 (tama&ntilde;o Fashion-MNIST). <span class="obs">Ah&iacute; el MLP
+        a&uacute;n es viable (&asymp;2.4M pesos): por eso los MLP "funcionaban" en los
+        datasets peque&ntilde;os de los 90.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: si duplico la
+        resoluci&oacute;n R, &iquest;por cu&aacute;nto se multiplica cada modelo?</summary>
+        <div class="ans">El MLP por 4: sus pesos crecen como R&sup2; (D&middot;R&sup2;&middot;C).
+        La parte convolucional por 1: (k&sup2;C<sub>in</sub>+1)C<sub>out</sub> no contiene
+        R. Lo &uacute;nico que crece en la CNN es el c&oacute;mputo (m&aacute;s posiciones
+        donde aplicar el kernel) y la memoria de activaciones, no los par&aacute;metros
+        que hay que aprender con datos finitos.</div></details></div>
+    <p><span class="hd">Setup.</span> Mercadona quiere detectar lineales vac&iacute;os
+      con una c&aacute;mara por pasillo. La imagen llega como matriz R&times;R&times;C.
+      Arriba: n&uacute;mero de par&aacute;metros (escala log) en funci&oacute;n de R para
+      un MLP con D neuronas ocultas (tinta) y para una CNN peque&ntilde;a de tres capas
+      3&times;3 con 32, 64 y 128 filtros m&aacute;s cabeza de 10 clases (dorado). Abajo:
+      las dos barras a tu configuraci&oacute;n actual, con su memoria en MB (float32).</p>
+    <p><span class="hd">Juega.</span> Mueve R y mira c&oacute;mo la curva tinta crece
+      como R&sup2; mientras la dorada es plana. Mueve D: solo se mueve el MLP. El punto
+      dorado y el punto tinta marcan tu configuraci&oacute;n en ambas curvas.</p>
+    <p><span class="hd">Lee as&iacute;.</span> El cociente del lector (&times;MLP/CNN) es
+      el factor de ahorro de la convoluci&oacute;n. Con menos par&aacute;metros que
+      estimar, la CNN entrena con los pocos miles de fotos etiquetadas que una empresa
+      puede pagar; el MLP necesitar&iacute;a millones.</p>
+    <p><span class="hd">Mensaje.</span> No es solo memoria: cada peso es algo que hay que
+      aprender de datos. La CNN gana porque incorpora dos sesgos inductivos correctos
+      para im&aacute;genes: localidad (solo conecta vecinos) y equivarianza por
+      traslaci&oacute;n (el mismo detector vale en toda la imagen).</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Aplanar</b>: convertir la matriz
+      H&times;W&times;C en un vector de HWC n&uacute;meros, perdiendo la estructura
+      espacial. <b>Sesgo inductivo</b>: supuesto estructural que la arquitectura impone
+      antes de ver datos. <b>float32</b>: 4 bytes por par&aacute;metro.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 1 : convolución a mano ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <canvas id="cv1a" data-aspect="2.0"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">Y<sub>i,j,o</sub> = <big>&Sigma;</big><sub>u=0..k-1</sub>&nbsp;<big>&Sigma;</big><sub>v=0..k-1</sub>&nbsp;<big>&Sigma;</big><sub>c=1..C<sub>in</sub></sub>&nbsp;X<sub>i+u,&thinsp;j+v,&thinsp;c</sub>&middot;K<sub>u,v,c,o</sub> + b<sub>o</sub><span class="eqn">(Ec. 1)</span></div>
+      <div class="eqread">la convoluci&oacute;n: el valor de salida en la posici&oacute;n
+        (i,j) del canal o es la <b>suma ponderada del parche</b> k&times;k que empieza en
+        (i,j), con los pesos del kernel K, m&aacute;s un sesgo b<sub>o</sub>. Aqu&iacute;
+        C<sub>in</sub> = 1 (escala de grises) y b = 0, as&iacute; que quedan los 9
+        productos que ves en el lector.</div>
+      <div class="eq">1&middot;1 + 0&middot;0 + 2&middot;(&minus;1) + 0&middot;1 + 1&middot;0 + 3&middot;(&minus;1) + 2&middot;1 + 1&middot;0 + 0&middot;(&minus;1) = <span class="gold">&minus;2</span><span class="eqn">(ejemplo de clase, 5&times;5)</span></div>
+      <div class="eqread">el c&aacute;lculo a mano del deck: parche
+        (1,0,2 / 0,1,3 / 2,1,0) por el kernel de bordes verticales
+        (1,0,&minus;1 / 1,0,&minus;1 / 1,0,&minus;1). El lector de esta slide reproduce
+        exactamente esta aritm&eacute;tica para la celda que elijas.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>posici&oacute;n del kernel (recorrido fila a fila), celda n.&ordm; <b id="r1p"></b></label>
+      <input type="range" id="sl1p" min="0" max="35" step="1" value="9">
+      <label>presets del kernel:</label>
+      <button id="bt1v">borde vertical</button>
+      <button id="bt1s">Sobel vertical</button>
+      <button id="bt1h">borde horizontal</button>
+      <button id="bt1b">blur</button>
+      <button id="bt1i">identidad</button>
+      <button id="bt1r">reiniciar imagen</button>
+    </div>
+    <div class="readout" id="ro1"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con el kernel "borde vertical", arrastra la posici&oacute;n de 0 a 35 despacio.
+        <span class="obs">El feature map solo se enciende (valor 3) en las dos columnas
+        cuya ventana pisa la transici&oacute;n de 1 a 0: el kernel es un detector de ese
+        borde.</span></li>
+      <li>Haz clic en varios p&iacute;xeles de la imagen para abrir un hueco en el borde.
+        <span class="obs">El feature map se apaga exactamente ah&iacute;: la
+        convoluci&oacute;n es local, solo ve su parche 3&times;3.</span></li>
+      <li>Cambia a "borde horizontal". <span class="obs">El mapa queda casi a cero:
+        esta imagen no tiene bordes horizontales que detectar. Cada kernel busca UN
+        patr&oacute;n.</span></li>
+      <li>Pulsa "blur" y luego "identidad" mirando el lector.
+        <span class="obs">Blur promedia el parche (salida suave entre 0 y 1); identidad
+        copia el p&iacute;xel central: la convoluci&oacute;n generaliza ambas cosas.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; el
+        feature map es 6&times;6 si la imagen es 8&times;8?</summary><div class="ans">
+        Porque el kernel 3&times;3 solo cabe en posiciones donde el parche completo
+        est&aacute; dentro de la imagen: 8&minus;3+1 = 6 posiciones por fila y por
+        columna. Es el caso p = 0 (sin padding), s = 1 de la f&oacute;rmula
+        o = &lfloor;(i+2p&minus;k)/s&rfloor;+1 de la siguiente slide:
+        &lfloor;(8+0&minus;3)/1&rfloor;+1 = 6.</div></details></div>
+    <p><span class="hd">Setup.</span> Imagen de juguete 8&times;8 con un borde vertical
+      (mitad izquierda a 1, mitad derecha a 0), como la frontera entre estante lleno y
+      estante vac&iacute;o en la foto del lineal. El kernel 3&times;3 se desliza por las
+      36 posiciones v&aacute;lidas; la ventana actual se dibuja en dorado sobre la imagen
+      y su celda de salida se marca en el feature map. <b>La imagen es editable</b>: clic
+      en un p&iacute;xel lo conmuta 0&harr;1. <b>El kernel tambi&eacute;n</b>: clic en una
+      celda del kernel la hace ciclar por &minus;2, &minus;1, 0, 1, 2.</p>
+    <p><span class="hd">Juega.</span> El lector escribe los 9 productos de la Ec. (1)
+      para la posici&oacute;n elegida, exactamente como el ejemplo a mano de clase (el
+      del parche 5&times;5 que da &minus;2, o el de la imagen 4&times;4 cuya salida
+      2&times;2 era 3, &minus;3, 0, 3). Comprueba dos o tres celdas a mano: es la misma
+      cuenta.</p>
+    <p><span class="hd">Lee as&iacute;.</span> Un valor grande positivo dice "aqu&iacute;
+      el parche se parece a la plantilla"; cero dice "nada que ver". Una capa
+      convolucional real hace esto con 32&ndash;512 kernels en paralelo, cada uno
+      aprendido por backprop, no dise&ntilde;ado a mano como aqu&iacute;.</p>
+    <p><span class="hd">Mensaje.</span> Los 9 n&uacute;meros del kernel son los
+      &uacute;nicos par&aacute;metros, y se reusan en las 36 posiciones: pesos
+      compartidos. El MLP de la slide anterior habr&iacute;a usado 36&times;9
+      par&aacute;metros distintos para hacer esto mismo.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Kernel / filtro</b>: plantilla
+      k&times;k de pesos. <b>Parche</b>: trozo k&times;k de la imagen bajo el kernel.
+      <b>Feature map</b>: matriz de salida, una activaci&oacute;n por posici&oacute;n.
+      <b>Sobel</b>: kernel cl&aacute;sico de bordes con fila central reforzada
+      (1,2,1 en vez de 1,1,1).</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2 : padding y stride ============ -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <canvas id="cv2a" data-aspect="2.1"></canvas>
+    <canvas id="cv2b" data-aspect="2.4"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la ecuaci&oacute;n de esta slide</div>
+      <div class="eq">o = <big>&lfloor;</big><span class="frac"><span class="num">i + 2p &minus; k</span><span class="den">s</span></span><big>&rfloor;</big> + 1<span class="eqn">(tama&ntilde;o de salida)</span></div>
+      <div class="eqread"><b>i</b> = tama&ntilde;o de entrada, <b>p</b> = padding (ceros
+        a&ntilde;adidos a cada lado), <b>k</b> = tama&ntilde;o del kernel, <b>s</b> =
+        stride (paso del deslizamiento). El numerador i+2p&minus;k es cu&aacute;nto puede
+        avanzar el kernel; dividir por s cuenta los saltos; el +1 cuenta la
+        posici&oacute;n inicial. El suelo &lfloor;&middot;&rfloor; descarta el trozo final
+        si no cabe un salto entero: por eso puede "no encajar".</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>entrada i = <b id="r2i"></b></label>
+      <input type="range" id="sl2i" min="4" max="16" step="1" value="8">
+      <label>kernel k = <b id="r2k"></b></label>
+      <input type="range" id="sl2k" min="1" max="7" step="2" value="3">
+      <label>padding p = <b id="r2p"></b></label>
+      <input type="range" id="sl2p" min="0" max="3" step="1" value="0">
+      <label>stride s = <b id="r2s"></b></label>
+      <input type="range" id="sl2s" min="1" max="4" step="1" value="1">
+      <label>celda de salida destacada, t = <b id="r2t"></b></label>
+      <input type="range" id="sl2t" min="0" max="5" step="1" value="2">
+    </div>
+    <div class="readout" id="ro2"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con i = 8, k = 3, p = 0, s = 1, sube p a 1. <span class="obs">La salida pasa de
+        6 a 8: padding "same", la resoluci&oacute;n se conserva. Las celdas punteadas son
+        los ceros a&ntilde;adidos.</span></li>
+      <li>Vuelve a p = 0 y sube s a 2. <span class="obs">La salida cae de 6 a 3 y aparece
+        el badge "no encaja": (8&minus;3) no es m&uacute;ltiplo de 2 y queda 1 columna sin
+        cubrir a la derecha. El suelo de la f&oacute;rmula la descarta.</span></li>
+      <li>Con s = 2, sube i a 9. <span class="obs">Ahora (9&minus;3)/2 = 3 exacto: badge
+        verde. Mismo kernel, misma stride; encajar depende de la aritm&eacute;tica
+        modular.</span></li>
+      <li>Mueve t y mira el panel de arriba. <span class="obs">La ventana dorada salta de
+        s en s celdas: stride 2 mira una de cada dos posiciones, por eso reduce
+        resoluci&oacute;n (y c&oacute;mputo) a la mitad.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;qu&eacute; p hace
+        falta para salida "same" (o = i) con s = 1?</summary><div class="ans">Con s = 1
+        la f&oacute;rmula da o = i+2p&minus;k+1; igualando a i queda p = (k&minus;1)/2.
+        Por eso los kernels son de tama&ntilde;o impar: k = 3 &rarr; p = 1, k = 5 &rarr;
+        p = 2, k = 7 &rarr; p = 3. Con k par no existe un p entero que centre el kernel,
+        y por eso casi no se usan.</div></details></div>
+    <p><span class="hd">Setup.</span> Vista 1D de una fila de la imagen (la
+      f&oacute;rmula es id&eacute;ntica para alto y ancho). Arriba: la fila de entrada
+      con sus p ceros de padding a cada lado (celdas punteadas), la ventana del kernel
+      en la posici&oacute;n t (dorado) y la fila de salida; cada celda de salida
+      est&aacute; unida a la ventana que la produce. Abajo: la salida o en
+      funci&oacute;n de i para tus k, p, s actuales; la escalera que ves es el suelo
+      &lfloor;&middot;&rfloor; en acci&oacute;n.</p>
+    <p><span class="hd">Juega.</span> El badge avisa cuando (i+2p&minus;k) no es
+      m&uacute;ltiplo de s: hay columnas de entrada que ninguna ventana cubre. En una
+      CNN real eso significa tirar informaci&oacute;n del borde derecho/inferior de la
+      foto del producto; con p bien elegido no se tira nada.</p>
+    <p><span class="hd">Lee as&iacute;.</span> En el panel inferior, el tramo plano de la
+      escalera son tama&ntilde;os de entrada distintos que producen la misma salida:
+      informaci&oacute;n descartada por el suelo. Cuando la curva pasa por tu i actual
+      sin tramo plano, el encaje es exacto.</p>
+    <p><span class="hd">Mensaje.</span> Padding y stride son las dos perillas de
+      ingenier&iacute;a de toda arquitectura CNN: p conserva resoluci&oacute;n y bordes,
+      s la reduce deliberadamente (las arquitecturas modernas prefieren stride 2 a
+      max-pool agresivo, como dice la nota del d&iacute;a).</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Padding</b>: orla de ceros
+      a&ntilde;adida alrededor de la imagen. <b>Stride</b>: paso con que se desliza el
+      kernel. <b>"same"</b>: configuraci&oacute;n que mantiene o = i.
+      <b>&lfloor;x&rfloor;</b>: mayor entero &le; x.</p>
+  </div>
+</section>
+<!-- ============ SLIDE 3 : pooling ============ -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <canvas id="cv3a" data-aspect="2.0"></canvas>
+    <canvas id="cv3b" data-aspect="2.6"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">Y<sub>i,j,c</sub> = m&aacute;x<sub>0&le;u,v&lt;k<sub>p</sub></sub>&nbsp;X<sub>i&middot;s+u,&thinsp;j&middot;s+v,&thinsp;c</sub><span class="eqn">(max-pooling)</span></div>
+      <div class="eqread">cada celda de salida es el <b>m&aacute;ximo</b> de una ventana
+        k<sub>p</sub>&times;k<sub>p</sub> del feature map, con paso s = k<sub>p</sub>
+        (ventanas sin solape). Se queda con "el detector m&aacute;s activado de la zona"
+        y olvida en qu&eacute; p&iacute;xel exacto se activ&oacute;.</div>
+      <div class="eq">Y<sub>i,j,c</sub> = <span class="frac"><span class="num">1</span><span class="den">k<sub>p</sub>&sup2;</span></span> <big>&Sigma;</big><sub>0&le;u,v&lt;k<sub>p</sub></sub>&nbsp;X<sub>i&middot;s+u,&thinsp;j&middot;s+v,&thinsp;c</sub><span class="eqn">(average pooling)</span></div>
+      <div class="eqread">la variante <b>media</b>: sustituye el m&aacute;ximo por el
+        promedio de la ventana. Conserva m&aacute;s informaci&oacute;n de nivel pero
+        diluye los picos; el max es m&aacute;s invariante a d&oacute;nde cae exactamente
+        la activaci&oacute;n.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>ventana de pooling k<sub>p</sub> = <b id="r3k"></b> (stride = k<sub>p</sub>)</label>
+      <input type="range" id="sl3k" min="2" max="3" step="1" value="2">
+      <label><input type="checkbox" id="ck3"> usar average pooling en vez de max</label>
+      <button id="bt3">desplaza la imagen 1 p&iacute;xel &rarr;</button>
+    </div>
+    <div class="readout" id="ro3"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pulsa el bot&oacute;n de desplazar y vuelve a pulsarlo, mirando el feature map
+        central. <span class="obs">Las dos franjas activadas (+3 en el flanco izquierdo,
+        &minus;3 en el derecho) saltan de columna: el feature map es EQUIVARIANTE, se
+        mueve con la imagen.</span></li>
+      <li>Mira las barras del panel inferior con k<sub>p</sub> = 2 y max.
+        <span class="obs">El feature map cambia un 100%; el mapa pooleado, un 67%: el
+        pooling ha absorbido un tercio del desplazamiento.</span></li>
+      <li>Sube k<sub>p</sub> a 3. <span class="obs">El mapa pooleado no cambia NADA (0%):
+        la ventana 3&times;3 traga el p&iacute;xel de desplazamiento entero. M&aacute;s
+        invariancia, pero solo quedan 2&times;2 celdas de resoluci&oacute;n.</span></li>
+      <li>Con k<sub>p</sub> = 2, activa average pooling. <span class="obs">El cambio
+        vuelve al 100%: la media nota cualquier valor que se mueva dentro de la ventana;
+        el max solo nota si el pico entra o sale de ella.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; el
+        max-pool es m&aacute;s invariante que la media a traslaciones
+        peque&ntilde;as?</summary><div class="ans">Si el pico de activaci&oacute;n se
+        mueve 1 p&iacute;xel pero sigue dentro de la misma ventana k<sub>p</sub>&times;k<sub>p</sub>,
+        el m&aacute;ximo de esa ventana no cambia en absoluto. La media s&iacute; cambia
+        en cuanto cualquier valor de la ventana cambia. El precio del max es que tira el
+        resto de la informaci&oacute;n de la ventana: solo sobrevive "el patr&oacute;n
+        est&aacute; aqu&iacute;", no "cu&aacute;nto ni exactamente d&oacute;nde".</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Imagen 8&times;8 con una barra vertical de 3
+      p&iacute;xeles (el montante de la estanter&iacute;a en la foto del lineal) y el
+      mismo kernel detector de bordes verticales de la slide anterior, que produce +3 en
+      el flanco izquierdo de la barra y &minus;3 en el derecho. Arriba: imagen &rarr;
+      feature map 6&times;6 &rarr; mapa pooleado (3&times;3 con k<sub>p</sub> = 2,
+      2&times;2 con k<sub>p</sub> = 3). El bot&oacute;n desplaza la imagen entera un
+      p&iacute;xel a la derecha, como cuando la c&aacute;mara del lineal vibra entre dos
+      fotos del mismo estante. Abajo: cambio relativo medio (en %) que ese
+      desplazamiento provoca en el feature map y en el mapa pooleado, calculado de
+      verdad sobre las dos versiones.</p>
+    <p><span class="hd">Juega.</span> El cociente entre las dos barras es la ganancia de
+      invariancia: cu&aacute;ntas veces menos cambia la representaci&oacute;n tras el
+      pooling. Compara k<sub>p</sub> = 2 con k<sub>p</sub> = 3 y max con media.</p>
+    <p><span class="hd">Lee as&iacute;.</span> Para el clasificador "estante
+      lleno/vac&iacute;o" lo que importa es si hay borde de estante, no en qu&eacute;
+      p&iacute;xel exacto cae. El pooling convierte equivarianza (el mapa se mueve con la
+      imagen) en invariancia aproximada (la salida apenas se mueve).</p>
+    <p><span class="hd">Mensaje.</span> Pooling = perder resoluci&oacute;n a
+      prop&oacute;sito para ganar robustez y reducir c&oacute;mputo. En arquitecturas
+      modernas el mismo efecto se consigue con stride 2 en la propia convoluci&oacute;n,
+      pero el principio es id&eacute;ntico.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Equivariante</b>: si la entrada se
+      traslada, la salida se traslada igual. <b>Invariante</b>: la salida no cambia
+      aunque la entrada se traslade. <b>k<sub>p</sub></b>: lado de la ventana de pooling.
+      <b>Cambio relativo</b>: media de |&Delta;| dividida por la media de |valores|.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 : jerarquía de features ============ -->
+<section class="slide" id="s4">
+  <div class="figcol">
+    <canvas id="cv4a" data-aspect="2.1"></canvas>
+    <canvas id="cv4b" data-aspect="2.3"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">h<sup>v</sup> = ReLU(X &lowast; K<sup>v</sup>),&nbsp;&nbsp;
+        h<sup>h</sup> = ReLU(X &lowast; K<sup>h</sup>)<span class="eqn">(capa 1: bordes)</span></div>
+      <div class="eqread">dos aplicaciones de la Ec. (1) con kernels distintos:
+        K<sup>v</sup> detecta el borde vertical izquierdo (columnas &minus;1, 0, 1) y
+        K<sup>h</sup> el borde horizontal superior (filas &minus;1, 0, 1). La ReLU
+        (max(0,&middot;)) descarta las respuestas negativas: nos quedamos con "borde en
+        la orientaci&oacute;n buscada", no su opuesto.</div>
+      <div class="eq">esquina = ReLU<big>(</big>h<sup>v</sup> &lowast; W<sup>v</sup> + h<sup>h</sup> &lowast; W<sup>h</sup> &minus; b<sub>2</sub><big>)</big><span class="eqn">(capa 2: composici&oacute;n)</span></div>
+      <div class="eqread">la segunda capa es la Ec. (1) con C<sub>in</sub> = 2: suma las
+        contribuciones de los DOS canales de entrada. W<sup>v</sup> busca una l&iacute;nea
+        vertical de activaciones en h<sup>v</sup> y W<sup>h</sup> una horizontal en
+        h<sup>h</sup>; solo donde coinciden ambas (la esquina) se supera el umbral
+        b<sub>2</sub>.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>columna del cuadrado, c<sub>0</sub> = <b id="r4x"></b></label>
+      <input type="range" id="sl4x" min="1" max="6" step="1" value="3">
+      <label>fila del cuadrado, r<sub>0</sub> = <b id="r4y"></b></label>
+      <input type="range" id="sl4y" min="1" max="6" step="1" value="2">
+      <label>umbral de la capa 2, b<sub>2</sub> = <b id="r4b"></b></label>
+      <input type="range" id="sl4b" min="0" max="12" step="0.5" value="6">
+    </div>
+    <div class="readout" id="ro4"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Mueve c<sub>0</sub> una posici&oacute;n a la derecha mirando el panel inferior.
+        <span class="obs">El pico del detector de esquinas se mueve exactamente una
+        posici&oacute;n a la derecha: toda la pila conv+conv es equivariante.</span></li>
+      <li>Mira los dos mapas intermedios. <span class="obs">h<sup>v</sup> dibuja solo el
+        lado izquierdo del cuadrado, h<sup>h</sup> solo el lado superior: cada kernel de
+        la capa 1 extrae UNA primitiva.</span></li>
+      <li>Baja b<sub>2</sub> a 0. <span class="obs">El mapa de esquinas se ensucia:
+        cualquier borde aislado ya activa algo. El umbral es lo que exige la
+        COINCIDENCIA de las dos primitivas.</span></li>
+      <li>Sube b<sub>2</sub> a 12. <span class="obs">Todo se apaga, incluso la esquina:
+        un umbral demasiado exigente mata el detector. En una CNN real, b<sub>2</sub> es
+        un par&aacute;metro m&aacute;s que el entrenamiento ajusta solo.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; la
+        capa 2 necesita C<sub>in</sub> = 2 y no puede hacerlo un solo kernel sobre la
+        imagen?</summary><div class="ans">Un kernel 3&times;3 sobre la imagen solo ve un
+        parche 3&times;3: en ese parche una "esquina" y un "borde" pueden ser
+        indistinguibles. La capa 2 no mira p&iacute;xeles: mira los mapas de bordes ya
+        calculados, y pregunta "&iquest;hay evidencia vertical Y horizontal a la vez
+        aqu&iacute;?". Adem&aacute;s su campo receptivo efectivo sobre la imagen ya es
+        5&times;5 (siguiente slide). Esa es la jerarqu&iacute;a: bordes &rarr; esquinas
+        &rarr; partes &rarr; objetos, cada capa componiendo lo anterior.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Imagen 12&times;12 con un cuadrado 5&times;5 (una
+      "prenda" en la foto de cat&aacute;logo de Zara, si quieres). Arriba: la imagen y
+      los dos mapas de la capa 1 (bordes verticales izquierdos, bordes horizontales
+      superiores), ya pasados por ReLU. Abajo: la salida de la capa 2, que combina ambos
+      canales y resta el umbral b<sub>2</sub>; el c&iacute;rculo dorado marca su
+      m&aacute;ximo. Todo se recalcula con las dos convoluciones de verdad cada vez que
+      mueves un slider.</p>
+    <p><span class="hd">Juega.</span> El lector compara la posici&oacute;n del pico con
+      la esquina superior izquierda real del cuadrado: se mueven juntos, casilla a
+      casilla. Eso es lo que significa "composici&oacute;n jer&aacute;rquica" en el deck:
+      la capa 2 no ve p&iacute;xeles, ve primitivas.</p>
+    <p><span class="hd">Lee as&iacute;.</span> En una ResNet entrenada con fotos de
+      producto pasa lo mismo a lo grande: capa 1 bordes y colores, capas medias texturas
+      y partes (cuello, manga, botones), capas altas prendas completas. Nadie
+      dise&ntilde;a esos kernels: el gradiente los encuentra.</p>
+    <p><span class="hd">Mensaje.</span> La profundidad no es un capricho: es el
+      mecanismo por el que detectores simples y baratos se componen en detectores
+      complejos. Dos capas 3&times;3 ya detectan algo (esquinas) que ninguna de ellas
+      puede detectar sola.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>ReLU</b>: max(0,x), apaga lo
+      negativo. <b>Primitiva</b>: patr&oacute;n simple de capa baja (borde, esquina).
+      <b>Canal</b>: cada feature map de una capa; la capa siguiente los suma con sus
+      propios pesos (&Sigma;<sub>c</sub> de la Ec. 1). <b>b<sub>2</sub></b>: sesgo
+      negativo que act&uacute;a de umbral de coincidencia.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5 : campo receptivo ============ -->
+<section class="slide" id="s5">
+  <div class="figcol">
+    <canvas id="cv5a" data-aspect="1.95"></canvas>
+    <canvas id="cv5b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la ecuaci&oacute;n de esta slide</div>
+      <div class="eq">RF<sub>l</sub> = RF<sub>l&minus;1</sub> + (k&minus;1)&middot;<big>&Pi;</big><sub>i=1..l&minus;1</sub>&nbsp;s<sub>i</sub>,&nbsp;&nbsp;&nbsp;RF<sub>0</sub> = 1<span class="eqn">(campo receptivo)</span></div>
+      <div class="eqread">cada capa con kernel k a&ntilde;ade (k&minus;1) p&iacute;xeles
+        de alcance, <b>multiplicados por el producto de strides anteriores</b>: si antes
+        hubo un pooling de stride 2, cada paso de la capa actual vale 2 p&iacute;xeles de
+        la imagen original. Con k = 3 y s = 1: RF = 3, 5, 7, 9, &hellip; (el 3 &rarr; 5
+        &rarr; 7 del deck); con poolings intercalados el crecimiento se acelera.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>n&uacute;mero de capas conv, L = <b id="r5L"></b></label>
+      <input type="range" id="sl5L" min="1" max="30" step="1" value="8">
+      <label>tama&ntilde;o de kernel, k = <b id="r5k"></b></label>
+      <input type="range" id="sl5k" min="3" max="7" step="2" value="3">
+      <label>objeto a reconocer, O = <b id="r5o"></b> p&iacute;xeles</label>
+      <input type="range" id="sl5o" min="10" max="100" step="2" value="50">
+      <label><input type="checkbox" id="ck5"> intercalar pooling 2&times;2 tras cada 2 convs</label>
+    </div>
+    <div class="readout" id="ro5"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con k = 3, s = 1 y sin pooling, sube L hasta que la curva cruce la l&iacute;nea
+        del objeto de 50 px. <span class="obs">Hacen falta 25 capas: el "para un objeto
+        de 50 px necesitas &sim;25 capas 3&times;3" del deck, calculado en vivo.</span></li>
+      <li>Activa el pooling intercalado con L = 8. <span class="obs">El campo receptivo
+        salta de 17 a 68 p&iacute;xeles: los strides multiplican el alcance de todas las
+        capas posteriores. As&iacute; es como ResNet cubre 224 px con kernels de 3.</span></li>
+      <li>Sube k a 7 sin pooling. <span class="obs">Cada capa suma 6 en vez de 2: menos
+        capas para el mismo alcance, pero (siguiente slide) muchos m&aacute;s
+        par&aacute;metros por capa. VGG demostr&oacute; en 2014 que apilar 3&times;3 sale
+        m&aacute;s barato.</span></li>
+      <li>Sube O a 100 px. <span class="obs">El punto de cruce se va a&uacute;n m&aacute;s
+        lejos: objetos m&aacute;s grandes exigen m&aacute;s profundidad o m&aacute;s
+        pooling. La profundidad de ResNet-50 no es capricho.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: una neurona de la capa 2
+        (k = 3, s = 1), &iquest;qu&eacute; ve exactamente de la imagen?</summary>
+        <div class="ans">Ve un parche 5&times;5. Su entrada es un parche 3&times;3 del
+        feature map 1, y cada una de esas 9 activaciones ve a su vez un parche 3&times;3
+        de la imagen; las 9 ventanas se solapan y su uni&oacute;n es 5&times;5. Es la
+        f&oacute;rmula: RF&#8322; = 3 + (3&minus;1)&middot;1 = 5. Por eso el detector de
+        esquinas de la slide anterior pod&iacute;a ver "m&aacute;s" que un solo kernel:
+        operaba con campo receptivo 5&times;5.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba: el campo receptivo RF<sub>l</sub> capa a
+      capa (curva dorada), la talla del objeto a reconocer (l&iacute;nea discontinua) y
+      el punto donde la red por fin "ve" el objeto completo. Abajo: el cono de
+      visi&oacute;n: una neurona de la &uacute;ltima capa arriba, y el ensanchamiento de
+      lo que alcanza a ver capa a capa hasta los p&iacute;xeles de la imagen abajo. Todo
+      sale de iterar la f&oacute;rmula del panel, con los strides de pooling si los
+      activas.</p>
+    <p><span class="hd">Juega.</span> El lector da el RF final, la instancia
+      num&eacute;rica de la f&oacute;rmula para las tres primeras capas y el n&uacute;mero
+      de capas necesario para tu objeto. Si la curva no llega, te lo dice.</p>
+    <p><span class="hd">Lee as&iacute;.</span> Piensa en la foto del lineal de Mercadona:
+      una balda vac&iacute;a ocupa 80&ndash;150 px. Una CNN de 3 capas sin pooling
+      (RF = 7) es f&iacute;sicamente incapaz de verla entera, por mucho que entrenes:
+      el campo receptivo es una cota dura de lo que la arquitectura puede
+      representar.</p>
+    <p><span class="hd">Mensaje.</span> Profundidad y pooling no solo a&ntilde;aden
+      capacidad: ensanchan lo que cada neurona puede ver. "Deep" en deep learning es,
+      para visi&oacute;n, una necesidad geom&eacute;trica.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>RF<sub>l</sub></b>: lado del cuadrado
+      de p&iacute;xeles de la imagen original que influye en una neurona de la capa l.
+      <b>&Pi;s<sub>i</sub></b>: producto de los strides de las capas anteriores ("jump").
+      <b>Cono de visi&oacute;n</b>: la pir&aacute;mide invertida de dependencias entre
+      capas.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6 : parámetros de una conv ============ -->
+<section class="slide" id="s6">
+  <div class="figcol">
+    <canvas id="cv6a" data-aspect="1.95"></canvas>
+    <canvas id="cv6b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">#params<sub>conv</sub> = (k&middot;k&middot;C<sub>in</sub> + 1)&middot;C<sub>out</sub><span class="eqn">(capa convolucional)</span></div>
+      <div class="eqread">cada uno de los C<sub>out</sub> kernels tiene
+        k&middot;k&middot;C<sub>in</sub> pesos (la &Sigma;<sub>c</sub> de la Ec. 1
+        atraviesa los canales de entrada) m&aacute;s 1 sesgo b<sub>o</sub>.
+        <b>No aparece H ni W</b>: pesos compartidos en el espacio.</div>
+      <div class="eq">#params<sub>densa</sub> = (H&middot;W&middot;C<sub>in</sub> + 1)&middot;(H&middot;W&middot;C<sub>out</sub>)<span class="eqn">(capa densa equivalente)</span></div>
+      <div class="eqread">la capa totalmente conectada que produce el mismo tensor de
+        salida H&times;W&times;C<sub>out</sub>: cada activaci&oacute;n de salida tiene su
+        propio peso hacia cada entrada. Crece como H&sup2;W&sup2;: cuarta potencia de la
+        resoluci&oacute;n.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>kernel k = <b id="r6k"></b></label>
+      <input type="range" id="sl6k" min="1" max="7" step="2" value="3">
+      <label>canales de entrada C<sub>in</sub> = <b id="r6ci"></b></label>
+      <input type="range" id="sl6ci" min="1" max="64" step="1" value="16">
+      <label>canales de salida C<sub>out</sub> = <b id="r6co"></b></label>
+      <input type="range" id="sl6co" min="1" max="128" step="1" value="32">
+      <label>resoluci&oacute;n espacial H = W = <b id="r6h"></b></label>
+      <input type="range" id="sl6h" min="8" max="64" step="4" value="32">
+    </div>
+    <div class="readout" id="ro6"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Sube H de 8 a 64 mirando las dos barras. <span class="obs">La densa gana cuatro
+        &oacute;rdenes de magnitud; la conv no se mueve ni un p&iacute;xel: H no
+        est&aacute; en su f&oacute;rmula.</span></li>
+      <li>Sube k de 3 a 7 con H = 32. <span class="obs">La conv se multiplica por
+        &asymp;5.4 (49/9). Caro, pero sigue siendo rid&iacute;culo al lado de la densa.
+        Es el trade-off de la slide del campo receptivo: k grande compra alcance pagando
+        par&aacute;metros.</span></li>
+      <li>Pon C<sub>in</sub> = 3, C<sub>out</sub> = 32, k = 3 (primera capa t&iacute;pica).
+        <span class="obs">896 par&aacute;metros: el (9&middot;3+1)&middot;32 que puedes
+        comprobar a mano. As&iacute; empieza una ResNet de verdad.</span></li>
+      <li>Mira el panel inferior y localiza d&oacute;nde se cruzar&iacute;an las curvas.
+        <span class="obs">Nunca se cruzan: para cualquier H &ge; k la conv es m&aacute;s
+        barata, y la brecha crece como H&#8308;.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; la
+        conv es un caso particular de la densa con restricciones?</summary>
+        <div class="ans">La densa equivalente tiene una matriz gigante de pesos entre
+        entrada y salida. La conv impone dos restricciones sobre esa matriz: (i)
+        <b>localidad</b>: el peso es 0 si la entrada est&aacute; a m&aacute;s de k/2 de
+        la salida; (ii) <b>compartici&oacute;n</b>: los pesos no nulos son los mismos en
+        todas las posiciones. El n&uacute;mero de par&aacute;metros libres cae de
+        (HWC<sub>in</sub>)(HWC<sub>out</sub>) a k&sup2;C<sub>in</sub>C<sub>out</sub>.
+        Menos libertad = menos datos necesarios, siempre que la restricci&oacute;n sea
+        verdadera para im&aacute;genes, y lo es.</div></details></div>
+    <p><span class="hd">Setup.</span> La f&oacute;rmula exacta de coste de una capa
+      convolucional frente a la capa densa que producir&iacute;a el mismo tensor de
+      salida. Arriba: las dos cantidades en barras (escala log), con la memoria float32
+      de cada una. Abajo: par&aacute;metros en funci&oacute;n de la resoluci&oacute;n H
+      para tus k, C<sub>in</sub>, C<sub>out</sub>: la densa es una recta de pendiente 4
+      en log-log, la conv una horizontal.</p>
+    <p><span class="hd">Juega.</span> El lector instancia ambas f&oacute;rmulas con tus
+      n&uacute;meros y da el factor de ahorro. Prueba la configuraci&oacute;n de una capa
+      intermedia de ResNet (k = 3, C<sub>in</sub> = C<sub>out</sub> = 64, H = 28) y mira
+      cu&aacute;ntos &oacute;rdenes de magnitud separan ambos mundos.</p>
+    <p><span class="hd">Lee as&iacute;.</span> Esta f&oacute;rmula es la que el equipo de
+      data science presenta a IT cuando pide presupuesto de GPU: los par&aacute;metros
+      del modelo (y su memoria) los fijan k y los canales, no la resoluci&oacute;n de las
+      c&aacute;maras del lineal.</p>
+    <p><span class="hd">Mensaje.</span> Junto con la slide 1, esta es la
+      justificaci&oacute;n cuantitativa completa de la CNN: misma operaci&oacute;n
+      (suma ponderada), dos restricciones estructurales, cuatro &oacute;rdenes de
+      magnitud menos par&aacute;metros.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>C<sub>in</sub>, C<sub>out</sub></b>:
+      canales de entrada y salida de la capa. <b>Capa densa</b>: cada salida conectada a
+      todas las entradas. <b>Tensor de activaciones</b>: H&times;W&times;C valores que
+      fluyen entre capas (eso s&iacute; crece con H).</p>
+  </div>
+</section>
+<!-- ============ SLIDE 7 : ResNet ============ -->
+<section class="slide" id="s7">
+  <div class="figcol">
+    <canvas id="cv7a" data-aspect="1.6"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">y = &#8497;(x; {W<sub>i</sub>}) + x<span class="eqn">(bloque residual, Ec. 3 de la nota)</span></div>
+      <div class="eqread">el bloque <b>ResNet</b>: la salida es lo que computan las capas
+        convolucionales &#8497; <b>m&aacute;s la propia entrada</b> (skip connection).
+        El bloque ya no aprende "la transformaci&oacute;n", aprende "la
+        correcci&oacute;n respecto a la identidad".</div>
+      <div class="eq"><span class="frac"><span class="num">&part;y</span><span class="den">&part;x</span></span> = 1 + &#8497;&prime;(x)&nbsp;&nbsp;&rArr;&nbsp;&nbsp;
+        <span class="frac"><span class="num">&part;x<sub>L</sub></span><span class="den">&part;x<sub>0</sub></span></span> = <big>&Pi;</big><sub>l=1..L</sub>&nbsp;(1 + &#8497;&prime;<sub>l</sub>)&nbsp;&nbsp;frente a&nbsp;&nbsp;<big>&Pi;</big><sub>l=1..L</sub>&nbsp;&#8497;&prime;<sub>l</sub><span class="eqn">(gradiente)</span></div>
+      <div class="eqread">al derivar, la skip a&ntilde;ade un <b>1</b> a cada factor de la
+        cadena. Sin skip, el gradiente es un producto de factores t&iacute;picamente
+        &lt;1 que se hunde exponencialmente con L (se "desvanece"); con skip, cada factor
+        ronda 1 y el gradiente llega vivo a las primeras capas.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>profundidad de la red, L = <b id="r7L"></b> capas</label>
+      <input type="range" id="sl7L" min="5" max="100" step="1" value="50">
+      <label>magnitud t&iacute;pica de &#8497;&prime;, g = <b id="r7g"></b></label>
+      <input type="range" id="sl7g" min="0.1" max="1.4" step="0.05" value="0.5">
+      <button id="bt7">nueva red (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro7"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con g = 0.5, sube L de 5 a 100 mirando la curva tinta.
+        <span class="obs">A L = 50 el gradiente plano ronda 10&#8315;&sup2;&#8313;:
+        num&eacute;ricamente muerto. La dorada (residual) aguanta en torno a
+        10&#8315;&#8308;: unos 25 &oacute;rdenes de magnitud de ventaja.</span></li>
+      <li>Sube g hacia 1.3. <span class="obs">Ahora la curva tinta EXPLOTA hacia arriba:
+        el producto de factores &gt;1 diverge. Sin skip solo existe el filo de la navaja
+        g &asymp; 1.</span></li>
+      <li>Pulsa "nueva red" varias veces con g = 0.5.
+        <span class="obs">Los factores aleatorios cambian, el patr&oacute;n nunca:
+        desvanecimiento exponencial vs estabilidad. No es mala suerte, es
+        estructura.</span></li>
+      <li>Lee el badge con L = 50, g = 0.5. <span class="obs">Marca "gradiente
+        desvanecido" para la red plana: antes de 2015 (ResNet), 50 capas eran
+        literalmente inentrenables.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute;
+        |1 + &#8497;&prime;| ronda 1 aunque |&#8497;&prime;| sea peque&ntilde;o y
+        aleatorio?</summary><div class="ans">Porque sumar 1 centra el factor en la
+        identidad: si &#8497;&prime; &sim; 0 &plusmn; 0.5, entonces 1+&#8497;&prime;
+        &sim; 1 &plusmn; 0.5, y el producto de muchos factores centrados en 1 deriva
+        lentamente (paseo aleatorio en log) en vez de hundirse exponencialmente. El
+        bloque "no hacer nada" (&#8497; = 0) da exactamente la identidad: a&ntilde;adir
+        capas nunca puede empeorar el &oacute;ptimo, que era el argumento original del
+        paper de He et al. (2015).</div></details></div>
+    <p><span class="hd">Setup.</span> Veinticinco a&ntilde;os de arquitecturas en una
+      frase: LeNet (1998, 5 capas, d&iacute;gitos de cheques), AlexNet (2012, 8 capas,
+      ImageNet), VGG (2014, 19 capas de puros 3&times;3) y el muro: m&aacute;s capas
+      empeoraban el entrenamiento. ResNet (2015) lo derriba con la skip connection. El
+      canvas simula la cadena de gradientes: para cada capa l, el m&oacute;dulo del
+      gradiente que llega desde la p&eacute;rdida (escala log), con factores
+      &#8497;&prime;<sub>l</sub> = g&middot;&epsilon;<sub>l</sub>,
+      &epsilon;<sub>l</sub> &sim; N(0,1): tinta sin skip
+      (&Pi;&#8497;&prime;), dorado con skip (&Pi;(1+&#8497;&prime;)).</p>
+    <p><span class="hd">Juega.</span> El producto se calcula de verdad sobre los factores
+      sorteados: el lector da el gradiente que llega a la capa 1 en ambos mundos y su
+      cociente, que con L = 50 y g = 0.5 supera los 20 &oacute;rdenes de magnitud.</p>
+    <p><span class="hd">Lee as&iacute;.</span> La zona g &lt; 1 es el desvanecimiento
+      (curva tinta cayendo en recta: exponencial en escala log); la zona g &gt; 1 es la
+      explosi&oacute;n. La dorada apenas depende de g: esa indiferencia es lo que compra
+      la skip.</p>
+    <p><span class="hd">Mensaje.</span> ResNet-50/101/152 existen porque
+      y = &#8497;(x)+x convierte un producto que se muere en un producto que sobrevive.
+      Es la arquitectura por defecto del transfer learning de la siguiente slide, y la
+      que fine-tunear&aacute;s en la pr&aacute;ctica.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Skip connection</b>: el "+x" que
+      sortea el bloque. <b>Gradiente desvanecido</b>: producto de jacobianos &lt;1 que
+      decae exponencialmente con la profundidad. <b>&#8497;&prime;</b>: derivada local
+      del bloque (aqu&iacute; un escalar de juguete; en la red real, un jacobiano).</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8 : transfer learning ============ -->
+<section class="slide" id="s8">
+  <div class="figcol">
+    <canvas id="cv8a" data-aspect="1.95"></canvas>
+    <canvas id="cv8b" data-aspect="1.95"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">&theta;&#770; = arg&thinsp;m&iacute;n<sub>&theta;<sub>h</sub></sub>&nbsp;<span class="frac"><span class="num">1</span><span class="den">n</span></span> <big>&Sigma;</big><sub>i=1..n</sub>&nbsp;&ell;<big>(</big>f<sub>&theta;<sub>b</sub>,&theta;<sub>h</sub></sub>(x<sub>i</sub>),&thinsp;y<sub>i</sub><big>)</big>,&nbsp;&nbsp;&theta;<sub>b</sub> = &theta;<sub>b</sub><sup>(0)</sup> fijo<span class="eqn">(Ec. 4 de la nota)</span></div>
+      <div class="eqread">transfer learning, r&eacute;gimen <b>feature extraction</b>: el
+        backbone &theta;<sub>b</sub> (preentrenado en ImageNet) se congela y solo se
+        minimiza sobre la cabeza &theta;<sub>h</sub>. Aqu&iacute; &ell; es la
+        log-p&eacute;rdida log&iacute;stica y la cabeza se entrena por descenso de
+        gradiente en tu navegador, de verdad.</div>
+      <div class="eq">coste desde cero &asymp; 24&thinsp;h &times; 3.0&thinsp;$/h = <span class="gold">72&thinsp;$</span>;&nbsp;&nbsp;&nbsp;coste con transfer &asymp; 5&thinsp;min &times; 0&thinsp;$/h = <span class="gold">0&thinsp;$</span><span class="eqn">(c&aacute;lculo del deck)</span></div>
+      <div class="eqread">el c&aacute;lculo de coste del deck: ResNet-50 desde cero pide
+        &sim;10&#8310; im&aacute;genes y una A100 un d&iacute;a entero; con el backbone
+        congelado bastan &sim;10&sup3; im&aacute;genes y la T4 gratuita de Colab. Hugging
+        Face Hub es donde ese trabajo de 72&thinsp;$ se publica para que lo reuses.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>fotos etiquetadas disponibles, n = <b id="r8n"></b></label>
+      <input type="range" id="sl8n" min="10" max="640" step="10" value="80">
+      <button id="bt8">nueva muestra (otra semilla)</button>
+    </div>
+    <div class="readout" id="ro8"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon n = 40 (lo que una pyme etiqueta en una tarde).
+        <span class="obs">La cabeza sobre features preentrenadas ronda ya el 85&ndash;90%
+        de acierto en test; desde cero apenas supera el azar.</span></li>
+      <li>Sube n despacio hasta 640. <span class="obs">La curva "desde cero" mejora
+        (de &asymp;57% a &asymp;69%) pero se estanca lejos de la dorada: con features
+        pobres, m&aacute;s datos no bastan. En la realidad, reentrenar el backbone
+        entero solo alcanza al transfer con cientos de miles de fotos.</span></li>
+      <li>Pulsa "nueva muestra" varias veces con n = 40 y luego con n = 320.
+        <span class="obs">Con n peque&ntilde;o las accuracies bailan mucho m&aacute;s:
+        menos datos = m&aacute;s varianza, en ambos mundos.</span></li>
+      <li>Mira el panel derecho. <span class="obs">La frontera (recta) que aprende la
+        cabeza separa las dos nubes: en el espacio de features preentrenadas el problema
+        es casi lineal. Eso es lo que ImageNet te regala.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute;
+        "desde cero" necesita m&aacute;s datos si ambos modelos usan la misma regla de
+        aprendizaje?</summary><div class="ans">Porque estima m&aacute;s par&aacute;metros
+        a partir de features peores. Aqu&iacute; la cabeza preentrenada ajusta 3
+        n&uacute;meros sobre 2 features donde las clases ya est&aacute;n separadas;
+        "desde cero" ajusta 17 sobre 16 dimensiones donde la se&ntilde;al es
+        d&eacute;bil y el resto es ruido, as&iacute; que con n peque&ntilde;o memoriza
+        ruido (sobreajuste). En la pr&aacute;ctica real la brecha es mucho mayor: 25.5M
+        de par&aacute;metros de ResNet-50 contra los miles de la cabeza. Regla del deck:
+        con menos de 50&thinsp;000 im&aacute;genes, transfer casi siempre.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Clasificador "prenda OK / prenda con defecto" para
+      el control de calidad de Inditex. Simulo el dilema de la Ec. (4): la misma cabeza
+      log&iacute;stica entrenada (i) sobre las 2 features que da un backbone
+      preentrenado, donde las clases forman dos nubes separadas, y (ii) "desde cero",
+      sobre 16 features crudas con se&ntilde;al d&eacute;bil enterrada en ruido. Arriba:
+      accuracy en un test fijo de 500 fotos en funci&oacute;n de n (eje log); el
+      marcador es tu n actual. Abajo: tus n puntos de entrenamiento en el espacio de
+      features preentrenadas y la frontera que la cabeza acaba de aprender por descenso
+      de gradiente (200 iteraciones, ejecutadas al mover el slider).</p>
+    <p><span class="hd">Juega.</span> Cada posici&oacute;n del slider lanza los
+      entrenamientos de verdad: si el navegador tarda una fracci&oacute;n de segundo, es
+      el gradiente trabajando. La curva completa se recalcula al cambiar de semilla.</p>
+    <p><span class="hd">Lee as&iacute;.</span> Los tres reg&iacute;menes de la nota se
+      leen sobre esta gr&aacute;fica: feature extraction es lo simulado; fine-tuning
+      ligero (descongelar las &uacute;ltimas capas con &eta;<sub>b</sub> =
+      &eta;<sub>h</sub>/10) interpola entre ambas curvas; fine-tuning completo converge
+      a "desde cero pero con buena inicializaci&oacute;n" y solo compensa con
+      &ge;10&#8308; ejemplos.</p>
+    <p><span class="hd">Mensaje.</span> La receta de 20 l&iacute;neas del deck
+      (AutoModelForImageClassification con num_labels=10, backbone congelado, Trainer)
+      es exactamente esta slide con ResNet-50 de backbone: hereda lo caro, entrena lo
+      barato.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Backbone &theta;<sub>b</sub></b>:
+      todas las capas conv preentrenadas. <b>Cabeza &theta;<sub>h</sub></b>: la capa
+      final espec&iacute;fica de tu problema. <b>ImageNet / &#119967;<sub>src</sub></b>: el
+      dataset fuente del preentrenamiento. <b>Feature extraction</b>: backbone
+      congelado, solo cabeza.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9 : caso retail ============ -->
+<section class="slide" id="s9">
+  <div class="figcol">
+    <canvas id="cv9a" data-aspect="1.85"></canvas>
+    <canvas id="cv9b" data-aspect="2.2"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">p<sub>c</sub> = <span class="frac"><span class="num">e<sup>z<sub>c</sub></sup></span><span class="den">&Sigma;<sub>d</sub>&nbsp;e<sup>z<sub>d</sub></sup></span></span>,&nbsp;&nbsp;decisi&oacute;n: auto si m&aacute;x<sub>c</sub>&thinsp;p<sub>c</sub> &ge; &tau;, humano si no<span class="eqn">(softmax + umbral)</span></div>
+      <div class="eqread">la CNN devuelve un <b>softmax</b> sobre las categor&iacute;as de
+        prenda (las p<sub>c</sub> suman 1, compru&eacute;balo en el lector). El umbral de
+        confianza &tau; decide qu&eacute; fotos se etiquetan solas y cu&aacute;les van a
+        revisi&oacute;n humana.</div>
+      <div class="eq">&ell;<sub>cost</sub>(&#375;, y) = c<sub>FN</sub>&middot;y&thinsp;(1&minus;&#375;) + c<sub>FP</sub>&middot;(1&minus;y)&thinsp;&#375;<span class="eqn">(p&eacute;rdida ponderada por coste, nota &sect;6)</span></div>
+      <div class="eqread">la m&eacute;trica de producci&oacute;n no es la accuracy del
+        benchmark: es el <b>coste operacional</b> de cada tipo de error. Aqu&iacute; lo
+        instanciamos: etiqueta auto err&oacute;nea = devoluci&oacute;n
+        (c<sub>err</sub> &euro;), foto enviada a humano = 0.80 &euro; de revisi&oacute;n.
+        El coste total es la funci&oacute;n que el slider &tau; minimiza.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>umbral de confianza &tau; = <b id="r9t"></b></label>
+      <input type="range" id="sl9t" min="0.34" max="0.99" step="0.01" value="0.70">
+      <label>solape entre categor&iacute;as (dificultad), &sigma; = <b id="r9s"></b></label>
+      <input type="range" id="sl9s" min="0.5" max="1.3" step="0.02" value="0.8">
+      <label>coste de una devoluci&oacute;n por mal etiquetado, c<sub>err</sub> = <b id="r9c"></b> &euro;</label>
+      <input type="range" id="sl9c" min="4" max="30" step="1" value="12">
+      <button id="bt9">nuevo lote de 600 fotos</button>
+    </div>
+    <div class="readout" id="ro9"></div>
+    <table class="live"><thead><tr><th>verdad \ pred.</th><th>camiseta</th><th>sudadera</th><th>vestido</th><th>&rarr; humano</th></tr></thead>
+      <tbody id="conf9"></tbody></table>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon &tau; = 0.34 (todo autom&aacute;tico). <span class="obs">Cobertura
+        &asymp;100% pero unos 70 errores: cada uno es una devoluci&oacute;n de 12 &euro;.
+        Mira la matriz: la mayor&iacute;a de los errores pasan por la sudadera, la clase
+        intermedia que solapa con las otras dos.</span></li>
+      <li>Sube &tau; despacio hacia 0.95 mirando el panel inferior.
+        <span class="obs">El coste primero baja (quitas errores caros) y luego sube
+        (env&iacute;as a revisi&oacute;n fotos que iban bien): hay un &tau;* &oacute;ptimo
+        marcado en la curva.</span></li>
+      <li>Sube la dificultad &sigma; a 1.2. <span class="obs">Las nubes se mezclan, el
+        &tau;* &oacute;ptimo se desplaza hacia arriba y la franja blanca (zona de duda)
+        se traga m&aacute;s fotos: con un modelo peor conviene delegar m&aacute;s en
+        humanos.</span></li>
+      <li>Baja c<sub>err</sub> a 4 &euro; (el error sale barato).
+        <span class="obs">&tau;* cae: si equivocarse cuesta poco, compensa automatizar
+        casi todo. El umbral &oacute;ptimo es una decisi&oacute;n de negocio, no de
+        ML.</span></li></ol>
+      <details class="check"><summary>Comprueba que entiendes: &iquest;por qu&eacute; el
+        coste &oacute;ptimo no est&aacute; en &tau; = 0.34 ni en &tau; = 0.99?</summary>
+        <div class="ans">Porque los dos extremos pagan costes distintos: con &tau;
+        m&iacute;nimo pagas todas las devoluciones (errores &times; c<sub>err</sub>);
+        con &tau; m&aacute;ximo pagas 600 &times; 0.80 &euro; de revisi&oacute;n humana,
+        como si no hubiera modelo. El &oacute;ptimo equilibra el coste marginal de un
+        error evitado contra el de una revisi&oacute;n a&ntilde;adida, y por eso depende
+        de c<sub>err</sub>, de c<sub>rev</sub> y de la calidad del modelo (&sigma;).
+        Es exactamente la l&oacute;gica de &ell;<sub>cost</sub> de la nota: la accuracy
+        no aparece por ning&uacute;n lado.</div></details></div>
+    <p><span class="hd">Setup.</span> Cat&aacute;logo autom&aacute;tico de moda
+      (Inditex): una ResNet fine-tuneada etiqueta cada foto como camiseta, sudadera o
+      vestido. Genero 600 fotos sint&eacute;ticas en un espacio de 2 features (silueta,
+      textura), con nubes gaussianas por categor&iacute;a; el clasificador calcula
+      logits por distancia a cada centro y un softmax de verdad. Arriba: el mapa de
+      decisi&oacute;n: color de fondo = clase predicha, franja blanca = zona enviada a
+      humano (m&aacute;x p<sub>c</sub> &lt; &tau;); los puntos son las fotos (color =
+      categor&iacute;a real, hueco = enviado a humano). Abajo: coste total en euros en
+      funci&oacute;n de &tau;, con tu &tau; (punto dorado) y el &oacute;ptimo &tau;*
+      (rombo).</p>
+    <p><span class="hd">Juega.</span> El lector da cobertura, accuracy de lo
+      autom&aacute;tico, errores, coste total y la comparaci&oacute;n contra "todo
+      humano" (480 &euro;) y "todo auto". La matriz de confusi&oacute;n se rellena solo
+      con las fotos decididas autom&aacute;ticamente, m&aacute;s la columna de
+      derivadas a humano.</p>
+    <p><span class="hd">Lee as&iacute;.</span> La diagonal de la matriz es dinero
+      ahorrado; lo de fuera de la diagonal son devoluciones; la &uacute;ltima columna es
+      el sueldo del revisor. Tres n&uacute;meros del softmax convertidos en una cuenta
+      de explotaci&oacute;n.</p>
+    <p><span class="hd">Mensaje.</span> El entregable del d&iacute;a no es "una CNN con
+      92% de accuracy": es una pol&iacute;tica (modelo + umbral &tau;*) que minimiza
+      euros. As&iacute; se presenta un proyecto de visi&oacute;n a un comit&eacute; de
+      direcci&oacute;n.</p>
+    <p class="miniglos"><b>T&eacute;rminos.</b> <b>Softmax</b>: convierte logits en
+      probabilidades que suman 1. <b>Cobertura</b>: fracci&oacute;n de fotos decididas
+      sin humano. <b>Matriz de confusi&oacute;n</b>: cu&aacute;ntas fotos de la clase
+      verdadera j acaban predichas como &#8467;. <b>&tau;*</b>: umbral que minimiza el
+      coste total.</p>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10 : glosario ============ -->
+<section class="slide" id="s10">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="glosgrid" id="glos"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11 : síntesis ============ -->
+<section class="slide" id="s11">
+  <div class="figcol" style="grid-column:1/3">
+    <div class="pipe">
+      <div class="pipebox"><div><div class="pname">1 &mdash; Por qu&eacute; no un MLP</div>
+          <div class="pmap">Slide: MLP vs CNN</div></div>
+        <div class="pq">"Aplanar la imagen cuesta D&middot;H&middot;W&middot;C pesos solo en la primera capa (1.5&middot;10&#8312; a 224px) y rompe la estructura espacial. Localidad + pesos compartidos: la conv cuesta (k&sup2;C<sub>in</sub>+1)C<sub>out</sub>, independiente de la resoluci&oacute;n."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">2 &mdash; La convoluci&oacute;n y sus perillas</div>
+          <div class="pmap">Slides: Convoluci&oacute;n &middot; Pad &amp; stride &middot; Pooling</div></div>
+        <div class="pq">"Y<sub>i,j,o</sub> = &Sigma;&Sigma;&Sigma; X&middot;K + b: una suma ponderada local que t&uacute; mismo has calculado celda a celda. El tama&ntilde;o de salida es o = &lfloor;(i+2p&minus;k)/s&rfloor;+1, y el pooling compra invariancia a peque&ntilde;as traslaciones perdiendo resoluci&oacute;n a prop&oacute;sito."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">3 &mdash; Jerarqu&iacute;a y campo receptivo</div>
+          <div class="pmap">Slides: Jerarqu&iacute;a &middot; Campo recep.</div></div>
+        <div class="pq">"Dos convs encadenadas detectan lo que ninguna puede sola (borde &rarr; esquina), y RF<sub>l</sub> = RF<sub>l&minus;1</sub> + (k&minus;1)&Pi;s<sub>i</sub> dice cu&aacute;ntas capas hacen falta para ver un objeto entero: &sim;25 capas 3&times;3 para 50 px. La profundidad es geometr&iacute;a, no capricho."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">4 &mdash; Arquitecturas: LeNet &rarr; ResNet</div>
+          <div class="pmap">Slide: ResNet</div></div>
+        <div class="pq">"LeNet (1998) &rarr; AlexNet (2012) &rarr; VGG (2014) &rarr; el muro del gradiente desvanecido &rarr; ResNet (2015): y = &#8497;(x)+x convierte &Pi;&#8497;&prime; (que muere) en &Pi;(1+&#8497;&prime;) (que sobrevive) y desbloquea las 50&ndash;152 capas."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">5 &mdash; Transfer learning con Hugging Face</div>
+          <div class="pmap">Slide: Transfer</div></div>
+        <div class="pq">"&theta; = (&theta;<sub>b</sub>, &theta;<sub>h</sub>): congela el backbone de ImageNet, entrena la cabeza con tus &sim;10&sup3; fotos. 72&thinsp;$ de preentrenamiento heredados gratis del Hub; con &lt;50k im&aacute;genes, transfer casi siempre."</div></div>
+      <div class="pipearrow">&darr;</div>
+      <div class="pipebox"><div><div class="pname">6 &mdash; La decisi&oacute;n de negocio</div>
+          <div class="pmap">Slide: Caso retail</div></div>
+        <div class="pq">"Softmax + umbral &tau; + costes (c<sub>err</sub>, c<sub>rev</sub>) = pol&iacute;tica auto/humano con coste en euros. La m&eacute;trica de producci&oacute;n es &ell;<sub>cost</sub>, no la accuracy del benchmark: el entregable es &tau;*, no un porcentaje."</div></div>
+    </div>
+    <p style="margin-top:16px;font-size:0.95em"><span class="hd">En una frase.</span>
+      La CNN gana en im&aacute;genes porque impone los sesgos inductivos correctos
+      (localidad, pesos compartidos, jerarqu&iacute;a), ResNet permite apilarlos a la
+      profundidad que el campo receptivo exige, el transfer learning te regala todo ese
+      aprendizaje ya hecho, y el umbral de confianza lo convierte en euros: de los
+      p&iacute;xeles a la decisi&oacute;n de retail.</p>
+  </div>
+</section>
+
+<div id="footerL">Garrido-Merch&aacute;n &mdash; ecgarrido@comillas.edu &mdash; Deep Learning para Business Analytics &mdash; D&iacute;a 04 &middot; CNN para visi&oacute;n y retail</div>
+<div id="footer"></div>
+<div id="arrows">
+  <button id="prev">&larr; anterior</button><button id="next">siguiente &rarr;</button>
+</div>
+<script>
+"use strict";
+/* ================= PALETTE ================= */
+const INK="#1A1A1A", GOLD="#B8860B", GOLDD="#8C6508", GOLDP="#F5EBD3",
+      MUTE="#8A8A8A", RULE="#D9C28A";
+
+/* ================= MATH CORE (DOM-free) ================= */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296;};}
+function randn(rng){let u=0;while(u===0)u=rng();const v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function fmtG(x,d){return Number(x.toPrecision(d||3)).toString();}
+function fmtCell(v){if(Number.isInteger(v))return String(v);
+  return Math.abs(v)<1?v.toFixed(2):v.toFixed(1);}
+function fmtBig(x){ // 1.54e8 -> "1.54·10^8" (HTML)
+  if(x<1e4)return String(Math.round(x));
+  const e=Math.floor(Math.log10(x)),m=x/Math.pow(10,e);
+  return m.toFixed(2)+"&middot;10<sup>"+e+"</sup>";}
+function sigmoid(z){z=Math.max(-30,Math.min(30,z));return 1/(1+Math.exp(-z));}
+
+/* convolución 2D válida (sin padding, stride 1) — Ec. (1) con C_in=1 */
+function conv2d(img,ker){
+  const H=img.length,W=img[0].length,k=ker.length,oH=H-k+1,oW=W-k+1,out=[];
+  for(let i=0;i<oH;i++){const row=[];
+    for(let j=0;j<oW;j++){let s=0;
+      for(let u=0;u<k;u++)for(let v=0;v<k;v++)s+=img[i+u][j+v]*ker[u][v];
+      row.push(s);}
+    out.push(row);}
+  return out;}
+/* conv 2D con DOS canales de entrada (Ec. 1 con C_in=2) y umbral b2, + ReLU */
+function conv2two(A,B,WA,WB,b2){
+  const H=A.length-2,W=A[0].length-2,out=[];
+  for(let i=0;i<H;i++){const row=[];
+    for(let j=0;j<W;j++){let s=-b2;
+      for(let u=0;u<3;u++)for(let v=0;v<3;v++)
+        s+=A[i+u][j+v]*WA[u][v]+B[i+u][j+v]*WB[u][v];
+      row.push(Math.max(0,s));}
+    out.push(row);}
+  return out;}
+function reluMat(M){return M.map(r=>r.map(v=>Math.max(0,v)));}
+function poolMat(M,kp,useAvg){
+  const oH=Math.floor(M.length/kp),oW=Math.floor(M[0].length/kp),out=[];
+  for(let i=0;i<oH;i++){const row=[];
+    for(let j=0;j<oW;j++){
+      let m=-Infinity,s=0;
+      for(let u=0;u<kp;u++)for(let v=0;v<kp;v++){
+        const x=M[i*kp+u][j*kp+v];if(x>m)m=x;s+=x;}
+      row.push(useAvg?s/(kp*kp):m);}
+    out.push(row);}
+  return out;}
+function meanAbs(M){let s=0,n=0;for(const r of M)for(const v of r){s+=Math.abs(v);n++;}
+  return n?s/n:0;}
+function meanAbsDiff(A,B){let s=0,n=0;
+  for(let i=0;i<A.length;i++)for(let j=0;j<A[0].length;j++){
+    s+=Math.abs(A[i][j]-B[i][j]);n++;}
+  return n?s/n:0;}
+function argmaxMat(M){let bi=0,bj=0,bv=-Infinity;
+  for(let i=0;i<M.length;i++)for(let j=0;j<M[0].length;j++)
+    if(M[i][j]>bv){bv=M[i][j];bi=i;bj=j;}
+  return {i:bi,j:bj,v:bv};}
+/* regresión logística por descenso de gradiente (cabeza de transfer) */
+function trainLogit(X,y,iters,lr,l2){
+  const n=X.length,d=X[0].length,w=new Array(d+1).fill(0);
+  for(let it=0;it<iters;it++){
+    const g=new Array(d+1).fill(0);
+    for(let i=0;i<n;i++){
+      let z=w[d];for(let j=0;j<d;j++)z+=w[j]*X[i][j];
+      const e=sigmoid(z)-y[i];
+      for(let j=0;j<d;j++)g[j]+=e*X[i][j];
+      g[d]+=e;}
+    for(let j=0;j<=d;j++)w[j]-=lr*(g[j]/n+l2*w[j]);}
+  return w;}
+function accLogit(X,y,w){const d=X[0].length;let ok=0;
+  for(let i=0;i<X.length;i++){
+    let z=w[d];for(let j=0;j<d;j++)z+=w[j]*X[i][j];
+    if((z>0?1:0)===y[i])ok++;}
+  return ok/X.length;}
+/* softmax de verdad */
+function softmax(z){const m=Math.max(...z);const e=z.map(v=>Math.exp(v-m));
+  const s=e.reduce((a,b)=>a+b,0);return e.map(v=>v/s);}
+/* campo receptivo iterado */
+function rfSeq(L,k,pool){
+  let rf=1,jump=1;const arr=[];
+  for(let l=1;l<=L;l++){
+    rf+=(k-1)*jump;arr.push(rf);
+    if(pool&&l%2===0){rf+=jump;jump*=2;}}
+  return arr;}
+/* parámetros */
+function mlpParams(R,C,D){return D*R*R*C+D;}
+function cnnParams(C){return (9*C+1)*32+(9*32+1)*64+(9*64+1)*128+(128+1)*10;}
+function convParams(k,ci,co){return (k*k*ci+1)*co;}
+function denseParams(h,ci,co){return (h*h*ci+1)*(h*h*co);}
+function outSize(i,k,p,s){const t=i+2*p;return t>=k?Math.floor((t-k)/s)+1:0;}
+/* ================= END MATH CORE ================= */
+
+/* ================= plotting helpers ================= */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const wCss=cv.parentElement.clientWidth;
+  const asp=parseFloat(cv.dataset.aspect)||1.8;
+  const hCss=wCss/asp;
+  cv.style.height=hCss+"px";
+  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx:ctx,W:wCss,H:hCss};
+}
+function axes(ctx,fr,opt){
+  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
+  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
+  ctx.save();
+  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
+  ctx.font="11px Georgia, serif";
+  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
+  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
+  ctx.textAlign="center";ctx.textBaseline="top";
+  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
+    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
+    ctx.fillText(lb,fr.x0-6,Y(v));});
+  if(opt.xlab){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(opt.xlab,fr.x0+fr.w/2,fr.y0+fr.h+32);}
+  if(opt.ylab){ctx.save();ctx.translate(fr.x0-40,fr.y0+fr.h/2);
+    ctx.rotate(-Math.PI/2);ctx.textAlign="center";ctx.textBaseline="top";
+    ctx.fillText(opt.ylab,0,0);ctx.restore();}
+  if(opt.title){ctx.textAlign="left";ctx.textBaseline="bottom";
+    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0,fr.y0-5);}
+  ctx.restore();
+  return {X:X,Y:Y};
+}
+function polyline(ctx,pts,color,lw,dash){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.5;
+  if(dash)ctx.setLineDash(dash);
+  ctx.beginPath();let first=true;
+  for(const p of pts){if(!isFinite(p[0])||!isFinite(p[1])){first=true;continue;}
+    if(first){ctx.moveTo(p[0],p[1]);first=false;}else ctx.lineTo(p[0],p[1]);}
+  ctx.stroke();ctx.restore();
+}
+function rampColor(t){
+  t=Math.max(0,Math.min(1,t));
+  const stops=[[255,255,255],[245,235,211],[184,134,11],[61,44,4]];
+  const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;
+  const c=stops[i].map((v,k)=>Math.round(v+f*(stops[i+1][k]-v)));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+/* dibuja una matriz como rejilla coloreada con valores */
+function drawMat(ctx,M,x0,y0,cell,opt){
+  opt=opt||{};
+  const H=M.length,W=M[0].length;
+  let vmin=opt.vmin,vmax=opt.vmax;
+  if(vmin===undefined){vmin=Infinity;vmax=-Infinity;
+    for(const r of M)for(const v of r){if(v<vmin)vmin=v;if(v>vmax)vmax=v;}
+    if(vmin===vmax){vmin-=1;vmax+=1;}}
+  for(let i=0;i<H;i++)for(let j=0;j<W;j++){
+    const v=M[i][j],t=(v-vmin)/(vmax-vmin);
+    ctx.fillStyle=rampColor(t);
+    ctx.fillRect(x0+j*cell,y0+i*cell,cell,cell);
+    ctx.strokeStyle="#ddd";ctx.lineWidth=0.7;
+    ctx.strokeRect(x0+j*cell,y0+i*cell,cell,cell);
+    if(opt.vals!==false&&cell>=16){
+      ctx.fillStyle=t>0.62?"#fff":INK;
+      ctx.font=Math.min(11,cell*0.42)+"px Georgia,serif";
+      ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.fillText(fmtCell(v),x0+j*cell+cell/2,y0+i*cell+cell/2);}}
+  if(opt.label){ctx.fillStyle=INK;ctx.font="bold 11px Georgia,serif";
+    ctx.textAlign="left";ctx.textBaseline="bottom";
+    ctx.fillText(opt.label,x0,y0-5);}
+}
+function frameCells(ctx,x0,y0,cell,i,j,h,w,color,lw){
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||2.4;
+  ctx.strokeRect(x0+j*cell,y0+i*cell,cell*w,cell*h);ctx.restore();}
+
+/* ================= navigation ================= */
+const SECTIONS=["MLP vs CNN","Convolución","Pad & stride","Pooling","Jerarquía",
+  "Campo recep.","Parámetros","ResNet","Transfer","Caso retail","Glosario","Síntesis"];
+const TITLES=[
+ "Un MLP sobre píxeles explota con la resolución; una CNN ni se entera.",
+ "La convolución es una suma ponderada local: el mismo kernel 3×3 recorre toda la imagen.",
+ "Padding y stride fijan el tamaño de salida: o = ⌊(i+2p−k)/s⌋+1.",
+ "El pooling pierde resolución a propósito y compra invariancia a pequeñas traslaciones.",
+ "Dos convoluciones encadenadas componen detectores: de bordes a esquinas.",
+ "El campo receptivo crece con la profundidad: ver objetos grandes exige apilar capas.",
+ "Una capa conv cuesta (k²·C_in+1)·C_out parámetros, sea cual sea la resolución.",
+ "La skip connection de ResNet mantiene vivo el gradiente en redes muy profundas.",
+ "Transfer learning: hereda el backbone preentrenado y entrena solo la cabeza.",
+ "Caso retail: el umbral de confianza convierte el softmax en euros.",
+ "Glosario: todos los símbolos del día, en una página y en cristiano.",
+ "De los píxeles a la decisión de negocio: el pipeline CNN completo del Día 04."];
+let cur=0;const N=12;
+const nav=document.getElementById("navstrip");
+SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
+  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
+function go(i){
+  cur=(i+N)%N;
+  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
+  document.getElementById("slidetitle").textContent=TITLES[cur];
+  document.getElementById("footer").textContent=(cur+1)+" / "+N;
+  window.scrollTo(0,0);
+  if(updaters[cur])updaters[cur](true);
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
+window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
+const updaters={};
+</script>
+
+<script>
+"use strict";
+/* ================= SLIDE 0 : por qué no un MLP ================= */
+(function(){
+  const slr=document.getElementById("sl0r"),sld=document.getElementById("sl0d"),
+        slc=document.getElementById("sl0c");
+  slr.oninput=upd;sld.oninput=upd;slc.oninput=upd;
+  function upd(){
+    const R=+slr.value,D=+sld.value,C=+slc.value;
+    document.getElementById("r0r").textContent=R;
+    document.getElementById("r0d").textContent=D;
+    document.getElementById("r0c").textContent=C;
+    const pm=mlpParams(R,C,D),pc=cnnParams(C);
+    const mbM=pm*4/1048576,mbC=pc*4/1048576;
+    document.getElementById("ro0").innerHTML=
+      "MLP (1.ª capa): <b>"+fmtBig(pm)+"</b> pesos ("+fmtG(mbM,3)+" MB) &nbsp;&middot;&nbsp; "+
+      "<span class='gold'>CNN completa: "+fmtBig(pc)+" pesos ("+fmtG(mbC,3)+" MB)</span>"+
+      "<br>factor de ahorro: <span class='gold'>&times;"+fmtBig(pm/pc)+"</span>";
+    /* panel a: curvas params vs R (log y) */
+    let c=fitCanvas(document.getElementById("cv0a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:28,xmax:512,ymin:4,ymax:9.6,
+      xticks:[28,128,224,320,448],
+      yticks:[[4,"10⁴"],[5,"10⁵"],[6,"10⁶"],[7,"10⁷"],[8,"10⁸"],[9,"10⁹"]],
+      xlab:"resolución R (imagen R×R×C)",ylab:"n.º de parámetros",
+      title:"Parámetros frente a resolución: MLP (tinta) vs CNN (dorado)"});
+    const ptsM=[],ptsC=[];
+    for(let r=28;r<=512;r+=4){
+      ptsM.push([ax.X(r),ax.Y(Math.log10(mlpParams(r,C,D)))]);
+      ptsC.push([ax.X(r),ax.Y(Math.log10(cnnParams(C)))]);}
+    polyline(c.ctx,ptsM,INK,2);
+    polyline(c.ctx,ptsC,GOLD,2.4);
+    c.ctx.fillStyle=INK;c.ctx.beginPath();
+    c.ctx.arc(ax.X(R),ax.Y(Math.log10(pm)),4.5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(R),ax.Y(Math.log10(pc)),4.5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("MLP, D="+D,ax.X(300),ax.Y(Math.log10(mlpParams(300,C,D)))-8);
+    c.ctx.fillStyle=GOLDD;
+    c.ctx.fillText("CNN 32-64-128",ax.X(300),ax.Y(Math.log10(pc))-8);
+    /* panel b: barras a la configuración actual */
+    c=fitCanvas(document.getElementById("cv0b"));
+    const fr2={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const ax2=axes(c.ctx,fr2,{xmin:0,xmax:1,ymin:3,ymax:9.6,
+      xticks:[],yticks:[[3,"10³"],[5,"10⁵"],[7,"10⁷"],[9,"10⁹"]],
+      ylab:"parámetros (log)",
+      title:"Tu configuración actual, en barras"});
+    const bw=fr2.w*0.22;
+    const bars=[[0.28,Math.log10(pm),INK,"MLP "+fmtG(mbM,3)+" MB"],
+                [0.72,Math.log10(pc),GOLD,"CNN "+fmtG(mbC,3)+" MB"]];
+    bars.forEach(b=>{
+      const x=fr2.x0+b[0]*fr2.w-bw/2,y=ax2.Y(b[1]);
+      c.ctx.fillStyle=b[2];
+      c.ctx.fillRect(x,y,bw,fr2.y0+fr2.h-y);
+      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
+      c.ctx.textBaseline="bottom";c.ctx.fillText(b[3],x+bw/2,y-4);});
+  }
+  updaters[0]=upd;
+})();
+
+/* ================= SLIDE 1 : convolución a mano ================= */
+(function(){
+  const KV=[[1,0,-1],[1,0,-1],[1,0,-1]],
+        KS=[[1,0,-1],[2,0,-2],[1,0,-1]],
+        KH=[[1,1,1],[0,0,0],[-1,-1,-1]],
+        KB=[[1/9,1/9,1/9],[1/9,1/9,1/9],[1/9,1/9,1/9]],
+        KI=[[0,0,0],[0,1,0],[0,0,0]];
+  function freshImg(){const img=[];
+    for(let i=0;i<8;i++){const r=[];for(let j=0;j<8;j++)r.push(j<4?1:0);img.push(r);}
+    return img;}
+  let img=freshImg(),ker=KV.map(r=>r.slice());
+  const cv=document.getElementById("cv1a"),slp=document.getElementById("sl1p");
+  let geo=null;
+  slp.oninput=upd;
+  document.getElementById("bt1v").onclick=()=>{ker=KV.map(r=>r.slice());upd();};
+  document.getElementById("bt1s").onclick=()=>{ker=KS.map(r=>r.slice());upd();};
+  document.getElementById("bt1h").onclick=()=>{ker=KH.map(r=>r.slice());upd();};
+  document.getElementById("bt1b").onclick=()=>{ker=KB.map(r=>r.slice());upd();};
+  document.getElementById("bt1i").onclick=()=>{ker=KI.map(r=>r.slice());upd();};
+  document.getElementById("bt1r").onclick=()=>{img=freshImg();upd();};
+  cv.addEventListener("click",e=>{
+    if(!geo)return;
+    const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    const ji=Math.floor((x-geo.xI)/geo.ci),ii=Math.floor((y-geo.yI)/geo.ci);
+    if(ii>=0&&ii<8&&ji>=0&&ji<8){img[ii][ji]=img[ii][ji]?0:1;upd();return;}
+    const jk=Math.floor((x-geo.xK)/geo.ck),ik=Math.floor((y-geo.yK)/geo.ck);
+    if(ik>=0&&ik<3&&jk>=0&&jk<3){
+      const seq=[-2,-1,0,1,2];let idx=seq.indexOf(Math.round(ker[ik][jk]));
+      if(idx<0)idx=2;
+      ker[ik][jk]=seq[(idx+1)%5];upd();}
+  });
+  function upd(){
+    const pos=+slp.value,pi=Math.floor(pos/6),pj=pos%6;
+    document.getElementById("r1p").textContent=pos+" → Y("+pi+","+pj+")";
+    const out=conv2d(img,ker);
+    let om=1;for(const r of out)for(const v of r)om=Math.max(om,Math.abs(v));
+    const c=fitCanvas(cv);
+    const ci=Math.min((c.W-96)/19,(c.H-46)/8);
+    const xI=10,yI=30,xK=xI+8*ci+38,ck=ci,
+          yK=yI+(8*ci-3*ck)/2,co=(8*ci)/6,xO=xK+3*ck+38,yO=yI;
+    geo={xI:xI,yI:yI,ci:ci,xK:xK,yK:yK,ck:ck};
+    drawMat(c.ctx,img,xI,yI,ci,{vmin:0,vmax:1,label:"imagen 8×8 (clic para editar)"});
+    drawMat(c.ctx,ker,xK,yK,ck,{vmin:-2,vmax:2,label:"kernel (clic: cicla)"});
+    drawMat(c.ctx,out,xO,yO,co,{vmin:-om,vmax:om,label:"feature map 6×6"});
+    frameCells(c.ctx,xI,yI,ci,pi,pj,3,3,GOLD,2.6);
+    frameCells(c.ctx,xO,yO,co,pi,pj,1,1,GOLD,2.6);
+    c.ctx.fillStyle=GOLDD;c.ctx.font="bold 17px Georgia,serif";
+    c.ctx.textAlign="center";c.ctx.textBaseline="middle";
+    c.ctx.fillText("∗",xK-19,yK+1.5*ck);
+    c.ctx.fillText("=",xO-19,yO+4*ci);
+    /* aritmética celda a celda */
+    let s=0;const terms=[];
+    for(let u=0;u<3;u++)for(let v=0;v<3;v++){
+      const a=img[pi+u][pj+v],b=ker[u][v];s+=a*b;
+      terms.push(fmtCell(a)+"·"+(b<0?"("+fmtCell(b)+")":fmtCell(b)));}
+    let mn=Infinity,mx=-Infinity;
+    for(const r of out)for(const v of r){if(v<mn)mn=v;if(v>mx)mx=v;}
+    document.getElementById("ro1").innerHTML=
+      "Y("+pi+","+pj+") = "+terms.join(" + ")+
+      " = <span class='gold'>"+fmtCell(s)+"</span><br>"+
+      "rango del feature map: ["+fmtCell(mn)+", "+fmtCell(mx)+"] &nbsp;&middot;&nbsp; "+
+      "9 pesos reusados en las 36 posiciones";
+  }
+  updaters[1]=upd;
+})();
+
+/* ================= SLIDE 2 : padding y stride ================= */
+(function(){
+  const sli=document.getElementById("sl2i"),slk=document.getElementById("sl2k"),
+        slp=document.getElementById("sl2p"),sls=document.getElementById("sl2s"),
+        slt=document.getElementById("sl2t");
+  [sli,slk,slp,sls,slt].forEach(s=>s.oninput=upd);
+  function upd(){
+    const i=+sli.value,k=+slk.value,p=+slp.value,s=+sls.value;
+    const tot=i+2*p,o=outSize(i,k,p,s),left=o>0?(tot-k)%s:0;
+    slt.max=Math.max(o-1,0);
+    if(+slt.value>Math.max(o-1,0))slt.value=Math.max(o-1,0);
+    const t=+slt.value;
+    document.getElementById("r2i").textContent=i;
+    document.getElementById("r2k").textContent=k;
+    document.getElementById("r2p").textContent=p;
+    document.getElementById("r2s").textContent=s;
+    document.getElementById("r2t").textContent=t;
+    let badge;
+    if(o===0)badge="<span class='badge bad'>no cabe: k &gt; i+2p</span>";
+    else if(left===0)badge="<span class='badge ok'>encaje exacto: (i+2p−k) es múltiplo de s</span>";
+    else badge="<span class='badge bad'>no encaja: quedan "+left+" columna(s) sin cubrir a la derecha</span>";
+    document.getElementById("ro2").innerHTML=
+      "o = &lfloor;("+i+" + 2·"+p+" − "+k+")/"+s+"&rfloor; + 1 = &lfloor;"+(tot-k)+"/"+s+
+      "&rfloor; + 1 = <span class='gold'>"+o+"</span><br>"+badge;
+    /* panel a: mapeo 1D entrada→salida */
+    const c=fitCanvas(document.getElementById("cv2a"));
+    const cell=Math.min(34,(c.W-40)/Math.max(tot,o),(c.H-110)/2.4);
+    const xIn=(c.W-tot*cell)/2,yIn=36,
+          xOut=(c.W-o*cell)/2,yOut=yIn+cell+64;
+    c.ctx.font="bold 11px Georgia,serif";c.ctx.fillStyle=INK;c.ctx.textAlign="left";
+    c.ctx.textBaseline="bottom";
+    c.ctx.fillText("entrada: i = "+i+" celdas + p = "+p+" ceros por lado",xIn,yIn-6);
+    for(let j=0;j<tot;j++){
+      const isPad=j<p||j>=tot-p;
+      c.ctx.fillStyle=isPad?"#fff":GOLDP;
+      c.ctx.fillRect(xIn+j*cell,yIn,cell,cell);
+      c.ctx.save();
+      c.ctx.strokeStyle=isPad?MUTE:INK;c.ctx.lineWidth=1;
+      if(isPad)c.ctx.setLineDash([3,3]);
+      c.ctx.strokeRect(xIn+j*cell,yIn,cell,cell);c.ctx.restore();
+      if(isPad&&cell>=14){c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";
+        c.ctx.textAlign="center";c.ctx.textBaseline="middle";
+        c.ctx.fillText("0",xIn+j*cell+cell/2,yIn+cell/2);}}
+    /* columnas sin cubrir */
+    if(o>0&&left>0)for(let j=tot-left;j<tot;j++){
+      c.ctx.strokeStyle="#c98c3f";c.ctx.lineWidth=1.6;
+      c.ctx.beginPath();
+      c.ctx.moveTo(xIn+j*cell+3,yIn+3);c.ctx.lineTo(xIn+(j+1)*cell-3,yIn+cell-3);
+      c.ctx.moveTo(xIn+(j+1)*cell-3,yIn+3);c.ctx.lineTo(xIn+j*cell+3,yIn+cell-3);
+      c.ctx.stroke();}
+    if(o>0){
+      c.ctx.fillStyle=INK;c.ctx.font="bold 11px Georgia,serif";
+      c.ctx.textAlign="left";c.ctx.textBaseline="bottom";
+      c.ctx.fillText("salida: o = "+o+" celdas",xOut,yOut-6);
+      for(let tt=0;tt<o;tt++){
+        c.ctx.fillStyle=tt===t?GOLD:"#e9d9ae";
+        c.ctx.fillRect(xOut+tt*cell,yOut,cell,cell);
+        c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=1;
+        c.ctx.strokeRect(xOut+tt*cell,yOut,cell,cell);
+        /* conector ventana→celda */
+        const wx0=xIn+tt*s*cell,wx1=wx0+k*cell;
+        c.ctx.save();
+        c.ctx.strokeStyle=tt===t?GOLD:"#d9c28a";
+        c.ctx.lineWidth=tt===t?2:0.8;
+        c.ctx.beginPath();
+        c.ctx.moveTo((wx0+wx1)/2,yIn+cell);
+        c.ctx.lineTo(xOut+tt*cell+cell/2,yOut);
+        c.ctx.stroke();c.ctx.restore();}
+      /* ventana actual */
+      c.ctx.save();c.ctx.strokeStyle=GOLD;c.ctx.lineWidth=2.6;
+      c.ctx.strokeRect(xIn+t*s*cell,yIn-3,k*cell,cell+6);c.ctx.restore();}
+    /* panel b: escalera o(i) */
+    const c2=fitCanvas(document.getElementById("cv2b"));
+    const fr={x0:50,y0:22,w:c2.W-70,h:c2.H-58};
+    let omax=1;
+    for(let ii=4;ii<=16;ii++)omax=Math.max(omax,outSize(ii,k,p,s));
+    const ax=axes(c2.ctx,fr,{xmin:4,xmax:16,ymin:0,ymax:omax+1,
+      xticks:[4,6,8,10,12,14,16],
+      yticks:Array.from({length:Math.min(omax+1,9)},(_,n)=>Math.round(n*(omax+1)/Math.min(omax+1,9))).filter((v,ix,a)=>a.indexOf(v)===ix),
+      xlab:"tamaño de entrada i",ylab:"salida o",
+      title:"o(i) con tus k, p, s: la escalera del suelo ⌊·⌋"});
+    const pts=[];
+    for(let ii=4;ii<=16;ii++){pts.push([ax.X(ii),ax.Y(outSize(ii,k,p,s))]);
+      if(ii<16)pts.push([ax.X(ii+1),ax.Y(outSize(ii,k,p,s))]);}
+    polyline(c2.ctx,pts,INK,1.8);
+    c2.ctx.fillStyle=GOLD;c2.ctx.beginPath();
+    c2.ctx.arc(ax.X(i),ax.Y(o),5,0,7);c2.ctx.fill();
+  }
+  updaters[2]=upd;
+})();
+/* ================= SLIDE 3 : pooling ================= */
+(function(){
+  const KV=[[1,0,-1],[1,0,-1],[1,0,-1]];
+  function mkImg(shift){const img=[]; // barra vertical de 3 px en cols 2..4 (+shift)
+    for(let i=0;i<8;i++){const r=[];
+      for(let j=0;j<8;j++)r.push(j>=2+shift&&j<=4+shift?1:0);img.push(r);}
+    return img;}
+  let shifted=false;
+  const slk=document.getElementById("sl3k"),ck=document.getElementById("ck3"),
+        bt=document.getElementById("bt3");
+  slk.oninput=upd;ck.oninput=upd;
+  bt.onclick=()=>{shifted=!shifted;
+    bt.textContent=shifted?"vuelve a la imagen original":"desplaza la imagen 1 píxel →";
+    upd();};
+  function upd(){
+    const kp=+slk.value,avg=ck.checked;
+    document.getElementById("r3k").textContent=kp;
+    const img0=mkImg(0),img1=mkImg(1),img=shifted?img1:img0;
+    const f0=conv2d(img0,KV),f1=conv2d(img1,KV),feat=shifted?f1:f0;
+    const p0=poolMat(f0,kp,avg),p1=poolMat(f1,kp,avg),pool=shifted?p1:p0;
+    const dF=meanAbsDiff(f0,f1)/(meanAbs(f0)+1e-12)*100;
+    const dP=meanAbsDiff(p0,p1)/(meanAbs(p0)+1e-12)*100;
+    const ratio=dP>1e-9?dF/dP:Infinity;
+    document.getElementById("ro3").innerHTML=
+      "cambio relativo al desplazar 1 px &mdash; feature map: <b>"+fmtG(dF,3)+
+      "%</b> &nbsp;&middot;&nbsp; tras pooling: <span class='gold'>"+fmtG(dP,3)+"%</span><br>"+
+      "ganancia de invariancia: <span class='gold'>"+
+      (isFinite(ratio)?"&times;"+fmtG(ratio,3):"&infin; (el mapa pooleado no cambia)")+
+      "</span> &nbsp;&middot;&nbsp; viendo: "+(shifted?"imagen desplazada":"imagen original");
+    /* panel a: imagen → feat → pooled */
+    const c=fitCanvas(document.getElementById("cv3a"));
+    const ci=Math.min((c.W-110)/24,(c.H-46)/8);
+    const xI=10,yI=30,cf=8*ci/6,xF=xI+8*ci+40,
+          P=pool.length,cp=8*ci/P,xP=xF+6*cf+40;
+    let fm=1;for(const r of feat)for(const v of r)fm=Math.max(fm,Math.abs(v));
+    drawMat(c.ctx,img,xI,yI,ci,{vmin:0,vmax:1,
+      label:"imagen"+(shifted?" (desplazada 1 px)":"")});
+    drawMat(c.ctx,feat,xF,yI,cf,{vmin:-fm,vmax:fm,label:"feature map 6×6"});
+    drawMat(c.ctx,pool,xP,yI,cp,{vmin:-fm,vmax:fm,
+      label:(avg?"average":"max")+"-pool "+P+"×"+P});
+    c.ctx.fillStyle=GOLDD;c.ctx.font="bold 15px Georgia,serif";
+    c.ctx.textAlign="center";c.ctx.textBaseline="middle";
+    c.ctx.fillText("conv",xF-22,yI+4*ci-10);
+    c.ctx.fillText("pool",xP-22,yI+4*ci-10);
+    /* panel b: barras de cambio */
+    const c2=fitCanvas(document.getElementById("cv3b"));
+    const fr={x0:56,y0:22,w:c2.W-76,h:c2.H-56};
+    const ym=Math.max(dF,dP,1)*1.25;
+    const ax=axes(c2.ctx,fr,{xmin:0,xmax:1,ymin:0,ymax:ym,
+      xticks:[],yticks:[[0,"0"],[Math.round(ym/2*10)/10,fmtG(ym/2,2)+"%"],
+        [Math.round(ym*0.96*10)/10,fmtG(ym*0.96,2)+"%"]],
+      ylab:"cambio relativo",
+      title:"Cuánto cambia cada representación al desplazar la imagen 1 px"});
+    const bw=fr.w*0.22;
+    [[0.3,dF,INK,"feature map"],[0.7,dP,GOLD,"tras pooling"]].forEach(b=>{
+      const x=fr.x0+b[0]*fr.w-bw/2,y=ax.Y(b[1]);
+      c2.ctx.fillStyle=b[2];c2.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+      c2.ctx.fillStyle=INK;c2.ctx.font="11px Georgia,serif";
+      c2.ctx.textAlign="center";c2.ctx.textBaseline="bottom";
+      c2.ctx.fillText(b[3]+": "+fmtG(b[1],3)+"%",x+bw/2,y-4);});
+  }
+  updaters[3]=upd;
+})();
+
+/* ================= SLIDE 4 : jerarquía de features ================= */
+(function(){
+  const KV=[[-1,0,1],[-1,0,1],[-1,0,1]],   // borde vertical izquierdo (0→1)
+        KH=[[-1,-1,-1],[0,0,0],[1,1,1]],   // borde horizontal superior
+        WV=[[0,1,0],[0,1,0],[0,1,0]],      // línea vertical en h^v
+        WH=[[0,0,0],[1,1,1],[0,0,0]];      // línea horizontal en h^h
+  const slx=document.getElementById("sl4x"),sly=document.getElementById("sl4y"),
+        slb=document.getElementById("sl4b");
+  [slx,sly,slb].forEach(s=>s.oninput=upd);
+  function upd(){
+    const c0=+slx.value,r0=+sly.value,b2=+slb.value;
+    document.getElementById("r4x").textContent=c0;
+    document.getElementById("r4y").textContent=r0;
+    document.getElementById("r4b").textContent=b2.toFixed(1);
+    const G=12,img=[];
+    for(let i=0;i<G;i++){const r=[];
+      for(let j=0;j<G;j++)r.push(i>=r0&&i<r0+5&&j>=c0&&j<c0+5?1:0);img.push(r);}
+    const hv=reluMat(conv2d(img,KV)),hh=reluMat(conv2d(img,KH));
+    const corner=conv2two(hv,hh,WV,WH,b2);
+    const pk=argmaxMat(corner);
+    let act=0;for(const r of corner)for(const v of r)if(v>0)act++;
+    document.getElementById("ro4").innerHTML=
+      "pico del detector de esquinas: <span class='gold'>("+pk.i+", "+pk.j+
+      ")</span> con valor "+fmtG(pk.v,3)+
+      " &nbsp;&middot;&nbsp; esquina del cuadrado en la imagen: ("+r0+", "+c0+")"+
+      "<br>celdas activas (&gt;0) en el mapa de esquinas: <b>"+act+
+      "</b> de "+(corner.length*corner[0].length)+
+      (pk.v<=0?" &nbsp;<span class='badge bad'>umbral b&#8322; demasiado alto: todo apagado</span>":"");
+    /* panel a: imagen + h^v + h^h */
+    const c=fitCanvas(document.getElementById("cv4a"));
+    const ci=Math.min((c.W-110)/36,(c.H-46)/G);
+    const xI=8,yI=30,ch=G*ci/10,xV=xI+G*ci+40,xH=xV+10*ch+40;
+    let hm=1;for(const r of hv)for(const v of r)hm=Math.max(hm,v);
+    for(const r of hh)for(const v of r)hm=Math.max(hm,v);
+    drawMat(c.ctx,img,xI,yI,ci,{vmin:0,vmax:1,vals:false,label:"imagen 12×12"});
+    drawMat(c.ctx,hv,xV,yI,ch,{vmin:0,vmax:hm,vals:false,
+      label:"h^v = ReLU(X∗K^v): bordes |"});
+    drawMat(c.ctx,hh,xH,yI,ch,{vmin:0,vmax:hm,vals:false,
+      label:"h^h = ReLU(X∗K^h): bordes —"});
+    /* panel b: mapa de esquinas */
+    const c2=fitCanvas(document.getElementById("cv4b"));
+    const P=corner.length;
+    const cp=Math.min((c2.W-260)/P,(c2.H-46)/P);
+    const xC=14,yC=30;
+    let cm=Math.max(1,pk.v);
+    drawMat(c2.ctx,corner,xC,yC,cp,{vmin:0,vmax:cm,
+      label:"capa 2: detector de esquina sup. izda. ("+P+"×"+P+")"});
+    if(pk.v>0){c2.ctx.strokeStyle=GOLD;c2.ctx.lineWidth=3;
+      c2.ctx.beginPath();
+      c2.ctx.arc(xC+pk.j*cp+cp/2,yC+pk.i*cp+cp/2,cp*0.62,0,7);c2.ctx.stroke();}
+    c2.ctx.fillStyle=INK;c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="left";
+    c2.ctx.textBaseline="top";
+    const lx=xC+P*cp+24;
+    ["jerarquía:","píxeles → (capa 1) bordes","bordes → (capa 2) esquina",
+     "","el círculo dorado marca el máximo;","muévelo con los sliders y","verás la equivarianza."]
+     .forEach((s,i)=>c2.ctx.fillText(s,lx,yC+8+i*16));
+  }
+  updaters[4]=upd;
+})();
+
+/* ================= SLIDE 5 : campo receptivo ================= */
+(function(){
+  const slL=document.getElementById("sl5L"),slk=document.getElementById("sl5k"),
+        slo=document.getElementById("sl5o"),ck=document.getElementById("ck5");
+  [slL,slk,slo].forEach(s=>s.oninput=upd);ck.oninput=upd;
+  function upd(){
+    const L=+slL.value,k=+slk.value,O=+slo.value,pool=ck.checked;
+    document.getElementById("r5L").textContent=L;
+    document.getElementById("r5k").textContent=k;
+    document.getElementById("r5o").textContent=O;
+    const rf=rfSeq(L,k,pool);
+    let need=null;for(let l=0;l<rf.length;l++)if(rf[l]>=O){need=l+1;break;}
+    const r3=rfSeq(Math.min(3,L),k,pool);
+    document.getElementById("ro5").innerHTML=
+      "RF tras L = "+L+" capas: <span class='gold'>"+rf[L-1]+" px</span>"+
+      " &nbsp;&middot;&nbsp; primeras capas: RF = "+r3.join(" → ")+
+      "<br>capas para ver el objeto de "+O+" px: "+
+      (need?"<span class='gold'>"+need+"</span>":
+       "<span class='badge bad'>ni con L = "+L+" (RF = "+rf[L-1]+" &lt; "+O+")</span>");
+    /* panel a: RF vs capa */
+    const c=fitCanvas(document.getElementById("cv5a"));
+    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
+    const ymax=Math.max(rf[L-1],O)*1.12;
+    const xt=[];for(let l=1;l<=L;l+=Math.max(1,Math.round(L/8)))xt.push(l);
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:L,ymin:0,ymax:ymax,
+      xticks:xt,yticks:[[0,"0"],[Math.round(ymax/2),String(Math.round(ymax/2))],
+        [Math.round(ymax*0.95),String(Math.round(ymax*0.95))]],
+      xlab:"capa l",ylab:"RF (píxeles)",
+      title:"Campo receptivo capa a capa"+(pool?" (con poolings 2×2)":"")});
+    polyline(c.ctx,[[ax.X(0),ax.Y(O)],[ax.X(L),ax.Y(O)]],MUTE,1.3,[5,4]);
+    c.ctx.fillStyle=MUTE;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("objeto: "+O+" px",ax.X(L*0.02),ax.Y(O)-6);
+    const pts=[[ax.X(0),ax.Y(1)]];
+    rf.forEach((v,l)=>pts.push([ax.X(l+1),ax.Y(v)]));
+    polyline(c.ctx,pts,GOLD,2.4);
+    if(need){c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+      c.ctx.arc(ax.X(need),ax.Y(rf[need-1]),5,0,7);c.ctx.fill();
+      c.ctx.fillStyle=GOLDD;c.ctx.textAlign="center";
+      c.ctx.fillText("capa "+need,ax.X(need),ax.Y(rf[need-1])-10);}
+    /* panel b: cono de visión */
+    const c2=fitCanvas(document.getElementById("cv5b"));
+    const fr2={x0:52,y0:24,w:c2.W-72,h:c2.H-62};
+    const half=Math.max(rf[L-1],O)/2*1.1;
+    const ax2=axes(c2.ctx,fr2,{xmin:-half,xmax:half,ymin:0,ymax:L,
+      xticks:[[-Math.round(half*0.9),String(-Math.round(half*0.9))],[0,"0"],
+              [Math.round(half*0.9),String(Math.round(half*0.9))]],
+      yticks:[[0,"img"],[L,"capa "+L]],
+      xlab:"píxeles de la imagen",ylab:"profundidad",
+      title:"El cono de visión de UNA neurona de la última capa"});
+    /* polígono del cono: anchura rf en cada nivel */
+    c2.ctx.save();c2.ctx.beginPath();
+    c2.ctx.moveTo(ax2.X(-0.5),ax2.Y(L));c2.ctx.lineTo(ax2.X(0.5),ax2.Y(L));
+    for(let l=L;l>=1;l--)c2.ctx.lineTo(ax2.X(rf[l-1]/2),ax2.Y(l-1));
+    for(let l=1;l<=L;l++)c2.ctx.lineTo(ax2.X(-rf[l-1]/2),ax2.Y(l-1));
+    c2.ctx.closePath();
+    c2.ctx.fillStyle="rgba(184,134,11,0.18)";c2.ctx.fill();
+    c2.ctx.strokeStyle=GOLD;c2.ctx.lineWidth=1.6;c2.ctx.stroke();c2.ctx.restore();
+    polyline(c2.ctx,[[ax2.X(-O/2),ax2.Y(0)],[ax2.X(O/2),ax2.Y(0)]],INK,4);
+    c2.ctx.fillStyle=INK;c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="center";
+    c2.ctx.textBaseline="bottom";
+    c2.ctx.fillText("objeto ("+O+" px)",ax2.X(0),ax2.Y(0)-6);
+  }
+  updaters[5]=upd;
+})();
+
+/* ================= SLIDE 6 : parámetros de una conv ================= */
+(function(){
+  const slk=document.getElementById("sl6k"),sci=document.getElementById("sl6ci"),
+        sco=document.getElementById("sl6co"),slh=document.getElementById("sl6h");
+  [slk,sci,sco,slh].forEach(s=>s.oninput=upd);
+  function upd(){
+    const k=+slk.value,ci=+sci.value,co=+sco.value,h=+slh.value;
+    document.getElementById("r6k").textContent=k;
+    document.getElementById("r6ci").textContent=ci;
+    document.getElementById("r6co").textContent=co;
+    document.getElementById("r6h").textContent=h;
+    const pc=convParams(k,ci,co),pd=denseParams(h,ci,co);
+    document.getElementById("ro6").innerHTML=
+      "conv: ("+k+"&middot;"+k+"&middot;"+ci+"+1)&middot;"+co+
+      " = <span class='gold'>"+fmtBig(pc)+"</span> ("+fmtG(pc*4/1048576,3)+" MB)"+
+      "<br>densa: ("+h+"&middot;"+h+"&middot;"+ci+"+1)&middot;("+h+"&middot;"+h+
+      "&middot;"+co+") = <b>"+fmtBig(pd)+"</b> ("+fmtG(pd*4/1048576,3)+" MB)"+
+      "<br>factor de ahorro: <span class='gold'>&times;"+fmtBig(pd/pc)+"</span>";
+    /* panel a: barras */
+    const c=fitCanvas(document.getElementById("cv6a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const ax=axes(c.ctx,fr,{xmin:0,xmax:1,ymin:1,ymax:11,
+      xticks:[],yticks:[[2,"10²"],[4,"10⁴"],[6,"10⁶"],[8,"10⁸"],[10,"10¹⁰"]],
+      ylab:"parámetros (log)",
+      title:"Conv (dorado) vs densa equivalente (tinta), escala log"});
+    const bw=fr.w*0.22;
+    [[0.3,Math.log10(pc),GOLD,"conv: "+fmtG(pc,3)],
+     [0.7,Math.log10(pd),INK,"densa: "+(pd>=1e6?fmtG(pd/1e6,3)+"M":fmtG(pd,3))]].forEach(b=>{
+      const x=fr.x0+b[0]*fr.w-bw/2,y=ax.Y(Math.max(b[1],1));
+      c.ctx.fillStyle=b[2];c.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+      c.ctx.fillStyle=INK;c.ctx.font="11px Georgia,serif";c.ctx.textAlign="center";
+      c.ctx.textBaseline="bottom";c.ctx.fillText(b[3],x+bw/2,y-4);});
+    /* panel b: params vs resolución */
+    const c2=fitCanvas(document.getElementById("cv6b"));
+    const fr2={x0:56,y0:24,w:c2.W-76,h:c2.H-62};
+    const ax2=axes(c2.ctx,fr2,{xmin:8,xmax:64,ymin:1,ymax:11,
+      xticks:[8,16,32,48,64],
+      yticks:[[2,"10²"],[4,"10⁴"],[6,"10⁶"],[8,"10⁸"],[10,"10¹⁰"]],
+      xlab:"resolución H = W",ylab:"parámetros (log)",
+      title:"La densa crece como H⁴; la conv es plana"});
+    const pA=[],pB=[];
+    for(let hh=8;hh<=64;hh+=2){
+      pA.push([ax2.X(hh),ax2.Y(Math.log10(convParams(k,ci,co)))]);
+      pB.push([ax2.X(hh),ax2.Y(Math.log10(denseParams(hh,ci,co)))]);}
+    polyline(c2.ctx,pA,GOLD,2.4);
+    polyline(c2.ctx,pB,INK,2);
+    c2.ctx.fillStyle=GOLD;c2.ctx.beginPath();
+    c2.ctx.arc(ax2.X(h),ax2.Y(Math.log10(pc)),4.5,0,7);c2.ctx.fill();
+    c2.ctx.fillStyle=INK;c2.ctx.beginPath();
+    c2.ctx.arc(ax2.X(h),ax2.Y(Math.log10(pd)),4.5,0,7);c2.ctx.fill();
+  }
+  updaters[6]=upd;
+})();
+/* ================= SLIDE 7 : ResNet ================= */
+(function(){
+  const slL=document.getElementById("sl7L"),slg=document.getElementById("sl7g");
+  let seed=17,eps=null;
+  function resample(){const rng=mulberry32(seed);
+    eps=Array.from({length:100},()=>randn(rng));}
+  resample();
+  document.getElementById("bt7").onclick=()=>{seed+=1;resample();upd();};
+  slL.oninput=upd;slg.oninput=upd;
+  function upd(){
+    const L=+slL.value,g=+slg.value;
+    document.getElementById("r7L").textContent=L;
+    document.getElementById("r7g").textContent=g.toFixed(2);
+    /* gradiente que llega a la capa l desde la pérdida (productos reales) */
+    const logP=new Array(L+1).fill(0),logR=new Array(L+1).fill(0);
+    for(let l=L;l>=1;l--){
+      const f=g*eps[l-1];
+      logP[l-1]=logP[l]+Math.log10(Math.abs(f)+1e-300);
+      logR[l-1]=logR[l]+Math.log10(Math.abs(1+f)+1e-300);}
+    const gP=logP[0],gR=logR[0];
+    let badge="";
+    if(Math.pow(10,gP)<1e-8&&gP<gR)
+      badge=" <span class='badge bad'>red plana: gradiente desvanecido en la capa 1</span>";
+    else if(Math.pow(10,gP)>1e8)
+      badge=" <span class='badge bad'>red plana: gradiente explotando</span>";
+    else badge=" <span class='badge ok'>red plana aún entrenable a esta profundidad</span>";
+    document.getElementById("ro7").innerHTML=
+      "|grad| en la capa 1 &mdash; sin skip: <b>10<sup>"+fmtG(gP,3)+
+      "</sup></b> &nbsp;&middot;&nbsp; con skip: <span class='gold'>10<sup>"+
+      fmtG(gR,3)+"</sup></span><br>cociente residual/plana: <span class='gold'>10<sup>"+
+      fmtG(gR-gP,3)+"</sup></span>"+badge;
+    const c=fitCanvas(document.getElementById("cv7a"));
+    const fr={x0:60,y0:26,w:c.W-80,h:c.H-64};
+    let ymin=Math.min(gP,gR,-2),ymax=Math.max(gP,gR,2);
+    ymin=Math.max(ymin,-45)-2;ymax=Math.min(ymax,45)+2;
+    const yt=[];const stepY=Math.max(2,Math.round((ymax-ymin)/6));
+    for(let v=Math.ceil(ymin/stepY)*stepY;v<=ymax;v+=stepY)
+      yt.push([v,"10"+(v<0?"⁻":"")+String(Math.abs(v))]);
+    const xt=[];for(let l=1;l<=L;l+=Math.max(1,Math.round(L/8)))xt.push(l);
+    const ax=axes(c.ctx,fr,{xmin:1,xmax:L,ymin:ymin,ymax:ymax,
+      xticks:xt,yticks:yt,
+      xlab:"capa l (la pérdida está en l = "+L+")",ylab:"|gradiente| (log)",
+      title:"Módulo del gradiente que llega a cada capa: Π𝓕′ (tinta) vs Π(1+𝓕′) (dorado)"});
+    polyline(c.ctx,[[ax.X(1),ax.Y(0)],[ax.X(L),ax.Y(0)]],MUTE,1,[4,4]);
+    const pP=[],pR=[];
+    for(let l=1;l<=L;l++){
+      pP.push([ax.X(l),ax.Y(Math.max(ymin,Math.min(ymax,logP[l-1])))]);
+      pR.push([ax.X(l),ax.Y(Math.max(ymin,Math.min(ymax,logR[l-1])))]);}
+    polyline(c.ctx,pP,INK,2);
+    polyline(c.ctx,pR,GOLD,2.4);
+    c.ctx.font="11px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillStyle=INK;c.ctx.fillText("sin skip",ax.X(1)+6,ax.Y(logP[0])-8);
+    c.ctx.fillStyle=GOLDD;c.ctx.fillText("con skip (ResNet)",ax.X(1)+6,ax.Y(logR[0])+14);
+  }
+  updaters[7]=upd;
+})();
+
+/* ================= SLIDE 8 : transfer learning ================= */
+(function(){
+  const DSC=16,NTEST=500,ITERS=200,LR=2.0,L2=1e-3;
+  const NS=[10,20,40,80,160,320,640];
+  function genPre(n,rng){const X=[],y=[];
+    for(let i=0;i<n;i++){const yi=i%2,sg=yi?1:-1;
+      X.push([sg*1.0+0.9*randn(rng),sg*0.7+0.9*randn(rng)]);y.push(yi);}
+    return {X:X,y:y};}
+  function genScr(n,rng){const X=[],y=[];
+    for(let i=0;i<n;i++){const yi=i%2,sg=yi?1:-1;
+      const x=new Array(DSC);
+      x[0]=sg*0.35+randn(rng);x[1]=-sg*0.30+randn(rng);
+      for(let j=2;j<DSC;j++)x[j]=randn(rng);
+      X.push(x);y.push(yi);}
+    return {X:X,y:y};}
+  const testPre=genPre(NTEST,mulberry32(7777)),
+        testScr=genScr(NTEST,mulberry32(8888));
+  let seed=21,curve=null;
+  function buildCurve(){
+    curve=NS.map((n,ix)=>{
+      const dP=genPre(n,mulberry32(seed*131+ix)),
+            dS=genScr(n,mulberry32(seed*131+1000+ix));
+      const wP=trainLogit(dP.X,dP.y,ITERS,LR,L2),
+            wS=trainLogit(dS.X,dS.y,ITERS,LR,L2);
+      return {n:n,aP:accLogit(testPre.X,testPre.y,wP),
+              aS:accLogit(testScr.X,testScr.y,wS)};});}
+  buildCurve();
+  const sln=document.getElementById("sl8n");
+  sln.oninput=upd;
+  document.getElementById("bt8").onclick=()=>{seed+=1;buildCurve();upd();};
+  function upd(){
+    const n=+sln.value;
+    document.getElementById("r8n").textContent=n;
+    const dP=genPre(n,mulberry32(seed*977+3)),
+          dS=genScr(n,mulberry32(seed*977+4));
+    const wP=trainLogit(dP.X,dP.y,ITERS,LR,L2),
+          wS=trainLogit(dS.X,dS.y,ITERS,LR,L2);
+    const aP=accLogit(testPre.X,testPre.y,wP),
+          aS=accLogit(testScr.X,testScr.y,wS);
+    document.getElementById("ro8").innerHTML=
+      "accuracy en test (500 fotos) con n = "+n+
+      " &mdash; <span class='gold'>transfer (backbone congelado): "+(100*aP).toFixed(1)+
+      "%</span> &nbsp;&middot;&nbsp; desde cero: <b>"+(100*aS).toFixed(1)+"%</b><br>"+
+      "parámetros entrenados: 3 (cabeza) vs "+(DSC+1)+" (desde cero) "+
+      "&mdash; en la realidad: ~10&sup3; vs 25.5M (ResNet-50)";
+    /* panel a: accuracy vs n */
+    const c=fitCanvas(document.getElementById("cv8a"));
+    const fr={x0:56,y0:24,w:c.W-76,h:c.H-62};
+    const lx=v=>Math.log2(v);
+    const ax=axes(c.ctx,fr,{xmin:lx(10),xmax:lx(640),ymin:0.4,ymax:1.0,
+      xticks:NS.map(v=>[lx(v),String(v)]),
+      yticks:[[0.4,"40%"],[0.6,"60%"],[0.8,"80%"],[1.0,"100%"]],
+      xlab:"fotos etiquetadas n (escala log)",ylab:"accuracy test",
+      title:"Transfer (dorado) vs desde cero (tinta): el valor de ImageNet"});
+    polyline(c.ctx,[[ax.X(lx(10)),ax.Y(0.5)],[ax.X(lx(640)),ax.Y(0.5)]],MUTE,1,[4,4]);
+    c.ctx.fillStyle=MUTE;c.ctx.font="10px Georgia,serif";c.ctx.textAlign="left";
+    c.ctx.fillText("azar (50%)",ax.X(lx(10))+4,ax.Y(0.5)-4);
+    polyline(c.ctx,curve.map(p=>[ax.X(lx(p.n)),ax.Y(p.aP)]),GOLD,2.4);
+    polyline(c.ctx,curve.map(p=>[ax.X(lx(p.n)),ax.Y(p.aS)]),INK,2);
+    curve.forEach(p=>{
+      c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+      c.ctx.arc(ax.X(lx(p.n)),ax.Y(p.aP),3,0,7);c.ctx.fill();
+      c.ctx.fillStyle=INK;c.ctx.beginPath();
+      c.ctx.arc(ax.X(lx(p.n)),ax.Y(p.aS),3,0,7);c.ctx.fill();});
+    c.ctx.strokeStyle=GOLDD;c.ctx.lineWidth=1.2;c.ctx.setLineDash([3,3]);
+    c.ctx.beginPath();c.ctx.moveTo(ax.X(lx(n)),fr.y0);
+    c.ctx.lineTo(ax.X(lx(n)),fr.y0+fr.h);c.ctx.stroke();c.ctx.setLineDash([]);
+    c.ctx.fillStyle=GOLD;c.ctx.beginPath();
+    c.ctx.arc(ax.X(lx(n)),ax.Y(aP),5,0,7);c.ctx.fill();
+    c.ctx.fillStyle=INK;c.ctx.beginPath();
+    c.ctx.arc(ax.X(lx(n)),ax.Y(aS),5,0,7);c.ctx.fill();
+    /* panel b: scatter + frontera aprendida */
+    const c2=fitCanvas(document.getElementById("cv8b"));
+    const fr2={x0:56,y0:24,w:c2.W-76,h:c2.H-62};
+    const ax2=axes(c2.ctx,fr2,{xmin:-3.4,xmax:3.4,ymin:-3.2,ymax:3.2,
+      xticks:[-3,-1,1,3],yticks:[[-3,"-3"],[0,"0"],[3,"3"]],
+      xlab:"feature 1 del backbone",ylab:"feature 2",
+      title:"Tus n fotos en el espacio de features y la frontera aprendida"});
+    for(let i=0;i<dP.X.length;i++){
+      c2.ctx.fillStyle=dP.y[i]?GOLD:INK;
+      c2.ctx.beginPath();
+      c2.ctx.arc(ax2.X(dP.X[i][0]),ax2.Y(dP.X[i][1]),3,0,7);c2.ctx.fill();}
+    /* frontera w0 x + w1 y + b = 0 */
+    if(Math.abs(wP[1])>1e-9){
+      const yAt=x=>-(wP[2]+wP[0]*x)/wP[1];
+      polyline(c2.ctx,[[ax2.X(-3.4),ax2.Y(yAt(-3.4))],[ax2.X(3.4),ax2.Y(yAt(3.4))]],
+        GOLDD,2,[6,4]);}
+    c2.ctx.font="11px Georgia,serif";c2.ctx.textAlign="left";
+    c2.ctx.fillStyle=GOLDD;c2.ctx.fillText("prenda OK",fr2.x0+8,fr2.y0+14);
+    c2.ctx.fillStyle=INK;c2.ctx.fillText("defecto",fr2.x0+8,fr2.y0+28);
+  }
+  updaters[8]=upd;
+})();
+
+/* ================= SLIDE 9 : caso retail ================= */
+(function(){
+  const NAMES=["camiseta","sudadera","vestido"],NPC=200,NTOT=600,
+        MU=[[-1.3,-0.6],[0.1,1.2],[1.4,-0.5]],S0=0.8,CREV=0.8;
+  const COLS=[GOLD,INK,MUTE];
+  let seed=5,data=null;
+  function gen(sig){const rng=mulberry32(seed);const pts=[];
+    for(let c=0;c<3;c++)for(let i=0;i<NPC;i++)
+      pts.push({x:MU[c][0]+sig*randn(rng),y:MU[c][1]+sig*randn(rng),c:c});
+    return pts;}
+  function probs(x,y){
+    const z=MU.map(m=>-(((x-m[0])**2+(y-m[1])**2)/(2*S0*S0)));
+    return softmax(z);}
+  function policyCost(pts,tau,cerr){
+    let err=0,rej=0;
+    for(const p of pts){
+      const pr=probs(p.x,p.y);let bi=0;
+      for(let c=1;c<3;c++)if(pr[c]>pr[bi])bi=c;
+      if(pr[bi]<tau)rej++;
+      else if(bi!==p.c)err++;}
+    return {cost:err*cerr+rej*CREV,err:err,rej:rej};}
+  const slt=document.getElementById("sl9t"),sls=document.getElementById("sl9s"),
+        slc=document.getElementById("sl9c");
+  let lastSig=null;
+  [slt,sls,slc].forEach(s=>s.oninput=upd);
+  document.getElementById("bt9").onclick=()=>{seed+=1;lastSig=null;upd();};
+  function upd(){
+    const tau=+slt.value,sig=+sls.value,cerr=+slc.value;
+    document.getElementById("r9t").textContent=tau.toFixed(2);
+    document.getElementById("r9s").textContent=sig.toFixed(2);
+    document.getElementById("r9c").textContent=cerr;
+    if(lastSig!==sig){data=gen(sig);lastSig=sig;}
+    /* política actual: matriz de confusión + costes */
+    const conf=[[0,0,0],[0,0,0],[0,0,0]],rejBy=[0,0,0];
+    let nAuto=0,nErr=0,nRej=0;
+    for(const p of data){
+      const pr=probs(p.x,p.y);let bi=0;
+      for(let c=1;c<3;c++)if(pr[c]>pr[bi])bi=c;
+      if(pr[bi]<tau){nRej++;rejBy[p.c]++;}
+      else{nAuto++;conf[p.c][bi]++;if(bi!==p.c)nErr++;}}
+    const cost=nErr*cerr+nRej*CREV,
+          human=NTOT*CREV,
+          allAuto=policyCost(data,0,cerr).cost;
+    const accA=nAuto?100*(nAuto-nErr)/nAuto:NaN;
+    /* softmax de un ítem de ejemplo (el primero) */
+    const ex=probs(data[0].x,data[0].y),exs=ex.reduce((a,b)=>a+b,0);
+    document.getElementById("ro9").innerHTML=
+      "cobertura: <b>"+(100*nAuto/NTOT).toFixed(1)+"%</b> &nbsp;&middot;&nbsp; "+
+      "accuracy de lo auto: "+(isNaN(accA)?"&mdash;":accA.toFixed(1)+"%")+
+      " &nbsp;&middot;&nbsp; errores: <b>"+nErr+"</b> &nbsp;&middot;&nbsp; a humano: "+nRej+
+      "<br>coste: <span class='gold'>"+cost.toFixed(0)+" &euro;</span> &nbsp;vs&nbsp; "+
+      "todo-humano "+human.toFixed(0)+" &euro; &nbsp;vs&nbsp; todo-auto "+
+      allAuto.toFixed(0)+" &euro;"+
+      "<br>softmax foto n.&ordm;1: p = ("+ex.map(v=>v.toFixed(3)).join(", ")+
+      "), &Sigma; = "+exs.toFixed(3);
+    document.getElementById("conf9").innerHTML=conf.map((row,j)=>
+      "<tr><td>"+NAMES[j]+"</td>"+row.map((v,l)=>
+        "<td"+(j===l?" style='color:#8C6508;font-weight:bold'":
+              (v>0?" style='color:#7a3c00'":""))+">"+v+"</td>").join("")+
+      "<td>"+rejBy[j]+"</td></tr>").join("");
+    /* panel a: mapa de decisión + scatter */
+    const c=fitCanvas(document.getElementById("cv9a"));
+    const fr={x0:52,y0:24,w:c.W-72,h:c.H-62};
+    const XMIN=-3.6,XMAX=3.8,YMIN=-3.2,YMAX=3.6;
+    const ax=axes(c.ctx,fr,{xmin:XMIN,xmax:XMAX,ymin:YMIN,ymax:YMAX,
+      xticks:[-3,-1,1,3],yticks:[[-3,"-3"],[0,"0"],[3,"3"]],
+      xlab:"feature 1: silueta",ylab:"feature 2: textura",
+      title:"Mapa de decisión: color = clase predicha, blanco = a revisión humana"});
+    const TINTS=["rgba(184,134,11,0.20)","rgba(26,26,26,0.10)","rgba(138,138,138,0.18)"];
+    const GX=64,GY=44;
+    for(let gi=0;gi<GX;gi++)for(let gj=0;gj<GY;gj++){
+      const x=XMIN+(XMAX-XMIN)*(gi+0.5)/GX,y=YMIN+(YMAX-YMIN)*(gj+0.5)/GY;
+      const pr=probs(x,y);let bi=0;
+      for(let cc=1;cc<3;cc++)if(pr[cc]>pr[bi])bi=cc;
+      c.ctx.fillStyle=pr[bi]<tau?"#ffffff":TINTS[bi];
+      const px=ax.X(x-( (XMAX-XMIN)/GX )/2),py=ax.Y(y+((YMAX-YMIN)/GY)/2);
+      c.ctx.fillRect(px,py,fr.w/GX+1,fr.h/GY+1);}
+    for(const p of data){
+      const pr=probs(p.x,p.y);let bi=0;
+      for(let cc=1;cc<3;cc++)if(pr[cc]>pr[bi])bi=cc;
+      const X=ax.X(p.x),Y=ax.Y(p.y);
+      if(pr[bi]<tau){c.ctx.strokeStyle=COLS[p.c];c.ctx.lineWidth=1.1;
+        c.ctx.beginPath();c.ctx.arc(X,Y,2.6,0,7);c.ctx.stroke();}
+      else{c.ctx.fillStyle=COLS[p.c];
+        c.ctx.beginPath();c.ctx.arc(X,Y,2.4,0,7);c.ctx.fill();}}
+    MU.forEach((m,ci2)=>{
+      c.ctx.fillStyle=COLS[ci2];c.ctx.font="bold 12px Georgia,serif";
+      c.ctx.textAlign="center";c.ctx.textBaseline="middle";
+      c.ctx.fillText("◆ "+NAMES[ci2],ax.X(m[0]),ax.Y(m[1]));});
+    /* panel b: coste vs tau */
+    const c2=fitCanvas(document.getElementById("cv9b"));
+    const fr2={x0:56,y0:24,w:c2.W-76,h:c2.H-62};
+    const taus=[],costs=[];let best=Infinity,bestT=tau;
+    for(let t=0.34;t<=0.996;t+=0.005){
+      const r=policyCost(data,t,cerr);taus.push(t);costs.push(r.cost);
+      if(r.cost<best){best=r.cost;bestT=t;}}
+    const ymax=Math.max(...costs,human)*1.15;
+    const ax2=axes(c2.ctx,fr2,{xmin:0.34,xmax:1.0,ymin:0,ymax:ymax,
+      xticks:[[0.4,"0.4"],[0.6,"0.6"],[0.8,"0.8"],[1.0,"1.0"]],
+      yticks:[[0,"0 €"],[Math.round(ymax/2),Math.round(ymax/2)+" €"],
+              [Math.round(ymax*0.92),Math.round(ymax*0.92)+" €"]],
+      xlab:"umbral de confianza τ",ylab:"coste del lote",
+      title:"Coste total en euros según τ: existe un óptimo interior"});
+    polyline(c2.ctx,[[ax2.X(0.34),ax2.Y(human)],[ax2.X(1.0),ax2.Y(human)]],MUTE,1.2,[5,4]);
+    c2.ctx.fillStyle=MUTE;c2.ctx.font="10px Georgia,serif";c2.ctx.textAlign="left";
+    c2.ctx.fillText("todo humano: "+human.toFixed(0)+" €",ax2.X(0.35),ax2.Y(human)-5);
+    polyline(c2.ctx,taus.map((t,i)=>[ax2.X(t),ax2.Y(costs[i])]),INK,2);
+    const rNow=policyCost(data,tau,cerr);
+    c2.ctx.fillStyle=GOLD;c2.ctx.beginPath();
+    c2.ctx.arc(ax2.X(tau),ax2.Y(rNow.cost),5.5,0,7);c2.ctx.fill();
+    c2.ctx.save();c2.ctx.fillStyle=GOLDD;
+    c2.ctx.translate(ax2.X(bestT),ax2.Y(best));c2.ctx.rotate(Math.PI/4);
+    c2.ctx.fillRect(-4.5,-4.5,9,9);c2.ctx.restore();
+    c2.ctx.fillStyle=GOLDD;c2.ctx.textAlign="center";
+    c2.ctx.fillText("τ* = "+bestT.toFixed(2)+" ("+best.toFixed(0)+" €)",
+      ax2.X(bestT),ax2.Y(best)-12);
+  }
+  updaters[9]=upd;
+})();
+
+/* ================= SLIDE 10 : glosario ================= */
+(function(){
+  const G=[
+   ["H×W×C","dimensiones de la imagen: alto, ancho y canales (3 en color RGB, 1 en gris). Aplanada da HWC entradas."],
+   ["X_{i,j,c}","intensidad del píxel (i,j) en el canal de entrada c: la materia prima de la Ec. (1)."],
+   ["K_{u,v,c,o}","peso del kernel en la posición (u,v), conectando el canal de entrada c con el de salida o. Los únicos parámetros de la capa."],
+   ["b_o","sesgo del canal de salida o: un número que se suma a todas las posiciones del feature map o."],
+   ["k","lado del kernel (3, 5 o 7, casi siempre impar para poder centrarlo con p = (k−1)/2)."],
+   ["C_in, C_out","canales de entrada y de salida de la capa: cuántos mapas lee y cuántos detectores aplica."],
+   ["Y / feature map","salida de la convolución: una activación por posición y por kernel; positivo grande = 'aquí está mi patrón'."],
+   ["pesos compartidos","el mismo kernel se aplica en todas las posiciones: (k²C_in+1)C_out parámetros, independiente de H y W."],
+   ["stride s","paso del deslizamiento del kernel; s = 2 mira una de cada dos posiciones y reduce la resolución a la mitad."],
+   ["padding p","orla de ceros añadida a cada lado; p = (k−1)/2 conserva el tamaño ('same')."],
+   ["o = ⌊(i+2p−k)/s⌋+1","tamaño de salida de una conv: el suelo descarta el trozo final si la ventana no encaja."],
+   ["ReLU","max(0,x): apaga las respuestas negativas; entre conv y conv, da la no linealidad que permite componer."],
+   ["max-pool k_p","máximo de cada ventana k_p×k_p (stride k_p): pierde resolución, gana invariancia a traslaciones pequeñas."],
+   ["average pooling","variante con la media (1/k_p²)Σ en vez del máximo: conserva nivel, diluye picos."],
+   ["equivarianza / invariancia","equivariante: la salida se traslada con la entrada (conv); invariante: la salida no cambia (tras pooling)."],
+   ["RF_l","campo receptivo: lado del cuadrado de píxeles que influye en una neurona de la capa l; RF_l = RF_{l−1}+(k−1)Πs_i."],
+   ["jerarquía","composición por capas: bordes → esquinas → partes → objetos; cada capa opera sobre los mapas de la anterior."],
+   ["LeNet→AlexNet→VGG→ResNet","1998→2012→2014→2015: más profundidad, kernels 3×3, y la skip que desbloqueó las 50+ capas."],
+   ["y = 𝓕(x)+x","bloque residual de ResNet: la salida es la corrección 𝓕 MÁS la entrada; su gradiente es Π(1+𝓕′), que no se desvanece."],
+   ["gradiente desvanecido","producto de factores <1 a lo largo de L capas → 10^{−L·algo}: las primeras capas dejan de aprender."],
+   ["θ_b / θ_h","backbone (capas conv preentrenadas) y cabeza (capa final de tu problema): θ = (θ_b, θ_h)."],
+   ["transfer learning","θ̂ = argmin sobre θ_h con θ_b fijo: heredar lo aprendido en ImageNet y entrenar solo la cabeza."],
+   ["regímenes de transfer","feature extraction (todo congelado) / fine-tuning ligero (últimas capas, η_b = η_h/10) / completo (≥10⁴ ejemplos)."],
+   ["ImageNet / 𝒟_src","dataset fuente del preentrenamiento (~10⁶ imágenes); 𝒟_tgt es tu dataset objetivo, de tamaño n."],
+   ["Hugging Face Hub","repositorio público de modelos preentrenados: AutoModelForImageClassification + num_labels y a entrenar."],
+   ["softmax","p_c = e^{z_c}/Σ_d e^{z_d}: convierte los logits z en probabilidades que suman 1."],
+   ["τ, cobertura","umbral de confianza: auto si máx p_c ≥ τ; cobertura = fracción de fotos decididas sin humano."],
+   ["ℓ_cost, c_FN, c_FP","pérdida ponderada por coste de negocio: c_FN·y(1−ŷ)+c_FP·(1−y)ŷ; la métrica de producción, no la accuracy."],
+   ["matriz de confusión","tabla verdad×predicción: la diagonal es acierto, lo demás son devoluciones que cuestan euros."],
+   ["τ*","umbral que minimiza el coste total (errores·c_err + revisiones·c_rev): el entregable del caso retail."]];
+  const div=document.getElementById("glos");
+  div.innerHTML=G.map(e=>"<div class='glositem'><div class='gsym'>"+e[0]+
+    "</div><div>"+e[1]+"</div></div>").join("");
+  updaters[10]=function(){};
+})();
+
+updaters[11]=function(){};
+
+/* ================= boot ================= */
+function fromHash(){const m=location.hash.match(/^#(\d+)$/);
+  return m?Math.max(0,Math.min(11,+m[1])):0;}
+window.addEventListener("hashchange",()=>go(fromHash()));
+go(fromHash());
+</script>
+</body>
+</html>
