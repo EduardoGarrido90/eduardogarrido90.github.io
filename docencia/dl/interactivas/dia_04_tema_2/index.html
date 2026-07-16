@@ -186,8 +186,10 @@ function hot(id){
 // ---- canvas helper ----
 function fitCanvas(cv){
   const dpr=window.devicePixelRatio||1;
-  const w=cv.clientWidth||cv.width, h=cv.height;
-  cv.width=w*dpr; cv.height=h*dpr;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
   const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
   return {ctx,w,h};
 }
