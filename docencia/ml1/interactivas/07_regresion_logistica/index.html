@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regresión logística — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La probabilidad de que un cliente se dé de baja</div>
+      <div class="eq">
+        p = &sigma;(<span class="term" id="t_b0">&beta;<sub>0</sub></span>
+        + <span class="term" id="t_b1">&beta;<sub>1</sub></span>&middot;x),
+        &nbsp; &sigma;(z) = 1/(1+e<sup>&minus;z</sup>)
+      </div>
+      <div class="eq" style="font-size:1.1em">
+        frontera: p = 0.5 &nbsp;&hArr;&nbsp; x* = &minus;<span class="term" id="t_b0b">&beta;<sub>0</sub></span>/<span class="term" id="t_b1b">&beta;<sub>1</sub></span>
+      </div>
+      <div class="eqnum">
+        con <span class="nterm" id="n_b0">&beta;&#8320; = 0.00</span>
+        y <span class="nterm" id="n_b1">&beta;&#8321; = 1.50</span>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Movistar quiere anticipar el <b>churn</b>: que un
+    cliente se dé de baja (y = 1) o siga contratado (y = 0). Solo usas una señal, la
+    <b>antigüedad</b> del cliente x (en meses, estandarizada a ~[&minus;3, 3]). La logística
+    no predice un sí/no directo: estima una <span class="gold">probabilidad</span> de baja
+    y luego decide por umbral 0.5.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">&beta;&#8320;</span>
+        <input type="range" id="b0" min="-4" max="4" step="0.1" value="0"
+          oninput="hot('b0');upd()"><span class="val" id="v_b0">0.00</span></div>
+      <div class="row"><span class="lab">&beta;&#8321;</span>
+        <input type="range" id="b1" min="-4" max="4" step="0.1" value="1.5"
+          oninput="hot('b1');upd()"><span class="val" id="v_b1">1.50</span></div>
+      <div class="row"><button onclick="reseed()">nueva muestra (otra semilla)</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Sube <b>|&beta;&#8321;|</b> hacia 4 sin tocar &beta;&#8320;.
+        <span class="obs">La sigmoide se vuelve más vertical: la decisión se hace tajante
+        y casi todos los votos caen cerca de la frontera.</span></li>
+      <li>Mueve <b>&beta;&#8320;</b> a izquierda y derecha.
+        <span class="obs">La frontera x* = &minus;&beta;&#8320;/&beta;&#8321; se desplaza:
+        con &beta;&#8320; positivo la baja llega antes (x* a la izquierda).</span></li>
+      <li>Partes de accuracy &asymp;67%; busca el par (&beta;&#8320;, &beta;&#8321;) que la
+        <b>maximice</b>.
+        <span class="obs">En torno a &beta;&#8320;&asymp;&minus;1.3, &beta;&#8321;&asymp;1.2
+        la accuracy sube hasta ~85% y el log-loss baja a la vez: ambos mejoran juntos.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">¿Por qué la <b>sigmoide</b> y no una recta? Una probabilidad vive
+        en (0, 1); la sigmoide <b>acota</b> ahí cualquier valor de &beta;&#8320;+&beta;&#8321;x.
+        Una recta se saldría de [0, 1] y daría "probabilidades" negativas o mayores que 1.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee así.</span> Los puntos abajo (y=0, sigue) y arriba (y=1, baja)
+    son clientes reales. La curva <span class="gold">dorada</span> es p(x); la línea gris
+    marca p = 0.5 y la vertical marca la frontera x*. Al mover un slider se enciende su
+    término (<span class="gold">&beta;&#8320;</span> o <span class="gold">&beta;&#8321;</span>)
+    en la ecuación.</p>
+
+    <div class="miniglos">
+      <b>&beta;&#8320;</b> sesgo: desplaza la curva y fija dónde cae la frontera.
+      <b>&beta;&#8321;</b> pendiente: cuánto pesa la antigüedad; su signo dice si la baja
+      crece o decrece con x. <b>&sigma;</b> función logística que convierte cualquier número
+      en una probabilidad de (0, 1).
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">p = &sigma;(&beta;&#8320; + &beta;&#8321;&middot;x) &nbsp;&rarr;&nbsp; decide si p &gt; 0.5</div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> La regresión logística modela una
+    <b>probabilidad</b>, no una clase. La recta gris (regresión lineal) ajusta los 0/1
+    pero se <b>escapa</b> de [0, 1]: predice bajas negativas o superiores al 100%. La
+    sigmoide dorada se queda siempre dentro: por eso es una probabilidad legítima.</p>
+    <p><span class="hd">De probabilidad a decisión.</span> El <b>umbral 0.5</b> parte la
+    curva: por encima predices baja, por debajo permanencia. Mover el umbral (0.3, 0.7)
+    cambia el equilibrio entre falsos positivos y falsos negativos, según lo que cueste
+    cada error de negocio.</p>
+    <p><span class="hd">Cómo se entrena.</span> No se minimiza el error cuadrático sino el
+    <b>log-loss</b>: penaliza con fuerza estar muy seguro y equivocarse. Los &beta; que lo
+    minimizan son la mejor logística para tus datos.</p>
+    <p><span class="hd">Negocio.</span> Movistar prioriza a los clientes con p alta para
+    una oferta de retención. La logística además es <b>interpretable</b>: el signo de
+    &beta;&#8321; dice si la antigüedad protege o empuja al churn.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Regresión logística</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["La probabilidad","Para llevar"];
+const TITLES=["La regresión logística estima la probabilidad de baja y decide por umbral 0.5.",
+              "La logística modela una probabilidad acotada y se entrena minimizando el log-loss."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const t2=document.getElementById('t_'+id+'b'); if(t2)t2.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+let SEED=7;
+function sig(z){return 1/(1+Math.exp(-z));}
+function makeData(seed){
+  const rnd=mulberry32(seed); const pts=[];
+  const B0=0.0, B1=1.3; // parámetros verdaderos (churn crece con la antigüedad)
+  for(let i=0;i<60;i++){
+    const x=-3+6*rnd();                 // antigüedad estandarizada en [-3,3]
+    const pr=sig(B0+B1*x);              // probabilidad real de baja
+    const y=rnd()<pr?1:0;              // etiqueta muestreada de la sigmoide verdadera
+    const jit=(rnd()-0.5)*0.14;        // jitter vertical seedado para dibujar
+    pts.push({x,y,jit});
+  }
+  return pts;
+}
+let DATA=makeData(SEED);
+function evalModel(b0,b1){
+  let correct=0, ll=0; const eps=1e-9, n=DATA.length;
+  for(const p of DATA){
+    const pp=sig(b0+b1*p.x);
+    if((pp>0.5?1:0)===p.y)correct++;
+    const pc=Math.min(1-eps,Math.max(eps,pp));
+    ll+= -(p.y*Math.log(pc)+(1-p.y)*Math.log(1-pc));
+  }
+  return {acc:correct/n, logloss:ll/n};
+}
+function frontier(b0,b1){return b1!==0? -b0/b1 : NaN;}
+function linfit(){
+  let n=DATA.length,sx=0,sy=0,sxx=0,sxy=0;
+  for(const p of DATA){sx+=p.x;sy+=p.y;sxx+=p.x*p.x;sxy+=p.x*p.y;}
+  const b=(n*sxy-sx*sy)/(n*sxx-sx*sx);
+  const a=(sy-b*sx)/n;
+  return {a,b};
+}
+
+// ---------- rendering ----------
+function upd(){
+  const b0=+document.getElementById('b0').value;
+  const b1=+document.getElementById('b1').value;
+  document.getElementById('v_b0').textContent=b0.toFixed(2);
+  document.getElementById('v_b1').textContent=b1.toFixed(2);
+  document.getElementById('n_b0').textContent='β₀ = '+b0.toFixed(2);
+  document.getElementById('n_b1').textContent='β₁ = '+b1.toFixed(2);
+  const m=evalModel(b0,b1);
+  const xstar=frontier(b0,b1);
+  const xex=1.5;                       // cliente veterano de ejemplo
+  const pex=sig(b0+b1*xex);
+  const xsTxt=Number.isFinite(xstar)? xstar.toFixed(2) : 'no existe (β₁=0)';
+  document.getElementById('ro').innerHTML=
+    'Accuracy: <b>'+(100*m.acc).toFixed(1)+'%</b> &middot; log-loss: <b>'+m.logloss.toFixed(3)+'</b><br>'+
+    'Frontera x* = '+xsTxt+' &middot; cliente x=1.5 &rarr; p = <b>'+pex.toFixed(2)+'</b><br>'+
+    '<span class="badge '+(pex>0.5?'bad':'ok')+'">'+
+    (pex>0.5?'Ese cliente: SE DA DE BAJA':'Ese cliente: SIGUE')+
+    ' &middot; p = '+(100*pex).toFixed(0)+'%</span>';
+  draw(b0,b1,xstar);
+}
+function draw(b0,b1,xstar){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=46,my=16,W=w-mx-16,H=h-my-32;
+  const X=v=>mx+(v+3)/6*W, Y=v=>my+(1-v)*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('probabilidad de baja',6,my+10);
+  ctx.fillText('antigüedad (estandarizada)',mx+W-210,my+H+22);
+  // marcas eje x
+  ctx.textAlign='center';
+  for(let t=-3;t<=3;t++){const px=X(t);ctx.fillStyle='#bbb';
+    ctx.fillText(t.toString(),px,my+H+16);}
+  ctx.textAlign='left';
+  // línea p=0.5 (gris)
+  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(mx,Y(0.5));ctx.lineTo(mx+W,Y(0.5));ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#8A8A8A';ctx.fillText('p = 0.5',mx+4,Y(0.5)-5);
+  // curva sigmoide p(x) (dorada)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.beginPath();
+  for(let i=0;i<=200;i++){const xx=-3+6*i/200;const yy=sig(b0+b1*xx);
+    const px=X(xx),py=Y(yy);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.stroke();
+  // frontera x* (vertical, dorado profundo)
+  if(Number.isFinite(xstar)&&xstar>=-3&&xstar<=3){
+    ctx.strokeStyle='#8C6508';ctx.lineWidth=1.8;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(X(xstar),my);ctx.lineTo(X(xstar),my+H);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#8C6508';ctx.font='bold 12px Georgia';
+    ctx.fillText('x*',X(xstar)+4,my+12);
+  }
+  // puntos: clase 1 (baja) arriba dorado, clase 0 (sigue) abajo mute
+  for(const p of DATA){
+    const py=Y(p.y+p.jit);
+    ctx.beginPath();ctx.arc(X(p.x),py,4.2,0,7);
+    ctx.fillStyle=p.y?'#B8860B':'#8A8A8A';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();
+  }
+}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=46,my=18,W=w-mx-16,H=h-my-40;
+  // eje y de -0.4 a 1.4 para que la recta se salga visiblemente de [0,1]
+  const ylo=-0.4,yhi=1.4;
+  const X=v=>mx+(v+3)/6*W, Y=v=>my+(yhi-v)/(yhi-ylo)*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('probabilidad de baja',6,my+10);
+  ctx.fillText('antigüedad (estandarizada)',mx+W-210,my+H+24);
+  // bandas p=0 y p=1 (límites de una probabilidad)
+  ctx.strokeStyle='#ddd';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(mx,Y(0));ctx.lineTo(mx+W,Y(0));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(mx,Y(1));ctx.lineTo(mx+W,Y(1));ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#bbb';ctx.fillText('p = 1',mx+4,Y(1)-4);ctx.fillText('p = 0',mx+4,Y(0)+14);
+  // recta de regresión lineal (gris, se sale de [0,1])
+  const lf=linfit();
+  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=2.0;ctx.setLineDash([6,4]);ctx.beginPath();
+  {const y0=lf.a+lf.b*(-3),y1=lf.a+lf.b*(3);
+   ctx.moveTo(X(-3),Y(y0));ctx.lineTo(X(3),Y(y1));}
+  ctx.stroke();ctx.setLineDash([]);
+  // sigmoide (dorada, acotada) con parámetros razonables
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.beginPath();
+  for(let i=0;i<=200;i++){const xx=-3+6*i/200;const yy=sig(0+1.3*xx);
+    const px=X(xx),py=Y(yy);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.stroke();
+  // puntos
+  for(const p of DATA){
+    ctx.beginPath();ctx.arc(X(p.x),Y(p.y+p.jit*0.6),3.6,0,7);
+    ctx.fillStyle=p.y?'#B8860B':'#8A8A8A';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();
+  }
+  // leyendas
+  ctx.font='bold 13px Georgia';
+  ctx.fillStyle='#8A8A8A';ctx.fillText('recta lineal (se sale de [0,1])',X(-2.9),Y(1.32));
+  ctx.fillStyle='#B8860B';ctx.fillText('sigmóide (acotada en (0,1))',X(0.1),Y(0.28));
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('b1');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

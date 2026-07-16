@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árboles de decisión — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La regla de un corte y su impureza de Gini</div>
+      <div class="eq" style="font-size:1.15em">
+        regla: si ingresos &lt; <span class="term" id="t_t">t</span> &rarr; deniega,
+        &nbsp;si no &rarr; aprueba
+      </div>
+      <div class="eq">
+        G(nodo) = 1 &minus; &sum;<sub>c</sub> p<sub>c</sub><sup>2</sup>
+      </div>
+      <div class="eq" style="font-size:1.15em">
+        Ganancia = G<sub>padre</sub> &minus;
+        (n<sub>L</sub>/n)&middot;G<sub>L</sub> &minus;
+        (n<sub>R</sub>/n)&middot;G<sub>R</sub>
+      </div>
+      <div class="eqnum">
+        con <span class="nterm" id="n_t">t = 0.50</span>:
+        <b id="n_gain">&mdash;</b>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> BBVA decide aprobar un préstamo mirando una sola
+    señal: los <b>ingresos</b> del cliente (x, estandarizados a [0,1]). Un árbol de
+    decisión elige un <b>umbral t</b> que parte a los clientes en dos grupos: los de la
+    izquierda (ingresos bajos) y los de la derecha (ingresos altos). El buen corte deja
+    cada grupo lo más <b>puro</b> posible: casi todos de la misma clase.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">t</span>
+        <input type="range" id="t" min="0" max="1" step="0.01" value="0.50"
+          oninput="hot('t');upd()"><span class="val" id="v_t">0.50</span></div>
+      <div class="row"><button onclick="reseed()">nueva muestra (otra semilla)</button>
+        <button onclick="setOpt()">llévame al t óptimo</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Empuja <b>t</b> casi al extremo izquierdo (t &asymp; 0.05).
+        <span class="obs">El grupo izquierdo queda casi vacío: el corte no separa nada
+        y la Ganancia cae a ~0.</span></li>
+      <li>Desliza <b>t</b> hacia la zona de solapamiento (centro, t &asymp; 0.5).
+        <span class="obs">La Ganancia alcanza su MÁXIMO y las dos regiones quedan casi
+        puras (Gini de cada lado bajo).</span></li>
+      <li>Lleva <b>t</b> casi al extremo derecho (t &asymp; 0.95).
+        <span class="obs">Ahora es el grupo derecho el que queda casi vacío y la
+        Ganancia vuelve a ~0.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">¿Por qué el árbol elige el corte de <b>máxima Ganancia</b>?
+        Porque G<sub>padre</sub> es fijo, maximizar la Ganancia equivale a
+        <b>minimizar la impureza ponderada</b> de los dos hijos: el corte que deja los
+        grupos más puros es el que mejor separa a quien paga de quien no.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee así.</span> Cada punto es un cliente sobre el eje de
+    ingresos: <span class="gold">dorado</span> = aprobado, <span style="color:#8A8A8A;font-weight:bold">gris</span>
+    = denegado. La línea <span class="gold">dorada</span> vertical es tu umbral t; al
+    moverlo se enciende el término <span class="gold">t</span> de la regla. Cada región
+    se pinta con el color de su clase mayoritaria y muestra su Gini. La marca punteada
+    señala el <b>t óptimo</b> (el de máxima Ganancia).</p>
+
+    <div class="miniglos">
+      <b>t</b> umbral de ingresos que parte a los clientes en dos grupos.
+      <b>p<sub>c</sub></b> proporción de la clase c dentro de un grupo.
+      <b>G</b> impureza de Gini: 0 = grupo puro, 0.5 = mitad y mitad.
+      <b>Ganancia</b> cuánta impureza elimina el corte respecto al nodo padre.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">un corte = elegir el t que maximiza la Ganancia de Gini</div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> Un árbol repite este mismo gesto: busca la
+    pregunta ("¿ingresos &lt; t?") que más impureza elimina, parte, y vuelve a partir
+    cada trozo. Encadenando cortes puros construye una escalera de reglas
+    <b>if-then</b>.</p>
+    <p><span class="hd">Negocio.</span> Su gran virtud es que es <b>legible</b>: un
+    analista de riesgos de BBVA puede leer el árbol como una política ("si ingresos
+    bajos y sin aval, deniega") y justificarla ante un regulador. No hace falta escalar
+    variables ni interpretar coeficientes.</p>
+    <p><span class="hd">El dial clave.</span> La <b>profundidad</b>. Un árbol poco
+    profundo generaliza pero se queda corto; uno muy profundo memoriza el ruido de tus
+    clientes históricos: <b>sobreajuste</b>. Se controla limitando profundidad, hojas
+    mínimas o podando.</p>
+    <p><span class="hd">Y ahora.</span> Para domar el sobreajuste sin perder poder se
+    promedian <b>muchos árboles</b> distintos: eso son los <b>random forests</b> del
+    próximo tema.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Árboles de decisión</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["El corte","Para llevar"];
+const TITLES=["Un árbol elige el umbral que deja los dos grupos lo más puros posible.",
+              "Encadenando cortes puros se construye un árbol legible, pero fácil de sobreajustar."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+let SEED=7;
+function clip(v){return Math.max(0.02,Math.min(0.98,v));}
+function makeData(seed){
+  const rnd=mulberry32(seed); const pts=[];
+  // Box-Muller con el RNG seedado (nunca Math.random)
+  function gauss(){let u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  // clase 0 = deniega (ingresos bajos), clase 1 = aprueba (ingresos altos), con solapamiento
+  for(let i=0;i<35;i++){pts.push({x:clip(0.37+0.13*gauss()),c:0,jit:rnd()});}
+  for(let i=0;i<35;i++){pts.push({x:clip(0.63+0.13*gauss()),c:1,jit:rnd()});}
+  return pts;
+}
+let DATA=makeData(SEED);
+
+function gini(sub){
+  const n=sub.length; if(n===0)return 0;
+  let n1=0; for(const p of sub)if(p.c===1)n1++;
+  const p1=n1/n, p0=1-p1;
+  return 1-p0*p0-p1*p1;             // binario: 1 - p0^2 - p1^2 = 2 p0 p1
+}
+function majority(sub){
+  if(sub.length===0)return 1;       // grupo vacío: valor por defecto (aprueba)
+  let n1=0; for(const p of sub)if(p.c===1)n1++;
+  return n1>=sub.length-n1?1:0;
+}
+function splitStats(pts,t){
+  const L=pts.filter(p=>p.x<t), R=pts.filter(p=>p.x>=t);
+  const n=pts.length, nL=L.length, nR=R.length;
+  const gL=gini(L), gR=gini(R), gP=gini(pts);
+  const weighted=(nL/n)*gL+(nR/n)*gR;
+  const gain=gP-weighted;
+  const majL=majority(L), majR=majority(R);
+  // acierto de la regla: cada lado predice su clase mayoritaria
+  let correct=0;
+  for(const p of L)if(p.c===majL)correct++;
+  for(const p of R)if(p.c===majR)correct++;
+  const acc=correct/n;
+  return {L,R,n,nL,nR,gL,gR,gP,weighted,gain,majL,majR,acc};
+}
+function bestThreshold(pts){
+  const xs=pts.map(p=>p.x).sort((a,b)=>a-b);
+  let best=0.5,bg=-1;
+  for(let i=0;i<xs.length-1;i++){
+    const t=(xs[i]+xs[i+1])/2;
+    const g=splitStats(pts,t).gain;
+    if(g>bg){bg=g;best=t;}
+  }
+  return {t:best,gain:bg};
+}
+
+// ---------- rendering ----------
+function upd(){
+  const t=+document.getElementById('t').value;
+  document.getElementById('v_t').textContent=t.toFixed(2);
+  const s=splitStats(DATA,t);
+  const opt=bestThreshold(DATA);
+  document.getElementById('n_t').textContent='t = '+t.toFixed(2);
+  document.getElementById('n_gain').textContent='Ganancia = '+s.gain.toFixed(3);
+  const ruleTxt='izq &rarr; '+(s.majL?'aprueba':'deniega')+
+                ' &middot; der &rarr; '+(s.majR?'aprueba':'deniega');
+  const optimal=Math.abs(t-opt.t)<0.02;
+  document.getElementById('ro').innerHTML=
+    'Corte en t = <b>'+t.toFixed(2)+'</b>: '+s.nL+' clientes a la izquierda, '+
+    s.nR+' a la derecha.<br>'+
+    'Gini izquierda G<sub>L</sub> = <b>'+s.gL.toFixed(3)+'</b> &middot; '+
+    'Gini derecha G<sub>R</sub> = <b>'+s.gR.toFixed(3)+'</b><br>'+
+    'Impureza ponderada = <b>'+s.weighted.toFixed(3)+'</b> &middot; '+
+    'Ganancia = <b>'+s.gain.toFixed(3)+'</b><br>'+
+    'Regla: '+ruleTxt+' &middot; acierto = <b>'+Math.round(100*s.acc)+'%</b><br>'+
+    '<span class="badge '+(optimal?'ok':'bad')+'">'+
+    (optimal?'¡Estás en el t óptimo ('+opt.t.toFixed(2)+')!'
+            :'t óptimo &asymp; '+opt.t.toFixed(2)+' (Ganancia '+opt.gain.toFixed(3)+')')+
+    '</span>';
+  draw(t,s,opt);
+}
+function draw(t,s,opt){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=44,my=20,W=w-mx-16,H=h-my-42;
+  const X=v=>mx+v*W, Y=v=>my+(1-v)*H;
+  // regiones sombreadas por clase mayoritaria de cada lado
+  ctx.fillStyle=s.majL?'rgba(184,134,11,0.12)':'rgba(138,138,138,0.12)';
+  ctx.fillRect(X(0),my,X(t)-X(0),H);
+  ctx.fillStyle=s.majR?'rgba(184,134,11,0.12)':'rgba(138,138,138,0.12)';
+  ctx.fillRect(X(t),my,X(1)-X(t),H);
+  // ejes / marco
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.strokeRect(mx,my,W,H);
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('deniega (clase 0)',mx+6,my+H-8);
+  ctx.textAlign='right';ctx.fillText('aprueba (clase 1)',mx+W-6,my+18);ctx.textAlign='left';
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 13px Georgia';
+  ctx.fillText('ingresos (estandarizado)',mx+W-190,my+H+30);
+  // marcas del eje x
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';
+  for(let g=0;g<=10;g++){const xv=g/10;ctx.fillText(xv.toFixed(1),X(xv)-7,my+H+15);}
+  // t óptimo (marca punteada)
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=1.4;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(X(opt.t),my);ctx.lineTo(X(opt.t),my+H);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#8C6508';ctx.font='bold 12px Georgia';
+  ctx.fillText('t óptimo',X(opt.t)+4,my+H-4);
+  // puntos (clase 0 abajo, clase 1 arriba, con jitter seedado)
+  DATA.forEach(p=>{
+    const yband=p.c?0.72:0.28;
+    const y=Y(yband+(p.jit-0.5)*0.28);
+    ctx.beginPath();ctx.arc(X(p.x),y,4.5,0,7);
+    ctx.fillStyle=p.c?'#B8860B':'#8A8A8A';ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();
+  });
+  // línea del umbral t (dorada, gruesa)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;
+  ctx.beginPath();ctx.moveTo(X(t),my-4);ctx.lineTo(X(t),my+H+4);ctx.stroke();
+  ctx.fillStyle='#B8860B';ctx.font='bold 13px Georgia';
+  ctx.fillText('t = '+t.toFixed(2),X(t)+5,my+12);
+  // Gini de cada lado dentro de su región
+  ctx.font='bold 13px Georgia';
+  ctx.fillStyle='#1A1A1A';
+  ctx.fillText('G_L = '+s.gL.toFixed(2),X(0)+8,my+H*0.5);
+  ctx.fillText('G_R = '+s.gR.toFixed(2),X(t)+8,my+H*0.5);
+}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
+function setOpt(){const opt=bestThreshold(DATA);
+  document.getElementById('t').value=opt.t.toFixed(2);hot('t');upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const opt=bestThreshold(DATA);
+  const s=splitStats(DATA,opt.t);
+  // ---- diagrama de árbol de 2 niveles ----
+  const cxRoot=w/2, yRoot=54;
+  const yLeaf=h-92;
+  const cxL=w*0.27, cxR=w*0.73;
+  // aristas
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cxRoot,yRoot+26);ctx.lineTo(cxL,yLeaf-22);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cxRoot,yRoot+26);ctx.lineTo(cxR,yLeaf-22);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='italic 12px Georgia';
+  ctx.fillText('sí (ingresos < t)',(cxRoot+cxL)/2-70,(yRoot+yLeaf)/2);
+  ctx.fillText('no (ingresos ≥ t)',(cxRoot+cxR)/2+2,(yRoot+yLeaf)/2);
+  // nodo raíz
+  function box(cx,cy,bw,bh,fill,stroke){
+    ctx.fillStyle=fill;ctx.strokeStyle=stroke;ctx.lineWidth=2;
+    ctx.beginPath();
+    const x=cx-bw/2,y=cy-bh/2,r=8;
+    ctx.moveTo(x+r,y);ctx.arcTo(x+bw,y,x+bw,y+bh,r);ctx.arcTo(x+bw,y+bh,x,y+bh,r);
+    ctx.arcTo(x,y+bh,x,y,r);ctx.arcTo(x,y,x+bw,y,r);ctx.closePath();
+    ctx.fill();ctx.stroke();
+  }
+  box(cxRoot,yRoot,220,44,'#fffdf7','#B8860B');
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 15px Georgia';ctx.textAlign='center';
+  ctx.fillText('¿ingresos < '+opt.t.toFixed(2)+' ?',cxRoot,yRoot+5);
+  // hoja izquierda (deniega, gris)
+  const denyPure=s.nL?Math.round(100*(s.majL===0? (s.L.filter(p=>p.c===0).length/s.nL):(s.L.filter(p=>p.c===1).length/s.nL))):0;
+  box(cxL,yLeaf,210,60,'#f3f3f3','#8A8A8A');
+  ctx.fillStyle='#5a5a5a';ctx.font='bold 15px Georgia';
+  ctx.fillText(s.majL?'APRUEBA':'DENIEGA',cxL,yLeaf-8);
+  ctx.font='12px Georgia';
+  ctx.fillText(s.nL+' clientes · pureza '+denyPure+'%',cxL,yLeaf+12);
+  // hoja derecha (aprueba, dorado)
+  const okPure=s.nR?Math.round(100*(s.majR===1?(s.R.filter(p=>p.c===1).length/s.nR):(s.R.filter(p=>p.c===0).length/s.nR))):0;
+  box(cxR,yLeaf,210,60,'#fbf3dc','#B8860B');
+  ctx.fillStyle='#8C6508';ctx.font='bold 15px Georgia';
+  ctx.fillText(s.majR?'APRUEBA':'DENIEGA',cxR,yLeaf-8);
+  ctx.font='12px Georgia';
+  ctx.fillText(s.nR+' clientes · pureza '+okPure+'%',cxR,yLeaf+12);
+  ctx.textAlign='left';
+  // pie
+  ctx.fillStyle='#8A8A8A';ctx.font='italic 12px Georgia';
+  ctx.fillText('Un corte de máxima Ganancia (t = '+opt.t.toFixed(2)+
+    ', acierto '+Math.round(100*s.acc)+'%). Un árbol encadena muchos de estos.',
+    16,h-16);
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('t');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHAP — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+  .eqread{font-size:0.8em;color:#555;line-height:1.45;margin:6px 2px 0 2px;text-align:left}
+  .eqread b{color:var(--goldDeep)}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La cuenta exacta que le enseñas al cliente</div>
+      <div class="eq">
+        f(x) = <span class="nterm" id="n_0">&phi;<sub>0</sub></span>
+        + <span class="term" id="t_ing">&phi;<sub>ing</sub></span>
+        + <span class="term" id="t_deuda">&phi;<sub>deu</sub></span>
+        + <span class="term" id="t_ant">&phi;<sub>ant</sub></span>
+        + <span class="term" id="t_mor">&phi;<sub>mor</sub></span>
+      </div>
+      <div class="eq" style="font-size:1.1em">
+        &phi;<sub>j</sub> = w<sub>j</sub> &middot; ( x<sub>j</sub> &minus; E[x<sub>j</sub>] )
+        <span style="color:#999">,&nbsp;&nbsp;</span>
+        &phi;<sub>0</sub> = w<sub>0</sub> + &sum;<sub>j</sub> w<sub>j</sub>E[x<sub>j</sub>]
+      </div>
+      <div class="eqread">
+        <b>f(x)</b> puntuación de riesgo de impago de ESTE cliente. &nbsp;
+        <b>&phi;<sub>0</sub></b> riesgo del cliente medio (la base, = f(E[x])). &nbsp;
+        <b>&phi;<sub>j</sub></b> cuánto suma o resta cada variable respecto a la media. &nbsp;
+        <b>w<sub>j</sub></b> peso del modelo lineal. &nbsp;
+        <b>x<sub>j</sub></b> valor del cliente. &nbsp;
+        <b>E[x<sub>j</sub>]</b> valor medio de la cartera.
+      </div>
+      <div class="eqnum" style="margin-top:10px">
+        &phi;<sub>ing</sub>=<span class="nterm" id="n_ing">&mdash;</span>&nbsp;
+        &phi;<sub>deu</sub>=<span class="nterm" id="n_deuda">&mdash;</span>&nbsp;
+        &phi;<sub>ant</sub>=<span class="nterm" id="n_ant">&mdash;</span>&nbsp;
+        &phi;<sub>mor</sub>=<span class="nterm" id="n_mor">&mdash;</span>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> BBVA le deniega un préstamo a un cliente y por
+    regulación debe explicarle <b>por qué</b>. El modelo de riesgo es lineal,
+    f(x)=w<sub>0</sub>+&sum;<sub>j</sub>w<sub>j</sub>x<sub>j</sub>, con cuatro
+    variables estandarizadas: <b>ingresos</b> (x<sub>1</sub>),
+    <b>ratio de deuda</b> (x<sub>2</sub>), <b>antigüedad</b> (x<sub>3</sub>) y
+    <b>morosidad previa</b> (x<sub>4</sub>). SHAP reparte la puntuación en cuatro
+    trozos, uno por variable.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">x&#8321;</span>
+        <input type="range" id="ing" min="-2" max="2" step="0.1" value="-0.5"
+          oninput="hot('ing');upd()"><span class="val" id="v_ing">-0.5</span></div>
+      <div class="row"><span class="lab">x&#8322;</span>
+        <input type="range" id="deuda" min="-2" max="2" step="0.1" value="1.0"
+          oninput="hot('deuda');upd()"><span class="val" id="v_deuda">1.0</span></div>
+      <div class="row"><span class="lab">x&#8323;</span>
+        <input type="range" id="ant" min="-2" max="2" step="0.1" value="-0.3"
+          oninput="hot('ant');upd()"><span class="val" id="v_ant">-0.3</span></div>
+      <div class="row"><span class="lab">x&#8324;</span>
+        <input type="range" id="mor" min="-2" max="2" step="0.1" value="1.5"
+          oninput="hot('mor');upd()"><span class="val" id="v_mor">1.5</span></div>
+      <div class="row"><button onclick="setMean()">poner todo en la media E[x]</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Sube <b>x&#8324; morosidad previa</b>.
+        <span class="obs">Aparece una barra DORADA hacia arriba que empuja a denegar:
+        f(x) crece exactamente en w<sub>mor</sub>&middot;(x<sub>4</sub>&minus;E[x<sub>4</sub>]).</span></li>
+      <li>Sube <b>x&#8321; ingresos</b>.
+        <span class="obs">Sale una barra GRIS hacia abajo: más ingresos reducen el
+        riesgo (w<sub>ing</sub>&lt;0).</span></li>
+      <li>Pulsa <b>poner todo en la media E[x]</b>.
+        <span class="obs">Todas las &phi;<sub>j</sub>=0 y f(x)=&phi;<sub>0</sub>: el
+        cliente medio se queda en la base.</span></li>
+      <details class="check"><summary>¿Por qué las contribuciones suman EXACTO?</summary>
+        <div class="ans">Por la propiedad de <b>eficiencia</b> (aditividad) de Shapley:
+        &phi;<sub>0</sub>+&sum;<sub>j</sub>&phi;<sub>j</sub> = f(x). En un modelo lineal se ve
+        al desarrollar: &phi;<sub>0</sub>+&sum;<sub>j</sub>w<sub>j</sub>(x<sub>j</sub>&minus;E[x<sub>j</sub>])
+        = w<sub>0</sub>+&sum;<sub>j</sub>w<sub>j</sub>E[x<sub>j</sub>] +
+        &sum;<sub>j</sub>w<sub>j</sub>x<sub>j</sub> &minus; &sum;<sub>j</sub>w<sub>j</sub>E[x<sub>j</sub>]
+        = w<sub>0</sub>+&sum;<sub>j</sub>w<sub>j</sub>x<sub>j</sub> = f(x). Los términos medios
+        se cancelan y no queda residuo: la cascada llega justo a f(x).</div></details>
+    </ol>
+
+    <p><span class="hd">Lee así.</span> La cascada empieza en la base
+    <span class="gold">&phi;<sub>0</sub></span> y da un salto por variable: dorado hacia
+    arriba (sube riesgo), gris hacia abajo (baja riesgo). Al mover un slider se enciende
+    su término <span class="gold">&phi;<sub>j</sub></span> en la ecuación y su eco numérico.</p>
+
+    <div class="miniglos">
+      <b>Pesos</b> w<sub>0</sub>=0.30, w<sub>ing</sub>=&minus;0.12, w<sub>deu</sub>=+0.15,
+      w<sub>ant</sub>=&minus;0.08, w<sub>mor</sub>=+0.20.
+      <b>Medias</b> E[x]=(0.3, 0.2, 0.4, 0.1).
+      <b>&phi;<sub>j</sub>&gt;0</b> empuja a denegar; <b>&phi;<sub>j</sub>&lt;0</b> ayuda a aprobar.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">f(x) = &phi;<sub>0</sub> + &sum;<sub>j</sub> &phi;<sub>j</sub>,
+        &nbsp; &phi;<sub>j</sub> = w<sub>j</sub>(x<sub>j</sub> &minus; E[x<sub>j</sub>])</div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> SHAP <b>reparte</b> la predicción entre las
+    variables de forma justa y <b>aditiva</b>: cada &phi;<sub>j</sub> es lo que aporta esa
+    variable, y todas juntas suman exactamente f(x)&minus;&phi;<sub>0</sub>.</p>
+    <p><span class="hd">En un modelo lineal.</span> No hace falta aproximar nada: la
+    contribución de Shapley es <b>exactamente</b> w<sub>j</sub>(x<sub>j</sub>&minus;E[x<sub>j</sub>]).
+    En modelos complejos (árboles, redes) se estima, pero la lógica del reparto es la misma.</p>
+    <p><span class="hd">Importancia global.</span> Promediando |&phi;<sub>j</sub>| sobre
+    muchos clientes obtienes qué variable pesa más en la cartera. La barra dominante
+    aquí es la que más mueve las decisiones.</p>
+    <p><span class="hd">Negocio y regulación.</span> Sirve para <b>auditar</b> el modelo
+    (¿discrimina por una variable prohibida?) y para <b>explicar</b> cada decisión al
+    cliente y al supervisor, como exige el derecho a explicación.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Explicabilidad (SHAP)</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["Por qué se deniega","Para llevar"];
+const TITLES=["Los valores SHAP explican la puntuación de riesgo repartiéndola entre las cuatro variables.",
+              "SHAP reparte la predicción de forma justa y aditiva; en un modelo lineal es exacto."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+const W0=0.30;
+// ingresos y antigüedad reducen riesgo (w<0); deuda y morosidad lo suben (w>0)
+const W ={ing:-0.12, deuda:0.15, ant:-0.08, mor:0.20};
+const EX={ing: 0.30, deuda:0.20, ant: 0.40, mor:0.10};
+const VARS=[
+  {id:'ing',   name:'ingresos'},
+  {id:'deuda', name:'ratio deuda'},
+  {id:'ant',   name:'antigüedad'},
+  {id:'mor',   name:'morosidad'}
+];
+const THR=0.5; // umbral de denegación
+function phi0(){let s=W0; for(const v of VARS) s+=W[v.id]*EX[v.id]; return s;}
+function phij(id,xj){return W[id]*(xj-EX[id]);}
+function predictDirect(x){let s=W0; for(const v of VARS) s+=W[v.id]*x[v.id]; return s;}
+function globalImportance(seed,N){
+  const rnd=mulberry32(seed);
+  function gauss(){let u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const SD=0.9, acc={ing:0,deuda:0,ant:0,mor:0};
+  for(let i=0;i<N;i++){for(const v of VARS){const xj=EX[v.id]+SD*gauss();
+    acc[v.id]+=Math.abs(phij(v.id,xj));}}
+  for(const v of VARS) acc[v.id]/=N;
+  return acc;
+}
+
+// ---------- rendering ----------
+function upd(){
+  const x={};
+  VARS.forEach(v=>{x[v.id]=+document.getElementById(v.id).value;
+    document.getElementById('v_'+v.id).textContent=x[v.id].toFixed(1);});
+  const p0=phi0();
+  const contrib={}; let sum=0;
+  VARS.forEach(v=>{const c=phij(v.id,x[v.id]);contrib[v.id]=c;sum+=c;
+    document.getElementById('n_'+v.id).textContent=(c>=0?'+':'')+c.toFixed(3);});
+  document.getElementById('n_0').textContent='φ₀='+p0.toFixed(3);
+  const fdirect=predictDirect(x);   // f(x) calculada directa
+  const fadd=p0+sum;                // φ₀ + Σφj
+  const ok=Math.abs(fdirect-fadd)<1e-9;
+  const deny=fdirect>THR;
+  // lista de contribuciones ordenada por magnitud
+  const list=VARS.map(v=>({n:v.name,c:contrib[v.id]}))
+    .sort((a,b)=>Math.abs(b.c)-Math.abs(a.c))
+    .map(o=>o.n+' '+(o.c>=0?'+':'−')+Math.abs(o.c).toFixed(3)).join(', ');
+  document.getElementById('ro').innerHTML=
+    'Predicción de riesgo <b>f(x) = '+fdirect.toFixed(4)+'</b> &nbsp;(base φ₀ = '+p0.toFixed(4)+').<br>'+
+    'Contribuciones: '+list+'.<br>'+
+    'Aditividad: φ₀ + Σφⱼ = '+fadd.toFixed(4)+
+    (ok? ' <b>=</b> f(x) = '+fdirect.toFixed(4)+' &nbsp;✓ coinciden.'
+       : ' ≠ f(x) = '+fdirect.toFixed(4))+'<br>'+
+    '<span class="badge '+(deny?'bad':'ok')+'">'+
+    (deny?'Decisión: DENEGAR':'Decisión: APROBAR')+
+    ' &middot; umbral '+THR.toFixed(2)+'</span>';
+  draw(p0,contrib,fdirect);
+}
+function draw(p0,contrib,fx){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=52,my=18,W=w-mx-16,H=h-my-46;
+  // niveles acumulados de la cascada: base -> +cada phi -> f(x)
+  const cum=[p0];
+  VARS.forEach(v=>cum.push(cum[cum.length-1]+contrib[v.id]));
+  // rango y
+  let lo=0, hi=Math.max(THR,fx);
+  cum.forEach(c=>{lo=Math.min(lo,c);hi=Math.max(hi,c);});
+  lo=Math.min(lo,0); hi=hi+0.12; lo=lo-0.08;
+  if(hi-lo<0.4){hi=lo+0.4;}
+  const Y=v=>my+H*(1-(v-lo)/(hi-lo));
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('riesgo de impago',6,my+11);
+  // marcas eje y
+  ctx.textAlign='right';ctx.font='11px Georgia';
+  for(let g=0;g<=4;g++){const val=lo+(hi-lo)*g/4;const yy=Y(val);
+    ctx.strokeStyle='#eee';ctx.beginPath();ctx.moveTo(mx,yy);ctx.lineTo(mx+W,yy);ctx.stroke();
+    ctx.fillStyle='#8A8A8A';ctx.fillText(val.toFixed(2),mx-4,yy+3);}
+  ctx.textAlign='left';
+  // umbral de denegación
+  const yth=Y(THR);
+  ctx.strokeStyle='#7a3c00';ctx.lineWidth=1.4;ctx.setLineDash([6,4]);
+  ctx.beginPath();ctx.moveTo(mx,yth);ctx.lineTo(mx+W,yth);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#7a3c00';ctx.font='11px Georgia';
+  ctx.fillText('umbral denegar = '+THR.toFixed(2),mx+W-140,yth-4);
+  // columnas: base, 4 pasos, f(x)  -> 6
+  const n=6, cw=W/n, bw=cw*0.56;
+  const cx=i=>mx+cw*(i+0.5);
+  const y0=Y(0);
+  function bar(i,ytop,ybot,fill,stroke){
+    const x0=cx(i)-bw/2;
+    ctx.fillStyle=fill;ctx.fillRect(x0,Math.min(ytop,ybot),bw,Math.abs(ybot-ytop));
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.strokeRect(x0,Math.min(ytop,ybot),bw,Math.abs(ybot-ytop));}
+  }
+  ctx.textAlign='center';
+  // barra base
+  bar(0,Y(p0),y0,'rgba(138,138,138,0.55)','#8A8A8A');
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 12px Georgia';
+  ctx.fillText('base φ₀',cx(0),my+H+16);
+  ctx.fillText(p0.toFixed(2),cx(0),Y(p0)-6);
+  // pasos por variable
+  const labels=['ingresos','deuda','antig.','morosidad'];
+  VARS.forEach((v,j)=>{
+    const from=cum[j], to=cum[j+1], c=contrib[v.id];
+    const up=c>0;                 // sube riesgo -> dorado
+    const fill=up?'rgba(184,134,11,0.85)':'rgba(138,138,138,0.75)';
+    const stroke=up?'#8C6508':'#6f6f6f';
+    // barra flotante entre from y to
+    bar(j+1,Y(from),Y(to),fill,stroke);
+    // línea conectora al paso previo
+    ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(cx(j)+bw/2,Y(from));ctx.lineTo(cx(j+1)-bw/2,Y(from));ctx.stroke();
+    ctx.setLineDash([]);
+    // etiqueta valor con signo
+    ctx.fillStyle=up?'#8C6508':'#555';ctx.font='bold 11px Georgia';
+    const ytxt=Y(Math.max(from,to))-6;
+    ctx.fillText((c>=0?'+':'−')+Math.abs(c).toFixed(2),cx(j+1),ytxt);
+    ctx.fillStyle='#1A1A1A';ctx.font='12px Georgia';
+    ctx.fillText(labels[j],cx(j+1),my+H+16);
+  });
+  // conectora del último paso a la barra f(x)
+  ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(cx(4)+bw/2,Y(cum[4]));ctx.lineTo(cx(5)-bw/2,Y(cum[4]));ctx.stroke();
+  ctx.setLineDash([]);
+  // barra final f(x)
+  const denyCol=fx>THR;
+  bar(5,Y(fx),y0,denyCol?'rgba(140,101,8,0.9)':'rgba(60,90,42,0.75)',denyCol?'#5a3f04':'#3c5a2a');
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 12px Georgia';
+  ctx.fillText('f(x)',cx(5),my+H+16);
+  ctx.fillText(fx.toFixed(2),cx(5),Y(fx)-6);
+  ctx.textAlign='left';
+}
+updaters[0]=upd;
+function setMean(){VARS.forEach(v=>{document.getElementById(v.id).value=EX[v.id];});upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const imp=globalImportance(20240716,4000);
+  const mx=58,my=24,W=w-mx-18,H=h-my-42;
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('importancia global  media |φⱼ|',6,my+11);
+  // orden por magnitud
+  const arr=VARS.map(v=>({name:v.name,val:imp[v.id]})).sort((a,b)=>b.val-a.val);
+  const mxv=Math.max.apply(null,arr.map(o=>o.val))*1.15;
+  const n=arr.length, cw=W/n, bw=cw*0.5;
+  const Y=v=>my+H*(1-v/mxv);
+  ctx.textAlign='center';
+  arr.forEach((o,i)=>{
+    const cx=mx+cw*(i+0.5), y0=my+H, yt=Y(o.val);
+    ctx.fillStyle=i===0?'rgba(184,134,11,0.9)':'rgba(184,134,11,0.5)';
+    ctx.fillRect(cx-bw/2,yt,bw,y0-yt);
+    ctx.strokeStyle='#8C6508';ctx.lineWidth=1;ctx.strokeRect(cx-bw/2,yt,bw,y0-yt);
+    ctx.fillStyle='#8C6508';ctx.font='bold 12px Georgia';
+    ctx.fillText(o.val.toFixed(3),cx,yt-6);
+    ctx.fillStyle='#1A1A1A';ctx.font='13px Georgia';
+    ctx.fillText(o.name,cx,y0+18);
+  });
+  ctx.textAlign='left';
+  ctx.fillStyle='#8A8A8A';ctx.font='italic 12px Georgia';
+  ctx.fillText('promedio sobre 4000 clientes simulados (semilla fija)',mx+4,my+H+36);
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('mor');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

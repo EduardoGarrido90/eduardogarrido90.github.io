@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ensembles — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox select{flex:1;font-family:inherit;font-size:0.95em;padding:3px 6px;
+    border:1px solid var(--rule);border-radius:3px;background:#fff;color:var(--ink)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La ecuación del ensemble</div>
+      <div class="eq">
+        F(x) = &sum;<sub>m=1</sub><sup><span class="term" id="t_M">M</span></sup>
+        <span class="term" id="t_eta">&alpha;<sub>m</sub></span> &middot; h<sub>m</sub>(x)
+      </div>
+      <div class="eqnum">
+        modo <b id="n_mode">boosting</b> con
+        <span class="nterm" id="n_M">M = 10</span> modelos base,
+        <span class="nterm" id="n_eta">&alpha; = 0.30</span>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Amazon quiere predecir la <b>demanda diaria</b> (y)
+    de un producto en funci&oacute;n de su <b>precio relativo</b> (x, entre 0 y 1). Un solo
+    modelo simple (un <i>decision stump</i>: un &uacute;nico corte) falla. La idea del
+    <b>ensemble</b> es combinar M modelos d&eacute;biles h<sub>m</sub> con pesos &alpha;<sub>m</sub>
+    para formar uno fuerte: la curva <span class="gold">dorada</span> F(x).</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">modo</span>
+        <select id="mode" onchange="upd()">
+          <option value="bagging">bagging (paralelo)</option>
+          <option value="boosting" selected>boosting (secuencial)</option>
+          <option value="stacking">stacking (mezcla aprendida)</option>
+        </select></div>
+      <div class="row"><span class="lab">M</span>
+        <input type="range" id="M" min="1" max="40" step="1" value="10"
+          oninput="hot('M');upd()"><span class="val" id="v_M">10</span></div>
+      <div class="row"><span class="lab">&alpha;</span>
+        <input type="range" id="eta" min="0.05" max="1" step="0.05" value="0.30"
+          oninput="hot('eta');upd()"><span class="val" id="v_eta">0.30</span></div>
+      <div class="row" style="font-size:0.82em;color:#8C6508;margin-top:0">
+        &alpha; = learning rate (solo relevante en <b>boosting</b>)</div>
+      <div class="row"><button onclick="reseed()">nueva muestra (otra semilla)</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Pon el modo en <b>boosting</b> y <b>M = 1</b>.
+        <span class="obs">El ajuste es burdo: F es casi plana (un &uacute;nico paso corto
+        desde la media) y el badge marca &laquo;ajuste burdo&raquo;.</span>
+        Ahora sube M hasta 40.
+        <span class="obs">El MSE de entrenamiento BAJA de forma mon&oacute;tona y F sigue
+        el escal&oacute;n real de la demanda.</span></li>
+      <li>Con boosting, baja <b>&alpha;</b> a 0.05 y observa.
+        <span class="obs">Con &alpha; peque&ntilde;o necesitas MUCHOS m&aacute;s M para el mismo
+        ajuste: el learning rate regulariza, avanza a pasos cortos.</span></li>
+      <li>Cambia el modo a <b>bagging</b> y mueve M.
+        <span class="obs">F sale suave y estable, pero su MSE de entrenamiento no baja tanto:
+        promediar stumps reduce varianza, no el sesgo.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans"><b>Bagging</b> ajusta los modelos <b>en paralelo</b> sobre muestras
+        bootstrap y los promedia: baja la <b>varianza</b>. <b>Boosting</b> los ajusta
+        <b>en secuencia</b>, cada uno corrigiendo el error del anterior: baja el <b>sesgo</b>,
+        pero con M muy alto puede sobreajustar.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee as&iacute;.</span> Los puntos grises son las ventas observadas; la
+    curva <span class="gold">dorada</span> es la predicci&oacute;n F(x) del ensemble. Sube
+    <span class="gold">M</span> y se enciende el l&iacute;mite del sumatorio; mueve
+    <span class="gold">&alpha;</span> y se enciende el peso de cada modelo.</p>
+
+    <div class="miniglos">
+      <b>h<sub>m</sub>(x)</b> modelo base d&eacute;bil (un <i>stump</i>: un corte, media a cada lado).
+      <b>&alpha;<sub>m</sub></b> peso de cada modelo (1/M en bagging, &alpha; en boosting, aprendido en stacking).
+      <b>M</b> cu&aacute;ntos modelos se combinan.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">F(x) = &sum;<sub>m</sub> &alpha;<sub>m</sub> h<sub>m</sub>(x): muchos d&eacute;biles &rarr; uno fuerte</div>
+    </div>
+    <canvas id="cv2" width="720" height="340"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> Un solo modelo d&eacute;bil no basta. Combinar muchos
+    reduce el error de tres maneras distintas. La curva muestra c&oacute;mo cae el MSE de
+    entrenamiento al a&ntilde;adir modelos (M): <b>boosting</b> baja m&aacute;s r&aacute;pido y m&aacute;s hondo,
+    <b>bagging</b> se estabiliza pronto, <b>stacking</b> queda en medio.</p>
+    <p><span class="hd">Negocio.</span> As&iacute; funcionan los modelos que Amazon o cualquier
+    retailer usa en producci&oacute;n para demanda, riesgo o <i>churn</i>: casi nunca es un modelo
+    &uacute;nico, sino un ensemble (XGBoost, LightGBM, Random Forest son exactamente esto).</p>
+    <p><span class="hd">El dial clave.</span> En boosting, el par de diales M y &alpha; gobierna
+    el equilibrio sesgo&ndash;varianza: &alpha; peque&ntilde;o + M grande da el mejor ajuste sin
+    saltos bruscos. Es el hiperpar&aacute;metro que m&aacute;s toca un cient&iacute;fico de datos.</p>
+    <p><span class="hd">Y ahora.</span> Bagging promedia en paralelo (baja varianza), boosting
+    corrige en secuencia (baja sesgo) y stacking aprende c&oacute;mo mezclar los modelos. Tres
+    recetas para el mismo fin: que el conjunto sea mejor que cualquiera de sus partes.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Ensembles</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["Combinar modelos","Para llevar"];
+const TITLES=["Un ensemble combina M modelos débiles con pesos para predecir la demanda.",
+              "Tres recetas para combinar: bagging promedia, boosting corrige, stacking mezcla."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+let SEED=7;
+// demanda real: escalón suave (sigmoide) + pendiente lineal
+function ftrue(x){return 0.28+0.34*x+0.45/(1+Math.exp(-13*(x-0.5)));}
+function makeData(seed){
+  const rnd=mulberry32(seed);
+  function gauss(){let u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const pts=[];
+  for(let i=0;i<80;i++){const x=rnd();const y=ftrue(x)+0.06*gauss();pts.push({x,y});}
+  pts.sort((a,b)=>a.x-b.x);
+  return pts;
+}
+let DATA=makeData(SEED);
+function split(data){const tr=[],va=[];data.forEach((p,i)=>{if(i%4===0)va.push(p);else tr.push(p);});return {tr,va};}
+
+// decision stump 1D que minimiza SSE: un corte, media a cada lado
+function fitStump(xs,ys){
+  const n=xs.length;
+  const idx=xs.map((v,i)=>i).sort((a,b)=>xs[a]-xs[b]);
+  let sumAll=0;for(let i=0;i<n;i++)sumAll+=ys[i];
+  let best={s:0.5,left:sumAll/n,right:sumAll/n,obj:Infinity};
+  let sumL=0,cntL=0;
+  for(let k=0;k<n-1;k++){
+    sumL+=ys[idx[k]];cntL++;
+    const cntR=n-cntL,sumR=sumAll-sumL;
+    const xi=xs[idx[k]],xj=xs[idx[k+1]];
+    if(xi===xj)continue;
+    const obj=-(sumL*sumL/cntL+sumR*sumR/cntR); // minimizar SSE <=> minimizar este término
+    if(obj<best.obj){best={s:(xi+xj)/2,left:sumL/cntL,right:sumR/cntR,obj};}
+  }
+  return best;
+}
+function stumpPred(st,x){return x<=st.s?st.left:st.right;}
+
+// eliminación gaussiana para (B^T B + lambda I) w = B^T y
+function gaussSolve(A,b){
+  const n=b.length;
+  const M=A.map((row,i)=>row.slice().concat([b[i]]));
+  for(let c=0;c<n;c++){
+    let piv=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[piv][c]))piv=r;
+    const tmp=M[c];M[c]=M[piv];M[piv]=tmp;
+    const d=M[c][c];if(Math.abs(d)<1e-12)continue;
+    for(let r=0;r<n;r++){if(r===c)continue;const f=M[r][c]/d;for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k];}
+  }
+  const x=new Array(n).fill(0);
+  for(let c=0;c<n;c++){const d=M[c][c];x[c]=Math.abs(d)<1e-12?0:M[c][n]/d;}
+  return x;
+}
+
+// --- ajustes por modo ---
+function fitBagging(tr,M,seed){
+  const rnd=mulberry32(seed);const n=tr.length;const stumps=[];
+  for(let m=0;m<M;m++){
+    const bx=[],by=[];
+    for(let i=0;i<n;i++){const j=Math.floor(rnd()*n);bx.push(tr[j].x);by.push(tr[j].y);}
+    stumps.push(fitStump(bx,by));
+  }
+  return {stumps};
+}
+function baggingPred(model,x){let s=0;for(const st of model.stumps)s+=stumpPred(st,x);return s/model.stumps.length;}
+
+function fitBoosting(tr,M,eta){
+  const xs=tr.map(p=>p.x),ys=tr.map(p=>p.y),n=xs.length;
+  const F0=ys.reduce((a,b)=>a+b,0)/n;
+  const stumps=[];const F=xs.map(()=>F0);
+  for(let m=0;m<M;m++){
+    const r=ys.map((y,i)=>y-F[i]);
+    const st=fitStump(xs,r);
+    stumps.push(st);
+    for(let i=0;i<n;i++)F[i]+=eta*stumpPred(st,xs[i]);
+  }
+  return {F0,eta,stumps};
+}
+function boostingPred(model,x){let v=model.F0;for(const st of model.stumps)v+=model.eta*stumpPred(st,x);return v;}
+
+function fitStacking(tr,va,M){
+  const xs=tr.map(p=>p.x),ys=tr.map(p=>p.y),n=xs.length;
+  const mean=ys.reduce((a,b)=>a+b,0)/n;
+  // recta por mínimos cuadrados
+  let sx=0,sy=0,sxx=0,sxy=0;
+  for(let i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxx+=xs[i]*xs[i];sxy+=xs[i]*ys[i];}
+  const den=n*sxx-sx*sx;const b=Math.abs(den)>1e-12?(n*sxy-sx*sy)/den:0;const a=(sy-b*sx)/n;
+  const bases=[];
+  bases.push({type:'media',pred:x=>mean});
+  bases.push({type:'recta',pred:x=>a+b*x});
+  const nStumps=Math.max(1,M);
+  for(let i=0;i<nStumps;i++){
+    const t=0.15+0.7*(i+1)/(nStumps+1);
+    let sumL=0,cntL=0,sumR=0,cntR=0;
+    for(let j=0;j<n;j++){if(xs[j]<=t){sumL+=ys[j];cntL++;}else{sumR+=ys[j];cntR++;}}
+    const left=cntL?sumL/cntL:mean,right=cntR?sumR/cntR:mean;
+    bases.push({type:'stump',s:t,left,right,pred:x=>x<=t?left:right});
+  }
+  // pesos alpha por mínimos cuadrados sobre validación
+  const p=bases.length;
+  const Bv=va.map(pt=>bases.map(bb=>bb.pred(pt.x)));
+  const yv=va.map(pt=>pt.y);
+  const A=[],rhs=[];const lam=1e-4;
+  for(let i=0;i<p;i++){
+    const row=new Array(p).fill(0);
+    for(let jj=0;jj<p;jj++){let s=0;for(let k=0;k<Bv.length;k++)s+=Bv[k][i]*Bv[k][jj];row[jj]=s+(i===jj?lam:0);}
+    A.push(row);
+    let s=0;for(let k=0;k<Bv.length;k++)s+=Bv[k][i]*yv[k];rhs.push(s);
+  }
+  const w=gaussSolve(A,rhs);
+  return {bases,w};
+}
+function stackingPred(model,x){let v=0;for(let i=0;i<model.bases.length;i++)v+=model.w[i]*model.bases[i].pred(x);return v;}
+
+function fitModel(mode,M,eta,seed){
+  const {tr,va}=split(DATA);
+  if(mode==='bagging'){return {model:fitBagging(tr,M,seed),pred:baggingPred,tr,va};}
+  if(mode==='stacking'){return {model:fitStacking(tr,va,M),pred:stackingPred,tr,va};}
+  return {model:fitBoosting(tr,M,eta),pred:boostingPred,tr,va};
+}
+function mseOf(model,pred,pts){let s=0;for(const p of pts){const e=p.y-pred(model,p.x);s+=e*e;}return s/pts.length;}
+function baseMSE(pts){const m=pts.reduce((a,p)=>a+p.y,0)/pts.length;let s=0;for(const p of pts){const e=p.y-m;s+=e*e;}return s/pts.length;}
+
+// ---------- rendering ----------
+const YLO=0.10,YHI=1.25;
+function upd(){
+  const mode=document.getElementById('mode').value;
+  const M=+document.getElementById('M').value;
+  const eta=+document.getElementById('eta').value;
+  document.getElementById('v_M').textContent=M;
+  document.getElementById('v_eta').textContent=eta.toFixed(2);
+  document.getElementById('n_mode').textContent=mode;
+  document.getElementById('n_M').textContent='M = '+M;
+  document.getElementById('n_eta').textContent='α = '+eta.toFixed(2);
+  const fit=fitModel(mode,M,eta,SEED);
+  const mseTr=mseOf(fit.model,fit.pred,fit.tr);
+  const mseVa=mseOf(fit.model,fit.pred,fit.va);
+  const b0=baseMSE(fit.tr);
+  const ratio=mseTr/b0;
+  const good=ratio<0.5;
+  let pesoTxt;
+  if(mode==='bagging')pesoTxt='α<sub>m</sub> = 1/M = '+(1/M).toFixed(3)+' (media)';
+  else if(mode==='boosting')pesoTxt='α<sub>m</sub> = α = '+eta.toFixed(2)+' (learning rate)';
+  else pesoTxt='α aprendidos por mínimos cuadrados en validación';
+  document.getElementById('ro').innerHTML=
+    'Modo <b>'+mode+'</b> &middot; <b>'+M+'</b> modelos base &middot; '+pesoTxt+'.<br>'+
+    'MSE entrenamiento: <b>'+mseTr.toFixed(4)+'</b> (predecir la media da '+b0.toFixed(4)+').<br>'+
+    'MSE validación (holdout): <b>'+mseVa.toFixed(4)+'</b>.<br>'+
+    '<span class="badge '+(good?'ok':'bad')+'">'+
+    (good?'Buen ajuste: F sigue la forma real':'Ajuste burdo: sube M para mejorar')+
+    ' &middot; '+Math.round(100*(1-ratio))+'% de mejora sobre la media</span>';
+  draw(mode,M,eta,fit);
+}
+function draw(mode,M,eta,fit){
+  const cv=document.getElementById('cv');const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=48,my=16,W=w-mx-16,H=h-my-32;
+  const X=v=>mx+v*W, Y=v=>my+(1-(v-YLO)/(YHI-YLO))*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('demanda (y)',6,my+10);
+  ctx.fillText('precio relativo (x)',mx+W-150,my+H+22);
+  // ticks x
+  ctx.fillStyle='#aaa';ctx.font='11px Georgia';
+  for(let t=0;t<=1.0001;t+=0.25){ctx.fillText(t.toFixed(2),X(t)-9,my+H+15);
+    ctx.strokeStyle='#eee';ctx.beginPath();ctx.moveTo(X(t),my);ctx.lineTo(X(t),my+H);ctx.stroke();}
+  // puntos: train grises, validación huecos
+  for(const p of fit.tr){ctx.beginPath();ctx.arc(X(p.x),Y(p.y),3.4,0,7);
+    ctx.fillStyle='rgba(90,90,90,0.55)';ctx.fill();}
+  for(const p of fit.va){ctx.beginPath();ctx.arc(X(p.x),Y(p.y),3.6,0,7);
+    ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1.2;ctx.stroke();}
+  // boosting: último h_m en gris tenue (F0 + eta*h_m)
+  if(mode==='boosting' && fit.model.stumps.length){
+    const st=fit.model.stumps[fit.model.stumps.length-1];
+    const F0=fit.model.F0;
+    ctx.strokeStyle='rgba(138,138,138,0.5)';ctx.lineWidth=1.4;ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    for(let i=0;i<=160;i++){const x=i/160;const y=F0+eta*stumpPred(st,x);
+      const yy=Math.max(YLO,Math.min(YHI,y));if(i===0)ctx.moveTo(X(x),Y(yy));else ctx.lineTo(X(x),Y(yy));}
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.fillText('último h_m (×α)',X(0.02),Y(F0)-6);
+  }
+  // curva F(x) en dorado
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.beginPath();
+  for(let i=0;i<=200;i++){const x=i/200;const y=fit.pred(fit.model,x);
+    const yy=Math.max(YLO,Math.min(YHI,y));if(i===0)ctx.moveTo(X(x),Y(yy));else ctx.lineTo(X(x),Y(yy));}
+  ctx.stroke();
+  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';ctx.fillText('F(x)',X(0.86),Y(fit.pred(fit.model,0.9))-8);
+}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2');const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=56,my=20,W=w-mx-18,H=h-my-42;
+  // curvas MSE de train vs M para los tres modos
+  const eta=+document.getElementById('eta').value;
+  const Ms=[];for(let m=1;m<=40;m++)Ms.push(m);
+  const modes=['bagging','boosting','stacking'];
+  const colors={bagging:'#8A8A8A',boosting:'#B8860B',stacking:'#8C6508'};
+  const dash={bagging:[5,4],boosting:[],stacking:[2,3]};
+  const curves={};let ymax=0;
+  for(const md of modes){
+    const arr=Ms.map(m=>{const f=fitModel(md,m,eta,SEED);return mseOf(f.model,f.pred,f.tr);});
+    curves[md]=arr;for(const v of arr)if(v>ymax)ymax=v;
+  }
+  ymax=ymax*1.08;
+  const X=m=>mx+((m-1)/39)*W, Y=v=>my+(1-v/ymax)*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('MSE de entrenamiento',6,my+12);
+  ctx.fillText('número de modelos combinados  M',mx+W-250,my+H+26);
+  ctx.fillStyle='#aaa';ctx.font='11px Georgia';
+  for(const m of [1,10,20,30,40]){ctx.fillText(''+m,X(m)-5,my+H+15);}
+  for(let k=0;k<=4;k++){const v=ymax*k/4;ctx.fillText(v.toFixed(3),4,Y(v)+4);
+    ctx.strokeStyle='#f0f0f0';ctx.beginPath();ctx.moveTo(mx,Y(v));ctx.lineTo(mx+W,Y(v));ctx.stroke();}
+  // curvas
+  for(const md of modes){
+    ctx.strokeStyle=colors[md];ctx.lineWidth=md==='boosting'?2.6:2.0;
+    ctx.setLineDash(dash[md]);ctx.beginPath();
+    curves[md].forEach((v,i)=>{const x=X(Ms[i]),y=Y(v);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  // etiquetas al final de cada curva
+  ctx.font='bold 13px Georgia';
+  const lastM=40;
+  ctx.fillStyle=colors.boosting;ctx.fillText('boosting',X(lastM)-72,Y(curves.boosting[39])-6);
+  ctx.fillStyle=colors.bagging;ctx.fillText('bagging',X(lastM)-64,Y(curves.bagging[39])-6);
+  ctx.fillStyle=colors.stacking;ctx.fillText('stacking',X(lastM)-70,Y(curves.stacking[39])+16);
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('M');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

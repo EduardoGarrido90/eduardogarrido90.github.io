@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Random forests — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">El bosque promedia muchos árboles</div>
+      <div class="eq">
+        &ycirc;(x) = <sup>1</sup>&frasl;<sub><span class="term" id="t_B">B</span></sub>
+        &sum;<sub>b=1</sub><sup>B</sup> T<sub>b</sub>(x)
+      </div>
+      <div class="eq" style="font-size:1.12em">
+        Var(&ycirc;) &asymp; &rho;&thinsp;&sigma;&sup2; +
+        <sup>(1&minus;&rho;)</sup>&frasl;<sub>B</sub>&thinsp;&sigma;&sup2;
+      </div>
+      <div class="eqnum">
+        con <span class="nterm" id="n_B">B = 30</span> árboles:
+        <b id="n_tally">&mdash;</b>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Mapfre quiere estimar el <b>coste esperado de
+    siniestro</b> (y, en miles de €) según la <b>antigüedad del carné</b> del conductor
+    (x, estandarizada en [0,1]). Un solo árbol de decisión es inestable: cambia mucho si
+    cambias los datos. La idea del <span class="gold">random forest</span> es entrenar
+    muchos árboles sobre remuestreos <b>bootstrap</b> de la cartera y quedarte con su
+    <b>promedio</b>.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">B</span>
+        <input type="range" id="B" min="1" max="120" step="1" value="30"
+          oninput="hot('B');upd()"><span class="val" id="v_B">30</span></div>
+      <div class="row"><button onclick="reseed()">nueva muestra (otra semilla)</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Pon <b>B = 1</b> y pulsa varias veces "nueva muestra".
+        <span class="obs">La predicción es escalonada y salta de golpe en cada
+        remuestreo: un árbol solo tiene mucha varianza.</span></li>
+      <li>Sube <b>B</b> hasta 120 y vuelve a pulsar "nueva muestra".
+        <span class="obs">La línea dorada del bosque se vuelve suave y apenas se mueve
+        al reseedear: el promedio ha domado la varianza.</span></li>
+      <li>Arrastra <b>B</b> despacio de 1 a 120 mirando el MSE y la varianza.
+        <span class="obs">Al principio mejora muchísimo y luego se estanca: el suelo
+        &rho;&sigma;&sup2; no baja aunque añadas más árboles.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">¿Por qué promediar reduce la <b>varianza</b> pero no el
+        <b>sesgo</b>? Promediar estimadores ruidosos cancela el ruido (la media es más
+        estable que cada árbol). Pero todos los árboles son poco profundos y comparten
+        el mismo <b>sesgo</b> sistemático: no pueden capturar cierta curvatura de f. La
+        media de muchas cosas sesgadas en la misma dirección sigue estando sesgada.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee así.</span> Los puntos grises son la cartera; las líneas
+    grises tenues son unos pocos árboles individuales (escalonados); la
+    <span class="gold">línea dorada gruesa</span> es la media del bosque y la línea
+    discontinua negra es la f verdadera. Al mover <b>B</b> se enciende el término
+    <span class="gold">B</span> de las dos ecuaciones.</p>
+
+    <div class="miniglos">
+      <b>T<sub>b</sub>(x)</b> el árbol b entrenado sobre un remuestreo bootstrap.
+      <b>B</b> número de árboles: más árboles = media más suave y estable.
+      <b>&rho;</b> correlación media entre árboles; <b>&sigma;&sup2;</b> varianza de un
+      árbol suelto. El suelo <b>&rho;&sigma;&sup2;</b> es lo que el promedio no elimina.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">
+        Var(&ycirc;) &asymp; &rho;&thinsp;&sigma;&sup2; +
+        <sup>(1&minus;&rho;)</sup>&frasl;<sub>B</sub>&thinsp;&sigma;&sup2;
+      </div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> Un árbol de regresión es un buen predictor con
+    <b>baja tendencia</b> pero <b>alta varianza</b>: reordena los datos y te da otra cosa.
+    El <b>bagging</b> (bootstrap + averaging) entrena B árboles sobre remuestreos y
+    promedia. La varianza del promedio cae como <b>1/B</b>&hellip; hasta un suelo.</p>
+    <p><span class="hd">El suelo.</span> Ese suelo horizontal es <b>&rho;&sigma;&sup2;</b>.
+    Existe porque los árboles no son independientes: entrenados sobre remuestreos de la
+    misma cartera, se parecen (correlación &rho; &gt; 0). Por muchos árboles que añadas, no
+    bajas de ahí. Añadir árboles cuesta cómputo y ya no mejora.</p>
+    <p><span class="hd">El truco extra.</span> Para <b>descorrelacionar</b> los árboles y
+    bajar &rho; (y con ello el suelo), el random forest submuestrea también las
+    <b>variables</b> en cada corte. Menos &rho; &rarr; suelo &rho;&sigma;&sup2; más bajo
+    &rarr; mejor bosque. Eso separa un random forest de un simple bagging de árboles.</p>
+    <p><span class="hd">Negocio.</span> Cambias <b>varianza por estabilidad</b>: el coste
+    estimado de siniestro deja de bailar con cada muestra nueva y es auditable y
+    reproducible, justo lo que una aseguradora necesita para tarificar.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Random forests</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["El bosque","Para llevar"];
+const TITLES=["El random forest promedia muchos árboles bootstrap para reducir la varianza.",
+              "Cambias varianza por estabilidad, pero la correlación entre árboles pone un suelo."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+let SEED=7;
+const N=80;              // nº de conductores en la cartera
+const SIGMA=0.7;         // ruido gaussiano (miles €)
+const MAXDEPTH=2;        // árbol poco profundo: 2 niveles -> hasta 3 cortes
+const R=5;               // remuestreos de forest para medir la varianza empírica
+const X_TEST=0.5;        // punto de test donde medimos Var(y-hat)
+
+function f_true(x){ return 3 + 2*(0.8*Math.sin(3*x) + 1.2*x); } // coste verdadero (miles €)
+
+function makeData(seed){
+  const rnd=mulberry32(seed);
+  function gauss(){let u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const xs=[],ys=[];
+  for(let i=0;i<N;i++){const x=rnd();xs.push(x);ys.push(f_true(x)+SIGMA*gauss());}
+  return {xs,ys};
+}
+let DATA=makeData(SEED);
+
+function meanIdx(idx,ys){let s=0;for(const i of idx)s+=ys[i];return s/idx.length;}
+
+// árbol de regresión recursivo: elige el corte que minimiza la suma de varianzas intra-nodo
+function buildTree(idx,xs,ys,depth,maxDepth){
+  const n=idx.length;
+  const m=meanIdx(idx,ys);
+  if(depth>=maxDepth||n<4)return {leaf:true,val:m};
+  const sorted=idx.slice().sort((a,b)=>xs[a]-xs[b]);
+  let bestSSE=Infinity,bestThr=null,bestL=null,bestR=null;
+  for(let t=0;t<sorted.length-1;t++){
+    if(xs[sorted[t]]===xs[sorted[t+1]])continue;
+    const thr=(xs[sorted[t]]+xs[sorted[t+1]])/2;
+    const L=[],Rr=[];
+    for(const i of idx){ if(xs[i]<=thr)L.push(i); else Rr.push(i); }
+    if(!L.length||!Rr.length)continue;
+    const mL=meanIdx(L,ys),mR=meanIdx(Rr,ys);
+    let sse=0;
+    for(const i of L){const d=ys[i]-mL;sse+=d*d;}
+    for(const i of Rr){const d=ys[i]-mR;sse+=d*d;}
+    if(sse<bestSSE){bestSSE=sse;bestThr=thr;bestL=L;bestR=Rr;}
+  }
+  if(bestThr===null)return {leaf:true,val:m};
+  return {leaf:false,thr:bestThr,
+    left:buildTree(bestL,xs,ys,depth+1,maxDepth),
+    right:buildTree(bestR,xs,ys,depth+1,maxDepth)};
+}
+function predTree(tree,x){let t=tree;while(!t.leaf){t = x<=t.thr?t.left:t.right;}return t.val;}
+
+// bosque: B árboles sobre muestras bootstrap, semilla derivada de un contador + semilla base
+function buildForest(data,B,baseSeed){
+  const trees=[];const n=data.xs.length;
+  for(let b=0;b<B;b++){
+    const rnd=mulberry32((baseSeed + b*1013904223)|0);
+    const idx=[];for(let i=0;i<n;i++)idx.push(Math.floor(rnd()*n));
+    trees.push(buildTree(idx,data.xs,data.ys,0,MAXDEPTH));
+  }
+  return trees;
+}
+function forestPred(trees,x){let s=0;for(const t of trees)s+=predTree(t,x);return s/trees.length;}
+function baseSeedR(r){return (SEED*2654435761 + r*40503 + 11)>>>0;}
+
+// mide rho (correlación media entre árboles) y sigma^2 (varianza de un árbol suelto)
+function measureRhoSigma(){
+  const M=16;
+  const trees=buildForest(DATA,M,(SEED*2654435761+777)>>>0);
+  const G=40;const preds=[];
+  for(const t of trees){const arr=[];for(let g=0;g<G;g++)arr.push(predTree(t,g/(G-1)));preds.push(arr);}
+  let sig2=0;
+  for(let g=0;g<G;g++){let m=0;for(let k=0;k<M;k++)m+=preds[k][g];m/=M;
+    let v=0;for(let k=0;k<M;k++){const d=preds[k][g]-m;v+=d*d;}sig2+=v/M;}
+  sig2/=G;
+  const tm=[],tsd=[];
+  for(let k=0;k<M;k++){let m=0;for(let g=0;g<G;g++)m+=preds[k][g];m/=G;
+    let s=0;for(let g=0;g<G;g++){const d=preds[k][g]-m;s+=d*d;}tm.push(m);tsd.push(Math.sqrt(s/G));}
+  let rsum=0,cnt=0;
+  for(let a=0;a<M;a++)for(let b=a+1;b<M;b++){
+    if(tsd[a]<1e-9||tsd[b]<1e-9)continue;
+    let cov=0;for(let g=0;g<G;g++)cov+=(preds[a][g]-tm[a])*(preds[b][g]-tm[b]);cov/=G;
+    rsum+=cov/(tsd[a]*tsd[b]);cnt++;
+  }
+  let rho=cnt?rsum/cnt:0.5;
+  rho=Math.max(0.02,Math.min(0.98,rho));
+  return {rho,sig2};
+}
+
+// ---------- rendering ----------
+function upd(){
+  const B=+document.getElementById('B').value;
+  document.getElementById('v_B').textContent=B;
+  document.getElementById('n_B').textContent='B = '+B;
+
+  // R bosques con semillas base distintas (misma cartera): aísla la varianza del bagging
+  const forests=[];for(let r=0;r<R;r++)forests.push(buildForest(DATA,B,baseSeedR(r)));
+  const main=forests[0];
+
+  // MSE del bosque frente a f verdadera sobre una rejilla
+  const G=160;let mse=0;
+  for(let g=0;g<G;g++){const x=g/(G-1);const d=forestPred(main,x)-f_true(x);mse+=d*d;}
+  mse/=G;
+
+  // varianza empírica de y-hat(x_test) entre los R remuestreos
+  const preds=forests.map(t=>forestPred(t,X_TEST));
+  const mp=preds.reduce((s,v)=>s+v,0)/R;
+  let varF=0;preds.forEach(v=>{varF+=(v-mp)*(v-mp);});varF/=R;
+
+  // referencia con B=1 (un solo árbol por semilla)
+  const preds1=[];for(let r=0;r<R;r++)preds1.push(forestPred(buildForest(DATA,1,baseSeedR(r)),X_TEST));
+  const mp1=preds1.reduce((s,v)=>s+v,0)/R;
+  let var1=0;preds1.forEach(v=>{var1+=(v-mp1)*(v-mp1);});var1/=R;
+
+  document.getElementById('n_tally').textContent='MSE = '+mse.toFixed(2)+' (miles €)²';
+
+  const drop=varF>1e-9?(var1/varF):999;
+  const good=(B>=8 && varF<var1*0.6);
+  document.getElementById('ro').innerHTML=
+    'x de test = '+X_TEST.toFixed(2)+' (antigüedad del carné estandarizada).<br>'+
+    '<b>MSE</b> del bosque vs. f verdadera: <b>'+mse.toFixed(3)+'</b> (miles €)².<br>'+
+    '<b>Var(&ycirc;)</b> en x de test entre remuestreos: <b>'+varF.toFixed(3)+'</b>'+
+    ' &nbsp;(con B=1 valía '+var1.toFixed(3)+').<br>'+
+    '<span class="badge '+(good?'ok':'bad')+'">'+
+    (good?('Varianza reducida ≈ '+drop.toFixed(1)+'× respecto a B=1')
+         :'Sube B para promediar y reducir la varianza')+'</span>';
+
+  draw(B,main);
+}
+function draw(B,main){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=52,my=34,W=w-mx-16,H=h-my-40;
+  let yMin=Infinity,yMax=-Infinity;
+  for(const y of DATA.ys){if(y<yMin)yMin=y;if(y>yMax)yMax=y;}
+  const pad=(yMax-yMin)*0.08||1;yMin-=pad;yMax+=pad;
+  const X=x=>mx+x*W, Y=y=>my+(1-(y-yMin)/(yMax-yMin))*H;
+  // título
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 14px Georgia';ctx.textAlign='left';
+  ctx.fillText('Coste esperado de siniestro (Mapfre): un árbol vs. el bosque',mx,my-16);
+  // ejes + rejilla y
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.textAlign='right';
+  for(let t=0;t<=4;t++){const yv=yMin+(yMax-yMin)*t/4;const py=Y(yv);
+    ctx.fillText(yv.toFixed(1),mx-6,py+3);
+    ctx.strokeStyle='#f2f2f2';ctx.beginPath();ctx.moveTo(mx,py);ctx.lineTo(mx+W,py);ctx.stroke();}
+  ctx.textAlign='center';ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';
+  for(let t=0;t<=5;t++){const xv=t/5;ctx.fillText(xv.toFixed(1),X(xv),my+H+15);}
+  ctx.textAlign='left';
+  // etiquetas de eje
+  ctx.save();ctx.translate(14,my+H/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.fillText('coste esperado (miles €)',0,0);ctx.restore();
+  ctx.textAlign='left';ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
+  ctx.fillText('antigüedad del carné (x estandarizada)',mx+W-235,my+H+30);
+  const G=200;
+  // árboles individuales (líneas escalonadas grises tenues)
+  const nShow=Math.min(B,10);
+  ctx.strokeStyle='rgba(138,138,138,0.35)';ctx.lineWidth=1;
+  for(let s=0;s<nShow;s++){const t=main[s];ctx.beginPath();
+    for(let g=0;g<G;g++){const x=g/(G-1);const px=X(x),py=Y(predTree(t,x));if(g===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+    ctx.stroke();}
+  // f verdadera (discontinua negra)
+  ctx.strokeStyle='#1A1A1A';ctx.lineWidth=1.6;ctx.setLineDash([6,4]);ctx.beginPath();
+  for(let g=0;g<G;g++){const x=g/(G-1);const px=X(x),py=Y(f_true(x));if(g===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.stroke();ctx.setLineDash([]);
+  // media del bosque (dorado grueso)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=3;ctx.beginPath();
+  for(let g=0;g<G;g++){const x=g/(G-1);const px=X(x),py=Y(forestPred(main,x));if(g===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.stroke();
+  // datos
+  for(let i=0;i<DATA.xs.length;i++){ctx.beginPath();ctx.arc(X(DATA.xs[i]),Y(DATA.ys[i]),3,0,7);
+    ctx.fillStyle='rgba(60,60,60,0.5)';ctx.fill();}
+  // marca del x de test
+  ctx.strokeStyle='rgba(140,101,8,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(X(X_TEST),my);ctx.lineTo(X(X_TEST),my+H);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#8C6508';ctx.font='11px Georgia';ctx.fillText('x de test',X(X_TEST)+3,my+12);
+  // leyenda
+  const lx=mx+W-150;ctx.font='12px Georgia';
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(lx,my+8);ctx.lineTo(lx+24,my+8);ctx.stroke();
+  ctx.fillStyle='#1A1A1A';ctx.fillText('bosque',lx+30,my+12);
+  ctx.strokeStyle='#1A1A1A';ctx.lineWidth=1.6;ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(lx,my+24);ctx.lineTo(lx+24,my+24);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#1A1A1A';ctx.fillText('f verdadera',lx+30,my+28);
+}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const {rho,sig2}=measureRhoSigma();
+  const mx=58,my=34,W=w-mx-18,H=h-my-44;
+  const Bmax=120;
+  function V(B){return rho*sig2 + (1-rho)/B*sig2;}
+  const yTop=V(1)*1.06, yBot=0, floor=rho*sig2;
+  const X=B=>mx+(B-1)/(Bmax-1)*W;
+  const Y=v=>my+(1-(v-yBot)/(yTop-yBot))*H;
+  // título
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 14px Georgia';ctx.textAlign='left';
+  ctx.fillText('La varianza del bosque cae como 1/B hasta el suelo ρσ²',mx,my-16);
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.textAlign='right';
+  for(let t=0;t<=4;t++){const vv=yBot+(yTop-yBot)*t/4;ctx.fillText(vv.toFixed(2),mx-6,Y(vv)+3);}
+  ctx.textAlign='center';
+  [1,30,60,90,120].forEach(b=>{ctx.fillText(b,X(b),my+H+16);});
+  ctx.textAlign='left';
+  ctx.save();ctx.translate(16,my+H/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.fillText('Var(ŷ) en x de test',0,0);ctx.restore();
+  ctx.textAlign='left';ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
+  ctx.fillText('nº de árboles B',mx+W-110,my+H+32);
+  // línea del suelo rho*sigma^2
+  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1.4;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(mx,Y(floor));ctx.lineTo(mx+W,Y(floor));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
+  ctx.fillText('suelo ρσ² = '+floor.toFixed(3),mx+W-190,Y(floor)-6);
+  // curva Var(y-hat) vs B (dorada)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=3;ctx.beginPath();
+  for(let B=1;B<=Bmax;B++){const px=X(B),py=Y(V(B));if(B===1)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
+  ctx.stroke();
+  ctx.fillStyle='#8C6508';ctx.font='bold 12px Georgia';
+  ctx.fillText('ρ ≈ '+rho.toFixed(2)+',   σ² ≈ '+sig2.toFixed(3),mx+W*0.36,my+26);
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('B');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

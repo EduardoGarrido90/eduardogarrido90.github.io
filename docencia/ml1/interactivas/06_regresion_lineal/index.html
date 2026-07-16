@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regresión lineal — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La recta y su error</div>
+      <div class="eq">
+        &ycirc; = <span class="term" id="t_b0">&beta;<sub>0</sub></span>
+        &plus; <span class="term" id="t_b1">&beta;<sub>1</sub></span> &middot; x
+      </div>
+      <div class="eq" style="font-size:1.15em">
+        MSE = (1/n) &sum;<sub>i</sub> (y<sub>i</sub> &minus; &ycirc;<sub>i</sub>)<sup>2</sup>
+      </div>
+      <div class="eqnum">
+        con <span class="nterm" id="n_b0">&beta;<sub>0</sub> = 30.0</span> y
+        <span class="nterm" id="n_b1">&beta;<sub>1</sub> = 0.100</span>:
+        <b id="n_fit">&mdash;</b>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Idealista quiere estimar el <b>precio</b> de una
+    vivienda (y, en miles de €) a partir de su <b>tamaño</b> (x, en m&sup2;). Trazas una
+    <span class="gold">recta</span>: subes o bajas la altura con <b>&beta;<sub>0</sub></b>
+    (intercepto) y la inclinas con <b>&beta;<sub>1</sub></b> (pendiente, € por m&sup2;).
+    Ajustar el modelo es buscar la recta que deja los puntos lo más cerca posible.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">&beta;&#8320;</span>
+        <input type="range" id="b0" min="0" max="60" step="0.5" value="30"
+          oninput="hot('b0');upd()"><span class="val" id="v_b0">30.0</span></div>
+      <div class="row"><span class="lab">&beta;&#8321;</span>
+        <input type="range" id="b1" min="0" max="0.6" step="0.005" value="0.1"
+          oninput="hot('b1');upd()"><span class="val" id="v_b1">0.100</span></div>
+      <div class="row"><button onclick="reseed()">nueva muestra (otra semilla)</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Deja <b>&beta;<sub>0</sub></b> quieto y mueve <b>&beta;<sub>1</sub></b> hacia la
+        pendiente óptima del readout.
+        <span class="obs">El MSE se desploma hacia su mínimo y la R&sup2; sube.</span></li>
+      <li>Desajusta <b>&beta;<sub>0</sub></b> (súbelo o bájalo).
+        <span class="obs">La recta se traslada en bloque y todos los residuos grises
+        crecen a la vez.</span></li>
+      <li>Compara tu <b>MSE</b> con el <b>óptimo OLS</b> que muestra el readout.
+        <span class="obs">Ninguna recta que pruebes a mano bate ese MSE mínimo.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">¿Por qué elevamos al cuadrado los residuos? Porque
+        <b>penaliza más los errores grandes</b> (un fallo de 20 pesa cuatro veces uno de 10)
+        y porque hace el MSE una parábola con un <b>único mínimo</b> resoluble por fórmula
+        cerrada, sin cancelaciones de signo.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee así.</span> Cada <span class="gold">punto dorado</span> es una
+    vivienda; el <b>segmento gris</b> vertical es su residuo (lo que la recta se equivoca).
+    Mueve un dial y el término correspondiente de la ecuación,
+    <span class="gold">&beta;<sub>0</sub></span> o <span class="gold">&beta;<sub>1</sub></span>,
+    se enciende.</p>
+
+    <div class="miniglos">
+      <b>&beta;<sub>0</sub></b> intercepto: precio base cuando x = 0 (dónde arranca la recta).
+      <b>&beta;<sub>1</sub></b> pendiente: cuántos miles de € sube el precio por cada m&sup2; extra.
+      <b>MSE</b> media de los residuos al cuadrado, en (miles €)&sup2;: nuestro marcador de error.
+      <b>R&sup2;</b> fracción de la variación del precio que la recta explica (1 = perfecta).
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">ajustar = minimizar MSE(&beta;<sub>0</sub>, &beta;<sub>1</sub>)</div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> Ajustar una regresión lineal es <b>elegir la recta
+    que minimiza el MSE</b>. Como el error es una parábola en cada coeficiente, hay un fondo
+    único: el punto <span class="gold">dorado</span> de la curva marca el
+    <b>&beta;<sub>1</sub>* óptimo</b>.</p>
+    <p><span class="hd">Negocio.</span> Es el modelo que interpreta un directivo sin esfuerzo:
+    "cada m&sup2; añade <b>&beta;<sub>1</sub></b> miles de € al precio". Precio de vivienda,
+    ventas por gasto en publicidad, demanda por temperatura: la recta da una regla legible
+    y una previsión inmediata.</p>
+    <p><span class="hd">El dial clave.</span> La <b>pendiente &beta;<sub>1</sub></b> es el
+    efecto marginal, el número que cuentas al negocio. El intercepto &beta;<sub>0</sub> solo
+    fija la altura. Y no hay que tantear: los <b>mínimos cuadrados</b> dan
+    &beta;* en <b>fórmula cerrada</b>.</p>
+    <p><span class="hd">Y ahora.</span> Con varias señales (m&sup2;, habitaciones, barrio…)
+    esto se convierte en <b>regresión múltiple</b>, la misma idea con un plano en lugar de
+    una recta, y es la base sobre la que se apoya casi todo lo demás.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Regresión lineal</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["La recta","Para llevar"];
+const TITLES=["La regresión lineal ajusta la recta que minimiza el error cuadrático medio.",
+              "Ajustar es minimizar el MSE, y en la recta hay una fórmula cerrada que lo resuelve."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+let SEED=7;
+function makeData(seed){
+  const rnd=mulberry32(seed); const pts=[];
+  // verdad generadora: precio (miles €) = 30 + 0.25*m2 + ruido; se ajusta sobre los datos
+  function gauss(){let u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  for(let i=0;i<40;i++){
+    const x=40+140*rnd();                       // tamaño en m2, ~[40,180]
+    const y=30+0.25*x+6*gauss();                // precio en miles €, con ruido
+    pts.push({x,y});
+  }
+  return pts;
+}
+let DATA=makeData(SEED);
+function mse(b0,b1){let s=0;for(const p of DATA){const e=p.y-(b0+b1*p.x);s+=e*e;}return s/DATA.length;}
+function ols(){
+  const n=DATA.length;let sx=0,sy=0;for(const p of DATA){sx+=p.x;sy+=p.y;}
+  const xb=sx/n, yb=sy/n;
+  let num=0,den=0;for(const p of DATA){num+=(p.x-xb)*(p.y-yb);den+=(p.x-xb)*(p.x-xb);}
+  const b1=num/den, b0=yb-b1*xb;
+  return {b0,b1,xb,yb};
+}
+function stats(b0,b1){
+  const n=DATA.length;let sy=0;for(const p of DATA)sy+=p.y;const yb=sy/n;
+  let sse=0,sst=0;for(const p of DATA){const e=p.y-(b0+b1*p.x);sse+=e*e;const d=p.y-yb;sst+=d*d;}
+  return {mse:sse/n, r2:1-sse/sst};
+}
+
+// ---------- rendering ----------
+function upd(){
+  const b0=+document.getElementById('b0').value;
+  const b1=+document.getElementById('b1').value;
+  document.getElementById('v_b0').textContent=b0.toFixed(1);
+  document.getElementById('v_b1').textContent=b1.toFixed(3);
+  document.getElementById('n_b0').innerHTML='&beta;<sub>0</sub> = '+b0.toFixed(1);
+  document.getElementById('n_b1').innerHTML='&beta;<sub>1</sub> = '+b1.toFixed(3);
+  const s=stats(b0,b1), o=ols(), opt=stats(o.b0,o.b1);
+  document.getElementById('n_fit').innerHTML=
+    'MSE = '+s.mse.toFixed(1)+' &nbsp; R&sup2; = '+s.r2.toFixed(3);
+  const good=s.mse<=1.15*opt.mse;
+  document.getElementById('ro').innerHTML=
+    'Recta actual: precio ≈ '+b0.toFixed(1)+' + '+b1.toFixed(3)+'·m&sup2;.<br>'+
+    'Error: <b>MSE = '+s.mse.toFixed(1)+'</b> (miles €)&sup2; &nbsp;·&nbsp; <b>R&sup2; = '+
+    s.r2.toFixed(3)+'</b>.<br>'+
+    'Óptimo OLS: β0 = '+o.b0.toFixed(1)+', β1 = '+o.b1.toFixed(3)+
+    ' → MSE mínimo = '+opt.mse.toFixed(1)+'.<br>'+
+    '<span class="badge '+(good?'ok':'bad')+'">'+
+    (good?'Ajuste casi óptimo':'Aún puedes bajar el MSE')+'</span>';
+  draw(b0,b1);
+}
+const XDOM=[40,180], YDOM=[0,100];
+function draw(b0,b1){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=52,my=20,W=w-mx-16,H=h-my-36;
+  const X=v=>mx+(v-XDOM[0])/(XDOM[1]-XDOM[0])*W;
+  const Y=v=>my+(1-(v-YDOM[0])/(YDOM[1]-YDOM[0]))*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  // ticks con unidades
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.textAlign='center';
+  for(let xv=40;xv<=180;xv+=20){ctx.fillText(xv,X(xv),my+H+15);}
+  ctx.textAlign='right';
+  for(let yv=0;yv<=100;yv+=20){ctx.fillText(yv,mx-5,Y(yv)+4);}
+  ctx.textAlign='left';
+  // títulos de eje en negrita
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 12px Georgia';
+  ctx.fillText('precio (miles €)',mx-40,my-6);
+  ctx.fillText('tamaño (m²)',mx+W-95,my+H+30);
+  // residuos: segmentos verticales grises punto → recta
+  ctx.strokeStyle='rgba(138,138,138,0.75)';ctx.lineWidth=1;
+  DATA.forEach(p=>{const yh=b0+b1*p.x;
+    ctx.beginPath();ctx.moveTo(X(p.x),Y(p.y));ctx.lineTo(X(p.x),Y(yh));ctx.stroke();});
+  // scatter dorado tenue
+  DATA.forEach(p=>{ctx.beginPath();ctx.arc(X(p.x),Y(p.y),4,0,7);
+    ctx.fillStyle='rgba(184,134,11,0.45)';ctx.fill();
+    ctx.strokeStyle='#B8860B';ctx.lineWidth=1;ctx.stroke();});
+  // recta actual dorada gruesa (recortada al dominio en x)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=3;ctx.beginPath();
+  ctx.moveTo(X(XDOM[0]),Y(b0+b1*XDOM[0]));ctx.lineTo(X(XDOM[1]),Y(b0+b1*XDOM[1]));ctx.stroke();
+}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=60,my=22,W=w-mx-16,H=h-my-40;
+  const o=ols();
+  const b1lo=0,b1hi=0.6;
+  // parábola MSE(β1) con β0 = b0* fijo
+  const pts=[];let fmin=1e18,fmax=-1e18;
+  for(let i=0;i<=120;i++){const b1=b1lo+(b1hi-b1lo)*i/120;const f=mse(o.b0,b1);
+    pts.push({b1,f});if(f<fmin)fmin=f;if(f>fmax)fmax=f;}
+  const pad=(fmax-fmin)*0.08;const flo=Math.max(0,fmin-pad),fhi=fmax+pad;
+  const X=v=>mx+(v-b1lo)/(b1hi-b1lo)*W;
+  const Y=v=>my+(1-(v-flo)/(fhi-flo))*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.textAlign='center';
+  for(let bv=0;bv<=0.6;bv+=0.1){ctx.fillText(bv.toFixed(1),X(bv),my+H+15);}
+  ctx.textAlign='left';
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 12px Georgia';
+  ctx.fillText('MSE (miles €)²',mx-42,my-7);
+  ctx.fillText('β1  (pendiente, miles € por m²)',mx+W-215,my+H+30);
+  // curva parábola dorada
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.beginPath();
+  pts.forEach((p,i)=>{const x=X(p.b1),y=Y(p.f);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+  ctx.stroke();
+  // mínimo en β1*
+  const fbest=mse(o.b0,o.b1);
+  ctx.strokeStyle='#8C6508';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(X(o.b1),my+H);ctx.lineTo(X(o.b1),Y(fbest));ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#8C6508';ctx.beginPath();ctx.arc(X(o.b1),Y(fbest),6,0,7);ctx.fill();
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 13px Georgia';
+  ctx.fillText('β1* = '+o.b1.toFixed(3),X(o.b1)+10,Y(fbest)+4);
+  ctx.fillStyle='#8C6508';ctx.font='13px Georgia';
+  ctx.fillText('MSE mínimo',X(o.b1)+10,Y(fbest)+22);
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('b1');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

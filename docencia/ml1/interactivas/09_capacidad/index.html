@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capacidad del modelo — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.4em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.05em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La capacidad crece con el grado del polinomio</div>
+      <div class="eq">
+        capacidad &uarr; &nbsp;con&nbsp; <span class="term" id="t_d">d</span>
+      </div>
+      <div class="eq" style="font-size:1.15em">
+        n&ordm; de par&aacute;metros = <span class="term" id="t_d2">d</span> + 1
+      </div>
+      <div class="eq" style="font-size:1.15em">
+        h(x) = &sum;<sub>j=0</sub><sup>d</sup> &beta;<sub>j</sub> x<sup>j</sup>
+      </div>
+      <div class="eqnum">
+        con <span class="nterm" id="n_d">d = 3</span>:
+        <b id="n_info">&mdash;</b>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="380"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Una consultora modela la relaci&oacute;n entre
+    la <b>inversi&oacute;n en marketing</b> (x) y las <b>ventas</b> (y). Ajusta un
+    polinomio de grado <span class="gold">d</span>. La <b>capacidad</b> del modelo es
+    cu&aacute;nto puede &laquo;retorcerse&raquo; su curva para pasar por los datos: aqu&iacute;
+    la gobiernas t&uacute; con el grado <span class="gold">d</span>.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">d</span>
+        <input type="range" id="d" min="1" max="12" step="1" value="3"
+          oninput="hot('d');upd()"><span class="val" id="v_d">3</span></div>
+      <div class="row"><button onclick="reseed()">nueva muestra (otra semilla)</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Deja <b>d = 1</b>: el modelo solo puede trazar una <b>recta</b>.
+        <span class="obs">La recta es r&iacute;gida, no sigue la curvatura de los datos y
+        el MSE de entrenamiento se queda alto (poca capacidad).</span></li>
+      <li>Sube <b>d</b> paso a paso hasta 6&ndash;7.
+        <span class="obs">La curva se dobla cada vez m&aacute;s y el MSE de entrenamiento
+        baja de forma mon&oacute;tona: m&aacute;s capacidad, mejor ajuste al train.</span></li>
+      <li>Lleva <b>d</b> a 10&ndash;12.
+        <span class="obs">La curva se retuerce para acercarse a cada punto: ondula
+        y se sale del rango de los datos, y el MSE de train toca su valor mínimo
+        (una fracción del de la recta rígida).</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">&iquest;Por qu&eacute; m&aacute;s capacidad <b>siempre</b> reduce (o iguala)
+        el error de entrenamiento? Porque un modelo de grado d contiene a todos los de
+        grado menor: en el peor caso copia el mejor ajuste anterior, y con m&aacute;s
+        libertad puede acercarse a&uacute;n m&aacute;s a cada punto. Pero eso <b>no</b> significa
+        un mejor modelo: al acercarse tanto a cada dato, la curva empieza a seguir el
+        <b>ruido</b> en lugar de la se&ntilde;al &mdash; es el germen del sobreajuste que
+        veremos con datos de test.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee as&iacute;.</span> Los puntos <span class="gold">dorados</span>
+    son las observaciones (inversi&oacute;n, ventas). La curva <span class="gold">dorada</span>
+    es el mejor ajuste de grado d. Sube d y el t&eacute;rmino <span class="gold">d</span>
+    de la ecuaci&oacute;n se enciende; el n&ordm; de par&aacute;metros es d + 1.</p>
+
+    <div class="miniglos">
+      <b>d</b> grado del polinomio: el dial de capacidad (flexibilidad).
+      <b>d + 1</b> n&uacute;mero de par&aacute;metros &beta;<sub>j</sub> a estimar.
+      <b>&beta;<sub>j</sub></b> pesos que la regresi&oacute;n elige para minimizar el error.
+      <b>MSE</b> error cuadr&aacute;tico medio sobre los datos de entrenamiento.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">capacidad = tama&ntilde;o del espacio de hip&oacute;tesis = n&ordm; de par&aacute;metros</div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> La <b>capacidad</b> de un modelo es el
+    tama&ntilde;o de su <b>espacio de hip&oacute;tesis</b>: cu&aacute;ntas funciones distintas
+    puede representar. Con polinomios, subir el grado d a&ntilde;ade par&aacute;metros
+    (d + 1) y ensancha ese espacio: la curva puede retorcerse m&aacute;s.</p>
+    <p><span class="hd">Lo que ves.</span> El MSE de <b>entrenamiento</b> baja de forma
+    mon&oacute;tona con d (curva dorada): m&aacute;s capacidad siempre ajusta igual o mejor los
+    datos que ya conoces, hasta tocar un suelo. Con capacidad suficiente, un modelo
+    puede incluso pasar por todos los puntos y anular el error de train.</p>
+    <p><span class="hd">La trampa.</span> Ajustar mejor el train <b>no</b> es ser mejor
+    modelo. Con capacidad excesiva la curva <b>memoriza el ruido</b> en lugar de la
+    se&ntilde;al: brilla en los datos vistos y falla en clientes nuevos.</p>
+    <p><span class="hd">Y ahora.</span> El equilibrio real solo se ve con <b>datos de
+    test</b>: ah&iacute; aparece el compromiso entre sesgo y varianza. Ese es el pr&oacute;ximo
+    tema.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Capacidad del modelo</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["Flexibilidad","Para llevar"];
+const TITLES=["La capacidad del modelo es cuánto puede retorcerse su curva para ajustar los datos.",
+              "Más capacidad siempre baja el error de entrenamiento, pero puede memorizar el ruido."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  // el grado aparece dos veces en la ecuación
+  if(id==='d'){const t2=document.getElementById('t_d2'); if(t2)t2.classList.add('hot');}
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- SOLVER (pegado tal cual) ----------
+function solveLin(A,b){const n=b.length,M=A.map((r,i)=>r.concat([b[i]]));
+ for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;
+  const t=M[c];M[c]=M[p];M[p]=t;const d=M[c][c]||1e-9;
+  for(let r=0;r<n;r++){if(r===c)continue;const f=M[r][c]/d;for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k];}}
+ return M.map((r,i)=>r[n]/(r[i]||1e-9));}
+function ridgefit(xs,ys,d,lam){const n=d+1;const A=Array.from({length:n},()=>Array(n).fill(0)),bb=Array(n).fill(0);
+ for(let i=0;i<xs.length;i++){const f=[];for(let j=0;j<=d;j++)f.push(Math.pow(xs[i],j));
+  for(let a=0;a<n;a++){bb[a]+=f[a]*ys[i];for(let c=0;c<n;c++)A[a][c]+=f[a]*f[c];}}
+ for(let a=0;a<n;a++)A[a][a]+=lam;return solveLin(A,bb);}
+function predpoly(beta,x){let s=0;for(let j=0;j<beta.length;j++)s+=beta[j]*Math.pow(x,j);return s;}
+
+// ---------- MATH CORE (DOM-free) ----------
+let SEED=7;
+const LAM=1e-6, N=30;
+// verdad suave de curvatura media (x estandarizado a [-1,1])
+function ftruth(x){return 0.55 + 0.6*x - 1.1*x*x + 0.7*x*x*x;}
+function makeData(seed){
+  const rnd=mulberry32(seed);
+  function gauss(){let u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  const xs=[],ys=[];
+  for(let i=0;i<N;i++){
+    const x=-1+2*rnd();              // x estandarizado a [-1,1]
+    xs.push(x);
+    ys.push(ftruth(x)+0.16*gauss()); // verdad suave + ruido
+  }
+  // ordenar por x para dibujo limpio del scatter
+  const idx=xs.map((_,i)=>i).sort((a,b)=>xs[a]-xs[b]);
+  return {xs:idx.map(i=>xs[i]), ys:idx.map(i=>ys[i])};
+}
+let DATA=makeData(SEED);
+function mseTrain(beta){let s=0;for(let i=0;i<DATA.xs.length;i++){
+  const e=predpoly(beta,DATA.xs[i])-DATA.ys[i];s+=e*e;}return s/DATA.xs.length;}
+function yRange(){let lo=Infinity,hi=-Infinity;
+  for(let i=0;i<DATA.ys.length;i++){if(DATA.ys[i]<lo)lo=DATA.ys[i];if(DATA.ys[i]>hi)hi=DATA.ys[i];}
+  const pad=0.35*(hi-lo||1);return {lo:lo-pad,hi:hi+pad};}
+
+// ---------- rendering (slide 0) ----------
+function upd(){
+  const d=+document.getElementById('d').value;
+  document.getElementById('v_d').textContent=d;
+  document.getElementById('n_d').textContent='d = '+d;
+  const beta=ridgefit(DATA.xs,DATA.ys,d,LAM);
+  const mse=mseTrain(beta);
+  const params=d+1;
+  document.getElementById('n_info').textContent=params+' parámetros · MSE train = '+mse.toFixed(4);
+  const rigid=(d<=1);
+  document.getElementById('ro').innerHTML=
+    'Polinomio de grado <b>'+d+'</b> &rarr; <b>'+params+'</b> parámetros &beta;<sub>j</sub>.<br>'+
+    'MSE de entrenamiento del mejor ajuste: <b>'+mse.toFixed(4)+'</b>.<br>'+
+    '<span class="badge '+(rigid?'bad':'ok')+'">'+
+    (rigid?'Poca capacidad: la recta no sigue la curvatura':'Más capacidad: la curva se ajusta mejor al train')+
+    '</span>';
+  draw(d,beta,mse);
+}
+function draw(d,beta,mse){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=48,my=16,W=w-mx-16,H=h-my-32;
+  const {lo,hi}=yRange();
+  const X=v=>mx+((v+1)/2)*W;               // x en [-1,1]
+  const Y=v=>my+(1-(v-lo)/(hi-lo))*H;
+  const clampY=v=>Math.max(my,Math.min(my+H,Y(v)));
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('ventas (y)',6,my+10);
+  ctx.fillText('inversión en marketing (x, estandarizada)',mx+W-290,my+H+22);
+  // curva ajustada de grado d (dorada)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.4;ctx.beginPath();
+  let started=false;
+  for(let px=0;px<=240;px++){
+    const xv=-1+2*px/240;
+    const yv=predpoly(beta,xv);
+    const yy=clampY(yv), xx=X(xv);
+    if(!started){ctx.moveTo(xx,yy);started=true;}else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  // puntos de datos
+  DATA.xs.forEach((xv,i)=>{ctx.beginPath();ctx.arc(X(xv),Y(DATA.ys[i]),4.5,0,7);
+    ctx.fillStyle='#B8860B';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.stroke();});
+  // etiqueta grado / MSE
+  ctx.fillStyle='#1A1A1A';ctx.font='bold 13px Georgia';
+  ctx.fillText('grado d = '+d+'  ·  MSE train = '+mse.toFixed(4),mx+6,my+16);
+}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
+
+// ---------- rendering (slide 1: MSE de entrenamiento vs d) ----------
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=54,my=22,W=w-mx-18,H=h-my-42;
+  // MSE de entrenamiento REAL para cada grado d=1..12
+  const ds=[],ms=[];
+  for(let d=1;d<=12;d++){const beta=ridgefit(DATA.xs,DATA.ys,d,LAM);ds.push(d);ms.push(mseTrain(beta));}
+  const hiM=Math.max.apply(null,ms)*1.08, loM=0;
+  const X=d=>mx+((d-1)/11)*W;
+  const Y=v=>my+(1-(v-loM)/(hiM-loM))*H;
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('MSE train',6,my+10);
+  ctx.fillText('grado d  (nº de parámetros = d + 1)',mx+2,my+H+26);
+  // marcas de d en el eje x
+  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.textAlign='center';
+  for(let d=1;d<=12;d++){ctx.fillText(''+d,X(d),my+H+13);}
+  ctx.textAlign='left';
+  // curva de MSE de entrenamiento (monótonamente decreciente)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.beginPath();
+  ds.forEach((d,i)=>{const x=X(d),y=Y(ms[i]);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});
+  ctx.stroke();
+  ctx.fillStyle='#8C6508';
+  ds.forEach((d,i)=>{ctx.beginPath();ctx.arc(X(d),Y(ms[i]),4,0,7);ctx.fill();});
+  // flecha "capacidad ↑" bajo el eje, apuntando a más grado
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=1.6;
+  const ay=my+H+38;
+  ctx.beginPath();ctx.moveTo(mx,ay);ctx.lineTo(mx+W,ay);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(mx+W,ay);ctx.lineTo(mx+W-9,ay-4);ctx.lineTo(mx+W-9,ay+4);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';
+  ctx.fillText('capacidad ↑',mx+W/2-40,ay-6);
+  // anotación
+  ctx.fillStyle='#B8860B';ctx.font='bold 13px Georgia';
+  ctx.fillText('MSE de entrenamiento',X(6),Y(ms[5])-12);
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
+buildNav();
+hot('d');
+(function(){const h=parseInt(location.hash.slice(1));go(Number.isFinite(h)&&h>=0&&h<SECTIONS.length?h:0);})();
+</script>
+</body>
+</html>

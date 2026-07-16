@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Búsqueda de hiperparámetros — slide interactiva</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 26px 2px 26px;font-size:0.74em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
+  .slide{display:none;padding:16px 26px 66px 26px;
+    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+    border:1px solid #eee;border-radius:3px;background:#fff}
+  .txtcol{font-size:0.98em;line-height:1.45}
+  .txtcol p{margin:0 0 10px 0}
+  .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
+    padding:12px 14px;margin:6px 0 12px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
+  .ctrlbox select{font-family:inherit;font-size:0.95em;padding:3px 6px;
+    border:1px solid var(--rule);border-radius:3px;background:#fff;color:var(--ink)}
+  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox button{font-family:inherit;font-size:0.9em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:4px 12px;cursor:pointer}
+  .ctrlbox button:hover{background:#fff8ea}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
+  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:12px 16px;margin:2px 0 12px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
+  .eq{text-align:center;margin:12px 0;font-size:1.32em;line-height:1.7}
+  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.02em;
+    font-variant-numeric:tabular-nums;color:#444}
+  .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
+  .term.hot{background:var(--gold);color:#fff;font-weight:bold;
+    box-shadow:0 0 0 2px var(--goldPale)}
+  .nterm{padding:1px 3px;border-radius:3px}
+  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
+  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
+    font-size:0.9em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  .gold{color:var(--gold);font-weight:bold}
+  .guide{background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:8px 12px 8px 26px;margin:10px 0;font-size:0.92em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:8px;font-size:0.92em}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin-top:6px;color:#333}
+  #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 16px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#b00;color:#fff;
+    padding:8px 14px;font-size:0.9em;z-index:99}
+</style>
+</head>
+<body>
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ============ SLIDE 1: interactiva ============ -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La ecuación de la búsqueda</div>
+      <div class="eq">
+        (&lambda;<sub>1</sub>*, &lambda;<sub>2</sub>*) = arg min<sub>&lambda;</sub>
+        &nbsp;L<sub>val</sub>(&lambda;)&nbsp; con&nbsp;
+        <span class="term" id="t_N">N</span> evaluaciones
+      </div>
+      <div class="eq" style="font-size:1.02em">
+        bayesiana: elige el siguiente &lambda; = arg max<sub>&lambda;</sub>
+        &nbsp;EI(&lambda;)
+      </div>
+      <div class="eqnum">
+        estrategia <b id="n_mode">grid</b> &middot;
+        <span class="nterm" id="n_N">N = 16</span> &middot;
+        mejor L encontrada: <b id="n_best">&mdash;</b>
+      </div>
+    </div>
+    <canvas id="cv" width="720" height="430"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Un equipo de analítica busca los dos ajustes
+    (hiperparámetros &lambda;<sub>1</sub> y &lambda;<sub>2</sub>) que minimizan el error
+    de validación de su modelo. Cada evaluación cuesta tiempo y dinero (reentrenar),
+    así que la pregunta es: <b>con un presupuesto de N pruebas, ¿cómo las repartimos?</b></p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">plan</span>
+        <select id="mode" onchange="upd()">
+          <option value="grid">malla (grid search)</option>
+          <option value="random">azar (random search)</option>
+          <option value="bayes">bayesiana (GP + EI)</option>
+        </select></div>
+      <div class="row"><span class="lab">N</span>
+        <input type="range" id="N" min="4" max="36" step="1" value="16"
+          oninput="hot('N');upd()"><span class="val" id="v_N">16</span></div>
+      <div class="row"><button onclick="reseed()">nueva semilla</button></div>
+    </div>
+
+    <div class="readout" id="ro"></div>
+
+    <ol class="guide">
+      <li>Empieza en <b>malla</b> con N=16: cae en una rejilla 4&times;4 regular.
+        <span class="obs">Gasta pruebas en zonas malas y puede no acertar el valle
+        estrecho.</span></li>
+      <li>Cambia a <b>azar</b> con el mismo N.
+        <span class="obs">Cubre mejor cada eje por separado; suele hallar un valor más
+        bajo que la malla con el mismo presupuesto.</span></li>
+      <li>Cambia a <b>bayesiana</b>: arranca con unas pocas al azar y luego
+        <b>concentra</b> las pruebas cerca del mínimo.
+        <span class="obs">Con menos evaluaciones llega tan cerca del óptimo como las
+        otras con muchas más.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">La malla sufre la <b>maldición de la dimensión</b>: con d
+        hiperparámetros y m valores por eje necesita m<sup>d</sup> pruebas. El azar y la
+        búsqueda bayesiana no dependen de esa rejilla; la bayesiana además <b>aprende</b>
+        del pasado con un modelo sustituto (GP) y decide dónde mirar con EI.</div></details>
+    </ol>
+
+    <p><span class="hd">Lee así.</span> El fondo es el <b>mapa de error</b> (oscuro =
+    bajo error = bueno). Las cruces son las pruebas realizadas; el anillo
+    <span class="gold">dorado</span> es la mejor encontrada y la estrella marca el
+    óptimo real. Sube N y el término <span class="gold">N</span> se enciende.</p>
+
+    <div class="miniglos">
+      <b>&lambda;</b> hiperparámetro (no se aprende: se busca). <b>L<sub>val</sub></b>
+      error de validación a minimizar. <b>N</b> presupuesto de evaluaciones.
+      <b>GP</b> proceso gaussiano: modelo sustituto que predice el error e incertidumbre.
+      <b>EI</b> mejora esperada: cuánto se espera mejorar el mejor valor si pruebas ahí.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: cierre ============ -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Para llevarte a casa</div>
+      <div class="eq">malla &lt; azar &lt; bayesiana&nbsp; (a igualdad de presupuesto)</div>
+    </div>
+    <canvas id="cv2" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> Buscar hiperparámetros es <b>optimizar una función
+    cara y sin fórmula</b>: cada evaluación es reentrenar y medir en validación. Hay tres
+    planes clásicos de reparto del presupuesto.</p>
+    <p><span class="hd">Negocio.</span> Menos pruebas para la misma calidad = menos horas
+    de cómputo y menos coste en la nube. En modelos caros (deep learning, grandes
+    tabulares), la búsqueda bayesiana ahorra mucho.</p>
+    <p><span class="hd">El dial clave.</span> La <b>malla</b> es exhaustiva pero explota
+    con la dimensión; el <b>azar</b> cubre mejor cada eje; la <b>bayesiana</b> usa un
+    modelo sustituto (GP) y la mejora esperada (EI) para <b>explorar</b> donde hay
+    incertidumbre y <b>explotar</b> donde el error es bajo.</p>
+    <p><span class="hd">Y ahora.</span> La curva muestra el mejor error hallado según el
+    nº de evaluaciones: la bayesiana baja antes. Todo se hace sobre validación; el test
+    se reserva para el final.</p>
+  </div>
+</section>
+
+<div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
+<div id="footer"></div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Machine Learning para Business Analytics — Búsqueda de hiperparámetros</div>
+
+<script>
+window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
+  b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
+
+const SECTIONS=["El reparto","Para llevar"];
+const TITLES=["Con un presupuesto fijo, cómo repartir las pruebas decide cuánto te acercas al óptimo.",
+              "La búsqueda bayesiana aprende del pasado y encuentra buenos ajustes con menos evaluaciones."];
+let cur=0;
+function buildNav(){
+  const ns=document.getElementById('navstrip');ns.innerHTML='';
+  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+}
+function go(i){
+  if(i<0||i>=SECTIONS.length)return;
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('slidetitle').textContent=TITLES[i];
+  document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
+  buildNav();
+  if(updaters[i])updaters[i]();
+  if(location.hash!=='#'+i){history.replaceState(null,'','#'+i);}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
+});
+const updaters={};
+function hot(id){
+  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
+  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+}
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
+  const w=cv.clientWidth||cv._lw, h=cv._lh;
+  cv.style.height=h+'px';
+  cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {ctx,w,h};
+}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+// ---------- MATH CORE (DOM-free) ----------
+// Superficie de error a MINIMIZAR sobre (a,b) in [0,1]^2. Mínimo global claro.
+function gbump(a,b,ca,cb,s){return Math.exp(-(((a-ca)*(a-ca))+((b-cb)*(b-cb)))/(2*s*s));}
+function L(a,b){ // en [~0.06, ~1]
+  return 1 - 0.90*gbump(a,b,0.72,0.28,0.12) - 0.45*gbump(a,b,0.26,0.74,0.10);
+}
+const TRUE_MIN={a:0.72,b:0.28}; const TRUE_L=L(0.72,0.28);
+
+// --- álgebra lineal para el GP ---
+function matInv(A){ // Gauss-Jordan, A cuadrada n×n
+  const n=A.length;
+  const M=A.map((r,i)=>r.concat(Array.from({length:n},(_,j)=>i===j?1:0)));
+  for(let c=0;c<n;c++){
+    let p=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;
+    const tmp=M[c];M[c]=M[p];M[p]=tmp;
+    const d=M[c][c]||1e-9;for(let k=0;k<2*n;k++)M[c][k]/=d;
+    for(let r=0;r<n;r++){if(r===c)continue;const f=M[r][c];
+      for(let k=0;k<2*n;k++)M[r][k]-=f*M[c][k];}
+  }
+  return M.map(r=>r.slice(n));
+}
+const KLEN=0.14, KSIG=1.0, KNOISE=1e-4;
+function kern(p,q){const dx=p[0]-q[0],dy=p[1]-q[1];
+  return KSIG*Math.exp(-(dx*dx+dy*dy)/(2*KLEN*KLEN));}
+// erf / normal
+function erf(x){const t=1/(1+0.3275911*Math.abs(x));
+  const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+  return x>=0?y:-y;}
+function ncdf(z){return 0.5*(1+erf(z/Math.SQRT2));}
+function npdf(z){return Math.exp(-0.5*z*z)/Math.sqrt(2*Math.PI);}
+
+function gpPosterior(X,y){ // devuelve función mu,sigma en un punto
+  const m=X.length;
+  const K=[];for(let i=0;i<m;i++){K.push([]);for(let j=0;j<m;j++)K[i].push(kern(X[i],X[j])+(i===j?KNOISE:0));}
+  const Kinv=matInv(K);
+  const alpha=Kinv.map(row=>row.reduce((s,v,j)=>s+v*y[j],0));
+  return function(pt){
+    const ks=X.map(x=>kern(pt,x));
+    let mu=0;for(let i=0;i<m;i++)mu+=ks[i]*alpha[i];
+    // sigma^2 = k(pt,pt) - ks^T Kinv ks
+    let q=0;for(let i=0;i<m;i++){let ai=0;for(let j=0;j<m;j++)ai+=Kinv[i][j]*ks[j];q+=ks[i]*ai;}
+    const v=Math.max(1e-9,KSIG+KNOISE-q);
+    return {mu,sd:Math.sqrt(v)};
+  };
+}
+// rejilla candidata para EI / argmax
+const GSIDE=26; const GRID=[];
+for(let i=0;i<GSIDE;i++)for(let j=0;j<GSIDE;j++)GRID.push([(i+0.5)/GSIDE,(j+0.5)/GSIDE]);
+
+function evalPts(pts){return pts.map(p=>L(p[0],p[1]));}
+function bestOf(pts){let bi=0,bv=9;pts.forEach((p,i)=>{const v=L(p[0],p[1]);if(v<bv){bv=v;bi=i;}});
+  return {i:bi,v:bv,p:pts[bi]};}
+
+// --- estrategias (deterministas dada la semilla) ---
+function planGrid(N){const side=Math.max(2,Math.floor(Math.sqrt(N)));const pts=[];
+  for(let i=0;i<side;i++)for(let j=0;j<side;j++)pts.push([(i+0.5)/side,(j+0.5)/side]);
+  return pts;} // usa side^2 (<=N) puntos
+function planRandom(N,seed){const rnd=mulberry32(seed);const pts=[];
+  for(let i=0;i<N;i++)pts.push([rnd(),rnd()]);return pts;}
+function planBayes(N,seed){const rnd=mulberry32(seed);
+  const pts=[];const n0=Math.min(4,N);
+  for(let i=0;i<n0;i++)pts.push([rnd(),rnd()]);
+  for(let step=n0;step<N;step++){
+    const y=evalPts(pts);const fbest=Math.min.apply(null,y);
+    const post=gpPosterior(pts,y);
+    let best=null,ba=-1;
+    for(const g of GRID){
+      const {mu,sd}=post(g);
+      const xi=0.01;const z=(fbest-mu-xi)/(sd+1e-9);
+      const ei=(fbest-mu-xi)*ncdf(z)+sd*npdf(z); // EI para MINIMIZAR
+      if(ei>ba){ba=ei;best=g;}
+    }
+    pts.push([best[0]+ (rnd()-0.5)*0.005, best[1]+ (rnd()-0.5)*0.005]);
+  }
+  return pts;}
+
+let SEED=13;
+const cache={};
+function plan(mode,N,seed){
+  const key=mode+'_'+N+'_'+seed;
+  if(cache[key])return cache[key];
+  let pts;
+  if(mode==='grid')pts=planGrid(N);
+  else if(mode==='random')pts=planRandom(N,seed);
+  else pts=planBayes(N,seed);
+  cache[key]=pts;return pts;
+}
+
+// ---------- rendering ----------
+function upd(){
+  const mode=document.getElementById('mode').value;
+  const N=+document.getElementById('N').value;
+  document.getElementById('v_N').textContent=N;
+  document.getElementById('n_N').textContent='N = '+N;
+  document.getElementById('n_mode').textContent=
+    (mode==='grid'?'grid':mode==='random'?'random':'bayesiana');
+  const pts=plan(mode,N,SEED);
+  const b=bestOf(pts);
+  const gap=b.v-TRUE_L;
+  document.getElementById('n_best').textContent=b.v.toFixed(3);
+  const good=gap<0.05;
+  document.getElementById('ro').innerHTML=
+    'Evaluaciones usadas: <b>'+pts.length+'</b>'+(mode==='grid'&&pts.length<N?' (malla '+Math.floor(Math.sqrt(N))+'×'+Math.floor(Math.sqrt(N))+')':'')+'.<br>'+
+    'Mejor error hallado: <b>'+b.v.toFixed(3)+'</b> en (&lambda;<sub>1</sub>='+b.p[0].toFixed(2)+', &lambda;<sub>2</sub>='+b.p[1].toFixed(2)+').<br>'+
+    'Óptimo real: '+TRUE_L.toFixed(3)+' &rarr; distancia al óptimo: <b>'+gap.toFixed(3)+'</b>.<br>'+
+    '<span class="badge '+(good?'ok':'bad')+'">'+(good?'Muy cerca del óptimo':'Aún lejos del óptimo')+'</span>';
+  draw(pts,b);
+}
+function draw(pts,b){
+  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=44,my=16,W=w-mx-14,H=h-my-30;
+  const X=v=>mx+v*W, Y=v=>my+(1-v)*H;
+  // heatmap de L (oscuro = bajo error)
+  const gx=64,gy=44;
+  for(let i=0;i<gx;i++)for(let j=0;j<gy;j++){
+    const a=(i+0.5)/gx, bb=(j+0.5)/gy; const v=L(a,bb); // v in ~[0.06,1]
+    const t=Math.max(0,Math.min(1,(v-0.06)/0.94)); // 0 bajo error
+    // bajo error -> dorado oscuro; alto -> muy claro
+    const r=Math.round(245-(245-140)*(1-t));
+    const g=Math.round(235-(235-101)*(1-t));
+    const bl=Math.round(211-(211-8)*(1-t));
+    ctx.fillStyle='rgb('+r+','+g+','+bl+')';
+    ctx.fillRect(X(i/gx),Y((j+1)/gy),W/gx+1,H/gy+1);
+  }
+  // ejes
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#555';ctx.font='13px Georgia';
+  ctx.fillText('hiperparám. 2 (λ2)',6,my+10);
+  ctx.fillText('hiperparám. 1 (λ1)',mx+W-150,my+H+22);
+  // óptimo real (estrella)
+  star(ctx,X(TRUE_MIN.a),Y(TRUE_MIN.b),8,'#1A1A1A');
+  ctx.fillStyle='#1A1A1A';ctx.font='12px Georgia';ctx.fillText('óptimo',X(TRUE_MIN.a)+10,Y(TRUE_MIN.b)+4);
+  // pruebas (cruces) con orden (numeradas suave)
+  pts.forEach((p,i)=>{
+    ctx.strokeStyle='rgba(26,26,26,0.85)';ctx.lineWidth=1.6;
+    const cx=X(p[0]),cy=Y(p[1]),s=4;
+    ctx.beginPath();ctx.moveTo(cx-s,cy-s);ctx.lineTo(cx+s,cy+s);
+    ctx.moveTo(cx-s,cy+s);ctx.lineTo(cx+s,cy-s);ctx.stroke();
+  });
+  // mejor (anillo dorado)
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(X(b.p[0]),Y(b.p[1]),9,0,7);ctx.stroke();
+}
+function star(ctx,cx,cy,r,col){ctx.fillStyle=col;ctx.beginPath();
+  for(let i=0;i<10;i++){const ang=-Math.PI/2+i*Math.PI/5;const rr=i%2?r*0.45:r;
+    const x=cx+rr*Math.cos(ang),y=cy+rr*Math.sin(ang);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+  ctx.closePath();ctx.fill();}
+updaters[0]=upd;
+function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;for(const k in cache)delete cache[k];upd();}
+
+function drawClose(){
+  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=54,my=20,W=w-mx-16,H=h-my-42;
+  const X=v=>mx+v*W, Y=v=>my+(1-v)*H; // v en [0,1] normalizado
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#555';ctx.font='13px Georgia';
+  ctx.fillText('error hallado (↓ mejor)',6,my+10);ctx.fillText('nº de evaluaciones',mx+W-150,my+H+24);
+  const Nmax=36; const emax=L(0,0); // referencia alta
+  // eje y: arriba = peor error, abajo = mejor (convergencia baja con N)
+  function curve(mode,col,dash){
+    ctx.strokeStyle=col;ctx.lineWidth=2.2;ctx.setLineDash(dash);ctx.beginPath();
+    let first=true;
+    for(let N=4;N<=Nmax;N++){
+      const pts=plan(mode,N,SEED);const bv=bestOf(pts).v;
+      const yn=(bv-TRUE_L)/(emax-TRUE_L); // 0 = óptimo (abajo), 1 = peor (arriba)
+      const x=X((N-4)/(Nmax-4)), y=Y(Math.max(0,Math.min(1,yn)));
+      if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);
+    }
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  curve('grid','#8A8A8A',[5,4]);
+  curve('random','#C8A15A',[]);
+  curve('bayes','#B8860B',[]);
+  ctx.font='bold 13px Georgia';
+  ctx.fillStyle='#B8860B';ctx.fillText('bayesiana',X(0.58),Y(0.12));
+  ctx.fillStyle='#C8A15A';ctx.fillText('azar',X(0.58),Y(0.42));
+  ctx.fillStyle='#8A8A8A';ctx.fillText('malla',X(0.58),Y(0.66));
+}
+updaters[1]=drawClose;
+
+window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
+window.addEventListener('hashchange',()=>{const q=parseInt(location.hash.slice(1));if(Number.isFinite(q)&&q!==cur)go(q);});
+buildNav();
+hot('N');
+(function(){const q=parseInt(location.hash.slice(1));go(Number.isFinite(q)&&q>=0&&q<SECTIONS.length?q:0);})();
+</script>
+</body>
+</html>

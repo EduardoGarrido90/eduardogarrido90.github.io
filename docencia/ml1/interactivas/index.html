@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slides interactivas · Machine Learning I</title>
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<div class="crumbs"><a href="../../index.html">Asignaturas</a><span class="sep">/</span><a href="../index.html">Machine Learning I</a><span class="sep">/</span><span>Slides interactivas</span></div>
+<h1>Slides interactivas</h1>
+<p class="sub">Una slide por concepto, muy sencilla: el <b>caso de negocio</b> y <b>la ecuación</b> que lo resuelve. Mueve un slider y su símbolo se enciende en dorado dentro de la ecuación, con su valor actualizado, para que veas exactamente qué palanca estás tocando; una simulación en directo muestra qué hace cada término. Se abren en cualquier navegador sin instalación ni conexión; navega con las flechas del teclado. De estas slides pueden caer preguntas en el examen.</p>
+<hr class="rule">
+
+<div class="bloque">Modelos</div>
+<div class="grid">
+<a class="card" href="01_knn/index.html"><div class="dia">Modelo</div><div class="tit">Los k vecinos deciden por parecido</div><div class="desc">Retail (El Corte Inglés). ŷ = voto de los k vecinos más cercanos: el dial k mueve la frontera entre nerviosa y suave.</div></a>
+<a class="card" href="02_arboles/index.html"><div class="dia">Modelo</div><div class="tit">Un árbol parte a los clientes por un umbral</div><div class="desc">Banca (BBVA). Gini G = 1 − Σ p²: busca el corte que deja los dos grupos lo más puros posible.</div></a>
+<a class="card" href="03_random_forests/index.html"><div class="dia">Modelo</div><div class="tit">El bosque promedia muchos árboles</div><div class="desc">Seguros (Mapfre). ŷ = (1/B) Σ T_b(x): promediar árboles bootstrap doma la varianza hasta un suelo.</div></a>
+<a class="card" href="04_ensembles/index.html"><div class="dia">Modelo</div><div class="tit">Combinar modelos débiles en uno fuerte</div><div class="desc">E-commerce (Amazon). F(x) = Σ α_m h_m(x): bagging promedia, boosting corrige, stacking mezcla.</div></a>
+<a class="card" href="05_shap/index.html"><div class="dia">Modelo</div><div class="tit">SHAP explica por qué se deniega un crédito</div><div class="desc">Banca (BBVA). f(x) = φ₀ + Σ φⱼ: reparte la predicción entre las variables, en una cascada.</div></a>
+<a class="card" href="06_regresion_lineal/index.html"><div class="dia">Modelo</div><div class="tit">La recta que minimiza el error</div><div class="desc">Inmobiliaria (Idealista). ŷ = β₀ + β₁x, MSE: mueve la pendiente y el intercepto y mira los residuos en €².</div></a>
+<a class="card" href="07_regresion_logistica/index.html"><div class="dia">Modelo</div><div class="tit">La probabilidad de que un cliente se vaya</div><div class="desc">Telco (Movistar). p = σ(β₀ + β₁x): estima una probabilidad de baja y decide por el umbral 0.5.</div></a>
+</div>
+
+<div class="bloque">Metodología del aprendizaje</div>
+<div class="grid">
+<a class="card" href="13_espacio_hipotesis/index.html"><div class="dia">Método</div><div class="tit">El espacio de hipótesis: qué formas caben</div><div class="desc">H_d = { Σ βⱼ xʲ }: elegir la familia (recta, parábola, cúbica…) es elegir qué puede representar el modelo.</div></a>
+<a class="card" href="09_capacidad/index.html"><div class="dia">Método</div><div class="tit">La capacidad del modelo</div><div class="desc">capacidad ↑ con d: cuánto puede retorcerse la curva; más flexibilidad siempre baja el error de entrenamiento.</div></a>
+<a class="card" href="10_overfitting/index.html"><div class="dia">Método</div><div class="tit">Memorizar frente a generalizar</div><div class="desc">error_test ≈ sesgo² + varianza + ruido: el error de test dibuja una U; el punto dulce está en complejidad media.</div></a>
+<a class="card" href="08_regularizacion/index.html"><div class="dia">Método</div><div class="tit">Regularización: el freno λ</div><div class="desc">Seguros (Mapfre). L = MSE + λ Σ βⱼ²: penalizar coeficientes grandes evita que el modelo se retuerza.</div></a>
+<a class="card" href="11_hiperparametros/index.html"><div class="dia">Método</div><div class="tit">Lo que no se aprende de los datos</div><div class="desc">β*(λ) = argmin MSE_train: los parámetros se aprenden; el hiperparámetro λ se elige en validación.</div></a>
+<a class="card" href="12_busqueda_hiperparametros/index.html"><div class="dia">Método</div><div class="tit">Buscar hiperparámetros: malla, azar, bayesiana</div><div class="desc">x* = argmax EI(x): cómo repartir un presupuesto de pruebas; la bayesiana aprende del pasado.</div></a>
+</div>
+
+<p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Machine Learning para Business Analytics 2026–2027</p>
+</body>
+</html>
