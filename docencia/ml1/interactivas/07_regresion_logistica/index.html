@@ -43,6 +43,21 @@
   .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
   .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
   .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .cm{border-collapse:collapse;margin:8px auto 4px auto;font-variant-numeric:tabular-nums}
+  .cm td,.cm th{border:1px solid var(--rule);padding:5px 9px;text-align:center;font-size:0.86em}
+  .cm th{background:var(--goldPale);color:var(--goldDeep);font-variant:small-caps;
+    letter-spacing:0.03em;font-size:0.78em}
+  .cm td .big{font-size:1.35em;font-weight:bold;display:block;line-height:1.1}
+  .cm td .tag{font-size:0.68em;color:var(--mute);display:block}
+  .cm td.ok{background:#eef4e8}
+  .cm td.err{background:#f6e7d6}
+  .cornh{background:#fff !important;border:none !important}
+  .metrics{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+  .metric{flex:1 1 28%;background:#fff;border:1px solid var(--rule);border-radius:4px;
+    padding:5px 4px;text-align:center}
+  .metric .mv{font-size:1.15em;font-weight:bold;color:var(--goldDeep);
+    font-variant-numeric:tabular-nums;display:block}
+  .metric .ml{font-size:0.68em;color:var(--mute);font-variant:small-caps;letter-spacing:0.03em}
   .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
     padding:12px 16px;margin:2px 0 12px 0}
   .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
@@ -156,8 +171,126 @@
   </div>
 </section>
 
-<!-- ============ SLIDE 2: cierre ============ -->
+<!-- ============ SLIDE 2: umbral + matriz de confusión ============ -->
 <section class="slide" id="s1">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">De la probabilidad a la decisión, y a sus errores</div>
+      <div class="eq" style="font-size:1.15em">
+        predice <b>baja</b> si &nbsp;p &ge; <span class="term hot" id="t_thr">umbral</span>
+      </div>
+      <div class="eq" style="font-size:1.0em">
+        <span class="nterm" id="e_prec">precisión = TP/(TP+FP)</span> &nbsp;&middot;&nbsp;
+        <span class="nterm" id="e_rec">recall = TP/(TP+FN)</span>
+      </div>
+      <div class="eqnum">F1 = 2&middot;precisión&middot;recall / (precisión + recall)</div>
+    </div>
+    <canvas id="cvcm" width="720" height="330"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Ya tienes la logística entrenada: a cada uno de 200
+    clientes le asigna un <b>score</b> p, su probabilidad predicha de baja. Pero para actuar
+    (llamar, ofrecer descuento) hace falta un sí/no: eso lo fija el <span class="gold">umbral</span>.
+    Muévelo y mira cómo cambian los aciertos y los errores.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">umbral</span>
+        <input type="range" id="thr" min="0.02" max="0.98" step="0.01" value="0.5"
+          oninput="setThr(+this.value)"><span class="val" id="v_thr">0.50</span></div>
+      <div class="row"><button onclick="reseed2()">nueva muestra de clientes</button></div>
+    </div>
+
+    <table class="cm">
+      <tr><th class="cornh"></th><th colspan="2">predicción del modelo</th></tr>
+      <tr><th class="cornh"></th><th>baja (p&ge;u)</th><th>sigue (p&lt;u)</th></tr>
+      <tr><th>real: baja</th>
+        <td class="ok" id="c_tp"><span class="big">0</span><span class="tag">TP aciertos</span></td>
+        <td class="err" id="c_fn"><span class="big">0</span><span class="tag">FN se escapan</span></td></tr>
+      <tr><th>real: sigue</th>
+        <td class="err" id="c_fp"><span class="big">0</span><span class="tag">FP falsas alarmas</span></td>
+        <td class="ok" id="c_tn"><span class="big">0</span><span class="tag">TN aciertos</span></td></tr>
+    </table>
+
+    <div class="metrics">
+      <div class="metric"><span class="mv" id="m_acc">–</span><span class="ml">accuracy</span></div>
+      <div class="metric"><span class="mv" id="m_prec">–</span><span class="ml">precisión</span></div>
+      <div class="metric"><span class="mv" id="m_rec">–</span><span class="ml">recall</span></div>
+      <div class="metric"><span class="mv" id="m_spec">–</span><span class="ml">especificidad</span></div>
+      <div class="metric"><span class="mv" id="m_f1">–</span><span class="ml">F1</span></div>
+    </div>
+
+    <ol class="guide">
+      <li>Baja el umbral hacia <b>0.1</b>.
+        <span class="obs">Marcas baja a casi todos: el recall sube (no se escapa nadie) pero
+        la precisión cae, se disparan las falsas alarmas (FP).</span></li>
+      <li>Súbelo hacia <b>0.9</b>.
+        <span class="obs">Solo avisas de los clientísimos de riesgo: precisión altísima, pero
+        el recall se hunde y muchas bajas reales (FN) pasan desapercibidas.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">Si cada campaña de retención cuesta dinero pero perder un cliente
+        cuesta mucho más, ¿subes o bajas el umbral? <b>Lo bajas</b>: priorizas el recall
+        (cazar todas las bajas) aunque gastes en algunas falsas alarmas.</div></details>
+    </ol>
+
+    <div class="miniglos">
+      <b>TP/TN</b> aciertos (verde). <b>FP</b> avisas de una baja que no lo era.
+      <b>FN</b> se te escapa una baja real (el error caro). <b>El umbral no cambia el
+      modelo</b>: solo dónde cortas sus scores.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: curva ROC ============ -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La curva que resume TODOS los umbrales a la vez</div>
+      <div class="eq" style="font-size:1.05em">
+        <span class="nterm" id="e_tpr">TPR = recall = TP/(TP+FN)</span> &nbsp;&middot;&nbsp;
+        <span class="nterm" id="e_fpr">FPR = FP/(FP+TN)</span>
+      </div>
+      <div class="eqnum">la ROC recorre (FPR, TPR) al barrer el umbral de 1&nbsp;&rarr;&nbsp;0</div>
+    </div>
+    <canvas id="cvroc" width="720" height="360"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">La idea.</span> Cada umbral da <b>una</b> matriz de confusión, es decir
+    un punto (FPR, TPR). Si barres el umbral de 1 a 0 obtienes toda la
+    <span class="gold">curva ROC</span>. El <b>mismo slider</b> mueve el punto de operación
+    sobre la curva: es la misma cosa vista de otra forma.</p>
+
+    <div class="ctrlbox">
+      <div class="row"><span class="lab">umbral</span>
+        <input type="range" id="thr2" min="0.02" max="0.98" step="0.01" value="0.5"
+          oninput="setThr(+this.value)"><span class="val" id="v_thr2">0.50</span></div>
+      <div class="row"><button onclick="reseed2()">nueva muestra de clientes</button></div>
+    </div>
+
+    <div class="readout" id="roroc"></div>
+
+    <ol class="guide">
+      <li>Mueve el umbral y sigue el <b>punto dorado</b> sobre la curva.
+        <span class="obs">Umbral alto &rarr; abajo-izquierda (cauto, pocos avisos).
+        Umbral bajo &rarr; arriba-derecha (avisas de casi todos).</span></li>
+      <li>Fíjate en el <b>AUC</b>.
+        <span class="obs">No depende del umbral: mide la calidad del modelo entero. 0.5 es
+        azar (la diagonal); 1.0 es separación perfecta.</span></li>
+      <details class="check"><summary>Comprueba que lo entiendes</summary>
+        <div class="ans">¿Por qué comparar modelos por AUC y no por accuracy? Porque la accuracy
+        depende del umbral <b>y</b> del desbalanceo de clases; el <b>AUC resume el modelo a
+        todos los umbrales</b> de una vez, sin comprometerse con uno.</div></details>
+    </ol>
+
+    <div class="miniglos">
+      <b>TPR</b> (eje y) proporción de bajas reales cazadas. <b>FPR</b> (eje x) proporción de
+      clientes fieles molestados por error. <b>Diagonal</b> = clasificar al azar.
+      <b>Esquina superior izquierda</b> = el ideal (todo recall, cero falsas alarmas).
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: cierre ============ -->
+<section class="slide" id="s3">
   <div class="figcol">
     <div class="eqpanel">
       <div class="eqtitle">Para llevarte a casa</div>
@@ -191,8 +324,10 @@
 window.onerror=function(m,s,l){var b=document.getElementById('errbanner');
   b.style.display='block';b.textContent='JS error: '+m+' @'+l;};
 
-const SECTIONS=["La probabilidad","Para llevar"];
+const SECTIONS=["La probabilidad","Umbral y confusión","Curva ROC","Para llevar"];
 const TITLES=["La regresión logística estima la probabilidad de baja y decide por umbral 0.5.",
+              "El umbral convierte el score en decisión y fija el reparto entre precisión y recall.",
+              "La curva ROC resume el clasificador a todos los umbrales; el AUC no depende del corte.",
               "La logística modela una probabilidad acotada y se entrena minimizando el log-loss."];
 let cur=0;
 function buildNav(){
@@ -336,6 +471,154 @@ function draw(b0,b1,xstar){
 updaters[0]=upd;
 function reseed(){SEED=(SEED*1103515245+12345)&0x7fffffff;DATA=makeData(SEED);upd();}
 
+// ---------- SCORED DATASET (umbral / ROC) ----------
+let SEED2=21, THRESH=0.5;
+function makeScored(seed){
+  const rnd=mulberry32(seed); const pts=[];
+  const B0=-0.2, B1=1.15;               // logística ya "entrenada"
+  for(let i=0;i<200;i++){
+    const x=-3+6*rnd();
+    const pr=sig(B0+B1*x);              // score = probabilidad predicha
+    const y=rnd()<pr?1:0;             // etiqueta muestreada del propio modelo
+    pts.push({x,y,p:pr,jit:(rnd()-0.5)});
+  }
+  return pts;
+}
+let SCOR=makeScored(SEED2);
+function confusion(thr){
+  let TP=0,FP=0,FN=0,TN=0;
+  for(const p of SCOR){
+    const pred=p.p>=thr?1:0;
+    if(p.y===1&&pred===1)TP++;
+    else if(p.y===0&&pred===1)FP++;
+    else if(p.y===1&&pred===0)FN++;
+    else TN++;
+  }
+  const prec=(TP+FP)?TP/(TP+FP):0;
+  const rec=(TP+FN)?TP/(TP+FN):0;
+  const spec=(TN+FP)?TN/(TN+FP):0;
+  const f1=(prec+rec)?2*prec*rec/(prec+rec):0;
+  const acc=(TP+TN)/SCOR.length;
+  return {TP,FP,FN,TN,prec,rec,spec,f1,acc,tpr:rec,fpr:1-spec};
+}
+function rocCurve(){
+  const arr=SCOR.map(p=>({s:p.p,y:p.y})).sort((a,b)=>b.s-a.s);
+  const P=arr.filter(a=>a.y===1).length, N=arr.length-P;
+  let tp=0,fp=0; const pts=[{fpr:0,tpr:0}];
+  for(const a of arr){ if(a.y===1)tp++; else fp++; pts.push({fpr:N?fp/N:0,tpr:P?tp/P:0}); }
+  let auc=0; for(let i=1;i<pts.length;i++){auc+=(pts[i].fpr-pts[i-1].fpr)*(pts[i].tpr+pts[i-1].tpr)/2;}
+  return {pts,auc};
+}
+let ROC=rocCurve();
+function setThr(v){
+  THRESH=v;
+  const s1=document.getElementById('thr'), s2=document.getElementById('thr2');
+  if(s1)s1.value=v; if(s2)s2.value=v;
+  document.getElementById('v_thr').textContent=v.toFixed(2);
+  document.getElementById('v_thr2').textContent=v.toFixed(2);
+  if(cur===1)updCM(); else if(cur===2)updROC();
+}
+function reseed2(){SEED2=(SEED2*1103515245+12345)&0x7fffffff;SCOR=makeScored(SEED2);ROC=rocCurve();
+  if(cur===1)updCM(); else if(cur===2)updROC();}
+
+// -------- SLIDE 1: umbral + matriz de confusión --------
+function updCM(){
+  const c=confusion(THRESH);
+  document.getElementById('c_tp').querySelector('.big').textContent=c.TP;
+  document.getElementById('c_fp').querySelector('.big').textContent=c.FP;
+  document.getElementById('c_fn').querySelector('.big').textContent=c.FN;
+  document.getElementById('c_tn').querySelector('.big').textContent=c.TN;
+  document.getElementById('m_acc').textContent=(100*c.acc).toFixed(0)+'%';
+  document.getElementById('m_prec').textContent=(100*c.prec).toFixed(0)+'%';
+  document.getElementById('m_rec').textContent=(100*c.rec).toFixed(0)+'%';
+  document.getElementById('m_spec').textContent=(100*c.spec).toFixed(0)+'%';
+  document.getElementById('m_f1').textContent=c.f1.toFixed(2);
+  drawSwim(THRESH);
+}
+function drawSwim(thr){
+  const cv=document.getElementById('cvcm'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=44,my=22,W=w-mx-18,H=h-my-34;
+  const X=s=>mx+s*W;
+  const laneY1=my+H*0.30, laneY0=my+H*0.72;
+  // zona "predice baja" (a la derecha del umbral)
+  ctx.fillStyle='#F5EBD3';ctx.globalAlpha=0.6;
+  ctx.fillRect(X(thr),my,X(1)-X(thr),H);ctx.globalAlpha=1;
+  ctx.fillStyle='#8C6508';ctx.font='bold 12px Georgia';ctx.textAlign='center';
+  ctx.fillText('predice BAJA',(X(thr)+X(1))/2,my+13);ctx.textAlign='left';
+  // eje
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';ctx.textAlign='center';
+  for(let t=0;t<=10;t+=2){const s=t/10;ctx.fillStyle='#bbb';ctx.fillText(s.toFixed(1),X(s),my+H+16);}
+  ctx.fillStyle='#8A8A8A';ctx.fillText('score p = probabilidad predicha de baja',mx+W/2,my+H+30);
+  ctx.textAlign='left';
+  // etiquetas de carriles
+  ctx.font='bold 12px Georgia';
+  ctx.fillStyle='#B8860B';ctx.fillText('y = 1 (baja)',mx+2,laneY1-H*0.16);
+  ctx.fillStyle='#8A8A8A';ctx.fillText('y = 0 (sigue)',mx+2,laneY0+H*0.20);
+  // línea de umbral
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=2.2;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(X(thr),my);ctx.lineTo(X(thr),my+H);ctx.stroke();ctx.setLineDash([]);
+  // puntos (errores con anillo de tinta)
+  for(const p of SCOR){
+    const px=X(p.p), py=(p.y?laneY1:laneY0)+p.jit*H*0.16;
+    const predPos=p.p>=thr, err=predPos!==(p.y===1);
+    ctx.beginPath();ctx.arc(px,py,4,0,7);
+    ctx.fillStyle=p.y?'#B8860B':'#8A8A8A';ctx.fill();
+    if(err){ctx.lineWidth=2;ctx.strokeStyle='#1A1A1A';}else{ctx.lineWidth=1;ctx.strokeStyle='#fff';}
+    ctx.stroke();
+  }
+}
+updaters[1]=updCM;
+
+// -------- SLIDE 2: curva ROC --------
+function updROC(){
+  const c=confusion(THRESH);
+  document.getElementById('roroc').innerHTML=
+    'AUC = <b>'+ROC.auc.toFixed(3)+'</b> (independiente del umbral)<br>'+
+    'En umbral '+THRESH.toFixed(2)+': &nbsp;TPR (recall) = <b>'+(100*c.tpr).toFixed(0)+'%</b>'+
+    ' &middot; FPR = <b>'+(100*c.fpr).toFixed(0)+'%</b><br>'+
+    '<span class="badge '+(c.tpr-c.fpr>0.4?'ok':'bad')+'">Ganancia sobre el azar: '+
+    (100*(c.tpr-c.fpr)).toFixed(0)+' puntos (TPR &minus; FPR)</span>';
+  drawROC(THRESH);
+}
+function drawROC(thr){
+  const cv=document.getElementById('cvroc'); const {ctx,w,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,w,h);
+  const mx=48,my=16,pad=34;
+  const S=Math.min(w-mx-18, h-my-pad);
+  const X=v=>mx+v*S, Y=v=>my+(1-v)*S;
+  // marco
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+S);ctx.lineTo(mx+S,my+S);ctx.stroke();
+  // diagonal (azar)
+  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1.2;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(X(0),Y(0));ctx.lineTo(X(1),Y(1));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';ctx.fillText('azar',X(0.62),Y(0.55));
+  // curva ROC
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.beginPath();
+  ROC.pts.forEach((p,i)=>{const px=X(p.fpr),py=Y(p.tpr);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});
+  ctx.stroke();
+  // punto de operación
+  const c=confusion(thr);
+  ctx.beginPath();ctx.arc(X(c.fpr),Y(c.tpr),6,0,7);
+  ctx.fillStyle='#8C6508';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+  // ejes / etiquetas
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';ctx.textAlign='center';
+  ctx.fillText('FPR = falsas alarmas',mx+S/2,my+S+26);
+  ctx.save();ctx.translate(14,my+S/2);ctx.rotate(-Math.PI/2);
+  ctx.fillText('TPR = recall',0,0);ctx.restore();ctx.textAlign='left';
+  for(let t=0;t<=1.001;t+=0.5){ctx.fillStyle='#bbb';
+    ctx.textAlign='center';ctx.fillText(t.toFixed(1),X(t),my+S+14);
+    ctx.textAlign='right';ctx.fillText(t.toFixed(1),mx-6,Y(t)+4);ctx.textAlign='left';}
+  // AUC (relleno tenue bajo la curva)
+  ctx.fillStyle='rgba(184,134,11,0.10)';ctx.beginPath();ctx.moveTo(X(0),Y(0));
+  ROC.pts.forEach(p=>ctx.lineTo(X(p.fpr),Y(p.tpr)));
+  ctx.lineTo(X(1),Y(0));ctx.closePath();ctx.fill();
+}
+updaters[2]=updROC;
+
 function drawClose(){
   const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
   ctx.clearRect(0,0,w,h);
@@ -377,7 +660,7 @@ function drawClose(){
   ctx.fillStyle='#8A8A8A';ctx.fillText('recta lineal (se sale de [0,1])',X(-2.9),Y(1.32));
   ctx.fillStyle='#B8860B';ctx.fillText('sigmóide (acotada en (0,1))',X(0.1),Y(0.28));
 }
-updaters[1]=drawClose;
+updaters[3]=drawClose;
 
 window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
 window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.slice(1));if(Number.isFinite(h)&&h!==cur)go(h);});
