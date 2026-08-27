@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -79,13 +82,13 @@
       <div class="eqtitle">La similitud coseno</div>
       <div class="eq">
         cos(u,v) =
-        ( 2&middot;<span class="term" id="t_vx">v<sub>x</sub></span> +
-          1&middot;<span class="term" id="t_vy">v<sub>y</sub></span> )
+        ( <span class="term" id="t_ux">u<sub>x</sub></span>&middot;<span class="term" id="t_vx">v<sub>x</sub></span> +
+          <span class="term" id="t_uy">u<sub>y</sub></span>&middot;<span class="term" id="t_vy">v<sub>y</sub></span> )
         / ( &Vert;u&Vert; &middot; &Vert;v&Vert; )
       </div>
       <div class="eqnum">
-        u&middot;v = 2&middot;<span class="nterm" id="n_vx">0.0</span> +
-        1&middot;<span class="nterm" id="n_vy">0.0</span>
+        u&middot;v = <span class="nterm" id="n_ux">2.0</span>&middot;<span class="nterm" id="n_vx">0.0</span> +
+        <span class="nterm" id="n_uy">1.0</span>&middot;<span class="nterm" id="n_vy">0.0</span>
         = <b id="n_dot">0.00</b>,
         &nbsp; cos = <b id="n_cos">0.00</b>
       </div>
@@ -99,6 +102,14 @@
     ese parecido para <b>recomendar</b>.</p>
 
     <div class="ctrlbox">
+      <div class="sub">La canción de referencia &mdash; vector u</div>
+      <div class="row"><span class="lab">u<sub>x</sub></span>
+        <input type="range" id="ux" min="-3" max="3" step="0.1" value="2.0"
+          oninput="hot('ux');upd()"><span class="val" id="v_ux">2.0</span></div>
+      <div class="row"><span class="lab">u<sub>y</sub></span>
+        <input type="range" id="uy" min="-3" max="3" step="0.1" value="1.0"
+          oninput="hot('uy');upd()"><span class="val" id="v_uy">1.0</span></div>
+      <div class="sub second">La candidata &mdash; vector v</div>
       <div class="row"><span class="lab">v<sub>x</sub></span>
         <input type="range" id="vx" min="-3" max="3" step="0.1" value="1.8"
           oninput="hot('vx');upd()"><span class="val" id="v_vx">1.8</span></div>
@@ -109,10 +120,9 @@
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> La canción de referencia u = (2, 1) está
-    fija. Mueve v<sub>x</sub> y v<sub>y</sub>: la componente que tocas se enciende
-    en <span style="color:var(--gold);font-weight:bold">dorado</span> y el vector
-    v gira. Cuanto menor es el ángulo, mayor el coseno y mejor la recomendación.</p>
+    <p><span class="hd">Lee así.</span> Los dos vectores se mueven: con los sliders o
+    <b>arrastrando la punta de la flecha</b> sobre el plano. Alarga un vector sin girarlo
+    y el coseno <b>no cambia</b>: solo mide dirección, no volumen de escuchas.</p>
 
     <div class="miniglos">
       <b>u&middot;v</b> producto escalar, suma de productos componente a componente.
@@ -195,20 +205,26 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// fixed reference song vector u
-const UX=2, UY=1;
+// both song vectors are variables of the slide now
+let UX=2, UY=1;
 
 function upd(){
   const vx=+document.getElementById('vx').value;
   const vy=+document.getElementById('vy').value;
+  UX=+document.getElementById('ux').value;
+  UY=+document.getElementById('uy').value;
   document.getElementById('v_vx').textContent=vx.toFixed(1);
   document.getElementById('v_vy').textContent=vy.toFixed(1);
+  document.getElementById('v_ux').textContent=UX.toFixed(1);
+  document.getElementById('v_uy').textContent=UY.toFixed(1);
   document.getElementById('n_vx').textContent=vx.toFixed(1);
   document.getElementById('n_vy').textContent=vy.toFixed(1);
+  document.getElementById('n_ux').textContent=UX.toFixed(1);
+  document.getElementById('n_uy').textContent=UY.toFixed(1);
   // real 2D arithmetic
   const dot=UX*vx+UY*vy;
   const nu=Math.hypot(UX,UY), nv=Math.hypot(vx,vy);
-  const cos=(nv<1e-9)?0:dot/(nu*nv);
+  const cos=(nv<1e-9||nu<1e-9)?0:dot/(nu*nv);
   const ang=Math.acos(Math.max(-1,Math.min(1,cos)))*180/Math.PI;
   document.getElementById('n_dot').textContent=dot.toFixed(2);
   document.getElementById('n_cos').textContent=cos.toFixed(2);
@@ -217,17 +233,18 @@ function upd(){
   else if(cos>-0.3){cls='mid';lab='Poco relacionada';song='"un tema de jazz suave" &rarr; quizá no';}
   else{cls='bad';lab='Opuesta';song='"reguetón de fiesta" &rarr; no recomendar';}
   document.getElementById('ro').innerHTML=
-    'Referencia u=(2,&thinsp;1), candidata v=('+vx.toFixed(1)+',&thinsp;'+vy.toFixed(1)+').<br>'+
-    '&Vert;v&Vert; = '+nv.toFixed(2)+', &nbsp; ángulo = '+ang.toFixed(0)+'&deg;, &nbsp; '+
+    'Referencia u=('+UX.toFixed(1)+',&thinsp;'+UY.toFixed(1)+'), candidata v=('+vx.toFixed(1)+',&thinsp;'+vy.toFixed(1)+').<br>'+
+    '&Vert;u&Vert; = '+nu.toFixed(2)+', &Vert;v&Vert; = '+nv.toFixed(2)+', &nbsp; ángulo = '+ang.toFixed(0)+'&deg;, &nbsp; '+
     'cos = <b>'+cos.toFixed(2)+'</b>.<br>'+
     '<span class="badge '+cls+'">'+lab+'</span> &nbsp;<span style="color:#8A8A8A">'+song+'</span>';
   drawVec(vx,vy,cos,ang);
 }
 
+const planeGeom=(w,h)=>({ox:w*0.5, oy:h*0.55, S:48});   // origin & scale (px per unit)
 function drawVec(vx,vy,cos,ang){
   const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
   ctx.clearRect(0,0,w,h);
-  const ox=w*0.5, oy=h*0.55, S=48; // origin & scale (px per unit)
+  const {ox,oy,S}=planeGeom(w,h);
   const gx=x=>ox+x*S, gy=y=>oy-y*S;
   // grid
   ctx.strokeStyle='#f0f0f0';ctx.lineWidth=1;
@@ -264,6 +281,39 @@ function drawVec(vx,vy,cos,ang){
   ctx.fillText('cos = '+cos.toFixed(2),12,20);
 }
 updaters[0]=upd;
+
+// ---- drag either arrow head directly on the plane ----
+(function(){
+  const cv=document.getElementById('cv');
+  let drag=null;                       // 'u' | 'v' | null
+  const clamp=x=>Math.max(-3,Math.min(3,x));
+  function coords(ev){
+    const r=cv.getBoundingClientRect();
+    const src=ev.touches?ev.touches[0]:ev;
+    const {ox,oy,S}=planeGeom(r.width,cv._lh||r.height);
+    return {x:(src.clientX-r.left-ox)/S, y:-(src.clientY-r.top-oy)/S};
+  }
+  function nearest(p){
+    const u=[+document.getElementById('ux').value,+document.getElementById('uy').value];
+    const v=[+document.getElementById('vx').value,+document.getElementById('vy').value];
+    const du=Math.hypot(p.x-u[0],p.y-u[1]), dv=Math.hypot(p.x-v[0],p.y-v[1]);
+    if(Math.min(du,dv)>0.7)return null;      // clicked far from both heads
+    return du<dv?'u':'v';
+  }
+  function place(p){
+    const ids=drag==='u'?['ux','uy']:['vx','vy'];
+    document.getElementById(ids[0]).value=clamp(p.x).toFixed(1);
+    document.getElementById(ids[1]).value=clamp(p.y).toFixed(1);
+    hot(ids[0]); upd();
+  }
+  cv.style.cursor='crosshair';
+  cv.addEventListener('mousedown',e=>{const p=coords(e);drag=nearest(p);if(drag)place(p);});
+  window.addEventListener('mousemove',e=>{if(drag)place(coords(e));});
+  window.addEventListener('mouseup',()=>{drag=null;});
+  cv.addEventListener('touchstart',e=>{const p=coords(e);drag=nearest(p);if(drag){place(p);e.preventDefault();}},{passive:false});
+  cv.addEventListener('touchmove',e=>{if(drag){place(coords(e));e.preventDefault();}},{passive:false});
+  window.addEventListener('touchend',()=>{drag=null;});
+})();
 
 function drawMap(){
   const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);

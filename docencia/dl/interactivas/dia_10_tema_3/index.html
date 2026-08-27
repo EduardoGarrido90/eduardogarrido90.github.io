@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -77,12 +80,13 @@
     <div class="eqpanel">
       <div class="eqtitle">La ecuación del Mixture of Experts</div>
       <div class="eq">
-        g = <span class="term" id="t_g">softmax(x&middot;W<sub>g</sub>)</span> ;&nbsp;&nbsp;
-        y = &Sigma;<sub><span class="term" id="t_k">i&isin;top-k</span></sub> g<sub>i</sub>&middot;E<sub>i</sub>(x)
+        g = softmax(<span class="term" data-hot="x">x</span>&middot;W<sub>g</sub>) ;&nbsp;&nbsp;
+        y = &Sigma;<sub><span class="term" id="t_k">i&isin;top-k</span></sub> g<sub>i</sub>&middot;E<sub>i</sub>(<span class="term" data-hot="x">x</span>)
       </div>
       <div class="eqnum">
         top-<span class="nterm" id="n_k">2</span> de 6 expertos&nbsp;&middot;&nbsp;
-        sesgo de routing = <span class="nterm" id="n_g">0.0</span>
+        x = (<span class="nterm" data-hot="x" id="n_x1">0.0</span>,
+        <span class="nterm" data-hot="x" id="n_x2">0.0</span>)
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
@@ -94,21 +98,25 @@
     de la red ni se enciende: mismo acierto, mucho menos cómputo.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El sistema &mdash; cuántos expertos se encienden</div>
       <div class="row"><span class="lab">k</span>
         <input type="range" id="k" min="1" max="4" step="1" value="2"
           oninput="hot('k');upd()"><span class="val" id="v_k">2</span></div>
-      <div class="row"><span class="lab">sesgo</span>
-        <input type="range" id="bias" min="-3" max="3" step="0.1" value="0.0"
-          oninput="hot('g');upd()"><span class="val" id="v_bias">0.0</span></div>
+      <div class="sub second">La petición &mdash; el vector de entrada x</div>
+      <div class="row"><span class="lab">x<sub>1</sub></span>
+        <input type="range" id="x1" min="-3" max="3" step="0.1" value="0.0"
+          oninput="hot('x1');upd()"><span class="val" id="v_x1">0.0</span></div>
+      <div class="row"><span class="lab">x<sub>2</sub></span>
+        <input type="range" id="x2" min="-3" max="3" step="0.1" value="0.0"
+          oninput="hot('x2');upd()"><span class="val" id="v_x2">0.0</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> <b>k</b> fija cuántos expertos se activan;
-    <b>sesgo</b> desplaza los logits del router hacia unos expertos u otros. Al mover un
-    slider su término se enciende en
-    <span style="color:var(--gold);font-weight:bold">dorado</span> en la ecuación. En el
-    gráfico, los k elegidos van en dorado y los descartados en gris.</p>
+    <p><span class="hd">Lee así.</span> <b>k</b> fija cuántos expertos se activan.
+    <b>x<sub>1</sub></b> y <b>x<sub>2</sub></b> son la petición que llega (género y
+    longitud del historial): al moverla, el router elige <b>otros</b> expertos.
+    En el gráfico, los k elegidos van en dorado y los descartados en gris.</p>
 
     <div class="miniglos">
       <b>softmax</b> convierte los logits en pesos que suman 1. <b>top-k</b> se queda solo
@@ -175,11 +183,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// both input sliders describe the same vector x, which appears twice
+const HOTGROUP={x1:'x',x2:'x'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -193,10 +205,12 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// ---- 6 experts: fixed base logits + a routing-bias direction ----
+// ---- 6 experts: router logits = x·W_g + b, with x set by the user ----
 const NAMES=["E1","E2","E3","E4","E5","E6"];
-const BASE =[1.4, 0.9, 0.2, 0.6, -0.5, -1.0];   // fixed per-expert logits
-const DIR  =[-1.0,-0.6,-0.2, 0.2, 0.6, 1.0];    // how bias shifts each logit
+const BASE =[1.4, 0.9, 0.2, 0.6, -0.5, -1.0];   // per-expert bias of the router
+// two columns of W_g: how each input dimension pushes each expert's logit
+const DIR  =[-1.0,-0.6,-0.2, 0.2, 0.6, 1.0];    // x1: género de la petición
+const DIR2 =[ 0.8,-0.9, 0.5,-0.4, 1.0,-0.7];    // x2: longitud del historial
 
 function softmax(z){
   const m=Math.max(...z);
@@ -205,8 +219,8 @@ function softmax(z){
   return e.map(v=>v/s);
 }
 
-function computeMoE(k,bias){
-  const logits=BASE.map((b,i)=>b+bias*DIR[i]);
+function computeMoE(k,x1,x2){
+  const logits=BASE.map((b,i)=>b+x1*DIR[i]+x2*DIR2[i]);   // logits = x·W_g + b
   const g=softmax(logits);                       // real softmax gates, sum=1
   // pick top-k indices by gate value
   const order=g.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]);
@@ -219,17 +233,20 @@ function computeMoE(k,bias){
 
 function upd(){
   const k=+document.getElementById('k').value;
-  const bias=+document.getElementById('bias').value;
+  const x1=+document.getElementById('x1').value;
+  const x2=+document.getElementById('x2').value;
   document.getElementById('v_k').textContent=k;
-  document.getElementById('v_bias').textContent=bias.toFixed(1);
+  document.getElementById('v_x1').textContent=x1.toFixed(1);
+  document.getElementById('v_x2').textContent=x2.toFixed(1);
   document.getElementById('n_k').textContent=k;
-  document.getElementById('n_g').textContent=bias.toFixed(1);
+  document.getElementById('n_x1').textContent=x1.toFixed(1);
+  document.getElementById('n_x2').textContent=x2.toFixed(1);
 
-  const {g,w,sel}=computeMoE(k,bias);
+  const {g,w,sel}=computeMoE(k,x1,x2);
   const active=[...sel].sort((a,b)=>a-b).map(i=>NAMES[i]).join(', ');
   const comp=(k/6*100), save=100-comp;
   document.getElementById('ro').innerHTML=
-    'Expertos activos: <b>'+active+'</b> ('+k+' de 6).<br>'+
+    'Petición x = ('+x1.toFixed(1)+', '+x2.toFixed(1)+') &rarr; expertos activos: <b>'+active+'</b> ('+k+' de 6).<br>'+
     'Cómputo usado <b>'+comp.toFixed(0)+'%</b> &rarr; ahorro <b>'+save.toFixed(0)+'%</b> '+
     'frente a una red densa.<br>'+
     '<span class="badge '+(k<=2?'ok':'bad')+'">'+

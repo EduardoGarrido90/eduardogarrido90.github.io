@@ -30,7 +30,11 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.6em;font-weight:bold;text-align:center}
+  .ctrlbox .lab.wide{width:5.2em;font-size:0.84em}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
     color:var(--goldDeep);font-weight:bold}
@@ -77,16 +81,18 @@
     <div class="eqpanel">
       <div class="eqtitle">Cómo recupera RAG el contexto</div>
       <div class="eq">
-        score(q, d) = cos(q, d)
+        score(<span class="term" data-hot="q">q</span>, d) =
+        cos(<span class="term" data-hot="q">q</span>, d)
       </div>
       <div class="eq" style="font-size:1.12em">
         contexto = top-<span class="term" id="t_k">k</span> docs con score &ge;
         <span class="term" id="t_thr">umbral</span>
       </div>
       <div class="eqnum">
-        <span class="nterm" id="n_k">3</span> docs pedidos, umbral =
+        <span class="nterm" data-hot="q" id="n_q">q = (1.0, 0.9, 0.0, 0.0, 0.1)</span> &middot;
+        k = <span class="nterm" id="n_k">3</span>, umbral =
         <span class="nterm" id="n_thr">0.50</span> &rarr;
-        <b id="n_ctx">3</b> docs pasan al LLM
+        <b id="n_ctx">3</b> docs al LLM
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
@@ -99,20 +105,32 @@
     parecidos por encima de un <b>umbral</b> y se los pasa al LLM como contexto.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El recuperador &mdash; cuántos docs y con qué corte</div>
       <div class="row"><span class="lab">k</span>
         <input type="range" id="k" min="1" max="8" step="1" value="3"
           oninput="hot('k');upd()"><span class="val" id="v_k">3</span></div>
       <div class="row"><span class="lab">umbral</span>
         <input type="range" id="thr" min="0" max="1" step="0.05" value="0.5"
           oninput="hot('thr');upd()"><span class="val" id="v_thr">0.50</span></div>
+      <div class="sub second">La pregunta &mdash; de qué va la consulta q</div>
+      <div class="row"><span class="lab wide">comisiones</span>
+        <input type="range" id="qcom" min="0" max="1" step="0.05" value="1.0"
+          oninput="hot('qcom');upd()"><span class="val" id="v_qcom">1.00</span></div>
+      <div class="row"><span class="lab wide">hipoteca</span>
+        <input type="range" id="qhip" min="0" max="1" step="0.05" value="0.0"
+          oninput="hot('qhip');upd()"><span class="val" id="v_qhip">0.00</span></div>
+      <div class="row"><span class="lab wide">RRHH</span>
+        <input type="range" id="qrrhh" min="0" max="1" step="0.05" value="0.0"
+          oninput="hot('qrrhh');upd()"><span class="val" id="v_qrrhh">0.00</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee as&iacute;.</span> Mueve un slider: su s&iacute;mbolo se enciende
-    en <span style="color:var(--gold);font-weight:bold">dorado</span> en la ecuaci&oacute;n.
-    Las barras doradas son los documentos recuperados; las grises se descartan. El
-    &bull; marca los realmente <b>relevantes</b>. Sube k y ver&aacute;s cómo entra ruido.</p>
+    <p><span class="hd">Lee as&iacute;.</span> Las barras doradas son los documentos
+    recuperados; las grises se descartan y el &bull; marca los realmente
+    <b>relevantes</b>. Sube k y entra ruido. Y sobre todo <b>cambia la pregunta</b>: el
+    corpus no se mueve, pero el ranking se reordena y los relevantes pasan a ser otros.
+    Con la pregunta de hipoteca solo hay <b>un</b> documento relevante: k=3 mete ruido.</p>
 
     <div class="miniglos">
       <b>cos(q,d)</b> similitud coseno de dos embeddings, en [-1,1].
@@ -175,11 +193,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// the three query sliders all describe q, which appears twice in the equation
+const HOTGROUP={qcom:'q',qhip:'q',qrrhh:'q'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -195,25 +217,36 @@ function fitCanvas(cv){
 
 // ---- fixed corpus of 10 internal BBVA documents ----
 // semantic axes: [comisiones, cuenta, hipoteca, RRHH, general]
-const QUERY=[1.0,0.9,0.0,0.0,0.1];               // "¿qué comisiones tiene mi cuenta?"
+// the query is a variable of the slide: three of its five axes are sliders
+const AXES=["comisiones","cuenta","hipoteca","RRHH","general"];
+let QUERY=[1.0,0.9,0.0,0.0,0.1];                 // "¿qué comisiones tiene mi cuenta?"
 const DOCS=[
-  {name:"Política comisiones de cuenta", v:[1.0,0.9,0.0,0.0,0.1], rel:true },
-  {name:"Requisitos hipoteca 1ª vivienda", v:[0.1,0.3,1.0,0.0,0.1], rel:false},
-  {name:"Menú del comedor de empleados",  v:[0.0,0.0,0.0,0.2,1.0], rel:false},
-  {name:"Tarifas de transferencias",      v:[0.9,0.5,0.0,0.0,0.2], rel:true },
-  {name:"Manual de la app móvil",         v:[0.2,0.4,0.1,0.0,0.8], rel:false},
-  {name:"Política de vacaciones (RRHH)",  v:[0.0,0.0,0.0,1.0,0.3], rel:false},
-  {name:"Condiciones préstamo consumo",   v:[0.5,0.4,0.3,0.0,0.3], rel:false},
-  {name:"Protocolo apertura de cuenta",   v:[0.3,0.9,0.0,0.0,0.3], rel:false},
-  {name:"Política comisiones tarjetas",   v:[0.9,0.3,0.0,0.0,0.2], rel:true },
-  {name:"Historia del banco",             v:[0.1,0.1,0.1,0.1,0.9], rel:false}
+  {name:"Política comisiones de cuenta", v:[1.0,0.9,0.0,0.0,0.1]},
+  {name:"Requisitos hipoteca 1ª vivienda", v:[0.1,0.3,1.0,0.0,0.1]},
+  {name:"Menú del comedor de empleados",  v:[0.0,0.0,0.0,0.2,1.0]},
+  {name:"Tarifas de transferencias",      v:[0.9,0.5,0.0,0.0,0.2]},
+  {name:"Manual de la app móvil",         v:[0.2,0.4,0.1,0.0,0.8]},
+  {name:"Política de vacaciones (RRHH)",  v:[0.0,0.0,0.0,1.0,0.3]},
+  {name:"Condiciones préstamo consumo",   v:[0.5,0.4,0.3,0.0,0.3]},
+  {name:"Protocolo apertura de cuenta",   v:[0.3,0.9,0.0,0.0,0.3]},
+  {name:"Política comisiones tarjetas",   v:[0.9,0.3,0.0,0.0,0.2]},
+  {name:"Historia del banco",             v:[0.1,0.1,0.1,0.1,0.9]}
 ];
 const dot=(a,b)=>a.reduce((s,ai,i)=>s+ai*b[i],0);
 const norm=a=>Math.sqrt(dot(a,a));
-const cos=(a,b)=>dot(a,b)/(norm(a)*norm(b));
-// precompute real cosines once
-const SIMS=DOCS.map(d=>cos(QUERY,d.v));
-const N_REL=DOCS.filter(d=>d.rel).length;
+const cos=(a,b)=>{const n=norm(a)*norm(b);return n<1e-9?0:dot(a,b)/n;};
+const argmax=a=>a.reduce((bi,v,i)=>v>a[bi]?i:bi,0);
+// ground truth: a document is relevant when its dominant topic is the query's AND
+// it is clearly about it (weight >= 0.8). With the default query this reproduces
+// exactly the three "comisiones" documents of the original corpus.
+let SIMS=[], REL=[], N_REL=0, TOPIC=0;
+function rescore(){
+  SIMS=DOCS.map(d=>cos(QUERY,d.v));
+  TOPIC=argmax(QUERY);
+  REL=DOCS.map(d=>argmax(d.v)===TOPIC&&d.v[TOPIC]>=0.8);
+  N_REL=REL.filter(Boolean).length;
+}
+rescore();
 
 function retrieve(k,thr){
   // rank by cosine desc, keep top-k that also clear the threshold
@@ -229,18 +262,27 @@ function retrieve(k,thr){
 function upd(){
   const k  =+document.getElementById('k').value;
   const thr=+document.getElementById('thr').value;
+  const qcom=+document.getElementById('qcom').value;
+  const qhip=+document.getElementById('qhip').value;
+  const qrr =+document.getElementById('qrrhh').value;
+  QUERY=[qcom,0.9,qhip,qrr,0.1];   // "cuenta" y "general" quedan de fondo
+  rescore();
   document.getElementById('v_k').textContent=k;
   document.getElementById('v_thr').textContent=thr.toFixed(2);
+  document.getElementById('v_qcom').textContent=qcom.toFixed(2);
+  document.getElementById('v_qhip').textContent=qhip.toFixed(2);
+  document.getElementById('v_qrrhh').textContent=qrr.toFixed(2);
   document.getElementById('n_k').textContent=k;
   document.getElementById('n_thr').textContent=thr.toFixed(2);
+  document.getElementById('n_q').textContent='q = ('+QUERY.map(v=>v.toFixed(1)).join(', ')+')';
 
   const set=retrieve(k,thr);
   const nctx=set.size;
   document.getElementById('n_ctx').textContent=nctx;
 
-  let relIn=0; set.forEach(i=>{if(DOCS[i].rel)relIn++;});
+  let relIn=0; set.forEach(i=>{if(REL[i])relIn++;});
   const prec = nctx>0 ? relIn/nctx : 0;
-  const rec  = relIn/N_REL;
+  const rec  = N_REL>0 ? relIn/N_REL : 0;
   const noise = nctx-relIn;
 
   let verdict, cls;
@@ -253,7 +295,7 @@ function upd(){
   document.getElementById('ro').innerHTML=
     'Documentos en el contexto: <b>'+nctx+'</b> de 10 &nbsp;·&nbsp; ruido: <b>'+noise+'</b><br>'+
     'Precisi&oacute;n <b>'+(prec*100).toFixed(0)+'%</b> ('+relIn+'/'+nctx+' relevantes) &nbsp;·&nbsp; '+
-    'Recall <b>'+(rec*100).toFixed(0)+'%</b> ('+relIn+'/'+N_REL+')<br>'+
+    'Recall <b>'+(rec*100).toFixed(0)+'%</b> ('+relIn+'/'+N_REL+', tema «'+AXES[TOPIC]+'»)<br>'+
     '<span class="badge '+cls+'">'+verdict+'</span>';
   drawBars(set,thr);
 }
@@ -283,7 +325,7 @@ function drawBars(set,thr){
     const yc=mT+i*rowH+rowH/2;
     const inCtx=set.has(i);
     // relevance marker
-    ctx.fillStyle=d.rel?'#8C6508':'#cfcfcf';
+    ctx.fillStyle=REL[i]?'#8C6508':'#cfcfcf';
     ctx.beginPath();ctx.arc(mL-166,yc,3.4,0,7);ctx.fill();
     // label
     ctx.fillStyle=inCtx?'#1A1A1A':'#9a9a9a';

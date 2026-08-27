@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -78,14 +81,14 @@
       <div class="eqtitle">La ecuación de la neurona recurrente</div>
       <div class="eq">
         h<sub>t</sub> = tanh(
-        <span class="term" id="t_wx">W<sub>x</sub></span>&middot;x<sub>t</sub> +
-        <span class="term" id="t_wh">W<sub>h</sub></span>&middot;h<sub>t&minus;1</sub> +
+        <span class="term" id="t_wx">W<sub>x</sub></span>&middot;<span class="term" data-hot="x seq">x<sub>t</sub></span> +
+        <span class="term" id="t_wh">W<sub>h</sub></span>&middot;<span class="term" data-hot="seq">h<sub>t&minus;1</sub></span> +
         <span class="term" id="t_b">b</span> )
       </div>
       <div class="eqnum">
-        h<sub>t</sub> = tanh(
-        <span class="nterm" id="n_wx">0.0</span>&middot;<span id="n_x">0.0</span> +
-        <span class="nterm" id="n_wh">0.0</span>&middot;<span id="n_h">0.0</span> +
+        h<sub><span class="nterm" id="n_tsel">8</span></sub> = tanh(
+        <span class="nterm" id="n_wx">0.0</span>&middot;<span class="nterm" data-hot="x seq" id="n_x">0.0</span> +
+        <span class="nterm" id="n_wh">0.0</span>&middot;<span class="nterm" data-hot="seq" id="n_h">0.0</span> +
         <span class="nterm" id="n_b">0.0</span> ) = <b id="n_out">0.00</b>
       </div>
     </div>
@@ -98,6 +101,7 @@
     &mdash; su <b>memoria</b> del pasado reciente &mdash; para anticipar lo que viene.</p>
 
     <div class="ctrlbox">
+      <div class="sub">La neurona &mdash; sus tres pesos</div>
       <div class="row"><span class="lab">W<sub>x</sub></span>
         <input type="range" id="wx" min="-2" max="2" step="0.1" value="1.2"
           oninput="hot('wx');upd()"><span class="val" id="v_wx">1.2</span></div>
@@ -107,6 +111,16 @@
       <div class="row"><span class="lab">b</span>
         <input type="range" id="b" min="-1" max="1" step="0.05" value="0.0"
           oninput="hot('b');upd()"><span class="val" id="v_b">0.00</span></div>
+      <div class="sub second">La demanda &mdash; la punta que entra y la hora que lees</div>
+      <div class="row"><span class="lab">amp</span>
+        <input type="range" id="amp" min="0" max="1.5" step="0.05" value="1.0"
+          oninput="hot('amp');upd()"><span class="val" id="v_amp">1.00</span></div>
+      <div class="row"><span class="lab">dur</span>
+        <input type="range" id="dur" min="1" max="12" step="1" value="8"
+          oninput="hot('dur');upd()"><span class="val" id="v_dur">8</span></div>
+      <div class="row"><span class="lab">t</span>
+        <input type="range" id="tsel" min="0" max="23" step="1" value="8"
+          oninput="hot('tsel');upd()"><span class="val" id="v_tsel">8</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
@@ -114,12 +128,14 @@
     <p><span class="hd">Lee así.</span> W<sub>h</sub> es la <b>fuerza de la memoria</b>.
     Con W<sub>h</sub>&asymp;1 el estado arrastra el pasado y la punta persiste
     muchas horas; con W<sub>h</sub>&asymp;0 la red olvida al instante y h<sub>t</sub>
-    copia solo la entrada actual.</p>
+    copia solo la entrada actual. Abajo cambias la <b>demanda</b> que entra y con
+    <b>t</b> recorres las horas: la ecuación numérica muestra esa hora.</p>
 
     <div class="miniglos">
       <b>tanh</b> aplasta el estado a (&minus;1,1). <b>W<sub>x</sub></b> cuánto pesa
       la entrada nueva. <b>W<sub>h</sub></b> cuánto se recuerda del paso anterior.
-      <b>b</b> sesgo que desplaza el estado en reposo.
+      <b>b</b> sesgo del estado en reposo. <b>amp</b>, <b>dur</b>: la punta de consumo,
+      no la red. <b>t</b>: la hora que lees.
     </div>
   </div>
 </section>
@@ -180,11 +196,16 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// the input sliders describe the series, not a single symbol, so they light up
+// every symbol of the equation that the series feeds
+const HOTGROUP={amp:'x',dur:'x',tsel:'seq'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -198,11 +219,22 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// fixed input series x_t: a morning demand pulse over 24 hours (standardized)
-const XSEQ=[0,0,0,0,0.15,0.5,0.85,1.0,1.0,0.8,0.45,0.15,
-            0,0,0,0,0,0,0,0,0,0,0,0];
-const T=XSEQ.length;
-const PEAK=8;  // representative step used in the numeric equation panel
+// the demand pulse is a variable of the slide too: a raised-cosine bump of height
+// `amp` and width `dur` hours starting at 04:00, over a 24-hour day
+const T=24;
+const START=4;
+let XSEQ=new Array(T).fill(0);
+let AMP=1.0, DUR=8;
+function buildX(){
+  XSEQ=new Array(T).fill(0);
+  for(let i=0;i<DUR;i++){
+    const k=START+i; if(k>=T)break;
+    const s=Math.sin(Math.PI*(i+0.5)/DUR);
+    XSEQ[k]=AMP*s*s;
+  }
+}
+buildX();
+let PEAK=8;  // step shown in the numeric equation panel (the `t` slider)
 
 // run the real recurrence h_t = tanh(Wx*x_t + Wh*h_{t-1} + b), h_0 = 0
 function runRNN(wx,wh,b){
@@ -219,12 +251,20 @@ function upd(){
   const wx=+document.getElementById('wx').value;
   const wh=+document.getElementById('wh').value;
   const b =+document.getElementById('b').value;
+  const am=+document.getElementById('amp').value;
+  const du=+document.getElementById('dur').value;
+  PEAK=+document.getElementById('tsel').value;
+  if(am!==AMP||du!==DUR){AMP=am;DUR=du;buildX();}
   document.getElementById('v_wx').textContent=wx.toFixed(1);
   document.getElementById('v_wh').textContent=wh.toFixed(2);
   document.getElementById('v_b').textContent=b.toFixed(2);
+  document.getElementById('v_amp').textContent=AMP.toFixed(2);
+  document.getElementById('v_dur').textContent=DUR;
+  document.getElementById('v_tsel').textContent=PEAK;
+  document.getElementById('n_tsel').textContent=PEAK;
   const h=runRNN(wx,wh,b);
-  // numeric equation panel at the representative peak step
-  const hprev=h[PEAK-1], xt=XSEQ[PEAK], ht=h[PEAK];
+  // numeric equation panel at the step the user is reading (h_{-1} = 0)
+  const hprev=PEAK>0?h[PEAK-1]:0, xt=XSEQ[PEAK], ht=h[PEAK];
   document.getElementById('n_wx').textContent=wx.toFixed(1);
   document.getElementById('n_wh').textContent=wh.toFixed(2);
   document.getElementById('n_b').textContent=b.toFixed(2);
@@ -243,7 +283,7 @@ function upd(){
   const hmax=Math.max.apply(null,h.map(Math.abs));
   document.getElementById('ro').innerHTML=
     'Con W<sub>h</sub>='+wh.toFixed(2)+', pico de estado |h| = '+hmax.toFixed(2)+
-    '.<br>Paso del pico (t='+PEAK+'): h<sub>t</sub> = '+ht.toFixed(2)+
+    '.<br>Hora t='+PEAK+': h<sub>t</sub> = '+ht.toFixed(2)+
     ' a partir de x<sub>t</sub>='+xt.toFixed(2)+' y h<sub>t&minus;1</sub>='+hprev.toFixed(2)+'.<br>'+
     '<span class="badge '+cls+'">'+mem+'</span>';
   drawSeq(h);

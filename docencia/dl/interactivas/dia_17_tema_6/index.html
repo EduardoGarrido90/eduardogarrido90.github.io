@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -78,16 +81,17 @@
       <div class="eqtitle">El coste esperado de la cascada</div>
       <div class="eq">
         E[coste] =
-        <span class="term" id="t_p">p</span>&middot;c<sub>barato</sub> +
-        (1&minus;p)&middot;(c<sub>barato</sub> +
+        <span class="term" id="t_p">p</span>&middot;<span class="term" data-hot="cb">c<sub>barato</sub></span> +
+        (1&minus;p)&middot;(<span class="term" data-hot="cb">c<sub>barato</sub></span> +
         <span class="term" id="t_cc">c<sub>caro</sub></span>)
       </div>
       <div class="eqnum">
         E[coste] =
-        <span class="nterm" id="n_p">0.50</span>&middot;0.5 +
-        (1&minus;<span id="n_p2">0.50</span>)&middot;(0.5 +
+        <span class="nterm" id="n_p">0.50</span>&middot;<span class="nterm" data-hot="cb" id="n_cb">0.5</span> +
+        (1&minus;<span id="n_p2">0.50</span>)&middot;(<span class="nterm" data-hot="cb" id="n_cb2">0.5</span> +
         <span class="nterm" id="n_cc">30</span>) =
-        <b id="n_res">15.50</b> &euro; / consulta
+        <b id="n_res">15.50</b> &euro;/consulta &times;
+        <span class="nterm" data-hot="n" id="n_n">1000</span> consultas
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
@@ -99,24 +103,33 @@
     coste, latencia y calidad.</p>
 
     <div class="ctrlbox">
+      <div class="sub">La cascada &mdash; lo que tú diseñas</div>
       <div class="row"><span class="lab">p</span>
         <input type="range" id="p" min="0" max="1" step="0.01" value="0.5"
           oninput="hot('p');upd()"><span class="val" id="v_p">0.50</span></div>
       <div class="row"><span class="lab">c<sub>caro</sub></span>
         <input type="range" id="cc" min="5" max="60" step="1" value="30"
           oninput="hot('cc');upd()"><span class="val" id="v_cc">30</span></div>
+      <div class="sub second">El negocio &mdash; lo que te viene dado</div>
+      <div class="row"><span class="lab">c<sub>bar</sub></span>
+        <input type="range" id="cb" min="0.05" max="4" step="0.05" value="0.5"
+          oninput="hot('cb');upd()"><span class="val" id="v_cb">0.50</span></div>
+      <div class="row"><span class="lab">N</span>
+        <input type="range" id="nq" min="100" max="10000" step="100" value="1000"
+          oninput="hot('n');upd()"><span class="val" id="v_nq">1000</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Mueve un slider: su símbolo se enciende en
-    <span style="color:var(--gold);font-weight:bold">dorado</span> dentro de la ecuación
-    y su número cambia. Sube <b>p</b> y el coste baja porque menos consultas escalan al
-    modelo caro; pero si el barato falla, la calidad cae.</p>
+    <p><span class="hd">Lee así.</span> Sube <b>p</b> y el coste baja porque menos
+    consultas escalan al caro; pero si el barato falla, la calidad cae. Abajo mueves el
+    <b>negocio</b>: <b>c<sub>bar</sub></b> es el suelo que pagas siempre (todas las
+    consultas pasan por el barato) y <b>N</b> el volumen diario, que multiplica cualquier
+    céntimo de diferencia.</p>
 
     <div class="miniglos">
       <b>p</b> fracción que resuelve el modelo barato. <b>c<sub>barato</sub></b> coste
-      del modelo barato (fijo, 0.5 &euro;). <b>c<sub>caro</sub></b> coste del modelo caro
+      del modelo barato. <b>N</b> consultas al día. <b>c<sub>caro</sub></b> coste del modelo caro
       (&euro; / 1000 tokens). Todas las consultas pasan por el barato; una fracción
       (1&minus;p) escala además al caro.
     </div>
@@ -176,11 +189,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// c_barato appears twice in the equation and N only in the numeric line
+const HOTGROUP={cb:'cb',n:'n'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -195,25 +212,33 @@ function fitCanvas(cv){
 }
 
 // fixed parameters (illustrative units: € y s por 1000 tokens ~ una consulta)
-const CB=0.5;        // coste modelo barato (fijo, €/consulta)
+let CB=0.5;          // coste modelo barato (€/consulta), ahora ajustable
 const TB=0.2;        // latencia modelo barato (s)
 const TC=2.0;        // latencia modelo caro (s)
-const N=1000;        // consultas de referencia
+let N=1000;          // volumen de consultas, ahora ajustable
 
 function upd(){
   const p =+document.getElementById('p').value;
   const cc=+document.getElementById('cc').value;
+  CB=+document.getElementById('cb').value;
+  N =+document.getElementById('nq').value;
   document.getElementById('v_p').textContent=p.toFixed(2);
   document.getElementById('v_cc').textContent=cc.toFixed(0);
+  document.getElementById('v_cb').textContent=CB.toFixed(2);
+  document.getElementById('v_nq').textContent=N;
   document.getElementById('n_p').textContent=p.toFixed(2);
   document.getElementById('n_p2').textContent=p.toFixed(2);
   document.getElementById('n_cc').textContent=cc.toFixed(0);
+  document.getElementById('n_cb').textContent=CB.toFixed(2);
+  document.getElementById('n_cb2').textContent=CB.toFixed(2);
+  document.getElementById('n_n').textContent=N;
   const costPer=CB+(1-p)*cc;            // € por consulta
   document.getElementById('n_res').textContent=costPer.toFixed(2);
-  const cost1000=N*costPer;             // € por 1000 consultas
+  const cost1000=N*costPer;             // € por N consultas
   const latMean=TB+(1-p)*TC;            // s por consulta (media)
   document.getElementById('ro').innerHTML=
-    'Coste esperado: <b>'+cost1000.toLocaleString('es-ES',{maximumFractionDigits:0})+' &euro;</b> / 1000 consultas.<br>'+
+    'Coste esperado: <b>'+cost1000.toLocaleString('es-ES',{maximumFractionDigits:0})+' &euro;</b> / '+N+' consultas '+
+    '(frente a '+ (N*(CB+cc)).toLocaleString('es-ES',{maximumFractionDigits:0})+' &euro; mandándolo todo al caro).<br>'+
     'Latencia media: <b>'+latMean.toFixed(2)+' s</b> (barato '+TB.toFixed(1)+' s + '+
     (100*(1-p)).toFixed(0)+'% escala '+TC.toFixed(1)+' s).<br>'+
     '<span class="badge '+(p>=0.6?'ok':'bad')+'">'+
@@ -234,7 +259,7 @@ function drawCost(p,cc){
   ctx.strokeStyle='#ccc';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
   ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
-  ctx.fillText('€ / 1000 consultas',4,my-8);
+  ctx.fillText('€ / '+N+' consultas',4,my-8);
   ctx.fillText('p (fracción resuelta por el barato)',mx+6,my+H+26);
   ctx.textAlign='right';
   ctx.fillText(cmax.toLocaleString('es-ES',{maximumFractionDigits:0}),mx-6,my+6);

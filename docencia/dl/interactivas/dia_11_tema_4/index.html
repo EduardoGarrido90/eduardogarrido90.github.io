@@ -30,7 +30,11 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox .lab.wide{width:4.6em;font-size:0.86em}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
     color:var(--goldDeep);font-weight:bold}
@@ -77,13 +81,14 @@
     <div class="eqpanel">
       <div class="eqtitle">La ecuación del muestreo (softmax con temperatura)</div>
       <div class="eq">
-        p<sub>i</sub> = exp( z<sub>i</sub> /
+        p<sub>i</sub> = exp( <span class="term" data-hot="z">z<sub>i</sub></span> /
         <span class="term" id="t_T">T</span> ) &nbsp;/&nbsp;
-        &Sigma;<sub>j</sub> exp( z<sub>j</sub> / T )
+        &Sigma;<sub>j</sub> exp( <span class="term" data-hot="z">z<sub>j</sub></span> / T )
       </div>
       <div class="eqnum">
-        con T = <span class="nterm" id="n_T">0.70</span>,
-        top-k = <span id="n_k">6</span>: la más probable es
+        z = (<span class="nterm" data-hot="z" id="n_z">3.0, 2.4, 1.9, 1.3, 0.8, 0.2</span>),
+        T = <span class="nterm" id="n_T">0.70</span>,
+        top-k = <span id="n_k">6</span> &rarr;
         &laquo;<b id="n_top">gracias</b>&raquo; con p = <b id="n_ptop">0.00</b>
       </div>
     </div>
@@ -97,20 +102,29 @@
     <b>creativa y arriesgada</b> (T alta).</p>
 
     <div class="ctrlbox">
+      <div class="sub">El muestreo &mdash; temperatura y corte</div>
       <div class="row"><span class="lab">T</span>
         <input type="range" id="T" min="0.1" max="2" step="0.05" value="0.7"
           oninput="hot('T');upd()"><span class="val" id="v_T">0.70</span></div>
       <div class="row"><span class="lab">k</span>
         <input type="range" id="k" min="1" max="6" step="1" value="6"
-          oninput="hot('T');upd()"><span class="val" id="v_k">6</span></div>
+          oninput="hot('k');upd()"><span class="val" id="v_k">6</span></div>
+      <div class="sub second">Los logits &mdash; lo que el modelo prefiere</div>
+      <div class="row"><span class="lab">sep</span>
+        <input type="range" id="sep" min="0" max="1.2" step="0.02" value="0.56"
+          oninput="hot('sep');upd()"><span class="val" id="v_sep">0.56</span></div>
+      <div class="row"><span class="lab wide">&laquo;perdón&raquo;</span>
+        <input type="range" id="zalt" min="-2" max="3" step="0.1" value="0.0"
+          oninput="hot('zalt');upd()"><span class="val" id="v_zalt">0.0</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Baja T hacia 0.1: casi toda la probabilidad
-    se concentra en la palabra top (muestreo casi <b>greedy</b>). Sube T hacia 2:
-    las barras se aplanan y el bot puede elegir palabras raras. El
-    <b>top-k</b> corta a las k candidatas más probables y renormaliza.</p>
+    <p><span class="hd">Lee así.</span> T baja &rarr; casi <b>greedy</b>; T alta &rarr;
+    barras planas y palabras raras; <b>top-k</b> corta a las k mejores y renormaliza.
+    Abajo cambias los <b>logits</b>: <b>sep</b> es cuán decidido está el modelo y el
+    segundo slider empuja a &laquo;perdón&raquo; hasta hacerla ganar. Fíjate en que
+    aplanar los logits y subir T hacen <b>lo mismo</b>: solo cuenta z/T.</p>
 
     <div class="miniglos">
       <b>z<sub>i</sub></b> logit: puntuación bruta de cada palabra. <b>T</b>
@@ -175,11 +189,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// both logit sliders reshape the same z vector, which appears twice
+const HOTGROUP={sep:'z',zalt:'z'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -193,17 +211,28 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// six candidate next-words with fixed logits (higher = more preferred)
+// six candidate next-words; the logits are a variable of the slide:
+// z_i decays with `sep` per rank, and `zalt` pushes the third candidate only
 const WORDS=["gracias","claro","perdón","entiendo","disculpe","vaya"];
-const Z=[3.0, 2.4, 1.7, 1.1, 0.6, 0.2];
+const ALT=2;                       // «perdón»
+let Z=[3.0, 2.4, 1.7, 1.1, 0.6, 0.2];
+function buildZ(sep,zalt){
+  Z=WORDS.map((_,i)=>3.0-sep*i+(i===ALT?zalt:0));
+}
 
 function upd(){
   const T=+document.getElementById('T').value;
   const k=+document.getElementById('k').value;
+  const sep=+document.getElementById('sep').value;
+  const zalt=+document.getElementById('zalt').value;
+  buildZ(sep,zalt);
   document.getElementById('v_T').textContent=T.toFixed(2);
   document.getElementById('v_k').textContent=k;
+  document.getElementById('v_sep').textContent=sep.toFixed(2);
+  document.getElementById('v_zalt').textContent=zalt.toFixed(1);
   document.getElementById('n_T').textContent=T.toFixed(2);
   document.getElementById('n_k').textContent=k;
+  document.getElementById('n_z').textContent=Z.map(z=>z.toFixed(1)).join(', ');
 
   // real softmax with temperature (stabilised)
   const zmax=Math.max(...Z);

@@ -9,37 +9,37 @@
 <body>
 <div class="crumbs"><a href="../../index.html">Asignaturas</a><span class="sep">/</span><a href="../index.html">Deep Learning</a><span class="sep">/</span><span>Slides interactivas</span></div>
 <h1>Slides interactivas</h1>
-<p class="sub">Una slide por sesión, muy sencilla: el <b>caso de negocio</b> del día y <b>la ecuación</b> que lo resuelve. Mueve un slider y su símbolo se enciende en dorado dentro de la ecuación, con su valor actualizado, para que veas exactamente qué palanca estás tocando. De estas slides pueden caer preguntas en el examen. Se abren en cualquier navegador sin instalación ni conexión; navega con las flechas del teclado.</p>
+<p class="sub">Una slide por sesión, muy sencilla: el <b>caso de negocio</b> del día y <b>la ecuación</b> que lo resuelve. Mueve un slider y su símbolo se enciende en dorado dentro de la ecuación, con su valor actualizado, para que veas exactamente qué palanca estás tocando. Son manipulables <b>las dos mitades</b> del problema: los parámetros del modelo y también los datos que entran, porque mover el modelo y mover el caso son cosas distintas y conviene verlas por separado. De estas slides pueden caer preguntas en el examen. Se abren en cualquier navegador sin instalación ni conexión; navega con las flechas del teclado.</p>
 <p class="sub" style="font-size:0.92em">¿Quieres más? Las <a href="../interactivas_ampliacion/index.html">slides interactivas de ampliación</a> desarrollan cada tema con simulaciones completas. Son material opcional: <b>no</b> entran en el examen.</p>
 <hr class="rule">
 <div class="bloque">Tema 1 — Fundamentos</div>
 <div class="grid">
 <a class="card" href="dia_02_tema_1/index.html"><div class="dia">Día 02</div><div class="tit">La neurona decide un préstamo</div><div class="desc">Banca (BBVA). ŷ = σ(w₁x₁+w₂x₂+b): mueve los pesos, el sesgo y también las señales del cliente (o arrástralo por el plano) y mira cómo cambian la frontera y la probabilidad de impago.</div></a>
-<a class="card" href="dia_03_tema_1/index.html"><div class="dia">Día 03</div><div class="tit">Regularización contra el sobreajuste</div><div class="desc">Seguros (Mapfre). L = L_datos + λ‖w‖²: el slider λ decide cuánto se penaliza la complejidad del modelo.</div></a>
+<a class="card" href="dia_03_tema_1/index.html"><div class="dia">Día 03</div><div class="tit">Regularización contra el sobreajuste</div><div class="desc">Seguros (Mapfre). L = L_datos + λ‖w‖²: mueve λ y el grado d, y también los datos (N expedientes y su ruido σ): con más datos hace falta menos regularización.</div></a>
 </div>
 <div class="bloque">Tema 2 — Visión y secuencias</div>
 <div class="grid">
-<a class="card" href="dia_04_tema_2/index.html"><div class="dia">Día 04</div><div class="tit">Convolución que detecta defectos</div><div class="desc">Retail (Inditex). yᵢ = k₁xᵢ₋₁+k₂xᵢ+k₃xᵢ₊₁: los pesos del kernel encuentran bordes en una línea de escaneo.</div></a>
-<a class="card" href="dia_05_tema_2/index.html"><div class="dia">Día 05</div><div class="tit">Transfer learning frente a empezar de cero</div><div class="desc">Teledetección agrícola. La tasa η y las capas descongeladas deciden lo rápido que aprende una red preentrenada.</div></a>
-<a class="card" href="dia_06_tema_2/index.html"><div class="dia">Día 06</div><div class="tit">La memoria de una red recurrente</div><div class="desc">Energía (Iberdrola). hₜ = tanh(Wₓxₜ+W_h hₜ₋₁+b): W_h controla cuánto recuerda la demanda del pasado.</div></a>
-<a class="card" href="dia_07_tema_2/index.html"><div class="dia">Día 07</div><div class="tit">La atención mira a las palabras que importan</div><div class="desc">Turismo. αᵢ = softmax(eᵢ/τ): la temperatura τ afila o reparte la atención sobre el texto.</div></a>
+<a class="card" href="dia_04_tema_2/index.html"><div class="dia">Día 04</div><div class="tit">Convolución que detecta defectos</div><div class="desc">Retail (Inditex). yᵢ = k₁xᵢ₋₁+k₂xᵢ+k₃xᵢ₊₁: mueve los pesos del kernel y también el tejido (contraste del defecto, posición y textura) y mira si el filtro lo encuentra.</div></a>
+<a class="card" href="dia_05_tema_2/index.html"><div class="dia">Día 05</div><div class="tit">Transfer learning frente a empezar de cero</div><div class="desc">Teledetección agrícola. La tasa η y las capas descongeladas deciden lo rápido que aprende una red preentrenada; con el slider N ves cómo el hueco frente a entrenar desde cero se cierra al conseguir datos.</div></a>
+<a class="card" href="dia_06_tema_2/index.html"><div class="dia">Día 06</div><div class="tit">La memoria de una red recurrente</div><div class="desc">Energía (Iberdrola). hₜ = tanh(Wₓxₜ+W_h hₜ₋₁+b): W_h controla la memoria; además cambias la punta de demanda que entra y recorres hora a hora la recurrencia.</div></a>
+<a class="card" href="dia_07_tema_2/index.html"><div class="dia">Día 07</div><div class="tit">La atención mira a las palabras que importan</div><div class="desc">Turismo. αᵢ = softmax(eᵢ/τ): la temperatura τ afila o reparte la atención, y los cinco scores eᵢ de la reseña son sliders independientes.</div></a>
 </div>
 <div class="bloque">Tema 3 — El Transformer y sus rivales</div>
 <div class="grid">
-<a class="card" href="dia_08_tema_3/index.html"><div class="dia">Día 08</div><div class="tit">Embeddings y similitud coseno</div><div class="desc">Streaming (Spotify). cos(u,v) = u·v/(‖u‖‖v‖): mueve el vector de una canción y mira cómo cambia el parecido.</div></a>
-<a class="card" href="dia_09_tema_3/index.html"><div class="dia">Día 09</div><div class="tit">Self-attention en una reseña</div><div class="desc">E-commerce (Amazon). softmax(QKᵀ/√d)V: el escalado 1/√d evita que la atención se vuelva demasiado dura.</div></a>
-<a class="card" href="dia_10_tema_3/index.html"><div class="dia">Día 10</div><div class="tit">Mixture of Experts: enrutar el cómputo</div><div class="desc">Plataforma (Netflix). El router elige los k mejores expertos y ahorra cálculo en cada petición.</div></a>
+<a class="card" href="dia_08_tema_3/index.html"><div class="dia">Día 08</div><div class="tit">Embeddings y similitud coseno</div><div class="desc">Streaming (Spotify). cos(u,v) = u·v/(‖u‖‖v‖): mueve los dos vectores con sliders o arrastrando las flechas y comprueba que alargar uno no cambia el coseno.</div></a>
+<a class="card" href="dia_09_tema_3/index.html"><div class="dia">Día 09</div><div class="tit">Self-attention en una reseña</div><div class="desc">E-commerce (Amazon). softmax(QKᵀ/√d)V: el escalado 1/√d evita que la atención se vuelva dura, y cada palabra de la frase lleva su propio score q·k ajustable.</div></a>
+<a class="card" href="dia_10_tema_3/index.html"><div class="dia">Día 10</div><div class="tit">Mixture of Experts: enrutar el cómputo</div><div class="desc">Plataforma (Netflix). El router elige los k mejores expertos; cambia el vector x de la petición y verás que se activan otros expertos sin tocar el modelo.</div></a>
 </div>
 <div class="bloque">Tema 4 — LLMs y multimodal</div>
 <div class="grid">
-<a class="card" href="dia_11_tema_4/index.html"><div class="dia">Día 11</div><div class="tit">La temperatura de un chatbot</div><div class="desc">Atención al cliente. pᵢ = exp(zᵢ/T)/Σexp(zⱼ/T): T decide si la respuesta es segura o creativa.</div></a>
-<a class="card" href="dia_12_tema_4/index.html"><div class="dia">Día 12</div><div class="tit">Difusión: de la imagen al ruido</div><div class="desc">Publicidad y moda. xₜ = √ᾱₜ x₀ + √(1−ᾱₜ)ε: el nivel de ruido t transforma la imagen paso a paso.</div></a>
+<a class="card" href="dia_11_tema_4/index.html"><div class="dia">Día 11</div><div class="tit">La temperatura de un chatbot</div><div class="desc">Atención al cliente. pᵢ = exp(zᵢ/T)/Σexp(zⱼ/T): T decide si la respuesta es segura o creativa, y los logits zᵢ también se mueven: aplanarlos equivale a subir T.</div></a>
+<a class="card" href="dia_12_tema_4/index.html"><div class="dia">Día 12</div><div class="tit">Difusión: de la imagen al ruido</div><div class="desc">Publicidad y moda. xₜ = √ᾱₜ x₀ + √(1−ᾱₜ)ε: mueve el nivel de ruido t, el schedule s y el contraste de la imagen que entra.</div></a>
 </div>
 <div class="bloque">Tema 6 — Sistemas en producción</div>
 <div class="grid">
-<a class="card" href="dia_15_tema_6/index.html"><div class="dia">Día 15</div><div class="tit">RAG: recuperar los documentos que importan</div><div class="desc">Banca (BBVA). score = cos(q,d): recupera los k fragmentos más parecidos a la pregunta como contexto del LLM.</div></a>
-<a class="card" href="dia_16_tema_6/index.html"><div class="dia">Día 16</div><div class="tit">LoRA: adaptar un LLM barato</div><div class="desc">SaaS. W' = W + (α/r)BA: el rango r fija cuántos parámetros se entrenan y cuánto se ahorra.</div></a>
-<a class="card" href="dia_17_tema_6/index.html"><div class="dia">Día 17</div><div class="tit">Cascada de modelos: coste y latencia</div><div class="desc">Operaciones. E[coste] = p·c_barato + (1−p)·c_caro: la fracción p que resuelve el modelo barato marca el gasto.</div></a>
+<a class="card" href="dia_15_tema_6/index.html"><div class="dia">Día 15</div><div class="tit">RAG: recuperar los documentos que importan</div><div class="desc">Banca (BBVA). score = cos(q,d): recupera los k fragmentos más parecidos; cambia el tema de la pregunta y todo el ranking, y con él la precisión y el recall, se reordena.</div></a>
+<a class="card" href="dia_16_tema_6/index.html"><div class="dia">Día 16</div><div class="tit">LoRA: adaptar un LLM barato</div><div class="desc">SaaS. W' = W + (α/r)BA: el rango r fija cuántos parámetros se entrenan, y el tamaño d de la capa base enseña por qué cuanto mayor es el modelo más gana LoRA.</div></a>
+<a class="card" href="dia_17_tema_6/index.html"><div class="dia">Día 17</div><div class="tit">Cascada de modelos: coste y latencia</div><div class="desc">Operaciones. E[coste] = p·c_barato + (1−p)·c_caro: la fracción p marca el gasto, y el coste del modelo barato y el volumen diario de consultas también son sliders.</div></a>
 </div>
 <div class="nota"><b>Nota.</b> Los días 01, 13, 14 y 18 no tienen slide interactiva porque su contenido no es ecuacional (presentación, agentes y regulación); su material está en las demás secciones.</div>
 <p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027</p>

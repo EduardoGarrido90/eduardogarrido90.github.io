@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -78,47 +81,63 @@
       <div class="eqtitle">La ecuación de la atención</div>
       <div class="eq">
         &alpha;<sub>i</sub> = softmax(
-        <span class="term" id="t_e">e<sub>i</sub></span> /
-        <span class="term" id="t_tau">&tau;</span> ) =
-        exp(<span class="term" id="t_e2">e<sub>i</sub></span>/<span class="term" id="t_tau2">&tau;</span>)
+        <span class="term" data-hot="e">e<sub>i</sub></span> /
+        <span class="term" data-hot="tau">&tau;</span> ) =
+        exp(<span class="term" data-hot="e">e<sub>i</sub></span>/<span class="term" data-hot="tau">&tau;</span>)
         / &Sigma;<sub>j</sub> exp(e<sub>j</sub>/&tau;)
       </div>
       <div class="eq" style="font-size:1.15em;color:#555">
         c = &Sigma;<sub>i</sub> &alpha;<sub>i</sub> &middot; h<sub>i</sub>
       </div>
       <div class="eqnum">
-        &tau; = <span class="nterm" id="n_tau">1.0</span>,&nbsp;
-        e<sub>3</sub> = <span class="nterm" id="n_e">2.0</span>
-        &rArr; atiende sobre todo a <b id="n_top">&mdash;</b>
+        &tau; = <span class="nterm" data-hot="tau" id="n_tau">1.0</span>,&nbsp;
+        e = (<span class="nterm" data-hot="e" id="n_e1">1.5</span>,
+        <span class="nterm" data-hot="e" id="n_e2">0.8</span>,
+        <span class="nterm" data-hot="e" id="n_e3">2.0</span>,
+        <span class="nterm" data-hot="e" id="n_e4">0.5</span>,
+        <span class="nterm" data-hot="e" id="n_e5">-0.5</span>)
+        &rArr; <b id="n_top">&mdash;</b>
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
   </div>
   <div class="txtcol">
-    <p><span class="hd">El caso.</span> Una empresa de turismo traduce y resume las
-    reseñas de sus hoteles. Al generar cada palabra del resumen, el modelo no mira
-    toda la reseña por igual: la <b>atención</b> decide a qué palabras del texto
-    original mirar más. Aquí, cinco palabras de una reseña con su relevancia e<sub>i</sub>.</p>
+    <p><span class="hd">El caso.</span> Una empresa de turismo resume las reseñas de
+    sus hoteles. Al generar cada palabra del resumen, la <b>atención</b> decide a qué
+    palabras del original mirar más. Aquí, cinco palabras con su relevancia e<sub>i</sub>.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El mecanismo &mdash; cuán afilada es la mirada</div>
       <div class="row"><span class="lab">&tau;</span>
         <input type="range" id="tau" min="0.2" max="3" step="0.1" value="1.0"
           oninput="hot('tau');upd()"><span class="val" id="v_tau">1.0</span></div>
+      <div class="sub second">La reseña &mdash; el score de cada palabra</div>
+      <div class="row"><span class="lab">e<sub>1</sub></span>
+        <input type="range" id="e1" min="-3" max="3" step="0.1" value="1.5"
+          oninput="hot('e1');upd()"><span class="val" id="v_e1">1.5</span></div>
+      <div class="row"><span class="lab">e<sub>2</sub></span>
+        <input type="range" id="e2" min="-3" max="3" step="0.1" value="0.8"
+          oninput="hot('e2');upd()"><span class="val" id="v_e2">0.8</span></div>
       <div class="row"><span class="lab">e<sub>3</sub></span>
         <input type="range" id="e3" min="-3" max="3" step="0.1" value="2.0"
-          oninput="hot('e');upd()"><span class="val" id="v_e3">2.0</span></div>
+          oninput="hot('e3');upd()"><span class="val" id="v_e3">2.0</span></div>
+      <div class="row"><span class="lab">e<sub>4</sub></span>
+        <input type="range" id="e4" min="-3" max="3" step="0.1" value="0.5"
+          oninput="hot('e4');upd()"><span class="val" id="v_e4">0.5</span></div>
+      <div class="row"><span class="lab">e<sub>5</sub></span>
+        <input type="range" id="e5" min="-3" max="3" step="0.1" value="-0.5"
+          oninput="hot('e5');upd()"><span class="val" id="v_e5">-0.5</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Baja la temperatura &tau;&rarr;0 y la atención
-    se vuelve <b>afilada</b>: casi todo el peso va a la palabra de mayor score.
-    Súbela y la atención se <b>reparte</b> casi por igual. Mueve e<sub>3</sub> para
-    hacer más o menos relevante la tercera palabra.</p>
+    <p><span class="hd">Lee así.</span> &tau;&rarr;0 afila la atención (todo el peso a
+    la palabra de mayor score); &tau; alta la reparte. Los cinco e<sub>i</sub> son la
+    reseña: sube uno y verás que solo importa la <b>diferencia</b> entre scores.</p>
 
     <div class="miniglos">
       <b>&alpha;<sub>i</sub></b> peso de atención sobre la palabra i (suman 1).
-      <b>e<sub>i</sub></b> score de relevancia de cada palabra.
+      <b>e<sub>i</sub></b> score de relevancia de cada palabra: la entrada.
       <b>&tau;</b> temperatura: cuán concentrada o repartida es la mirada.
     </div>
   </div>
@@ -178,12 +197,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// e_i and tau each appear twice in the equation, so highlighting works by group
+const HOTGROUP={tau:'tau',e1:'e',e2:'e',e3:'e',e4:'e',e5:'e'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
-  const t2=document.getElementById('t_'+id+'2'); if(t2)t2.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -197,9 +219,11 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// five words of a hotel review with relevance scores (e3 is adjustable)
+// five words of a hotel review; every relevance score is adjustable
 const WORDS=["limpio","cómodo","ruidoso","céntrico","caro"];
-const EFIX=[1.5,0.8,null,0.5,-0.5];   // e3 (index 2) comes from the slider
+const EIDS=["e1","e2","e3","e4","e5"];
+const readE=()=>EIDS.map(id=>+document.getElementById(id).value);
+let E_SHOWN=[1.5,0.8,2.0,0.5,-0.5];
 
 function softmaxT(e,tau){
   const m=Math.max(...e);
@@ -210,16 +234,17 @@ function softmaxT(e,tau){
 
 function upd(){
   const tau=+document.getElementById('tau').value;
-  const e3 =+document.getElementById('e3').value;
+  const e=readE(); E_SHOWN=e;
   document.getElementById('v_tau').textContent=tau.toFixed(1);
-  document.getElementById('v_e3').textContent=e3.toFixed(1);
   document.getElementById('n_tau').textContent=tau.toFixed(1);
-  document.getElementById('n_e').textContent=e3.toFixed(1);
-  const e=EFIX.map((v,i)=>i===2?e3:v);
+  EIDS.forEach((id,i)=>{
+    document.getElementById('v_'+id).textContent=e[i].toFixed(1);
+    document.getElementById('n_'+id).textContent=e[i].toFixed(1);
+  });
   const a=softmaxT(e,tau);
   const sum=a.reduce((x,y)=>x+y,0);
   let top=0; a.forEach((v,i)=>{if(v>a[top])top=i;});
-  document.getElementById('n_top').textContent='«'+WORDS[top]+'»';
+  document.getElementById('n_top').textContent='atiende a «'+WORDS[top]+'»';
   const sharp=a[top]>0.55, flat=a[top]<0.32;
   let list=a.map((v,i)=>WORDS[i]+' '+v.toFixed(3)).join(' &middot; ');
   document.getElementById('ro').innerHTML=
@@ -250,7 +275,6 @@ function drawBars(a,top){
     const x=mx+gap*i+ (gap-bw)/2;
     const bh=a[i]*H, y=my+H-bh;
     ctx.fillStyle=(i===top)?'#B8860B':'#D9C28A';
-    if(i===2){ctx.fillStyle=(i===top)?'#8C6508':'#c9a94f';} // e3 highlighted role
     ctx.fillRect(x,y,bw,bh);
     ctx.strokeStyle='#8C6508';ctx.lineWidth=(i===top)?1.6:0.8;ctx.strokeRect(x,y,bw,bh);
     // value on top
@@ -259,7 +283,9 @@ function drawBars(a,top){
     ctx.fillText(a[i].toFixed(3),x+bw/2,y-5);
     // word label
     ctx.fillStyle='#1A1A1A';ctx.font='13px Georgia';
-    ctx.fillText(WORDS[i]+(i===2?' (e₃)':''),x+bw/2,my+H+18);
+    ctx.fillText(WORDS[i],x+bw/2,my+H+18);
+    ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';
+    ctx.fillText('e'+(i+1)+' = '+E_SHOWN[i].toFixed(1),x+bw/2,my+H+33);
   }
   ctx.textAlign='left';
 }
@@ -269,8 +295,7 @@ function drawAttn(){
   const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
   ctx.clearRect(0,0,w,h);
   const tau=+(document.getElementById('tau')||{value:1}).value||1;
-  const e3 =+(document.getElementById('e3')||{value:2}).value||2;
-  const e=EFIX.map((v,i)=>i===2?e3:v);
+  const e=readE();
   const a=softmaxT(e,tau);
   ctx.textAlign='center';
   // query node on the left

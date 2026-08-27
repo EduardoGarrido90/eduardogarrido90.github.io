@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -77,7 +80,8 @@
     <div class="eqpanel">
       <div class="eqtitle">La ecuación de LoRA</div>
       <div class="eq">
-        W&prime; = W + (
+        <span class="term" data-hot="d">W</span>&prime; =
+        <span class="term" data-hot="d">W</span> + (
         <span class="term" id="t_alpha">&alpha;</span> /
         <span class="term" id="t_r">r</span> )&middot;B&middot;A
       </div>
@@ -85,7 +89,8 @@
         W&prime; = W + (
         <span class="nterm" id="n_alpha">8</span> /
         <span class="nterm" id="n_r">4</span> )&middot;B&middot;A ,
-        escala efectiva = <b id="n_scale">2.00</b>
+        escala = <b id="n_scale">2.00</b> ,
+        capa <span class="nterm" data-hot="d" id="n_d">1024</span>&times;<span class="nterm" data-hot="d">d</span>
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
@@ -97,25 +102,31 @@
     entrena dos matrices finas, <b>B</b> y <b>A</b>, de rango r.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El adaptador &mdash; rango y escala</div>
       <div class="row"><span class="lab">r</span>
         <input type="range" id="r" min="1" max="16" step="1" value="4"
           oninput="hot('r');upd()"><span class="val" id="v_r">4</span></div>
       <div class="row"><span class="lab">&alpha;</span>
         <input type="range" id="alpha" min="1" max="32" step="1" value="8"
           oninput="hot('alpha');upd()"><span class="val" id="v_alpha">8</span></div>
+      <div class="sub second">El modelo base &mdash; tamaño de la capa que adaptas</div>
+      <div class="row"><span class="lab">d</span>
+        <input type="range" id="dexp" min="8" max="13" step="1" value="10"
+          oninput="hot('d');upd()"><span class="val" id="v_d">1024</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Mueve un slider: su símbolo se enciende en
-    <span style="color:var(--gold);font-weight:bold">dorado</span> dentro de la
-    ecuación. Al subir <b>r</b>, las barras muestran cómo el coste entrenable sube
-    de forma <b>lineal</b>, siempre minúsculo frente a W. <b>&alpha;</b> no cambia el
-    coste: solo escala la fuerza de la actualización, &alpha;/r.</p>
+    <p><span class="hd">Lee así.</span> Al subir <b>r</b> el coste entrenable sube de
+    forma <b>lineal</b>, siempre minúsculo frente a W. <b>&alpha;</b> no cambia el coste:
+    solo escala la actualización, &alpha;/r. Y <b>d</b> es el modelo que te toca adaptar:
+    el completo crece como d&sup2; y LoRA como d, así que <b>cuanto más grande es el
+    modelo, más gana LoRA</b> (ahorro &times; d/2r).</p>
 
     <div class="miniglos">
       <b>W</b> pesos originales, congelados (no se entrenan). <b>r</b> rango: grosor
       de B y A. <b>&alpha;</b> escala que gradúa cuánto se aplica la actualización.
+      <b>d</b> dimensión de la capa base: fija el tamaño de W (d&times;d).
     </div>
   </div>
 </section>
@@ -174,11 +185,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// the layer-size slider lights every W of the equation, not a single symbol
+const HOTGROUP={d:'d'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -192,9 +207,9 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// fixed layer dimension for the arithmetic
-const D=1024;
-const FULL=D*D;                 // full fine-tuning trainable params
+// the layer dimension is a variable of the slide: d = 2^dexp, 256 .. 8192
+let D=1024;
+let FULL=D*D;                   // full fine-tuning trainable params
 function human(n){              // integer -> short human string
   if(n>=1e6) return (n/1e6).toFixed(2)+' M';
   if(n>=1e3) return (n/1e3).toFixed(1)+' k';
@@ -209,6 +224,10 @@ function humanBytes(b){
 function upd(){
   const r    =+document.getElementById('r').value;
   const alpha=+document.getElementById('alpha').value;
+  D=Math.pow(2,+document.getElementById('dexp').value);
+  FULL=D*D;
+  document.getElementById('v_d').textContent=D;
+  document.getElementById('n_d').textContent=D;
   document.getElementById('v_r').textContent=r;
   document.getElementById('v_alpha').textContent=alpha;
   document.getElementById('n_r').textContent=r;

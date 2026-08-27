@@ -30,7 +30,11 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+  .ctrlbox .lab.wide{width:4.4em;font-size:0.88em}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
     color:var(--goldDeep);font-weight:bold}
@@ -78,13 +82,15 @@
       <div class="eqtitle">La ecuación de la self-attention</div>
       <div class="eq">
         Attention(Q,K,V) = softmax(
-        <span class="term" id="t_q">Q&middot;K<sup>&#8868;</sup></span> /
+        <span class="term" data-hot="q" id="t_q">Q&middot;K<sup>&#8868;</sup></span> /
         <span class="term" id="t_d">&radic;d</span> ) &middot; V
       </div>
       <div class="eqnum">
-        w<sub>i</sub> = softmax(
-        <span class="nterm" id="n_q">q&middot;k</span> /
-        <span class="nterm" id="n_d">&radic;d</span> ) &rarr; token clave: <b id="n_p">&mdash;</b>
+        q&middot;k = (<span class="nterm" data-hot="q" id="n_q1">3.0</span>,
+        <span class="nterm" data-hot="q" id="n_q2">0.3</span>,
+        <span class="nterm" data-hot="q" id="n_q3">1.5</span>,
+        <span class="nterm" data-hot="q" id="n_q4">1.0</span>) /
+        <span class="nterm" id="n_d">&radic;d</span> &rarr; token clave: <b id="n_p">&mdash;</b>
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
@@ -97,21 +103,31 @@
     sentido se ha <b>invertido</b>.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El modelo &mdash; la dimensión que escala los scores</div>
       <div class="row"><span class="lab">d</span>
         <input type="range" id="d" min="1" max="64" step="1" value="8"
           oninput="hot('d');upd()"><span class="val" id="v_d">8</span></div>
-      <div class="row"><span class="lab">q&middot;k</span>
-        <input type="range" id="q" min="-4" max="4" step="0.1" value="3.0"
-          oninput="hot('q');upd()"><span class="val" id="v_q">3.0</span></div>
+      <div class="sub second">La frase &mdash; alineamiento q&middot;k de cada palabra</div>
+      <div class="row"><span class="lab wide">&laquo;no&raquo;</span>
+        <input type="range" id="q1" min="-4" max="4" step="0.1" value="3.0"
+          oninput="hot('q1');upd()"><span class="val" id="v_q1">3.0</span></div>
+      <div class="row"><span class="lab wide">&laquo;es&raquo;</span>
+        <input type="range" id="q2" min="-4" max="4" step="0.1" value="0.3"
+          oninput="hot('q2');upd()"><span class="val" id="v_q2">0.3</span></div>
+      <div class="row"><span class="lab wide">&laquo;muy&raquo;</span>
+        <input type="range" id="q3" min="-4" max="4" step="0.1" value="1.5"
+          oninput="hot('q3');upd()"><span class="val" id="v_q3">1.5</span></div>
+      <div class="row"><span class="lab wide">&laquo;bueno&raquo;</span>
+        <input type="range" id="q4" min="-4" max="4" step="0.1" value="1.0"
+          oninput="hot('q4');upd()"><span class="val" id="v_q4">1.0</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> <b>q&middot;k</b> es cuánto se alinea la
-    query con la palabra <b>&laquo;no&raquo;</b>. <b>d</b> es la dimensión: divide los
-    scores por <b>&radic;d</b>. Con d pequeña los scores son grandes y el softmax
-    se vuelve <b>duro</b> (casi todo a un token); con d grande se
-    <b>suaviza</b> y la atención se reparte.</p>
+    <p><span class="hd">Lee así.</span> Cada slider de abajo es cuánto se alinea la
+    query con esa palabra. <b>d</b> divide todos los scores por <b>&radic;d</b>: con d
+    pequeña el softmax es <b>duro</b> (casi todo a un token), con d grande se
+    <b>suaviza</b>. Sube el score de &laquo;no&raquo; y la reseña se lee como negativa.</p>
 
     <div class="miniglos">
       <b>softmax</b> convierte scores en pesos positivos que <b>suman 1</b>.
@@ -176,11 +192,15 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// the four score sliders all feed the same Q·K term of the equation
+const HOTGROUP={q1:'q',q2:'q',q3:'q',q4:'q'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot~="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -198,7 +218,8 @@ function fitCanvas(cv){
 // each token has a raw alignment score q.k with that query. The score of "no"
 // is the interactive slider (that is the negation the model must catch).
 const TOKENS=["no","es","muy","bueno"];
-const BASE=[0,0.3,1.5,1.0];   // index 0 (no) overwritten by slider q
+const QIDS=["q1","q2","q3","q4"];
+const readQ=()=>QIDS.map(id=>+document.getElementById(id).value);
 
 function softmax(a){
   const m=Math.max(...a);
@@ -209,14 +230,15 @@ function softmax(a){
 
 function upd(){
   const d=+document.getElementById('d').value;
-  const q=+document.getElementById('q').value;
+  const raw=readQ();
   document.getElementById('v_d').textContent=d;
-  document.getElementById('v_q').textContent=q.toFixed(1);
   const sqrtd=Math.sqrt(d);
   document.getElementById('n_d').textContent='√'+d+'='+sqrtd.toFixed(1);
-  document.getElementById('n_q').textContent=q.toFixed(1);
+  QIDS.forEach((id,i)=>{
+    document.getElementById('v_'+id).textContent=raw[i].toFixed(1);
+    document.getElementById('n_'+id).textContent=raw[i].toFixed(1);
+  });
   // raw scores, then scaled by 1/sqrt(d), then softmax
-  const raw=BASE.slice(); raw[0]=q;
   const scaled=raw.map(s=>s/sqrtd);
   const w=softmax(scaled);
   // most attended token

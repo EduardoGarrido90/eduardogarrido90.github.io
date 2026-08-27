@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -78,15 +81,16 @@
       <div class="eqtitle">La ecuación de la convolución 1D</div>
       <div class="eq">
         y<sub>i</sub> =
-        <span class="term" id="t_k1">k<sub>1</sub></span>&middot;x<sub>i-1</sub> +
-        <span class="term" id="t_k2">k<sub>2</sub></span>&middot;x<sub>i</sub> +
-        <span class="term" id="t_k3">k<sub>3</sub></span>&middot;x<sub>i+1</sub>
+        <span class="term" id="t_k1">k<sub>1</sub></span>&middot;<span class="term" data-hot="x">x<sub>i-1</sub></span> +
+        <span class="term" id="t_k2">k<sub>2</sub></span>&middot;<span class="term" data-hot="x">x<sub>i</sub></span> +
+        <span class="term" id="t_k3">k<sub>3</sub></span>&middot;<span class="term" data-hot="x">x<sub>i+1</sub></span>
       </div>
       <div class="eqnum">
         y<sub>i</sub> =
-        <span class="nterm" id="n_k1">0.0</span>&middot;x<sub>i-1</sub> +
-        <span class="nterm" id="n_k2">0.0</span>&middot;x<sub>i</sub> +
-        <span class="nterm" id="n_k3">0.0</span>&middot;x<sub>i+1</sub>
+        <span class="nterm" id="n_k1">0.0</span>&middot;<span class="nterm" data-hot="x" id="n_xa">0.00</span> +
+        <span class="nterm" id="n_k2">0.0</span>&middot;<span class="nterm" data-hot="x" id="n_xb">0.00</span> +
+        <span class="nterm" id="n_k3">0.0</span>&middot;<span class="nterm" data-hot="x" id="n_xc">0.00</span>
+        = <b id="n_y">0.00</b> &nbsp;(en i = <span class="nterm" id="n_pos">11</span>)
       </div>
     </div>
     <canvas id="cv" width="720" height="360"></canvas>
@@ -98,6 +102,7 @@
     para resaltar <b>bordes</b> y delatar <b>defectos</b>.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El filtro &mdash; los tres pesos del kernel</div>
       <div class="row"><span class="lab">k<sub>1</sub></span>
         <input type="range" id="k1" min="-2" max="2" step="0.1" value="-1.0"
           oninput="hot('k1');upd()"><span class="val" id="v_k1">-1.0</span></div>
@@ -107,18 +112,30 @@
       <div class="row"><span class="lab">k<sub>3</sub></span>
         <input type="range" id="k3" min="-2" max="2" step="0.1" value="1.0"
           oninput="hot('k3');upd()"><span class="val" id="v_k3">1.0</span></div>
+      <div class="sub second">El tejido &mdash; la señal de entrada x</div>
+      <div class="row"><span class="lab">salto</span>
+        <input type="range" id="salto" min="0" max="0.8" step="0.02" value="0.60"
+          oninput="hot('salto');upd()"><span class="val" id="v_salto">0.60</span></div>
+      <div class="row"><span class="lab">pos</span>
+        <input type="range" id="pos" min="4" max="26" step="1" value="11"
+          oninput="hot('pos');upd()"><span class="val" id="v_pos">11</span></div>
+      <div class="row"><span class="lab">&sigma;</span>
+        <input type="range" id="ruido" min="0" max="0.15" step="0.005" value="0.02"
+          oninput="hot('ruido');upd()"><span class="val" id="v_ruido">0.02</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Mueve un slider: su símbolo se enciende en
-    <span style="color:var(--gold);font-weight:bold">dorado</span> dentro de la
-    ecuación y su número cambia. Prueba el preset <b>[-1, 0, 1]</b>: detecta bordes.
-    Prueba <b>[+, +, +]</b> iguales: suaviza.</p>
+    <p><span class="hd">Lee así.</span> Arriba mueves el <b>filtro</b>, abajo mueves el
+    <b>tejido</b>: <b>salto</b> es cuánto contrasta el defecto, <b>pos</b> dónde está y
+    <b>&sigma;</b> cuánta textura tiene la tela. Un detector de bordes sigue al defecto
+    allá donde lo pongas, y se ahoga cuando la textura tapa el salto.</p>
 
     <div class="miniglos">
       <b>x</b> señal de entrada (brillo del tejido). <b>k</b> kernel: los pesos del
       filtro. <b>y</b> salida filtrada: grande donde el filtro reconoce su patrón.
+      <b>salto</b>, <b>pos</b> y <b>&sigma;</b> describen el rollo que entra por la
+      cámara, no el modelo.
     </div>
   </div>
 </section>
@@ -176,11 +193,16 @@ document.addEventListener('keydown',e=>{
 const updaters={};
 
 // ---- highlight helper: light up one equation term + its numeric twin ----
+// the three input sliders all describe the same object, the signal x, so they
+// light up every x in the equation instead of a single symbol
+const HOTGROUP={salto:'x',pos:'x',ruido:'x'};
 function hot(id){
   document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
   document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
   const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
+  if(HOTGROUP[id])document.querySelectorAll('[data-hot="'+HOTGROUP[id]+'"]')
+    .forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -194,11 +216,24 @@ function fitCanvas(cv){
   return {ctx,w,h};
 }
 
-// fixed input line: flat-low, some texture, a clean edge (step up), textured-high
-const X=[0.22,0.20,0.24,0.19,0.23,0.21,0.25,0.20,0.22,0.24,
-         0.30,0.55,0.78,0.82,0.79,0.83,0.80,0.84,0.81,0.79,
-         0.82,0.80,0.83,0.81,0.79,0.82,0.80,0.83,0.81,0.80];
-const N=X.length;
+// the input line is a variable of the slide too: a low flat stretch, a step up of
+// height `salto` at position `pos`, and texture noise of scale `ruido`.
+// Rebuilt from a fixed seed on every change, so the picture is reproducible.
+const N=30;
+const LO=0.20;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+  t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+let X=new Array(N).fill(LO);
+let SALTO=0.60, POS=11, RUIDO=0.02;
+function buildX(){
+  const rng=mulberry32(20260716);
+  X=new Array(N);
+  for(let i=0;i<N;i++){
+    const t=Math.max(0,Math.min(1,(i-(POS-1))/2));   // two-cell ramp at the edge
+    X[i]=LO+SALTO*t+RUIDO*(2*rng()-1)*1.7;
+  }
+}
+buildX();
 
 // 1D convolution with replicate padding -> same length
 function conv(k1,k2,k3){
@@ -214,27 +249,44 @@ function upd(){
   const k1=+document.getElementById('k1').value;
   const k2=+document.getElementById('k2').value;
   const k3=+document.getElementById('k3').value;
+  const sa=+document.getElementById('salto').value;
+  const po=+document.getElementById('pos').value;
+  const ru=+document.getElementById('ruido').value;
+  if(sa!==SALTO||po!==POS||ru!==RUIDO){SALTO=sa;POS=po;RUIDO=ru;buildX();}
   document.getElementById('v_k1').textContent=k1.toFixed(1);
   document.getElementById('v_k2').textContent=k2.toFixed(1);
   document.getElementById('v_k3').textContent=k3.toFixed(1);
+  document.getElementById('v_salto').textContent=SALTO.toFixed(2);
+  document.getElementById('v_pos').textContent=POS;
+  document.getElementById('v_ruido').textContent=RUIDO.toFixed(2);
   document.getElementById('n_k1').textContent=k1.toFixed(1);
   document.getElementById('n_k2').textContent=k2.toFixed(1);
   document.getElementById('n_k3').textContent=k3.toFixed(1);
   const y=conv(k1,k2,k3);
+  // the numeric line is evaluated right on the edge, where the filter is being tested
+  const ia=Math.max(0,POS-1), ib=POS, ic=Math.min(N-1,POS+1);
+  document.getElementById('n_xa').textContent=X[ia].toFixed(2);
+  document.getElementById('n_xb').textContent=X[ib].toFixed(2);
+  document.getElementById('n_xc').textContent=X[ic].toFixed(2);
+  document.getElementById('n_y').textContent=y[POS].toFixed(2);
+  document.getElementById('n_pos').textContent=POS;
   // characterise the filter
   const s=k1+k2+k3, anti=Math.abs(k1+k3)<0.25 && Math.abs(k1)>0.2 && Math.abs(k3)>0.2;
   const smooth=(k1>0.15&&k2>0.15&&k3>0.15)&&Math.abs(k1-k2)<0.6&&Math.abs(k2-k3)<0.6;
   // peak response magnitude (edge strength)
   let amax=0,ipk=0; for(let i=0;i<N;i++){if(Math.abs(y[i])>amax){amax=Math.abs(y[i]);ipk=i;}}
+  const acierta=Math.abs(ipk-POS)<=1;   // did the peak land on the real defect?
   let msg,cls;
-  if(anti){msg='Detector de bordes: casi cero en zonas planas y un pico en el escalón (posición '+ipk+').';cls='ok';}
+  if(anti&&acierta){msg='Detector de bordes: el pico cae justo en el defecto (i='+ipk+').';cls='ok';}
+  else if(anti){msg='Detector de bordes, pero el pico (i='+ipk+') no cae en el defecto (i='+POS+'): la textura lo tapa.';cls='bad';}
   else if(smooth){msg='Filtro de suavizado (promedia vecinos): aplana la textura y difumina el borde.';cls='ok';}
   else if(Math.abs(s)>2.2){msg='Filtro de ganancia: amplifica el nivel global; no aísla el borde.';cls='bad';}
   else{msg='Filtro mixto: ni borde limpio ni suavizado puro. Ajusta hacia [-1, 0, 1].';cls='bad';}
   document.getElementById('ro').innerHTML=
     'Kernel k = ['+k1.toFixed(1)+', '+k2.toFixed(1)+', '+k3.toFixed(1)+
-    '] &nbsp; suma='+s.toFixed(1)+'.<br>Respuesta máxima |y| = <b>'+amax.toFixed(2)+
-    '</b> en i='+ipk+'.<br><span class="badge '+cls+'">'+msg+'</span>';
+    '] &nbsp; suma='+s.toFixed(1)+'.<br>Defecto real en i=<b>'+POS+
+    '</b> &middot; respuesta máxima |y| = <b>'+amax.toFixed(2)+'</b> en i=<b>'+ipk+
+    '</b>.<br><span class="badge '+cls+'">'+msg+'</span>';
   drawConv(y);
 }
 
@@ -249,7 +301,8 @@ function drawConv(y){
   ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
   ctx.fillText('Entrada  x  (brillo del tejido)',mx,18);
   const t0=28, tH=topH;
-  const yx=v=>t0+(1-v)*tH;   // x in [0,1]
+  let xmax=1.0; for(let i=0;i<N;i++)xmax=Math.max(xmax,X[i]);
+  const yx=v=>t0+(1-v/xmax)*tH;   // x in [0,xmax]
   ctx.strokeStyle='#eee';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(mx,t0+tH);ctx.lineTo(mx+W,t0+tH);ctx.stroke();
   ctx.strokeStyle='#1A1A1A';ctx.lineWidth=2;ctx.beginPath();
@@ -290,7 +343,7 @@ function drawSchema(){
   ctx.fillStyle='#1A1A1A';ctx.font='13px Georgia';
   ctx.fillText('Línea de entrada x (una fila de la imagen del tejido)',w/2,rowY-32);
   // sliding kernel of width 3 highlighted over the edge region
-  const kpos=11;
+  const kpos=Math.max(1,Math.min(N-2,POS));
   const kx=mx+kpos*cell;
   ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.strokeRect(kx-cell,rowY-4,cell*3,ch+8);
   ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';

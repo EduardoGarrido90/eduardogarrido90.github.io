@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -78,16 +81,20 @@
       <div class="eqtitle">La ecuación de la regularización</div>
       <div class="eq">
         L(w) =
-        <span class="term" id="t_d">L<sub>datos</sub><sup>(d)</sup></span>(w) +
+        <span class="term" id="t_d">L<sub>datos</sub><sup>(d)</sup></span>(w ;
+        <span class="term" id="t_n">N</span>,
+        <span class="term" id="t_sig">&sigma;</span>) +
         <span class="term" id="t_lam">&lambda;</span> &middot; &Vert;w&Vert;<sup>2</sup>
       </div>
       <div class="eqnum">
-        grado d = <span class="nterm" id="n_d">9</span>,
-        &lambda; = <span class="nterm" id="n_lam">0.10</span>
-        &rarr; error train <b id="n_tr">0.00</b> &middot; val <b id="n_va">0.00</b>
+        d = <span class="nterm" id="n_d">9</span>,
+        &lambda; = <span class="nterm" id="n_lam">0.10</span>,
+        N = <span class="nterm" id="n_n">10</span>,
+        &sigma; = <span class="nterm" id="n_sig">0.12</span>
+        &rarr; train <b id="n_tr">0.00</b> &middot; val <b id="n_va">0.00</b>
       </div>
     </div>
-    <canvas id="cv" width="720" height="360"></canvas>
+    <canvas id="cv" width="720" height="400"></canvas>
   </div>
   <div class="txtcol">
     <p><span class="hd">El caso.</span> Mapfre quiere predecir el <b>coste de un
@@ -96,24 +103,35 @@
     regularización lo frena.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El modelo &mdash; complejidad y castigo</div>
       <div class="row"><span class="lab">d</span>
         <input type="range" id="d" min="1" max="9" step="1" value="9"
           oninput="hot('d');upd()"><span class="val" id="v_d">9</span></div>
       <div class="row"><span class="lab">&lambda;</span>
         <input type="range" id="lam" min="0" max="1" step="0.02" value="0.10"
           oninput="hot('lam');upd()"><span class="val" id="v_lam">0.10</span></div>
+      <div class="sub second">Los datos &mdash; cuántos y cuán ruidosos</div>
+      <div class="row"><span class="lab">N</span>
+        <input type="range" id="n" min="4" max="40" step="1" value="10"
+          oninput="hot('n');upd()"><span class="val" id="v_n">10</span></div>
+      <div class="row"><span class="lab">&sigma;</span>
+        <input type="range" id="sig" min="0" max="0.35" step="0.01" value="0.12"
+          oninput="hot('sig');upd()"><span class="val" id="v_sig">0.12</span></div>
     </div>
 
     <div class="readout" id="ro"></div>
 
     <p><span class="hd">Lee así.</span> Sube el <b>grado d</b> con &lambda;=0 y la curva
-    se retuerce para pasar por cada punto: sobreajuste. Ahora sube <b>&lambda;</b> y la
-    curva se calma: cambias ajuste por estabilidad.</p>
+    se retuerce para pasar por cada punto: sobreajuste. Sube <b>&lambda;</b> y se calma.
+    Ahora mueve los datos: con <b>N</b> grande el sobreajuste casi desaparece solo, y con
+    <b>&sigma;</b> grande necesitas mucho más &lambda; para no perseguir el ruido.</p>
 
     <div class="miniglos">
       <b>L<sub>datos</sub></b> error sobre los expedientes conocidos.
       <b>&lambda;</b> cuánto castigamos pesos grandes.
       <b>&Vert;w&Vert;<sup>2</sup></b> tamaño de los pesos: penaliza la complejidad.
+      <b>N</b> expedientes disponibles. <b>&sigma;</b> ruido del negocio: parte del coste
+      que ninguna variable explica.
     </div>
   </div>
 </section>
@@ -192,16 +210,20 @@ function fitCanvas(cv){
 // ---------- reproducible data (fixed seed) ----------
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-const rng=mulberry32(20260716);
-function randn(){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();
-  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
 const trueF=x=>0.5+0.36*Math.sin(2*Math.PI*(x-0.03));   // smooth ground truth
-const NOISE=0.12;
-const N=10;
-const TX=[],TY=[];                                       // training expedientes
-for(let i=0;i<N;i++){const x=i/(N-1);TX.push(x);TY.push(trueF(x)+NOISE*randn());}
-const VX=[],VY=[];                                       // validation set
-for(let i=0;i<40;i++){const x=rng();VX.push(x);VY.push(trueF(x)+NOISE*randn());}
+// the sample itself is a variable of the slide: N expedientes with noise sigma.
+// rebuilt from the same seed on every change, so the picture is reproducible.
+let NOISE=0.12, N=10;
+let TX=[],TY=[],VX=[],VY=[];
+function buildData(){
+  const rng=mulberry32(20260716);
+  const randn=()=>{let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+  TX=[];TY=[];VX=[];VY=[];
+  for(let i=0;i<N;i++){const x=N===1?0.5:i/(N-1);TX.push(x);TY.push(trueF(x)+NOISE*randn());}
+  for(let i=0;i<40;i++){const x=rng();VX.push(x);VY.push(trueF(x)+NOISE*randn());}
+}
+buildData();
 
 // ---------- polynomial basis + ridge (Gauss elimination) ----------
 function feats(x,d){const u=2*x-1;const r=[1];let p=1;for(let j=1;j<=d;j++){p*=u;r.push(p);}return r;}
@@ -226,7 +248,8 @@ function fitRidge(d,lam){                                 // (XᵀX + λI) w = X
     for(let i=0;i<m;i++){b[i]+=f[i]*TY[k];for(let j=0;j<m;j++)A[i][j]+=f[i]*f[j];}
   }
   const pen=lam*3;                        // penalty scale (bias term unpenalised)
-  for(let i=1;i<m;i++)A[i][i]+=pen;
+  // 1e-6 floor keeps the system solvable when d+1 > N (fewer expedientes than coefficients)
+  for(let i=1;i<m;i++)A[i][i]+=pen+1e-6;
   return solve(A,b);
 }
 function predict(w,x){const f=feats(x,w.length-1);let s=0;for(let i=0;i<f.length;i++)s+=w[i]*f[i];return s;}
@@ -236,20 +259,31 @@ function mse(w,XS,YS){let s=0;for(let k=0;k<XS.length;k++){const e=predict(w,XS[
 function upd(){
   const d  =+document.getElementById('d').value;
   const lam=+document.getElementById('lam').value;
+  const nn =+document.getElementById('n').value;
+  const sg =+document.getElementById('sig').value;
+  if(nn!==N||sg!==NOISE){N=nn;NOISE=sg;buildData();}
   document.getElementById('v_d').textContent=d;
   document.getElementById('v_lam').textContent=lam.toFixed(2);
+  document.getElementById('v_n').textContent=N;
+  document.getElementById('v_sig').textContent=NOISE.toFixed(2);
   document.getElementById('n_d').textContent=d;
   document.getElementById('n_lam').textContent=lam.toFixed(2);
+  document.getElementById('n_n').textContent=N;
+  document.getElementById('n_sig').textContent=NOISE.toFixed(2);
   const w=fitRidge(d,lam);
   const trE=mse(w,TX,TY), vaE=mse(w,VX,VY);
   document.getElementById('n_tr').textContent=trE.toFixed(3);
   document.getElementById('n_va').textContent=vaE.toFixed(3);
+  // thresholds scale with the irreducible error sigma^2, so the verdict stays
+  // meaningful when the user changes the noise level
+  const s2=NOISE*NOISE;
   let msg,cls;
-  if(trE>0.025){msg='Demasiado rígido: no captura la forma (infraajuste)';cls='bad';}
-  else if(vaE>0.030){msg='Sobreajuste: memoriza el ruido, falla en validación';cls='bad';}
+  if(trE>1.5*s2+0.004){msg='Demasiado rígido: no captura la forma (infraajuste)';cls='bad';}
+  else if(vaE>1.8*s2+0.004){msg='Sobreajuste: memoriza el ruido, falla en validación';cls='bad';}
   else {msg='Buen equilibrio: ajusta la señal sin memorizar el ruido';cls='ok';}
   document.getElementById('ro').innerHTML=
-    'Polinomio de grado <b>'+d+'</b> con &lambda;=<b>'+lam.toFixed(2)+'</b>.<br>'+
+    'Polinomio de grado <b>'+d+'</b> con &lambda;=<b>'+lam.toFixed(2)+'</b> sobre <b>'+N+
+    '</b> expedientes de ruido &sigma;=<b>'+NOISE.toFixed(2)+'</b>.<br>'+
     'Error entrenamiento <b>'+trE.toFixed(3)+'</b> &middot; error validación <b>'+vaE.toFixed(3)+'</b>.<br>'+
     '<span class="badge '+cls+'">'+msg+'</span>';
   drawFit(w);

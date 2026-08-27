@@ -30,6 +30,9 @@
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
     padding:12px 14px;margin:6px 0 12px 0}
   .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+  .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
+    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
   .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
@@ -81,12 +84,12 @@
     <div class="eqpanel">
       <div class="eqtitle">El proceso directo de difusión</div>
       <div class="eq">
-        x<sub>t</sub> = &radic;<span style="text-decoration:overline">&alpha;</span><sub>t</sub>&middot;x<sub>0</sub> +
+        x<sub>t</sub> = &radic;<span style="text-decoration:overline">&alpha;</span><sub>t</sub>&middot;<span class="term" data-hot="x0">x<sub>0</sub></span> +
         <span class="term" id="t_t">&radic;(1&minus;<span style="text-decoration:overline">&alpha;</span><sub>t</sub>)</span>&middot;
         <span class="term" id="t_eps">&epsilon;</span>
       </div>
       <div class="eqnum">
-        x<sub>t</sub> = <span class="nterm" id="n_sig">1.00</span>&middot;x<sub>0</sub> +
+        x<sub>t</sub> = <span class="nterm" id="n_sig">1.00</span>&middot;<span class="nterm" data-hot="x0" id="n_x0">x<sub>0</sub></span> +
         <span class="nterm" id="n_t">0.00</span>&middot;<span class="nterm" id="n_eps">&epsilon;</span>
         &nbsp;&nbsp;(<span style="text-decoration:overline">&alpha;</span><sub>t</sub> = <b id="n_abar">1.00</b>)
       </div>
@@ -100,9 +103,17 @@
     hasta convertirla en ruido puro.</p>
 
     <div class="ctrlbox">
+      <div class="sub">El proceso &mdash; nivel de ruido y schedule</div>
       <div class="row"><span class="lab">t</span>
         <input type="range" id="t" min="0" max="1" step="0.02" value="0.30"
           oninput="hot('t');upd()"><span class="val" id="v_t">0.30</span></div>
+      <div class="row"><span class="lab">s</span>
+        <input type="range" id="s" min="0.001" max="0.06" step="0.001" value="0.008"
+          oninput="hot('t');upd()"><span class="val" id="v_s">0.008</span></div>
+      <div class="sub second">La imagen &mdash; qué entra en el proceso</div>
+      <div class="row"><span class="lab">amp</span>
+        <input type="range" id="amp" min="0.2" max="1.5" step="0.05" value="1.0"
+          oninput="hot('amp');upd()"><span class="val" id="v_amp">1.00</span></div>
       <div class="row">
         <button onclick="newSeed()">otra muestra de &epsilon;</button>
         <span class="val" id="v_seed" style="width:auto">semilla&nbsp;#1</span></div>
@@ -110,11 +121,10 @@
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Sube <b>t</b>: baja
-    <span style="text-decoration:overline">&alpha;</span><sub>t</sub>, el coeficiente
-    del ruido se enciende en
-    <span style="color:var(--gold);font-weight:bold">dorado</span> y la imagen se
-    disuelve. Con "otra muestra" cambias el ruido <b>&epsilon;</b> y sale otra foto.</p>
+    <p><span class="hd">Lee así.</span> Sube <b>t</b> y la imagen se disuelve; <b>s</b>
+    cambia el schedule (con s grande se ensucia antes). <b>amp</b> es el contraste de la
+    foto que entra: una imagen apagada se pierde en el ruido mucho antes, aunque
+    <span style="text-decoration:overline">&alpha;</span><sub>t</sub> sea el mismo.</p>
 
     <div class="miniglos">
       <b><span style="text-decoration:overline">&alpha;</span><sub>t</sub></b> cuánta señal
@@ -190,6 +200,8 @@ function hot(id){
   // t slider drives the noise coefficient, so also light its numeric twin
   if(id==='t'){const n2=document.getElementById('n_t');if(n2)n2.classList.add('hot');}
   if(id==='eps'){const n2=document.getElementById('n_eps');if(n2)n2.classList.add('hot');}
+  // the contrast slider describes x0, which appears in both lines of the equation
+  if(id==='amp')document.querySelectorAll('[data-hot~="x0"]').forEach(e=>e.classList.add('hot'));
 }
 
 // ---- canvas helper ----
@@ -229,10 +241,16 @@ function buildX0(){
 }
 const X0=buildX0();
 
-// ---- cosine noise schedule (Nichol & Dhariwal): abar(t)=f(t)/f(0) ----
-const S=0.008;
+// ---- cosine noise schedule (Nichol & Dhariwal): abar(t)=f(t)/f(0), offset s ----
+let S=0.008;
 const fcos=u=>Math.pow(Math.cos((u+S)/(1+S)*Math.PI/2),2);
 const abar=t=>fcos(t)/fcos(0);
+// the clean image is a variable too: `amp` scales its contrast around the mean
+let AMP=1.0;
+const MEAN0=(()=>{let s=0;for(let i=0;i<X0.length;i++)s+=X0[i];return s/X0.length;})();
+const x0v=i=>MEAN0+AMP*(X0[i]-MEAN0);
+const var0=()=>{let s=0;for(let i=0;i<X0.length;i++){const d=x0v(i)-MEAN0;s+=d*d;}
+  return s/X0.length;};
 
 let SEED=1, NOISE=makeNoise(SEED);
 function newSeed(){SEED=SEED+1;NOISE=makeNoise(SEED);
@@ -248,13 +266,17 @@ function shade(g){
 
 function upd(){
   const t=+document.getElementById('t').value;
+  S=+document.getElementById('s').value;
+  AMP=+document.getElementById('amp').value;
   const ab=abar(t), sig=Math.sqrt(ab), sn=Math.sqrt(1-ab);
   document.getElementById('v_t').textContent=t.toFixed(2);
+  document.getElementById('v_s').textContent=S.toFixed(3);
+  document.getElementById('v_amp').textContent=AMP.toFixed(2);
   document.getElementById('n_sig').textContent=sig.toFixed(2);
   document.getElementById('n_t').textContent=sn.toFixed(2);
   document.getElementById('n_abar').textContent=ab.toFixed(2);
-  // SNR = abar/(1-abar); report in dB
-  const snr=ab/Math.max(1-ab,1e-6);
+  // SNR = abar·Var(x0)/(1-abar): a low-contrast image has less signal to lose
+  const snr=ab*var0()/Math.max(1-ab,1e-6);
   const snrdb=10*Math.log10(Math.max(snr,1e-9));
   let fase,cls;
   if(ab>0.85){fase='Imagen casi limpia';cls='ok';}
@@ -276,7 +298,7 @@ function drawImg(sig,sn){
   const cell=Math.floor(Math.min(h-40,(w*0.62))/N);
   const ox=20, oy=Math.floor((h-cell*N)/2);
   for(let y=0;y<N;y++)for(let c=0;c<N;c++){
-    const v=sig*X0[y*N+c]+sn*NOISE[y*N+c];
+    const v=sig*x0v(y*N+c)+sn*NOISE[y*N+c];
     ctx.fillStyle=shade((v+1)/2);
     ctx.fillRect(ox+c*cell,oy+y*cell,cell,cell);
   }
@@ -314,7 +336,7 @@ function drawStrip(){
     const ox=gapx+(grid+gapx)*k;
     const ab=abar(t), sig=Math.sqrt(ab), sn=Math.sqrt(1-ab);
     for(let y=0;y<N;y++)for(let c=0;c<N;c++){
-      const v=sig*X0[y*N+c]+sn*noise[y*N+c];
+      const v=sig*x0v(y*N+c)+sn*noise[y*N+c];
       ctx.fillStyle=shade((v+1)/2);
       ctx.fillRect(ox+c*cell,oy+y*cell,cell,cell);
     }
