@@ -45,7 +45,8 @@ def main():
         output_dir="out", num_train_epochs=args.epochs,
         per_device_train_batch_size=16, learning_rate=2e-5,
         weight_decay=0.01, lr_scheduler_type="cosine",
-        eval_strategy="epoch", logging_steps=50)
+        eval_strategy="epoch", logging_steps=50,
+        remove_unused_columns=False)
     trainer = Trainer(model=model, args=targs,
                       train_dataset=ds["train"], eval_dataset=ds["test"])
     trainer.train()

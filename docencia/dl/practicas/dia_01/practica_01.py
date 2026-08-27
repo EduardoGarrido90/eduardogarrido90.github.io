@@ -37,6 +37,7 @@ try:
     from rich.panel import Panel
     from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
     from rich.table import Table
+    from rich.text import Text
     from rich.theme import Theme
     from rich.tree import Tree
     RICH = True
@@ -57,7 +58,13 @@ DIGNUM = Theme({
     "code":     "italic #1A1A1A on #F5EBD3",
 }) if RICH else None
 
-CON = Console(theme=DIGNUM) if RICH else None
+# Ancho con suelo: si la salida se redirige a un fichero, rich cae a 80
+# columnas y los paneles de respuesta quedan estrangulados. Con un mínimo de
+# 90 y un techo de 120 el texto respira sin desbordar una terminal normal.
+CON = Console(
+    theme=DIGNUM,
+    width=max(90, min(shutil.get_terminal_size((100, 24)).columns, 120)),
+) if RICH else None
 
 OLLAMA_URL = "http://localhost:11434"
 OLLAMA_CHAT = f"{OLLAMA_URL}/api/chat"
@@ -258,6 +265,24 @@ def chat_ollama(prompt: str, system: str = "",
     }
 
 
+def panel_respuesta(r: dict, titulo: str = "Respuesta del modelo") -> "Panel":
+    """Panel a ancho completo con la respuesta íntegra del modelo.
+
+    El texto va envuelto en `Text` para que los corchetes que devuelva el LLM
+    no se interpreten como markup de rich, y las métricas van al subtítulo
+    para no alargar la caja del título.
+    """
+    return Panel(
+        Text(r["content"].strip()),
+        title=f"[gold]{titulo}[/]",
+        subtitle=(f"[mute]{r['latency_s']:.1f} s · {r['tokens_out']} tokens"
+                  f" · {r['tps']:.1f} tok/s[/]"),
+        border_style="gold",
+        padding=(1, 2),
+        expand=True,
+    )
+
+
 def section_3_three_prompts() -> None:
     heading("Sección 3 · Tres prompts: técnica, negocio y creativa")
     triples = [
@@ -272,23 +297,32 @@ def section_3_three_prompts() -> None:
          "Eres brand-naming creativo."),
     ]
     if RICH:
-        t = Table(title="Tres prompts contra el mismo modelo",
-                  title_style="ink", header_style="golddeep",
-                  border_style="mute", show_lines=True)
-        t.add_column("Tipo", style="ink", no_wrap=True)
-        t.add_column("Respuesta del modelo", style="ink", overflow="fold")
-        t.add_column("Latencia", justify="right", style="mute")
-        t.add_column("tokens/s", justify="right", style="gold")
+        # Una respuesta larga no cabe en una celda de tabla: la columna se
+        # queda en treinta caracteres y hay que truncar. Cada respuesta va
+        # entera en su propio panel; la comparación numérica, en una tabla
+        # compacta al final.
+        metricas: list[tuple[str, dict]] = []
         for label, prompt, system in triples:
             try:
                 r = chat_ollama(prompt, system=system)
             except (urllib.error.URLError, ConnectionError, KeyError):
                 CON.print(f"[err]Skip {label}[/]: Ollama no responde.")
                 continue
-            short = (r["content"][:240] + "…") if len(r["content"]) > 240 else r["content"]
-            t.add_row(label, short, f"{r['latency_s']:.1f} s",
-                       f"{r['tps']:.1f}")
-        CON.print(t)
+            CON.print(panel_respuesta(r, titulo=f"{label} · {prompt[:60]}…"))
+            metricas.append((label, r))
+
+        if metricas:
+            t = Table(title="Comparativa de los tres prompts",
+                      title_style="ink", header_style="golddeep",
+                      border_style="mute")
+            t.add_column("Tipo", style="ink", no_wrap=True)
+            t.add_column("Latencia", justify="right", style="mute")
+            t.add_column("Tokens", justify="right", style="mute")
+            t.add_column("tokens/s", justify="right", style="gold")
+            for label, r in metricas:
+                t.add_row(label, f"{r['latency_s']:.1f} s",
+                          str(r["tokens_out"]), f"{r['tps']:.1f}")
+            CON.print(t)
     else:
         for label, prompt, system in triples:
             try:
