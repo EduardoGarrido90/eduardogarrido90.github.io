@@ -1,0 +1,31 @@
+{
+ "source": "US Naval Observatory, AA API rstt/oneday",
+ "coords": "40.4168,-3.7038",
+ "note": "consultado con tz=1 y dst=false; a las fechas en horario de verano se les suma 60 min para expresarlas en hora oficial",
+ "dst_offset_applied_min": {
+  "2026-04-15": 60,
+  "2026-06-21": 60
+ },
+ "data": {
+  "2026-01-15": {
+   "tz": "UTC+1",
+   "rise": "08:36",
+   "transit": "13:24"
+  },
+  "2026-04-15": {
+   "tz": "UTC+2",
+   "rise": "07:37",
+   "transit": "14:15"
+  },
+  "2026-06-21": {
+   "tz": "UTC+2",
+   "rise": "06:45",
+   "transit": "14:17"
+  },
+  "2026-12-21": {
+   "tz": "UTC+1",
+   "rise": "08:34",
+   "transit": "13:13"
+  }
+ }
+}

@@ -1,0 +1,541 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    1
+   ]
+  ],
+  "date-time": "2026-09-01T05:59:29Z",
+  "timestamp": 1788242369452,
+  "version": "build-2803163510"
+ },
+ "reference-count": 23,
+ "publisher": "American Association for the Advancement of Science (AAAS)",
+ "issue": "12",
+ "funder": [
+  {
+   "DOI": "10.13039/100000001",
+   "name": "National Science Foundation",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "1743364"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "1743364"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000001",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  },
+  {
+   "DOI": "10.13039/100000002",
+   "name": "National Institutes of Health",
+   "doi-asserted-by": "publisher",
+   "award": [
+    "EY016807"
+   ],
+   "award-info": [
+    {
+     "award-number": [
+      "EY016807"
+     ]
+    }
+   ],
+   "id": [
+    {
+     "id": "10.13039/100000002",
+     "id-type": "DOI",
+     "asserted-by": "publisher"
+    }
+   ]
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Sci. Adv."
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2018,
+    12,
+    7
+   ]
+  ]
+ },
+ "abstract": "<jats:p>After a 55-min delay in high school start times, students increased their sleep significantly and improved attendance and grades.</jats:p>",
+ "DOI": "10.1126/sciadv.aau6200",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2018,
+    12,
+    12
+   ]
+  ],
+  "date-time": "2018-12-12T19:14:20Z",
+  "timestamp": 1544642060000
+ },
+ "source": "Crossref",
+ "is-referenced-by-count": 152,
+ "title": [
+  "Sleepmore in Seattle: Later school start times are associated with more sleep and better performance in high school students"
+ ],
+ "prefix": "10.1126",
+ "volume": "4",
+ "author": [
+  {
+   "ORCID": "https://orcid.org/0000-0001-9050-0225",
+   "authenticated-orcid": true,
+   "given": "Gideon P.",
+   "family": "Dunster",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Department of Biology, University of Washington, Seattle, WA 98195, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Luciano",
+   "family": "de la Iglesia",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Biology, University of Washington, Seattle, WA 98195, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-4879-3658",
+   "authenticated-orcid": true,
+   "given": "Miriam",
+   "family": "Ben-Hamo",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Biology, University of Washington, Seattle, WA 98195, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-3775-1241",
+   "authenticated-orcid": true,
+   "given": "Claire",
+   "family": "Nave",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Biology, University of Washington, Seattle, WA 98195, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0001-9462-9333",
+   "authenticated-orcid": true,
+   "given": "Jason G.",
+   "family": "Fleischer",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Regulatory Biology Laboratory, Salk Institute, La Jolla, CA 92037, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0002-7855-0091",
+   "authenticated-orcid": true,
+   "given": "Satchidananda",
+   "family": "Panda",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Regulatory Biology Laboratory, Salk Institute, La Jolla, CA 92037, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "ORCID": "https://orcid.org/0000-0003-0855-6807",
+   "authenticated-orcid": true,
+   "given": "Horacio O.",
+   "family": "de la Iglesia",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Department of Biology, University of Washington, Seattle, WA 98195, USA."
+    },
+    {
+     "name": "Program in Neuroscience, University of Washington, Seattle, WA 98195, USA."
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "221",
+ "reference": [
+  {
+   "key": "e_1_3_2_2_2",
+   "unstructured": "M. A. Carskadon in Sleep in Children: Developmental Changes in Sleep Patterns C. L. Marcus Ed. (Informa Healthcare 2008)."
+  },
+  {
+   "key": "e_1_3_2_3_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "168",
+   "DOI": "10.1177/0748730404274265",
+   "article-title": "Intrinsic period and light intensity determine the phase relationship between melatonin and sleep in humans",
+   "volume": "20",
+   "author": "Wright K. P.",
+   "year": "2005",
+   "unstructured": "K. P. Wright Jr., C. Gronfier, J. F. Duffy, C. A. Czeisler, Intrinsic period and light intensity determine the phase relationship between melatonin and sleep in humans. J. Biol. Rhythms 20, 168–177 (2005).",
+   "journal-title": "J. Biol. Rhythms"
+  },
+  {
+   "key": "e_1_3_2_4_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "239",
+   "DOI": "10.1111/j.1365-2869.2005.00467.x",
+   "article-title": "Sleep tendency during extended wakefulness: Insights into adolescent sleep regulation and behavior",
+   "volume": "14",
+   "author": "Taylor D. J.",
+   "year": "2005",
+   "unstructured": "D. J. Taylor, O. G. Jenni, C. Acebo, M. A. Carskadon, Sleep tendency during extended wakefulness: Insights into adolescent sleep regulation and behavior. J. Sleep Res. 14, 239–244 (2005).",
+   "journal-title": "J. Sleep Res."
+  },
+  {
+   "key": "e_1_3_2_5_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "1446",
+   "DOI": "10.1093/sleep/28.11.1446",
+   "article-title": "Homeostatic sleep regulation in adolescents",
+   "volume": "28",
+   "author": "Jenni O. G.",
+   "year": "2005",
+   "unstructured": "O. G. Jenni, P. Achermann, M. A. Carskadon, Homeostatic sleep regulation in adolescents. Sleep 28, 1446–1454 (2005).",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "e_1_3_2_6_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "637",
+   "DOI": "10.1016/j.pcl.2011.03.003",
+   "article-title": "Sleep in adolescents: The perfect storm",
+   "volume": "58",
+   "author": "Carskadon M. A.",
+   "year": "2011",
+   "unstructured": "M. A. Carskadon, Sleep in adolescents: The perfect storm. Pediatr. Clin. North Am. 58, 637–647 (2011).",
+   "journal-title": "Pediatr. Clin. North Am."
+  },
+  {
+   "key": "e_1_3_2_7_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.5664/jcsm.5866"
+  },
+  {
+   "key": "e_1_3_2_8_2",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1152/physrev.00032.2012"
+  },
+  {
+   "key": "e_1_3_2_9_2",
+   "doi-asserted-by": "crossref",
+   "unstructured": "A. T. Beck R. A. Steer G. K. Brown Beck Depression Inventory-II (BDI-II) (Pearson 1996).",
+   "DOI": "10.1037/t00742-000"
+  },
+  {
+   "key": "e_1_3_2_10_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "80",
+   "DOI": "10.1177/0748730402239679",
+   "article-title": "Life between clocks: Daily temporal patterns of human chronotypes",
+   "volume": "18",
+   "author": "Roenneberg T.",
+   "year": "2003",
+   "unstructured": "T. Roenneberg, A. Wirz-Justice, M. Merrow, Life between clocks: Daily temporal patterns of human chronotypes. J. Biol. Rhythms 18, 80–90 (2003).",
+   "journal-title": "J. Biol. Rhythms"
+  },
+  {
+   "key": "e_1_3_2_11_2",
+   "first-page": "97",
+   "article-title": "A self-assessment questionnaire to determine morningness-eveningness in human circadian rhythms",
+   "volume": "4",
+   "author": "Horne J. A.",
+   "year": "1976",
+   "unstructured": "J. A. Horne, O. Ostberg, A self-assessment questionnaire to determine morningness-eveningness in human circadian rhythms. Int. J. Chronobiol. 4, 97–110 (1976).",
+   "journal-title": "Int. J. Chronobiol."
+  },
+  {
+   "key": "e_1_3_2_12_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "421",
+   "DOI": "10.1177/1477153512450453",
+   "article-title": "Comparisons of three practical field devices used to measure personal light exposures and activity levels",
+   "volume": "45",
+   "author": "Figueiro M. G.",
+   "year": "2013",
+   "unstructured": "M. G. Figueiro, R. Hamner, A. Bierman, M. S. Rea, Comparisons of three practical field devices used to measure personal light exposures and activity levels. Light. Res. Technol. 45, 421–434 (2013).",
+   "journal-title": "Light. Res. Technol."
+  },
+  {
+   "key": "e_1_3_2_13_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "17",
+   "DOI": "10.1177/1477153511433171",
+   "article-title": "Performance assessment of commercial circadian personal exposure devices",
+   "volume": "44",
+   "author": "Price L. L. A.",
+   "year": "2012",
+   "unstructured": "L. L. A. Price, M. Khazova, J. B. O’Hagan, Performance assessment of commercial circadian personal exposure devices. Light. Res. Technol. 44, 17–26 (2012).",
+   "journal-title": "Light. Res. Technol."
+  },
+  {
+   "key": "e_1_3_2_14_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "66",
+   "DOI": "10.5664/jcsm.27083",
+   "article-title": "Measuring melatonin in humans",
+   "volume": "4",
+   "author": "Benloucif S.",
+   "year": "2008",
+   "unstructured": "S. Benloucif, H. J. Burgess, E. B. Klerman, A. J. Lewy, B. Middleton, P. J. Murphy, B. L. Parry, V. L. Revell, Measuring melatonin in humans. J. Clin. Sleep Med. 4, 66–69 (2008).",
+   "journal-title": "J. Clin. Sleep Med."
+  },
+  {
+   "key": "e_1_3_2_15_2",
+   "unstructured": "K. Wahlstrom B. Dretzke M. Gordon K. Peterson K. Edwards J. Gdula Examining the Impact of Later High School Start Times on the Health and Academic Performance of High School Students: A Multi-Site Study (University of Minnesota 2014)."
+  },
+  {
+   "key": "e_1_3_2_16_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "453",
+   "DOI": "10.1093/sleep/2.4.453",
+   "article-title": "Pubertal changes in daytime sleepiness",
+   "volume": "2",
+   "author": "Carskadon M. A.",
+   "year": "1980",
+   "unstructured": "M. A. Carskadon, K. Harvey, P. Duke, T. F. Anders, I. F. Litt, W. C. Dement, Pubertal changes in daytime sleepiness. Sleep 2, 453–460 (1980).",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "e_1_3_2_17_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "203",
+   "DOI": "10.1016/j.smrv.2011.03.005",
+   "article-title": "In search of lost sleep: Secular trends in the sleep time of school-aged children and adolescents",
+   "volume": "16",
+   "author": "Matricciani L.",
+   "year": "2012",
+   "unstructured": "L. Matricciani, T. Olds, J. Petkov, In search of lost sleep: Secular trends in the sleep time of school-aged children and adolescents. Sleep Med. Rev. 16, 203–211 (2012).",
+   "journal-title": "Sleep Med. Rev."
+  },
+  {
+   "key": "e_1_3_2_18_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "86",
+   "DOI": "10.1016/j.smrv.2015.06.002",
+   "article-title": "Delayed school start times and adolescent sleep: A systematic review of the experimental evidence",
+   "volume": "28",
+   "author": "Minges K. E.",
+   "year": "2016",
+   "unstructured": "K. E. Minges, N. S. Redeker, Delayed school start times and adolescent sleep: A systematic review of the experimental evidence. Sleep Med. Rev. 28, 86–95 (2016).",
+   "journal-title": "Sleep Med. Rev."
+  },
+  {
+   "key": "e_1_3_2_19_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "871",
+   "DOI": "10.1093/sleep/21.8.871",
+   "article-title": "Adolescent sleep patterns, circadian timing, and sleepiness at a transition to early school days",
+   "volume": "21",
+   "author": "Carskadon M. A.",
+   "year": "1998",
+   "unstructured": "M. A. Carskadon, A. R. Wolfson, C. Acebo, O. Tzischinsky, R. Seifer, Adolescent sleep patterns, circadian timing, and sleepiness at a transition to early school days. Sleep 21, 871–881 (1998).",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "e_1_3_2_20_2",
+   "first-page": "zsy052",
+   "article-title": "Sustained benefits of delaying school start time on adolescent sleep and well-being",
+   "volume": "41",
+   "author": "Lo J. C.",
+   "year": "2018",
+   "unstructured": "J. C. Lo, S. M. Lee, X. K. Lee, K. Sasmita, N. I. Y. N. Chee, J. Tandi, W. S. Cher, J. J. Gooley, M. W. L. Chee, Sustained benefits of delaying school start time on adolescent sleep and well-being. Sleep 41, zsy052 (2018).",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "e_1_3_2_21_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "137",
+   "DOI": "10.5664/jcsm.28100",
+   "article-title": "Delaying school starting time by one hour: Some effects on attention levels in adolescents",
+   "volume": "7",
+   "author": "Lufi D.",
+   "year": "2011",
+   "unstructured": "D. Lufi, O. Tzischinsky, S. Hadar, Delaying school starting time by one hour: Some effects on attention levels in adolescents. J. Clin. Sleep Med. 7, 137–143 (2011).",
+   "journal-title": "J. Clin. Sleep Med."
+  },
+  {
+   "key": "e_1_3_2_22_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "e13692",
+   "DOI": "10.14814/phy2.13692",
+   "article-title": "Unrestricted evening use of light-emitting tablet computers delays self-selected bedtime and disrupts circadian timing and alertness",
+   "volume": "6",
+   "author": "Chinoy E. D.",
+   "year": "2018",
+   "unstructured": "E. D. Chinoy, J. F. Duffy, C. A. Czeisler, Unrestricted evening use of light-emitting tablet computers delays self-selected bedtime and disrupts circadian timing and alertness. Physiol. Rep. 6, e13692 (2018).",
+   "journal-title": "Physiol. Rep."
+  },
+  {
+   "key": "e_1_3_2_23_2",
+   "doi-asserted-by": "crossref",
+   "first-page": "531",
+   "DOI": "10.1080/07420528.2017.1299162",
+   "article-title": "Social jet lag: Sleep-corrected formula",
+   "volume": "34",
+   "author": "Jankowski K. S.",
+   "year": "2017",
+   "unstructured": "K. S. Jankowski, Social jet lag: Sleep-corrected formula. Chronobiol. Int. 34, 531–535 (2017).",
+   "journal-title": "Chronobiol. Int."
+  },
+  {
+   "key": "e_1_3_2_24_2",
+   "doi-asserted-by": "crossref",
+   "unstructured": "R. J. Grissom J. J. Kim Effect Sizes for Research (Routledge ed. 2 2012).",
+   "DOI": "10.4324/9780203803233"
+  }
+ ],
+ "container-title": [
+  "Science Advances"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://www.science.org/doi/pdf/10.1126/sciadv.aau6200",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    1,
+    9
+   ]
+  ],
+  "date-time": "2024-01-09T13:05:53Z",
+  "timestamp": 1704805553000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://www.science.org/doi/10.1126/sciadv.aau6200"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2018,
+    12,
+    7
+   ]
+  ]
+ },
+ "references-count": 23,
+ "journal-issue": {
+  "issue": "12",
+  "published-print": {
+   "date-parts": [
+    [
+     2018,
+     12,
+     7
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1126/sciadv.aau6200"
+ ],
+ "URL": "https://doi.org/10.1126/sciadv.aau6200",
+ "relation": {},
+ "ISSN": [
+  "2375-2548"
+ ],
+ "issn-type": [
+  {
+   "value": "2375-2548",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2018,
+    12,
+    7
+   ]
+  ]
+ },
+ "article-number": "eaau6200"
+}

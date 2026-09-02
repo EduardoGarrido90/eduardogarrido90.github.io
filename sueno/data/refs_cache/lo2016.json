@@ -1,0 +1,949 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    28
+   ]
+  ],
+  "date-time": "2026-08-28T03:29:33Z",
+  "timestamp": 1787887773386,
+  "version": "build-2784847793"
+ },
+ "reference-count": 69,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "3",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "published-print": {
+  "date-parts": [
+   [
+    2016,
+    3,
+    1
+   ]
+  ]
+ },
+ "DOI": "10.5665/sleep.5552",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2016,
+    2,
+    29
+   ]
+  ],
+  "date-time": "2016-02-29T16:29:07Z",
+  "timestamp": 1456763347000
+ },
+ "page": "687-698",
+ "source": "Crossref",
+ "is-referenced-by-count": 410,
+ "title": [
+  "Cognitive Performance, Sleepiness, and Mood in Partially Sleep Deprived Adolescents: The Need for Sleep Study"
+ ],
+ "prefix": "10.1093",
+ "volume": "39",
+ "author": [
+  {
+   "given": "June C.",
+   "family": "Lo",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Centre for Cognitive Neuroscience, Neuroscience and Behavioral Disorders Program, Duke-NUS Medical School, Singapore"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ju Lynn",
+   "family": "Ong",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Centre for Cognitive Neuroscience, Neuroscience and Behavioral Disorders Program, Duke-NUS Medical School, Singapore"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ruth L.F.",
+   "family": "Leong",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Centre for Cognitive Neuroscience, Neuroscience and Behavioral Disorders Program, Duke-NUS Medical School, Singapore"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Joshua J.",
+   "family": "Gooley",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Centre for Cognitive Neuroscience, Neuroscience and Behavioral Disorders Program, Duke-NUS Medical School, Singapore"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Michael W.L.",
+   "family": "Chee",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Centre for Cognitive Neuroscience, Neuroscience and Behavioral Disorders Program, Duke-NUS Medical School, Singapore"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "published-online": {
+  "date-parts": [
+   [
+    2016,
+    3,
+    1
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B1",
+   "article-title": "Sleep in American poll: Teens and Sleep",
+   "author": "National Sleep Foundation",
+   "year": "2006"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B2",
+   "doi-asserted-by": "crossref",
+   "first-page": "195",
+   "DOI": "10.1016/j.sleep.2012.09.004",
+   "article-title": "The associations between self-reported sleep duration and adolescent health outcomes: what is the role of time spent on Internet use?",
+   "volume": "14",
+   "author": "Do",
+   "year": "2013",
+   "journal-title": "Sleep Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B3",
+   "doi-asserted-by": "crossref",
+   "first-page": "978",
+   "DOI": "10.1093/sleep/27.5.978",
+   "article-title": "An epidemiologic study of self-reported sleep problems among Japanese adolescents",
+   "volume": "27",
+   "author": "Ohida",
+   "year": "2004",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B4",
+   "doi-asserted-by": "crossref",
+   "first-page": "40",
+   "DOI": "10.1016/j.sleh.2014.12.010",
+   "article-title": "National Sleep Foundation's sleep time duration recommendations: methodology and results summary",
+   "volume": "1",
+   "author": "Hirshkowitz",
+   "year": "2015",
+   "journal-title": "Sleep Health"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B5",
+   "doi-asserted-by": "crossref",
+   "first-page": "637",
+   "DOI": "10.1016/j.pcl.2011.03.003",
+   "article-title": "Sleep in adolescents: the perfect storm",
+   "volume": "58",
+   "author": "Carskadon",
+   "year": "2011",
+   "journal-title": "Pediatr Clin North Am"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B6",
+   "doi-asserted-by": "crossref",
+   "first-page": "116",
+   "DOI": "10.1037/tps0000020",
+   "article-title": "The teen sleep loss epidemic: what can be done?",
+   "volume": "1",
+   "author": "Bryant",
+   "year": "2015",
+   "journal-title": "Trans Issues Psychol Sci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B7",
+   "doi-asserted-by": "crossref",
+   "first-page": "8416",
+   "DOI": "10.1073/pnas.1406402111",
+   "article-title": "Explaining Asian Americans' academic advantage over whites",
+   "volume": "111",
+   "author": "Hsin",
+   "year": "2014",
+   "journal-title": "Proc Natl Acad Sci U S A"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B8",
+   "unstructured": "Organization for Economic Co-operation and Development PISA 2012 results in focus: what 15-year-olds know and what they can do with what they know 2014 Available from: http://www.oecd.org/pisa/keyfindings/pisa-2012-results-overview.pdf"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B9",
+   "doi-asserted-by": "crossref",
+   "first-page": "110",
+   "DOI": "10.1016/j.sleep.2010.11.008",
+   "article-title": "Recent worldwide sleep patterns and problems during adolescence: a review and meta-analysis of age, region, and sleep",
+   "volume": "12",
+   "author": "Gradisar",
+   "year": "2011",
+   "journal-title": "Sleep Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B10",
+   "doi-asserted-by": "crossref",
+   "first-page": "371",
+   "DOI": "10.1016/j.smrv.2009.12.002",
+   "article-title": "The relationships between sex, age, geography and time in bed in adolescents a meta-analysis of data from 23 countries",
+   "volume": "14",
+   "author": "Olds",
+   "year": "2010",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B11",
+   "doi-asserted-by": "crossref",
+   "first-page": "167",
+   "DOI": "10.1016/j.smrv.2009.10.006",
+   "article-title": "Sleep and memory in healthy children and adolescents - a critical review",
+   "volume": "14",
+   "author": "Kopasz",
+   "year": "2010",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B12",
+   "doi-asserted-by": "crossref",
+   "first-page": "e701",
+   "DOI": "10.1542/peds.2008-1182",
+   "article-title": "Associations of executive function with sleepiness and sleep duration in adolescents",
+   "volume": "123",
+   "author": "Anderson",
+   "year": "2009",
+   "journal-title": "Pediatrics"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B13",
+   "doi-asserted-by": "crossref",
+   "first-page": "875",
+   "DOI": "10.1111/j.1467-8624.1998.tb06149.x",
+   "article-title": "Sleep schedules and daytime functioning in adolescents",
+   "volume": "69",
+   "author": "Wolfson",
+   "year": "1998",
+   "journal-title": "Child Dev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B14",
+   "doi-asserted-by": "crossref",
+   "first-page": "103",
+   "DOI": "10.2466/pms.1981.53.1.103",
+   "article-title": "Acute restriction of nocturnal sleep in children",
+   "volume": "53",
+   "author": "Carskadon",
+   "year": "1981",
+   "journal-title": "Percept Mot Skills"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B15",
+   "doi-asserted-by": "crossref",
+   "first-page": "213",
+   "DOI": "10.2466/pms.2001.93.1.213",
+   "article-title": "Effects of acute sleep restriction on behavior, sustained attention, and response inhibition in children",
+   "volume": "93",
+   "author": "Fallone",
+   "year": "2001",
+   "journal-title": "Percept Mot Skills"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B16",
+   "first-page": "861",
+   "article-title": "Cognitive function following acute sleep restriction in children ages 10-14",
+   "volume": "21",
+   "author": "Randazzo",
+   "year": "1998",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B17",
+   "doi-asserted-by": "crossref",
+   "first-page": "915",
+   "DOI": "10.1111/j.1469-7610.2008.01885.x",
+   "article-title": "Feasibility and behavioral effects of an at-home multi-night sleep restriction protocol for adolescents",
+   "volume": "49",
+   "author": "Beebe",
+   "year": "2008",
+   "journal-title": "J Child Psychol Psychiatry"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B18",
+   "doi-asserted-by": "crossref",
+   "first-page": "71",
+   "DOI": "10.1093/sleep/31.1.71",
+   "article-title": "Short sleep duration in middle childhood: risk factors and consequences",
+   "volume": "31",
+   "author": "Nixon",
+   "year": "2008",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B19",
+   "doi-asserted-by": "crossref",
+   "first-page": "831",
+   "DOI": "10.1037/a0020138",
+   "article-title": "Sleep deprivation in adolescents and adults: changes in affect",
+   "volume": "10",
+   "author": "Talbot",
+   "year": "2010",
+   "journal-title": "Emotion"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B20",
+   "doi-asserted-by": "crossref",
+   "first-page": "180",
+   "DOI": "10.1111/jcpp.12125",
+   "article-title": "Sleep restriction worsens mood and emotion regulation in adolescents",
+   "volume": "55",
+   "author": "Baum",
+   "year": "2014",
+   "journal-title": "J Child Psychol Psychiatry"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B21",
+   "doi-asserted-by": "crossref",
+   "first-page": "170",
+   "DOI": "10.1016/j.sleep.2010.07.017",
+   "article-title": "Sleep restriction over several days does not affect long-term recall of declarative and procedural memories in adolescents",
+   "volume": "12",
+   "author": "Voderholzer",
+   "year": "2011",
+   "journal-title": "Sleep Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B22",
+   "doi-asserted-by": "crossref",
+   "first-page": "146",
+   "DOI": "10.1111/j.1479-8425.2008.00353.x",
+   "article-title": "Adolescent sleep and working memory performance",
+   "volume": "6",
+   "author": "Gradisar",
+   "year": "2008",
+   "journal-title": "Sleep Biol Rhythms"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B23",
+   "doi-asserted-by": "crossref",
+   "first-page": "405",
+   "DOI": "10.1111/1467-8624.00414",
+   "article-title": "Sleep, neurobehavioral functioning, and behavior problems in school-age children",
+   "volume": "73",
+   "author": "Sadeh",
+   "year": "2002",
+   "journal-title": "Child Dev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B24",
+   "doi-asserted-by": "crossref",
+   "first-page": "85",
+   "DOI": "10.1097/00004583-200301000-00014",
+   "article-title": "Working memory and sleep in 6- to 13-year-old schoolchildren",
+   "volume": "42",
+   "author": "Steenari",
+   "year": "2003",
+   "journal-title": "J Am Acad Child Adolesc Psychiatry"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B25",
+   "doi-asserted-by": "crossref",
+   "first-page": "213",
+   "DOI": "10.1111/j.1467-8624.2007.00993.x",
+   "article-title": "Children's sleep and cognitive functioning: race and socioeconomic status as moderators of effects",
+   "volume": "78",
+   "author": "Buckhalt",
+   "year": "2007",
+   "journal-title": "Child Dev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B26",
+   "doi-asserted-by": "crossref",
+   "first-page": "444",
+   "DOI": "10.1111/1467-8624.7402008",
+   "article-title": "The effects of sleep restriction and extension on school-age children: what a difference an hour makes",
+   "volume": "74",
+   "author": "Sadeh",
+   "year": "2003",
+   "journal-title": "Child Dev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B27",
+   "doi-asserted-by": "crossref",
+   "first-page": "71",
+   "DOI": "10.1111/j.1365-2869.2009.00742.x",
+   "article-title": "No persisting effect of partial sleep curtailment on cognitive performance and declarative memory recall in adolescents",
+   "volume": "19",
+   "author": "Kopasz",
+   "year": "2010",
+   "journal-title": "J Sleep Res"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B28",
+   "doi-asserted-by": "crossref",
+   "first-page": "9",
+   "DOI": "10.1186/1744-9081-5-9",
+   "article-title": "Preliminary fMRI findings in experimentally sleep-restricted adolescents engaged in a working memory task",
+   "volume": "5",
+   "author": "Beebe",
+   "year": "2009",
+   "journal-title": "Behav Brain Funct"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B29",
+   "doi-asserted-by": "crossref",
+   "first-page": "1109",
+   "DOI": "10.1037/a0028204",
+   "article-title": "Sleep, cognition, and behavioral problems in school-age children: a century of research meta-analyzed",
+   "volume": "138",
+   "author": "Astill",
+   "year": "2012",
+   "journal-title": "Psychol Bull"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B30",
+   "doi-asserted-by": "crossref",
+   "first-page": "581",
+   "DOI": "10.1093/sleep/34.5.581",
+   "article-title": "Maximizing sensitivity of the Psychomotor Vigilance Test (PVT) to sleep loss",
+   "volume": "34",
+   "author": "Basner",
+   "year": "2011",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B31",
+   "doi-asserted-by": "crossref",
+   "first-page": "e45987",
+   "DOI": "10.1371/journal.pone.0045987",
+   "article-title": "Effects of partial and acute total sleep deprivation on performance across cognitive domains, individuals and circadian phase",
+   "volume": "7",
+   "author": "Lo",
+   "year": "2012",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B32",
+   "doi-asserted-by": "crossref",
+   "first-page": "652",
+   "DOI": "10.3758/BF03200977",
+   "article-title": "Microcomputer analyses of performance on a portable, simple visual RT task during sustained operations",
+   "volume": "17",
+   "author": "Dinges",
+   "year": "1985",
+   "journal-title": "Beh Res Meth Instr Comp"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B33",
+   "doi-asserted-by": "crossref",
+   "first-page": "305",
+   "DOI": "10.1196/annals.1417.002",
+   "article-title": "Sleep deprivation and vigilant attention",
+   "volume": "1129",
+   "author": "Lim",
+   "year": "2008",
+   "journal-title": "Ann N Y Acad Sci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B34",
+   "doi-asserted-by": "crossref",
+   "first-page": "193",
+   "DOI": "10.1016/0165-1781(89)90047-4",
+   "article-title": "The Pittsburgh Sleep Quality Index: a new instrument for psychiatric practice and research",
+   "volume": "28",
+   "author": "Buysse",
+   "year": "1989",
+   "journal-title": "Psychiatry Res"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B35",
+   "first-page": "97",
+   "article-title": "A self-assessment questionnaire to determine morningness-eveningness in human circadian rhythms",
+   "volume": "4",
+   "author": "Horne",
+   "year": "1976",
+   "journal-title": "Int J Chronobiol"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B36",
+   "doi-asserted-by": "crossref",
+   "first-page": "395",
+   "DOI": "10.1111/j.1365-2869.2008.00677.x",
+   "article-title": "Chronic sleep reduction, functioning at school and school achievement in preadolescents",
+   "volume": "17",
+   "author": "Meijer",
+   "year": "2008",
+   "journal-title": "J Sleep Res"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B37",
+   "doi-asserted-by": "crossref",
+   "first-page": "540",
+   "DOI": "10.1093/sleep/14.6.540",
+   "article-title": "A new method for measuring daytime sleepiness: the Epworth sleepiness scale",
+   "volume": "14",
+   "author": "Johns",
+   "year": "1991",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B38",
+   "doi-asserted-by": "crossref",
+   "first-page": "485",
+   "DOI": "10.7326/0003-4819-131-7-199910050-00002",
+   "article-title": "Using the Berlin Questionnaire to identify patients at risk for the sleep apnea syndrome",
+   "volume": "131",
+   "author": "Netzer",
+   "year": "1999",
+   "journal-title": "Ann Intern Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B39",
+   "article-title": "Beck Anxiety Inventory Manual",
+   "author": "Beck",
+   "year": "1993"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B40",
+   "article-title": "Manual for the Beck Depression Inventory-II",
+   "author": "Beck",
+   "year": "1996"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B41",
+   "article-title": "Advanced progressive matrices: set II (1962 revision)",
+   "author": "Raven",
+   "year": "1978"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B42",
+   "doi-asserted-by": "crossref",
+   "first-page": "29",
+   "DOI": "10.3109/00207459008994241",
+   "article-title": "Subjective and objective sleepiness in the active individual",
+   "volume": "52",
+   "author": "Akerstedt",
+   "year": "1990",
+   "journal-title": "Int J Neurosci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B43",
+   "doi-asserted-by": "crossref",
+   "first-page": "747",
+   "DOI": "10.1016/S0028-3932(97)00015-8",
+   "article-title": "‘Oops!’: performance correlates of everyday attentional failures in traumatic brain injured and normal subjects",
+   "volume": "35",
+   "author": "Robertson",
+   "year": "1997",
+   "journal-title": "Neuropsychologia"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B44",
+   "article-title": "Symbol Digit Modalities Test",
+   "author": "Smith",
+   "year": "1991"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B45",
+   "first-page": "221",
+   "article-title": "Air operations and circadian performance rhythms",
+   "volume": "47",
+   "author": "Klein",
+   "year": "1976",
+   "journal-title": "Aviat Space Env Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B46",
+   "doi-asserted-by": "crossref",
+   "first-page": "1063",
+   "DOI": "10.1037/0022-3514.54.6.1063",
+   "article-title": "Development and validation of brief measures of positive and negative affect: the PANAS scales",
+   "volume": "54",
+   "author": "Watson",
+   "year": "1988",
+   "journal-title": "J Pers Soc Psychol"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B47",
+   "article-title": "Detection theory: a user's guide",
+   "author": "Macmillan",
+   "year": "1991"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B48",
+   "doi-asserted-by": "crossref",
+   "first-page": "125",
+   "DOI": "10.3758/BF03342823",
+   "article-title": "A non-parametric analysis of recognition experiments",
+   "volume": "1",
+   "author": "Pollack",
+   "year": "1964",
+   "journal-title": "Psychon Sci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B49",
+   "article-title": "The AASM manual for the scoring of sleep and associated events: rules, terminology, and technical specification",
+   "author": "Iber",
+   "year": "2007",
+   "edition": "1st ed"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B50",
+   "doi-asserted-by": "crossref",
+   "first-page": "111",
+   "DOI": "10.3389/fpsyg.2012.00111",
+   "article-title": "A practical guide to calculating Cohen's f(2), a measure of local effect size, from PROC MIXED",
+   "volume": "3",
+   "author": "Selya",
+   "year": "2012",
+   "journal-title": "Front Psychol"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B51",
+   "article-title": "Statistical power analysis for the behavioral sciences",
+   "author": "Cohen",
+   "year": "1988",
+   "edition": "2nd ed"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B52",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1046/j.1365-2869.2003.00337.x",
+   "article-title": "Patterns of performance degradation and restoration during sleep restriction and subsequent recovery: a sleep dose-response study",
+   "volume": "12",
+   "author": "Belenky",
+   "year": "2003",
+   "journal-title": "J Sleep Res"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B53",
+   "doi-asserted-by": "crossref",
+   "first-page": "117",
+   "DOI": "10.1093/sleep/26.2.117",
+   "article-title": "The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation",
+   "volume": "26",
+   "author": "Van Dongen",
+   "year": "2003",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B54",
+   "doi-asserted-by": "crossref",
+   "first-page": "1689",
+   "DOI": "10.1001/archinte.166.16.1689",
+   "article-title": "Sleep duration and health in young adults",
+   "volume": "166",
+   "author": "Steptoe",
+   "year": "2006",
+   "journal-title": "Arch Intern Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B55",
+   "doi-asserted-by": "crossref",
+   "first-page": "203",
+   "DOI": "10.1016/j.smrv.2011.03.005",
+   "article-title": "In search of lost sleep: secular trends in the sleep time of school-aged children and adolescents",
+   "volume": "16",
+   "author": "Matricciani",
+   "year": "2012",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B56",
+   "doi-asserted-by": "crossref",
+   "first-page": "701",
+   "DOI": "10.1037/0033-2909.125.6.701",
+   "article-title": "How children and adolescents spend time across the world: work, play, and developmental opportunities",
+   "volume": "125",
+   "author": "Larson",
+   "year": "1999",
+   "journal-title": "Psychol Bull"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B57",
+   "doi-asserted-by": "crossref",
+   "first-page": "44",
+   "DOI": "10.1016/S1071-9091(96)80028-3",
+   "article-title": "The impact of inadequate sleep on children's daytime cognitive function",
+   "volume": "3",
+   "author": "Dahl",
+   "year": "1996",
+   "journal-title": "Semin Pediatr Neurol"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B58",
+   "doi-asserted-by": "crossref",
+   "first-page": "9487",
+   "DOI": "10.1073/pnas.0610712104",
+   "article-title": "Functional neuroimaging and behavioral correlates of capacity decline in visual short-term memory after sleep deprivation",
+   "volume": "104",
+   "author": "Chee",
+   "year": "2007",
+   "journal-title": "Proc Natl Acad Sci U S A"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B59",
+   "doi-asserted-by": "crossref",
+   "first-page": "11369",
+   "DOI": "10.1523/JNEUROSCI.4045-08.2008",
+   "article-title": "Cholinergic augmentation modulates visual task performance in sleep-deprived young adults",
+   "volume": "28",
+   "author": "Chuah",
+   "year": "2008",
+   "journal-title": "J Neurosci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B60",
+   "doi-asserted-by": "crossref",
+   "first-page": "849",
+   "DOI": "10.5665/sleep.2710",
+   "article-title": "Sleep deprivation accelerates delay-related loss of visual short-term memories without affecting precision",
+   "volume": "36",
+   "author": "Wee",
+   "year": "2013",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B61",
+   "doi-asserted-by": "crossref",
+   "first-page": "56",
+   "DOI": "10.1016/j.cobeha.2014.10.003",
+   "article-title": "Limitations on visual information processing in the sleep-deprived brain and their underlying mechanisms",
+   "volume": "1",
+   "author": "Chee",
+   "year": "2015",
+   "journal-title": "Curr Opin Behav Sci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B62",
+   "first-page": "815",
+   "article-title": "Two independent sources of short term memory problems during sleep deprivation",
+   "volume": "36",
+   "author": "Tucker",
+   "year": "2013",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B63",
+   "doi-asserted-by": "crossref",
+   "first-page": "1013",
+   "DOI": "10.1093/sleep/33.8.1013",
+   "article-title": "Neurobehavioral dynamics following chronic sleep restriction: dose-response effects of one night for recovery",
+   "volume": "33",
+   "author": "Banks",
+   "year": "2010",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B64",
+   "doi-asserted-by": "crossref",
+   "first-page": "1163",
+   "DOI": "10.5665/sleep.2010",
+   "article-title": "Trait-like vulnerability to total and partial sleep loss",
+   "volume": "35",
+   "author": "Rupp",
+   "year": "2012",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B65",
+   "doi-asserted-by": "crossref",
+   "first-page": "556",
+   "DOI": "10.1002/sim.5408",
+   "article-title": "Social contagion theory: examining dynamic social networks and human behavior",
+   "volume": "32",
+   "author": "Christakis",
+   "year": "2013",
+   "journal-title": "Stat Med"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B66",
+   "doi-asserted-by": "crossref",
+   "first-page": "139",
+   "DOI": "10.1038/nn.3303",
+   "article-title": "Sleep-dependent memory triage: evolving generalization through selective processing",
+   "volume": "16",
+   "author": "Stickgold",
+   "year": "2013",
+   "journal-title": "Nat Neurosci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B67",
+   "doi-asserted-by": "crossref",
+   "first-page": "781",
+   "DOI": "10.1111/j.1467-9280.2008.02157.x",
+   "article-title": "Sleep preferentially enhances memory for emotional components of scenes",
+   "volume": "19",
+   "author": "Payne",
+   "year": "2008",
+   "journal-title": "Psychol Sci"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B68",
+   "doi-asserted-by": "crossref",
+   "first-page": "e282",
+   "DOI": "10.1371/journal.pbio.0050282",
+   "article-title": "Sleep-related hippocampo-cortical interplay during emotional memory recollection",
+   "volume": "5",
+   "author": "Sterpenich",
+   "year": "2007",
+   "journal-title": "PLoS Biol"
+  },
+  {
+   "key": "key\n\t\t\t\t2018112204241983500_B69",
+   "doi-asserted-by": "crossref",
+   "first-page": "342",
+   "DOI": "10.1093/sleep/26.3.342",
+   "article-title": "The role of actigraphy in the study of sleep and circadian rhythms",
+   "volume": "26",
+   "author": "Ancoli-Israel",
+   "year": "2003",
+   "journal-title": "Sleep"
+  }
+ ],
+ "container-title": [
+  "Sleep"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://academic.oup.com/sleep/article-pdf/39/3/687/26673839/aasm.39.3.687.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2019,
+    9,
+    4
+   ]
+  ],
+  "date-time": "2019-09-04T23:48:24Z",
+  "timestamp": 1567640904000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/sleep/article/39/3/687/2454041"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2016,
+    3,
+    1
+   ]
+  ]
+ },
+ "references-count": 69,
+ "journal-issue": {
+  "issue": "3",
+  "published-online": {
+   "date-parts": [
+    [
+     2016,
+     3,
+     1
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2016,
+     3,
+     1
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.5665/sleep.5552",
+ "relation": {},
+ "ISSN": [
+  "1550-9109",
+  "0161-8105"
+ ],
+ "issn-type": [
+  {
+   "value": "1550-9109",
+   "type": "electronic"
+  },
+  {
+   "value": "0161-8105",
+   "type": "print"
+  }
+ ],
+ "subject": [],
+ "published-other": {
+  "date-parts": [
+   [
+    2016,
+    3
+   ]
+  ]
+ },
+ "published": {
+  "date-parts": [
+   [
+    2016,
+    3,
+    1
+   ]
+  ]
+ }
+}

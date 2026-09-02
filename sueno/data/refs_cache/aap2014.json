@@ -1,0 +1,1119 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    7,
+    28
+   ]
+  ],
+  "date-time": "2026-07-28T00:34:12Z",
+  "timestamp": 1785198852263,
+  "version": "3.55.0"
+ },
+ "reference-count": 63,
+ "publisher": "American Academy of Pediatrics (AAP)",
+ "issue": "3",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "published-print": {
+  "date-parts": [
+   [
+    2014,
+    9,
+    1
+   ]
+  ]
+ },
+ "abstract": "<jats:p>The American Academy of Pediatrics recognizes insufficient sleep in adolescents as an important public health issue that significantly affects the health and safety, as well as the academic success, of our nation’s middle and high school students. Although a number of factors, including biological changes in sleep associated with puberty, lifestyle choices, and academic demands, negatively affect middle and high school students’ ability to obtain sufficient sleep, the evidence strongly implicates earlier school start times (ie, before 8:30 am) as a key modifiable contributor to insufficient sleep, as well as circadian rhythm disruption, in this population. Furthermore, a substantial body of research has now demonstrated that delaying school start times is an effective countermeasure to chronic sleep loss and has a wide range of potential benefits to students with regard to physical and mental health, safety, and academic achievement. The American Academy of Pediatrics strongly supports the efforts of school districts to optimize sleep in students and urges high schools and middle schools to aim for start times that allow students the opportunity to achieve optimal levels of sleep (8.5–9.5 hours) and to improve physical (eg, reduced obesity risk) and mental (eg, lower rates of depression) health, safety (eg, drowsy driving crashes), academic performance, and quality of life.</jats:p>",
+ "DOI": "10.1542/peds.2014-1697",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2014,
+    8,
+    26
+   ]
+  ],
+  "date-time": "2014-08-26T05:14:44Z",
+  "timestamp": 1409030084000
+ },
+ "page": "642-649",
+ "source": "Crossref",
+ "is-referenced-by-count": 382,
+ "title": [
+  "School Start Times for Adolescents"
+ ],
+ "prefix": "10.1542",
+ "volume": "134",
+ "author": [
+  {
+   "name": "ADOLESCENT SLEEP WORKING GROUP",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "name": "COMMITTEE ON ADOLESCENCE",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "name": "COUNCIL ON SCHOOL HEALTH",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Rhoda",
+   "family": "Au",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Mary",
+   "family": "Carskadon",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Richard",
+   "family": "Millman",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Amy",
+   "family": "Wolfson",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Paula K.",
+   "family": "Braverman",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "William P.",
+   "family": "Adelman",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Cora C.",
+   "family": "Breuner",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David A.",
+   "family": "Levine",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Arik V.",
+   "family": "Marcell",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Pamela J.",
+   "family": "Murray",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Rebecca F.",
+   "family": "O’Brien",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Cynthia D.",
+   "family": "Devore",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Mandy",
+   "family": "Allison",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Richard",
+   "family": "Ancona",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "FAAP Stephen E.",
+   "family": "Barnett",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Robert",
+   "family": "Gunther",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Breena",
+   "family": "Holmes",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jeffrey H.",
+   "family": "Lamont",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Mark",
+   "family": "Minier",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jeffrey K.",
+   "family": "Okamoto",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lani S.M.",
+   "family": "Wheeler",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Thomas",
+   "family": "Young",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "417",
+ "published-online": {
+  "date-parts": [
+   [
+    2014,
+    9,
+    1
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "2021120908525048000_B1",
+   "unstructured": "US Department of Health and Human Services. Healthy People 2020 sleep health objectives. Available at: www.healthypeople.gov/2020/topicsobjectives2020/objectiveslist.aspx?topicId=38. Accessed June 26, 2013"
+  },
+  {
+   "key": "2021120908525048000_B2",
+   "doi-asserted-by": "crossref",
+   "first-page": "59",
+   "DOI": "10.1186/1471-2458-6-59",
+   "article-title": "Adequate sleep among adolescents is positively associated with health status and health-related behaviors.",
+   "volume": "6",
+   "author": "Chen",
+   "year": "2006",
+   "journal-title": "BMC Public Health"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B3",
+   "doi-asserted-by": "crossref",
+   "first-page": "399",
+   "DOI": "10.1016/j.jadohealth.2009.10.011",
+   "article-title": "Prevalence of insufficient, borderline, and optimal hours of sleep among high school students—United States, 2007.",
+   "volume": "46",
+   "author": "Eaton",
+   "year": "2010",
+   "journal-title": "J Adolesc Health"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B4",
+   "doi-asserted-by": "crossref",
+   "first-page": "e5217",
+   "DOI": "10.1371/journal.pone.0005217",
+   "article-title": "Consequences of the timing of menarche on female adolescent sleep phase preference.",
+   "volume": "4",
+   "author": "Frey",
+   "year": "2009",
+   "journal-title": "PLoS ONE"
+  },
+  {
+   "key": "2021120908525048000_B5",
+   "doi-asserted-by": "crossref",
+   "first-page": "276",
+   "DOI": "10.1196/annals.1308.032",
+   "article-title": "Regulation of adolescent sleep: implications for behavior.",
+   "volume": "1021",
+   "author": "Carskadon",
+   "year": "2004",
+   "journal-title": "Ann N Y Acad Sci"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B6",
+   "doi-asserted-by": "crossref",
+   "first-page": "637",
+   "DOI": "10.1016/j.pcl.2011.03.003",
+   "article-title": "Sleep in adolescents: the perfect storm.",
+   "volume": "58",
+   "author": "Carskadon",
+   "year": "2011",
+   "journal-title": "Pediatr Clin North Am"
+  },
+  {
+   "issue": "12",
+   "key": "2021120908525048000_B7",
+   "doi-asserted-by": "crossref",
+   "first-page": "1632",
+   "DOI": "10.1093/sleep/29.12.1632",
+   "article-title": "Estimating dim light melatonin onset (DLMO) phase in adolescents using summer or school-year sleep/wake schedules.",
+   "volume": "29",
+   "author": "Crowley",
+   "year": "2006",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B8",
+   "doi-asserted-by": "crossref",
+   "first-page": "278",
+   "DOI": "10.1177/074873049701200309",
+   "article-title": "An approach to studying circadian rhythms of adolescent humans.",
+   "volume": "12",
+   "author": "Carskadon",
+   "year": "1997",
+   "journal-title": "J Biol Rhythms"
+  },
+  {
+   "issue": "11",
+   "key": "2021120908525048000_B9",
+   "doi-asserted-by": "crossref",
+   "first-page": "1446",
+   "DOI": "10.1093/sleep/28.11.1446",
+   "article-title": "Homeostatic sleep regulation in adolescents.",
+   "volume": "28",
+   "author": "Jenni",
+   "year": "2005",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B10",
+   "doi-asserted-by": "crossref",
+   "first-page": "239",
+   "DOI": "10.1111/j.1365-2869.2005.00467.x",
+   "article-title": "Sleep tendency during extended wakefulness: insights into adolescent sleep regulation and behavior.",
+   "volume": "14",
+   "author": "Taylor",
+   "year": "2005",
+   "journal-title": "J Sleep Res"
+  },
+  {
+   "key": "2021120908525048000_B11"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B12",
+   "first-page": "301",
+   "article-title": "Extended nights, sleep loss, and recovery sleep in adolescents.",
+   "volume": "139",
+   "author": "Carskadon",
+   "year": "2001",
+   "journal-title": "Arch Ital Biol"
+  },
+  {
+   "issue": "24",
+   "key": "2021120908525048000_B13",
+   "doi-asserted-by": "crossref",
+   "first-page": "R1038",
+   "DOI": "10.1016/j.cub.2004.11.039",
+   "article-title": "A marker for the end of adolescence.",
+   "volume": "14",
+   "author": "Roenneberg",
+   "year": "2004",
+   "journal-title": "Curr Biol"
+  },
+  {
+   "issue": "8",
+   "key": "2021120908525048000_B14",
+   "doi-asserted-by": "crossref",
+   "first-page": "735",
+   "DOI": "10.1016/j.sleep.2010.02.006",
+   "article-title": "Electronic media use and sleep in school-aged children and adolescents: a review.",
+   "volume": "11",
+   "author": "Cain",
+   "year": "2010",
+   "journal-title": "Sleep Med"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B15",
+   "doi-asserted-by": "crossref",
+   "first-page": "426",
+   "DOI": "10.1016/j.jpeds.2008.08.035",
+   "article-title": "Sociodemographic and behavioral predictors of bed time and wake time among US adolescents aged 15 to 17 years.",
+   "volume": "154",
+   "author": "Knutson",
+   "year": "2009",
+   "journal-title": "J Pediatr"
+  },
+  {
+   "key": "2021120908525048000_B16",
+   "first-page": "198",
+   "article-title": "Bridging the gap between research and practice: what will adolescents' sleep-wake patterns look like in the 21st century?",
+   "volume-title": "Adolescent Sleep Patterns: Biological, Social, and Psychological Influences",
+   "author": "Wolfson",
+   "year": "2002"
+  },
+  {
+   "issue": "1",
+   "key": "2021120908525048000_B17",
+   "doi-asserted-by": "crossref",
+   "first-page": "84",
+   "DOI": "10.1111/j.1467-8624.2004.00655.x",
+   "article-title": "Sleepless in Chicago: tracking the effects of adolescent sleep loss during the middle school years.",
+   "volume": "75",
+   "author": "Fredriksen",
+   "year": "2004",
+   "journal-title": "Child Dev"
+  },
+  {
+   "key": "2021120908525048000_B18",
+   "first-page": "19",
+   "article-title": "Sleep and its disorders in adolescence",
+   "volume-title": "Principles and Practices of Sleep Medicine in the Child",
+   "author": "Dahl",
+   "year": "1995"
+  },
+  {
+   "issue": "8",
+   "key": "2021120908525048000_B19",
+   "doi-asserted-by": "crossref",
+   "first-page": "871",
+   "DOI": "10.1093/sleep/21.8.871",
+   "article-title": "Adolescent sleep patterns, circadian timing, and sleepiness at a transition to early school days.",
+   "volume": "21",
+   "author": "Carskadon",
+   "year": "1998",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "2021120908525048000_B20",
+   "unstructured": "National Sleep Foundation. 2006 Teens and sleep. Available at: www.sleepfoundation.org/article/sleep-america-polls/2006-teens-and-sleep. Accessed June 26, 2013"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B21",
+   "doi-asserted-by": "crossref",
+   "first-page": "113",
+   "DOI": "10.1207/s15402010bsm0303_1",
+   "article-title": "Sleep and risk-taking behavior in adolescents.",
+   "volume": "3",
+   "author": "O’Brien",
+   "year": "2005",
+   "journal-title": "Behav Sleep Med"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B22",
+   "doi-asserted-by": "crossref",
+   "first-page": "319",
+   "DOI": "10.1016/j.jadohealth.2009.07.007",
+   "article-title": "Linking adolescent sleep, brain maturation, and behavior.",
+   "volume": "45",
+   "author": "Giedd",
+   "year": "2009",
+   "journal-title": "J Adolesc Health"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B23",
+   "doi-asserted-by": "crossref",
+   "first-page": "326",
+   "DOI": "10.1016/j.jadohealth.2009.04.001",
+   "article-title": "Reward-related brain function and sleep in pre/early pubertal and mid/late pubertal adolescents.",
+   "volume": "45",
+   "author": "Holm",
+   "year": "2009",
+   "journal-title": "J Adolesc Health"
+  },
+  {
+   "issue": "10",
+   "key": "2021120908525048000_B24",
+   "doi-asserted-by": "crossref",
+   "first-page": "1175",
+   "DOI": "10.1093/jpepsy/jsp039",
+   "article-title": "Relationships among sleepiness, sleep time, and psychological functioning in adolescents.",
+   "volume": "34",
+   "author": "Moore",
+   "year": "2009",
+   "journal-title": "J Pediatr Psychol"
+  },
+  {
+   "issue": "2",
+   "key": "2021120908525048000_B25",
+   "doi-asserted-by": "crossref",
+   "first-page": "237",
+   "DOI": "10.5993/AJHB.34.2.11",
+   "article-title": "Adolescent sleep, risk behaviors, and depressive symptoms: are they linked?",
+   "volume": "34",
+   "author": "Pasch",
+   "year": "2010",
+   "journal-title": "Am J Health Behav"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B26",
+   "doi-asserted-by": "crossref",
+   "first-page": "719",
+   "DOI": "10.1037/a0022941",
+   "article-title": "Daily stress interacts with trait dissociation to predict sleep-related experiences in young adults.",
+   "volume": "120",
+   "author": "Soffer-Dudek",
+   "year": "2011",
+   "journal-title": "J Abnorm Psychol"
+  },
+  {
+   "issue": "5",
+   "key": "2021120908525048000_B27",
+   "doi-asserted-by": "crossref",
+   "first-page": "323",
+   "DOI": "10.1016/j.smrv.2005.11.001",
+   "article-title": "Sleep loss, learning capacity and academic performance.",
+   "volume": "10",
+   "author": "Curcio",
+   "year": "2006",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "issue": "1",
+   "key": "2021120908525048000_B28",
+   "first-page": "19",
+   "article-title": "Adolescent sleep disturbance and school performance: the confounding variable of socioeconomics.",
+   "volume": "3",
+   "author": "Pagel",
+   "year": "2007",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "6",
+   "key": "2021120908525048000_B29",
+   "doi-asserted-by": "crossref",
+   "first-page": "491",
+   "DOI": "10.1016/S1087-0792(03)90003-7",
+   "article-title": "Understanding adolescents’ sleep patterns and school performance: a critical appraisal.",
+   "volume": "7",
+   "author": "Wolfson",
+   "year": "2003",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B30",
+   "doi-asserted-by": "crossref",
+   "first-page": "194",
+   "DOI": "10.1080/15402000701263809",
+   "article-title": "Middle school start times: the importance of a good night’s sleep for young adolescents.",
+   "volume": "5",
+   "author": "Wolfson",
+   "year": "2007",
+   "journal-title": "Behav Sleep Med"
+  },
+  {
+   "issue": "6",
+   "key": "2021120908525048000_B31",
+   "first-page": "503",
+   "article-title": "Sleep problems and their relation to cognitive factors, anxiety, and depressive symptoms in children and adolescents.",
+   "volume": "26",
+   "author": "Alfano",
+   "year": "2009",
+   "journal-title": "Depress Anxiety"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B32",
+   "doi-asserted-by": "crossref",
+   "first-page": "893",
+   "DOI": "10.1016/j.chc.2009.04.007",
+   "article-title": "Mood-related sleep problems in children and adolescents.",
+   "volume": "18",
+   "author": "Lofthouse",
+   "year": "2009",
+   "journal-title": "Child Adolesc Psychiatr Clin N Am"
+  },
+  {
+   "issue": "1",
+   "key": "2021120908525048000_B33",
+   "doi-asserted-by": "crossref",
+   "first-page": "34",
+   "DOI": "10.1016/j.psychres.2008.11.006",
+   "article-title": "Sleep debt and depression in female college students.",
+   "volume": "176",
+   "author": "Regestein",
+   "year": "2010",
+   "journal-title": "Psychiatry Res"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B34",
+   "doi-asserted-by": "crossref",
+   "first-page": "929",
+   "DOI": "10.1016/j.chc.2009.04.004",
+   "article-title": "Sleep and substance use and abuse in adolescents.",
+   "volume": "18",
+   "author": "Gromov",
+   "year": "2009",
+   "journal-title": "Child Adolesc Psychiatr Clin N Am"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B35",
+   "doi-asserted-by": "crossref",
+   "first-page": "330",
+   "DOI": "10.1177/1090198109341783",
+   "article-title": "Understanding adolescent caffeine use: connecting use patterns with expectancies, reasons, and sleep.",
+   "volume": "37",
+   "author": "Bryant Ludden",
+   "year": "2010",
+   "journal-title": "Health Educ Behav"
+  },
+  {
+   "key": "2021120908525048000_B36",
+   "doi-asserted-by": "crossref",
+   "first-page": "S278",
+   "DOI": "10.1016/j.amepre.2008.06.013",
+   "article-title": "Biological, developmental, and neurobehavioral factors relevant to adolescent driving risks.",
+   "volume": "35",
+   "author": "Dahl",
+   "year": "2008",
+   "journal-title": "Am J Prev Med"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B37",
+   "doi-asserted-by": "crossref",
+   "first-page": "869",
+   "DOI": "10.1016/j.aap.2007.10.001",
+   "article-title": "Teen driver crash risk and associations with smoking and drowsy driving.",
+   "volume": "40",
+   "author": "Hutchens",
+   "year": "2008",
+   "journal-title": "Accid Anal Prev"
+  },
+  {
+   "issue": "1",
+   "key": "2021120908525048000_B38",
+   "doi-asserted-by": "crossref",
+   "first-page": "89",
+   "DOI": "10.1136/adc.2007.124768",
+   "article-title": "Sleep duration and metabolic dysregulation in overweight children and adolescents.",
+   "volume": "93",
+   "author": "Verhulst",
+   "year": "2008",
+   "journal-title": "Arch Dis Child"
+  },
+  {
+   "issue": "7",
+   "key": "2021120908525048000_B39",
+   "doi-asserted-by": "crossref",
+   "first-page": "956",
+   "DOI": "10.1093/sleep/33.7.956",
+   "article-title": "Short sleep duration as a risk factor for hypercholesterolemia: analyses of the National Longitudinal Study of Adolescent Health.",
+   "volume": "33",
+   "author": "Gangwisch",
+   "year": "2010",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B40",
+   "doi-asserted-by": "crossref",
+   "first-page": "661",
+   "DOI": "10.1093/sleep/27.4.661",
+   "article-title": "The association between short sleep duration and obesity in young adults: a 13-year prospective study.",
+   "volume": "27",
+   "author": "Hasler",
+   "year": "2004",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "5",
+   "key": "2021120908525048000_B41",
+   "doi-asserted-by": "crossref",
+   "first-page": "619",
+   "DOI": "10.1093/sleep/31.5.619",
+   "article-title": "Meta-analysis of short sleep duration and obesity in children and adults.",
+   "volume": "31",
+   "author": "Cappuccio",
+   "year": "2008",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "1",
+   "key": "2021120908525048000_B42",
+   "first-page": "44",
+   "article-title": "Sleep, sleepiness and school start times: a preliminary study.",
+   "volume": "102",
+   "author": "Dexter",
+   "year": "2003",
+   "journal-title": "WMJ"
+  },
+  {
+   "issue": "6",
+   "key": "2021120908525048000_B43",
+   "doi-asserted-by": "crossref",
+   "first-page": "1555",
+   "DOI": "10.1542/peds.2004-1649",
+   "article-title": "The impact of school daily schedule on adolescent sleep.",
+   "volume": "115",
+   "author": "Hansen",
+   "year": "2005",
+   "journal-title": "Pediatrics"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B44",
+   "doi-asserted-by": "crossref",
+   "first-page": "62",
+   "DOI": "10.1257/pol.3.3.62",
+   "article-title": "A's from Zzzz's? The causal effect of school start time on the academic achievement of adolescents.",
+   "volume": "3",
+   "author": "Carrell",
+   "year": "2011",
+   "journal-title": "Am Econ J Economic Policy"
+  },
+  {
+   "key": "2021120908525048000_B45",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Edwards F. Early to rise: the effect of daily start times on academic performance. Working Paper, University of Illinois at Urbana-Champaign; 2010. Available at: http://ssrn.com/abstract=1628693. Accessed June 26, 2013",
+   "DOI": "10.2139/ssrn.1628693"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B46",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1162/EDFP_a_00045",
+   "article-title": "When the bell tolls: the effects of school starting times on academic achievement.",
+   "volume": "6",
+   "author": "Hinrichs",
+   "year": "2011",
+   "journal-title": "Educ Finance Policy"
+  },
+  {
+   "issue": "3",
+   "key": "2021120908525048000_B47",
+   "doi-asserted-by": "crossref",
+   "first-page": "250",
+   "DOI": "10.1093/sleep/21.3.250",
+   "article-title": "Starting times of school: effects on daytime functioning of fifth-grade children in Israel.",
+   "volume": "21",
+   "author": "Epstein",
+   "year": "1998",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "2",
+   "key": "2021120908525048000_B48",
+   "doi-asserted-by": "crossref",
+   "first-page": "137",
+   "DOI": "10.5664/jcsm.28100",
+   "article-title": "Delaying school starting time by one hour: some effects on attention levels in adolescents.",
+   "volume": "7",
+   "author": "Lufi",
+   "year": "2011",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "key": "2021120908525048000_B49"
+  },
+  {
+   "issue": "633",
+   "key": "2021120908525048000_B50",
+   "doi-asserted-by": "crossref",
+   "first-page": "3",
+   "DOI": "10.1177/019263650208663302",
+   "article-title": "Changing times: findings from the first longitudinal study of later high school start times.",
+   "volume": "286",
+   "author": "Wahlstrom",
+   "year": "2002",
+   "journal-title": "NASSP Bull"
+  },
+  {
+   "key": "2021120908525048000_B51",
+   "first-page": "72",
+   "article-title": "Accommodating the sleep patterns of adolescents within current educational structures: an uncharted path",
+   "volume-title": "Adolescent Sleep Patterns: Biological, Social, and Psychological Influences",
+   "author": "Wahlstrom",
+   "year": "2002"
+  },
+  {
+   "issue": "6",
+   "key": "2021120908525048000_B52",
+   "doi-asserted-by": "crossref",
+   "first-page": "533",
+   "DOI": "10.5664/jcsm.27345",
+   "article-title": "Adolescent sleep, school start times, and teen motor vehicle crashes.",
+   "volume": "4",
+   "author": "Danner",
+   "year": "2008",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "7",
+   "key": "2021120908525048000_B53",
+   "doi-asserted-by": "crossref",
+   "first-page": "608",
+   "DOI": "10.1001/archpediatrics.2010.96",
+   "article-title": "Impact of delaying school start time on adolescent sleep, mood, and behavior.",
+   "volume": "164",
+   "author": "Owens",
+   "year": "2010",
+   "journal-title": "Arch Pediatr Adolesc Med"
+  },
+  {
+   "key": "2021120908525048000_B54",
+   "volume-title": "Examining the Impact of Later School Start Times on the Health and Academic Performance of High School Students: A Multi-Site Study. Center for Applied Research and Educational Improvement",
+   "author": "Wahlstrom",
+   "year": "2014"
+  },
+  {
+   "key": "2021120908525048000_B55",
+   "first-page": "A74",
+   "article-title": "Sleep patterns of high school students before and after delayed school start time.",
+   "volume": "31",
+   "author": "Htwe",
+   "year": "2008",
+   "journal-title": "J Sleep Disord Res."
+  },
+  {
+   "key": "2021120908525048000_B56",
+   "doi-asserted-by": "crossref",
+   "unstructured": "Cortes KE, Bricker J, Rohlfs C. The role of specific subjects in education production functions: Evidence from morning classes in Chicago public high schools. The BE Journal of Economic Analysis & Policy. 2010;12(1)",
+   "DOI": "10.1515/1935-1682.2749"
+  },
+  {
+   "issue": "2",
+   "key": "2021120908525048000_B57",
+   "doi-asserted-by": "crossref",
+   "first-page": "220",
+   "DOI": "10.1017/S0954422409990175",
+   "article-title": "A systematic review of the effect of breakfast on the cognitive performance of children and adolescents.",
+   "volume": "22",
+   "author": "Hoyland",
+   "year": "2009",
+   "journal-title": "Nutr Res Rev"
+  },
+  {
+   "issue": "1",
+   "key": "2021120908525048000_B58",
+   "doi-asserted-by": "crossref",
+   "first-page": "11",
+   "DOI": "10.1097/DBP.0000000000000018",
+   "article-title": "Later school start time is associated with improved sleep and daytime functioning in adolescents.",
+   "volume": "35",
+   "author": "Boergers",
+   "year": "2014",
+   "journal-title": "J Dev Behav Pediatr"
+  },
+  {
+   "issue": "4",
+   "key": "2021120908525048000_B59",
+   "doi-asserted-by": "crossref",
+   "first-page": "351",
+   "DOI": "10.5664/JCSM.1188",
+   "article-title": "Teen sleep and suicidality: results from the youth risk behavior surveys of 2007 and 2009.",
+   "volume": "7",
+   "author": "Fitzgerald",
+   "year": "2011",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "key": "2021120908525048000_B60"
+  },
+  {
+   "issue": "2",
+   "key": "2021120908525048000_B61",
+   "doi-asserted-by": "crossref",
+   "first-page": "145",
+   "DOI": "10.5664/jcsm.28101",
+   "article-title": "Dissimilar teen crash rates in two neighboring southeastern Virginia cities with different high school start times.",
+   "volume": "7",
+   "author": "Vorona",
+   "year": "2011",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "642",
+   "key": "2021120908525048000_B62",
+   "doi-asserted-by": "crossref",
+   "first-page": "47",
+   "DOI": "10.1177/019263650508964205",
+   "article-title": "A survey of factors influencing high school start times.",
+   "volume": "89",
+   "author": "Wolfson",
+   "year": "2005",
+   "journal-title": "NASSP Bull"
+  },
+  {
+   "key": "2021120908525048000_B63"
+  }
+ ],
+ "container-title": [
+  "Pediatrics"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://publications.aap.org/pediatrics/article-pdf/134/3/642/900452/peds_2014-1697.pdf",
+   "content-type": "application/pdf",
+   "content-version": "vor",
+   "intended-application": "syndication"
+  },
+  {
+   "URL": "https://publications.aap.org/pediatrics/article-pdf/134/3/642/900452/peds_2014-1697.pdf",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2021,
+    12,
+    10
+   ]
+  ],
+  "date-time": "2021-12-10T03:15:11Z",
+  "timestamp": 1639106111000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://publications.aap.org/pediatrics/article/134/3/642/74175/School-Start-Times-for-Adolescents"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2014,
+    9,
+    1
+   ]
+  ]
+ },
+ "references-count": 63,
+ "journal-issue": {
+  "issue": "3",
+  "published-online": {
+   "date-parts": [
+    [
+     2014,
+     9,
+     1
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2014,
+     9,
+     1
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1542/peds.2014-1697",
+ "relation": {},
+ "ISSN": [
+  "0031-4005",
+  "1098-4275"
+ ],
+ "issn-type": [
+  {
+   "value": "0031-4005",
+   "type": "print"
+  },
+  {
+   "value": "1098-4275",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2014,
+    9,
+    1
+   ]
+  ]
+ }
+}

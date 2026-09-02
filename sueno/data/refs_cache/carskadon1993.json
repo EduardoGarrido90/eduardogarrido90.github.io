@@ -1,0 +1,159 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    27
+   ]
+  ],
+  "date-time": "2026-08-27T18:34:10Z",
+  "timestamp": 1787855650952,
+  "version": "build-2784847793"
+ },
+ "reference-count": 0,
+ "publisher": "Oxford University Press (OUP)",
+ "issue": "3",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [],
+ "published-print": {
+  "date-parts": [
+   [
+    1993,
+    5
+   ]
+  ]
+ },
+ "DOI": "10.1093/sleep/16.3.258",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2017,
+    2,
+    5
+   ]
+  ],
+  "date-time": "2017-02-05T12:02:23Z",
+  "timestamp": 1486296143000
+ },
+ "page": "258-262",
+ "source": "Crossref",
+ "is-referenced-by-count": 916,
+ "title": [
+  "Association between Puberty and Delayed Phase Preference"
+ ],
+ "prefix": "10.1093",
+ "volume": "16",
+ "author": [
+  {
+   "given": "Mary A.",
+   "family": "Carskadon",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Cecilia",
+   "family": "Vieira",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Christine",
+   "family": "Acebo",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "286",
+ "container-title": [
+  "Sleep"
+ ],
+ "original-title": [],
+ "language": "en",
+ "deposited": {
+  "date-parts": [
+   [
+    2017,
+    4,
+    20
+   ]
+  ],
+  "date-time": "2017-04-20T05:47:52Z",
+  "timestamp": 1492667272000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://academic.oup.com/sleep/article-lookup/doi/10.1093/sleep/16.3.258"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    1993,
+    5
+   ]
+  ]
+ },
+ "references-count": 0,
+ "journal-issue": {
+  "issue": "3",
+  "published-print": {
+   "date-parts": [
+    [
+     1993,
+     5
+    ]
+   ]
+  }
+ },
+ "URL": "https://doi.org/10.1093/sleep/16.3.258",
+ "relation": {},
+ "ISSN": [
+  "1550-9109",
+  "0161-8105"
+ ],
+ "issn-type": [
+  {
+   "value": "1550-9109",
+   "type": "electronic"
+  },
+  {
+   "value": "0161-8105",
+   "type": "print"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    1993,
+    5
+   ]
+  ]
+ }
+}

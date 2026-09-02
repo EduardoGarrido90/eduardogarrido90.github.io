@@ -1,0 +1,584 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    15
+   ]
+  ],
+  "date-time": "2026-08-15T12:48:55Z",
+  "timestamp": 1786798135981,
+  "version": "build-2736575974"
+ },
+ "reference-count": 18,
+ "publisher": "Elsevier BV",
+ "issue": "24",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/legal/tdmrep-license"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2013,
+      7,
+      17
+     ]
+    ],
+    "date-time": "2013-07-17T00:00:00Z",
+    "timestamp": 1374019200000
+   },
+   "content-version": "vor",
+   "delay-in-days": 3150,
+   "URL": "http://www.elsevier.com/open-access/userlicense/1.0/"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "stm-asf",
+   "delay-in-days": 0,
+   "URL": "https://doi.org/10.15223/policy-017"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "stm-asf",
+   "delay-in-days": 0,
+   "URL": "https://doi.org/10.15223/policy-037"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "stm-asf",
+   "delay-in-days": 0,
+   "URL": "https://doi.org/10.15223/policy-012"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "stm-asf",
+   "delay-in-days": 0,
+   "URL": "https://doi.org/10.15223/policy-029"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2004,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2004-12-01T00:00:00Z",
+    "timestamp": 1101859200000
+   },
+   "content-version": "stm-asf",
+   "delay-in-days": 0,
+   "URL": "https://doi.org/10.15223/policy-004"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "cell.com",
+   "elsevier.com",
+   "sciencedirect.com"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Current Biology"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2004,
+    12
+   ]
+  ]
+ },
+ "DOI": "10.1016/j.cub.2004.11.039",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2004,
+    12,
+    29
+   ]
+  ],
+  "date-time": "2004-12-29T19:16:56Z",
+  "timestamp": 1104347816000
+ },
+ "page": "R1038-R1039",
+ "update-policy": "https://doi.org/10.1016/elsevier_cm_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 1346,
+ "title": [
+  "A marker for the end of adolescence"
+ ],
+ "prefix": "10.1016",
+ "volume": "14",
+ "author": [
+  {
+   "given": "Till",
+   "family": "Roenneberg",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Tim",
+   "family": "Kuehnle",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Peter P.",
+   "family": "Pramstaller",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jan",
+   "family": "Ricken",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Miriam",
+   "family": "Havel",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Angelika",
+   "family": "Guth",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Martha",
+   "family": "Merrow",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "78",
+ "reference": [
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB1",
+   "doi-asserted-by": "crossref",
+   "first-page": "227",
+   "DOI": "10.1093/humrep/15.1.227",
+   "article-title": "Age definitions, childhood and adolescence in relation to reproductive issues",
+   "volume": "15",
+   "author": "Bahadur",
+   "year": "2000",
+   "journal-title": "Hum. Reprod"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB2",
+   "doi-asserted-by": "crossref",
+   "first-page": "183",
+   "DOI": "10.1177/0748730403018003001",
+   "article-title": "The art of entrainment",
+   "volume": "18",
+   "author": "Roenneberg",
+   "year": "2003",
+   "journal-title": "J. Biol. Rhythms"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB3",
+   "doi-asserted-by": "crossref",
+   "first-page": "80",
+   "DOI": "10.1177/0748730402239679",
+   "article-title": "Life between clocks - daily temporal patterns of human chronotypes",
+   "volume": "18",
+   "author": "Roenneberg",
+   "year": "2003",
+   "journal-title": "J. Biol. Rhythms"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB4",
+   "doi-asserted-by": "crossref",
+   "first-page": "1040",
+   "DOI": "10.1126/science.1057499",
+   "article-title": "An hPer2 phosphorylation site mutation in familial advanced sleep phase syndrome",
+   "volume": "291",
+   "author": "Toh",
+   "year": "2001",
+   "journal-title": "Science"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB5",
+   "doi-asserted-by": "crossref",
+   "first-page": "413",
+   "DOI": "10.1093/sleep/26.4.413",
+   "article-title": "A length polymorphism in the circadian clock gene Per3 is linked to delayed sleep phase syndrome and extreme diurnal preference",
+   "volume": "26",
+   "author": "Archer",
+   "year": "2003",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB6",
+   "doi-asserted-by": "crossref",
+   "first-page": "1199",
+   "DOI": "10.2466/pms.2002.94.3c.1199",
+   "article-title": "Changes of sleep or waking habits by age and sex in Japanese",
+   "volume": "94",
+   "author": "Park",
+   "year": "2002",
+   "journal-title": "Percept. Mot. Skills"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB7",
+   "doi-asserted-by": "crossref",
+   "first-page": "117",
+   "DOI": "10.1016/S0304-3940(01)02427-2",
+   "article-title": "Age-related change in the relationship between circadian period, circadian phase, and diurnal preference in humans",
+   "volume": "318",
+   "author": "Duffy",
+   "year": "2002",
+   "journal-title": "Neurosci. Lett"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB8",
+   "doi-asserted-by": "crossref",
+   "first-page": "285",
+   "DOI": "10.1081/CBI-100101049",
+   "article-title": "Contribution of circadian physiology and sleep homeostasis to age-related changes in human sleep",
+   "volume": "17",
+   "author": "Dijk",
+   "year": "2000",
+   "journal-title": "Chronobiol. Int"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB9",
+   "doi-asserted-by": "crossref",
+   "first-page": "129",
+   "DOI": "10.1016/S0304-3940(98)00971-9",
+   "article-title": "Intrinsic circadian period of adolescent humans measured in conditions of forced desynchrony",
+   "volume": "260",
+   "author": "Carskadon",
+   "year": "1999",
+   "journal-title": "Neurosci. Lett"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB10",
+   "doi-asserted-by": "crossref",
+   "first-page": "709",
+   "DOI": "10.1081/CBI-120005390",
+   "article-title": "Gender differences in morningness-eveningness preference",
+   "volume": "19",
+   "author": "Adan",
+   "year": "2002",
+   "journal-title": "Chronobiol. Int"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB11",
+   "doi-asserted-by": "crossref",
+   "first-page": "263",
+   "DOI": "10.1016/S0378-5122(03)00215-9",
+   "article-title": "The frequency distribution of age at natural menopause among Saudi Arabian women",
+   "volume": "46",
+   "author": "Greer",
+   "year": "2003",
+   "journal-title": "Maturitas"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB12",
+   "first-page": "391",
+   "article-title": "Sleep quality, estradiol levels, and behavioral factors in late reproductive age women",
+   "volume": "98",
+   "author": "Hollander",
+   "year": "2001",
+   "journal-title": "Obstet. Gynecol"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB13",
+   "doi-asserted-by": "crossref",
+   "first-page": "233",
+   "DOI": "10.1081/CBI-100101046",
+   "article-title": "Circadian rhythms and sleep in human aging",
+   "volume": "17",
+   "author": "van Someren",
+   "year": "2000",
+   "journal-title": "Chronobiol. Int"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB14",
+   "doi-asserted-by": "crossref",
+   "first-page": "53",
+   "DOI": "10.1016/0149-7634(94)00030-5",
+   "article-title": "Effects of age on the circadian system",
+   "volume": "19",
+   "author": "Turek",
+   "year": "1995",
+   "journal-title": "Neurosci. Biobehav. Rev"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB15",
+   "doi-asserted-by": "crossref",
+   "first-page": "261",
+   "DOI": "10.1081/CBI-100101048",
+   "article-title": "Age-dependent changes of the circadian system",
+   "volume": "17",
+   "author": "Weinert",
+   "year": "2000",
+   "journal-title": "Chronobiol. Int"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB16",
+   "doi-asserted-by": "crossref",
+   "first-page": "449",
+   "DOI": "10.1093/sleep/26.4.449",
+   "article-title": "The transition of sleep-wake patterns in early adolescence",
+   "volume": "26",
+   "author": "Gau",
+   "year": "2003",
+   "journal-title": "Sleep"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB17",
+   "doi-asserted-by": "crossref",
+   "first-page": "861",
+   "DOI": "10.1001/jama.284.7.861",
+   "article-title": "Age-related changes in slow wave sleep and REM sleep and relationship with growth hormone and cortisol levels in healthy men",
+   "volume": "284",
+   "author": "Van Cauter",
+   "year": "2000",
+   "journal-title": "JAMA"
+  },
+  {
+   "key": "10.1016/j.cub.2004.11.039_BIB18",
+   "first-page": "2717",
+   "article-title": "Slow wave sleep and release of growth hormone",
+   "volume": "284",
+   "author": "Feinberg",
+   "year": "2000",
+   "journal-title": "JAMA"
+  }
+ ],
+ "container-title": [
+  "Current Biology"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S0960982204009285?httpAccept=text/xml",
+   "content-type": "text/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S0960982204009285?httpAccept=text/plain",
+   "content-type": "text/plain",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2025,
+    10,
+    18
+   ]
+  ],
+  "date-time": "2025-10-18T09:01:51Z",
+  "timestamp": 1760778111000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://linkinghub.elsevier.com/retrieve/pii/S0960982204009285"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2004,
+    12
+   ]
+  ]
+ },
+ "references-count": 18,
+ "journal-issue": {
+  "issue": "24",
+  "published-print": {
+   "date-parts": [
+    [
+     2004,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S0960982204009285"
+ ],
+ "URL": "https://doi.org/10.1016/j.cub.2004.11.039",
+ "relation": {},
+ "ISSN": [
+  "0960-9822"
+ ],
+ "issn-type": [
+  {
+   "value": "0960-9822",
+   "type": "print"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2004,
+    12
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "Elsevier",
+   "name": "publisher",
+   "label": "This article is maintained by"
+  },
+  {
+   "value": "A marker for the end of adolescence",
+   "name": "articletitle",
+   "label": "Article Title"
+  },
+  {
+   "value": "Current Biology",
+   "name": "journaltitle",
+   "label": "Journal Title"
+  },
+  {
+   "value": "https://doi.org/10.1016/j.cub.2004.11.039",
+   "name": "articlelink",
+   "label": "CrossRef DOI link to publisher maintained version"
+  },
+  {
+   "value": "converted-article",
+   "name": "content_type",
+   "label": "Content Type"
+  },
+  {
+   "value": "Copyright © 2004 Elsevier Ltd. All rights reserved.",
+   "name": "copyright",
+   "label": "Copyright"
+  }
+ ]
+}

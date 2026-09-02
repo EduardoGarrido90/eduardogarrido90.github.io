@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Por qué tus alumnos están dormidos a las 8 de la mañana?</title>
+<meta name="description" content="Por qué los adolescentes están dormidos a
+primera hora: el retraso circadiano de la pubertad, los datos del Estudio
+HBSC-2022 en España, la anomalía horaria española y la evidencia experimental
+sobre retrasar la hora de entrada.">
+<meta name="author" content="Eduardo C. Garrido-Merchán">
+<style>
+:root{
+  --ink:#1A1A1A; --gold:#B8860B; --gold-deep:#8C6508;
+  --gold-pale:#F5EBD3; --mute:#8A8A8A; --rule:#D9C28A; --paper:#FFFFFF;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; -webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif;
+  font-size:18px; line-height:1.62; text-rendering:optimizeLegibility;
+}
+a{color:var(--gold-deep); text-decoration:none;
+  border-bottom:1px solid var(--rule)}
+a:hover{color:var(--gold); border-bottom-color:var(--gold)}
+.wrap{max-width:1080px; margin:0 auto; padding:0 1.4rem}
+
+/* ---------- navegación ---------- */
+nav{
+  position:sticky; top:0; z-index:50; background:rgba(255,255,255,.96);
+  backdrop-filter:saturate(140%) blur(6px);
+  border-bottom:1px solid var(--rule);
+}
+nav .strip{
+  max-width:1080px; margin:0 auto; padding:.7rem 1.4rem;
+  display:flex; flex-wrap:wrap; gap:.15rem 1.5rem;
+  font-size:.79rem; letter-spacing:.09em; text-transform:uppercase;
+}
+nav a{color:var(--mute); border:0}
+nav a:hover{color:var(--gold-deep)}
+nav a.on{color:var(--gold); font-weight:700}
+
+/* ---------- portada ---------- */
+header.hero{padding:4.4rem 0 2.2rem}
+.kicker{
+  font-size:.8rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--gold); font-weight:700; margin-bottom:1.1rem;
+}
+h1{
+  font-size:clamp(2.15rem,5.4vw,4rem); line-height:1.08; margin:0 0 1.1rem;
+  font-weight:700; letter-spacing:-.012em; max-width:24ch;
+}
+h1 em{font-style:italic; color:var(--gold-deep)}
+.hr-gold{border:0; border-top:1.4px solid var(--gold); margin:1.5rem 0;
+  max-width:7rem}
+.standfirst{font-size:1.16rem; max-width:64ch; margin:0 0 1.2rem}
+.byline{font-size:.94rem; color:var(--mute); font-style:italic}
+
+/* ---------- cifras de portada ---------- */
+.stats{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:var(--rule); border:1px solid var(--rule);
+  margin:2.6rem 0 3.4rem;
+}
+.stat{background:var(--paper); padding:1.5rem 1.2rem}
+.stat b{
+  display:block; font-size:2.5rem; line-height:1; color:var(--gold-deep);
+  font-weight:700; letter-spacing:-.02em;
+}
+.stat span{display:block; margin-top:.55rem; font-size:.88rem}
+.stat i{display:block; margin-top:.35rem; font-size:.76rem; color:var(--mute);
+  font-style:italic}
+
+/* ---------- cuerpo ---------- */
+main{padding-bottom:4rem}
+section{padding:2.6rem 0 1rem; border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+h2{
+  font-size:clamp(1.5rem,2.9vw,2.1rem); line-height:1.16; margin:0 0 .35rem;
+  font-weight:700; letter-spacing:-.008em; max-width:34ch;
+}
+h2 .n{
+  display:inline-block; font-size:.74rem; letter-spacing:.2em;
+  color:var(--gold); vertical-align:.9rem; margin-right:.7rem; font-weight:700;
+}
+h2 + .rule{border:0; border-top:.9px solid var(--gold); margin:.9rem 0 1.5rem}
+p{max-width:76ch; margin:0 0 1.15rem}
+.lead::first-letter{
+  float:left; font-size:3.6rem; line-height:.82; padding:.14em .12em 0 0;
+  color:var(--gold-deep); font-weight:700;
+}
+.pull{
+  margin:2rem 0; padding:1.1rem 0 1.1rem 1.5rem;
+  border-left:3px solid var(--gold); font-size:1.18rem; max-width:62ch;
+}
+.pull cite{display:block; margin-top:.6rem; font-size:.85rem;
+  color:var(--mute); font-style:italic}
+.two{display:grid; grid-template-columns:1.05fr .95fr; gap:2.6rem;
+  align-items:start}
+.aside{
+  background:var(--gold-pale); padding:1.3rem 1.4rem; font-size:.95rem;
+  border-top:2px solid var(--gold);
+}
+.aside h3{margin:0 0 .6rem; font-size:1rem; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--gold-deep)}
+.aside p{margin:0 0 .7rem; max-width:none}
+.aside p:last-child{margin:0}
+
+/* ---------- figuras ---------- */
+.fig{margin:2.2rem 0 2.6rem}
+.fig-plate{
+  border:1px solid var(--rule); border-top:2.5px solid var(--gold);
+  padding:1.1rem .9rem .6rem; background:var(--paper);
+}
+.fig svg{display:block; width:100%; height:auto; max-width:100%}
+figcaption{margin-top:.85rem; font-size:.83rem; color:var(--mute);
+  line-height:1.5}
+.fig-num{
+  display:block; font-size:.72rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); font-weight:700;
+  margin-bottom:.4rem;
+}
+.cap{display:block; margin-bottom:.22rem}
+.cap-k{font-variant:small-caps; letter-spacing:.05em; color:var(--ink);
+  font-weight:700}
+.swipe{display:none}
+
+/* ---------- tabla ---------- */
+.tablebox{overflow-x:auto}
+table{border-collapse:collapse; width:100%; min-width:34rem; font-size:.92rem;
+  margin:1.4rem 0 1rem}
+caption{
+  caption-side:top; text-align:left; font-size:.83rem; color:var(--mute);
+  padding-bottom:.6rem; font-style:italic;
+}
+th{
+  text-align:left; padding:.55rem .7rem; border-bottom:1.4px solid var(--gold);
+  font-weight:700; font-size:.86rem; letter-spacing:.03em;
+}
+td{padding:.5rem .7rem; border-bottom:1px solid #EEE7D6}
+tbody tr:nth-child(odd) td{background:var(--gold-pale)}
+td.num, th.num{text-align:right; font-variant-numeric:tabular-nums}
+
+/* ---------- referencias ---------- */
+ol.refs{padding-left:1.6rem; font-size:.92rem}
+ol.refs li{margin-bottom:.85rem; line-height:1.5}
+a.doi{font-size:.82rem; color:var(--mute);
+  border-bottom:1px dotted var(--rule); word-break:break-word}
+.method{
+  border:1px solid var(--rule); padding:1.2rem 1.4rem; margin:2rem 0 0;
+  font-size:.9rem; background:#FDFCF8;
+}
+.method h3{margin:0 0 .6rem; font-size:.82rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--gold-deep)}
+.method p{max-width:none; margin:0 0 .7rem}
+.method p:last-child{margin:0}
+code{font-size:.86em; background:var(--gold-pale); padding:.05em .3em}
+
+footer{
+  border-top:1px solid var(--rule); margin-top:2rem;
+  padding:2.4rem 1.4rem 3.4rem; text-align:center;
+}
+footer .rule2{border:0; border-top:1.2px solid var(--gold); max-width:5rem;
+  margin:1.2rem auto}
+footer p{max-width:none; margin:.3rem 0; font-size:.9rem; color:var(--mute)}
+footer .name{color:var(--ink); font-size:1.02rem}
+
+@media (max-width:700px){
+  body{font-size:16.5px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .two{grid-template-columns:1fr; gap:1.6rem}
+  header.hero{padding-top:2.6rem}
+  nav .strip{gap:.1rem .95rem; font-size:.72rem}
+  .lead::first-letter{font-size:3rem}
+  .fig-plate{padding:.6rem .4rem .3rem; overflow-x:auto}
+  .fig svg{min-width:640px; max-width:none}
+  .stat b{font-size:2rem; white-space:nowrap}
+  .swipe{display:block; font-size:.74rem; color:var(--mute);
+    font-style:italic; margin:.35rem 0 0}
+  .pull{font-size:1.06rem}
+}
+</style>
+</head>
+<body>
+
+<nav><div class="strip"><a href="#reloj" data-sec="reloj">El reloj</a><a href="#deuda" data-sec="deuda">La deuda</a><a href="#prueba" data-sec="prueba">La prueba</a><a href="#espana" data-sec="espana">España</a><a href="#coste" data-sec="coste">El coste</a><a href="#evidencia" data-sec="evidencia">La evidencia</a><a href="#pantallas" data-sec="pantallas">Las pantallas</a><a href="#fuentes" data-sec="fuentes">Las fuentes</a></div></nav>
+
+<header class="hero wrap">
+  <div class="kicker">Cronobiología y horario escolar</div>
+  <h1>¿Por qué tus alumnos están <em>dormidos</em> a las 8 de la mañana?</h1>
+  <hr class="hr-gold">
+  <p class="standfirst">No es pereza, ni falta de disciplina, ni únicamente el
+  móvil. Es que a las 8:00 el organismo de un adolescente todavía está,
+  literalmente, en su noche biológica, y en España la campana suena además antes
+  de que amanezca. Lo que sigue es la evidencia, con las cifras y sus
+  fuentes.</p>
+  <p class="byline">Eduardo C. Garrido-Merchán · Universidad Pontificia
+  Comillas · Madrid, 2026</p>
+</header>
+
+<div class="wrap">
+ <div class="stats">
+  <div class="stat"><b>76,5&nbsp;%</b>
+    <span>de los adolescentes de 17-18 años duerme 7 horas o menos los días de
+    clase</span>
+    <i>Estudio HBSC-2022, España, n = 33.630</i></div>
+  <div class="stat"><b>23,4&nbsp;%</b>
+    <span>llega a las 8 horas recomendadas entre semana, frente al
+    78,3&nbsp;% a los 11-12 años</span>
+    <i>Suma de las categorías de la Tabla 19</i></div>
+  <div class="stat"><b>08:36</b>
+    <span>amanece en Madrid el 15 de enero: 36 minutos después de la
+    campana</span>
+    <i>US Naval Observatory</i></div>
+  <div class="stat"><b>+34 min</b>
+    <span>de sueño medido con actigrafía al retrasar la entrada de 07:50 a
+    08:45</span>
+    <i>Dunster et al., 2018, Science Advances</i></div>
+ </div>
+</div>
+
+<main class="wrap">
+
+<section id="reloj">
+  <h2><span class="n">01</span>El reloj interno se retrasa en la pubertad, y no
+  se retrasa porque el adolescente lo decida.</h2>
+  <hr class="rule">
+  <p class="lead">La adolescencia trae consigo un desplazamiento del reloj
+  circadiano hacia horas más tardías. La primera evidencia de que ese
+  desplazamiento tiene raíz biológica y no meramente social la aportaron
+  Carskadon, Vieira y Acebo en 1993: en una muestra de 183 chicos y 275 chicas
+  de sexto curso, la preferencia de fase (matutinidad frente a vespertinidad) se
+  asoció de forma significativa al estadio puberal en las chicas, con una
+  tendencia del mismo signo en los chicos, mientras que no apareció ninguna
+  relación con los factores psicosociales evaluados. La conclusión de aquel
+  trabajo era explícita: hay un factor biológico detrás del retraso de fase
+  adolescente.</p>
+  <p>Once años después, Roenneberg y colaboradores cuantificaron la trayectoria
+  completa. Con el Cuestionario de Cronotipo de Múnich sobre unas 25.000
+  personas de 10 a 90 años, mostraron que el cronotipo se retrasa
+  progresivamente durante la adolescencia, alcanza su máximo retraso en torno a
+  los 20 años y a partir de ahí se invierte de forma abrupta. Las mujeres
+  alcanzan ese máximo antes, hacia los 19,5 años, coherentemente con su
+  maduración puberal más temprana. Los autores propusieron precisamente ese
+  punto de inflexión como el primer marcador biológico del final de la
+  adolescencia.</p>
+  <p>El mecanismo se lee en la melatonina. Crowley y colaboradores midieron el
+  inicio de la secreción de melatonina en luz tenue (DLMO) en niños y
+  adolescentes y encontraron que la hora de acostarse, la mitad del sueño y la
+  hora de despertar correlacionan positivamente con la fase circadiana; sus
+  ecuaciones predicen el DLMO con un margen de una hora en torno al 80 % de los
+  casos. Dicho de otro modo: cuando un adolescente no se duerme a las once,
+  muchas veces no es que no quiera, es que su cerebro aún no ha empezado la
+  noche. Y si su noche interna empieza más tarde, un despertador que no se mueve
+  recorta el sueño por el único extremo que puede recortarlo.</p>
+  <figure class="fig">
+  <div class="fig-plate"><svg viewBox="0 0 860 348" width="860" height="348" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Esquema del desajuste entre la ventana de sueño recomendada, el sueño real y la campana escolar de las ocho de la mañana" xmlns="http://www.w3.org/2000/svg">
+<rect x="168.0" y="68" width="648.0" height="182" fill="#F5EBD3" opacity="0.32"/>
+<line x1="708.0" y1="52" x2="708.0" y2="250" stroke="#8A8A8A" stroke-width="1.0" stroke-dasharray="5 3"/>
+<text x="708.0" y="46.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8A8A8A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">07:00</text>
+<line x1="762.0" y1="52" x2="762.0" y2="250" stroke="#1A1A1A" stroke-width="2.0" stroke-dasharray="5 3"/>
+<text x="762.0" y="46.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">08:00</text>
+<line x1="794.4" y1="52" x2="794.4" y2="250" stroke="#B8860B" stroke-width="1.4" stroke-dasharray="5 3"/>
+<text x="794.4" y="46.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#B8860B" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">08:36</text>
+<rect x="222.0" y="96" width="486.0" height="34" fill="#B8860B" opacity="0.9" rx="2"/>
+<text x="154.0" y="118.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">Recomendación</text>
+<text x="230.0" y="148.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">8-10 h (AASM, 13-18 años): exige acostarse hacia las 22:00-23:00</text>
+<rect x="330.0" y="168" width="378.0" height="34" fill="#8C6508" opacity="0.9" rx="2"/>
+<text x="154.0" y="190.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">Sueño real</text>
+<text x="338.0" y="220.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">7 h: categoría modal a los 17-18 años en España (33,7 %)</text>
+<rect x="222.0" y="168" width="108.0" height="34" fill="none" stroke="#8C6508" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="276.0" y="189.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8C6508" text-anchor="middle" font-weight="normal" font-style="italic" letter-spacing="0">déficit</text>
+<line x1="168.0" y1="268" x2="816.0" y2="268" stroke="#1A1A1A" stroke-width="0.8"/>
+<line x1="168.0" y1="268" x2="168.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="168.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">21:00</text>
+<line x1="222.0" y1="268" x2="222.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="222.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">22:00</text>
+<line x1="276.0" y1="268" x2="276.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="276.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">23:00</text>
+<line x1="330.0" y1="268" x2="330.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="330.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">00:00</text>
+<line x1="384.0" y1="268" x2="384.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="384.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">01:00</text>
+<line x1="438.0" y1="268" x2="438.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="438.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">02:00</text>
+<line x1="492.0" y1="268" x2="492.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="492.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">03:00</text>
+<line x1="546.0" y1="268" x2="546.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="546.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">04:00</text>
+<line x1="600.0" y1="268" x2="600.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="600.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">05:00</text>
+<line x1="654.0" y1="268" x2="654.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="654.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">06:00</text>
+<line x1="708.0" y1="268" x2="708.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="708.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">07:00</text>
+<line x1="762.0" y1="268" x2="762.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="762.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">08:00</text>
+<line x1="816.0" y1="268" x2="816.0" y2="273" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="816.0" y="287.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">09:00</text>
+<text x="154.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#B8860B" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0.6">Esquema</text>
+<text x="168.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">las horas de inicio y fin son ilustrativas; las duraciones proceden de las fuentes citadas</text>
+<text x="154.0" y="320.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">07:00 despertar   ·   08:00 campana escolar   ·   08:36 amanece en Madrid (15 de enero)</text>
+</svg></div>
+  <p class="swipe">Desliza horizontalmente para ver la figura completa.</p>
+  <figcaption>
+    <span class="fig-num">Figura 1</span>
+    <span class="cap"><span class="cap-k">Visual.</span> Línea temporal desde las 21:00 hasta las 09:00 con la ventana de sueño recomendada, la ventana real y la posición de la campana escolar.</span>
+    <span class="cap"><span class="cap-k">Cuantitativo.</span> La recomendación de la Academia Americana de Medicina del Sueño para 13-18 años es de 8 a 10 horas; la categoría modal a los 17-18 años en España es de 7 horas (33,7 %).</span>
+    <span class="cap"><span class="cap-k">Conclusión.</span> Con despertar a las 7:00 para entrar a las 8:00, cumplir la recomendación exige un inicio del sueño hacia las 22:00-23:00, justo cuando la fase circadiana adolescente aún no lo permite.</span>
+  </figcaption>
+</figure>
+</section>
+
+<section id="deuda">
+  <h2><span class="n">02</span>La deuda de sueño española está medida, es grande
+  y crece con la edad.</h2>
+  <hr class="rule">
+  <div class="two">
+    <div>
+      <p>El consenso clínico es nítido. La Academia Americana de Medicina del
+      Sueño, tras revisar 864 artículos publicados con un método RAND
+      modificado, recomienda de 8 a 10 horas de sueño por cada 24 horas para
+      los adolescentes de 13 a 18 años. La National Sleep Foundation
+      sitúa el rango en 9 a 11 horas hasta los 13-14 años y en 8 a 10 desde los
+      15, y es este último criterio, escalonado por edad, el que utiliza el
+      Ministerio de Sanidad para evaluar a los adolescentes españoles.</p>
+      <p>El Estudio HBSC-2022 en España, con una muestra aleatoria, polietápica
+      y estratificada de 33.630 adolescentes de 11 a 18 años, mide exactamente
+      eso. Entre semana, sumando las categorías publicadas, un
+      76,5 % de los adolescentes de 17-18 años duerme siete horas
+      o menos. Solo un 23,4 % alcanza las ocho horas o más, frente a un
+      78,3 % a los 11-12 años. Y un 15,5 % de los mayores duerme cinco
+      horas o menos en una noche de clase.</p>
+    </div>
+    <div class="aside">
+      <h3>Cómo leer estas cifras</h3>
+      <p>Las tablas 19 y 20 del informe divulgativo del HBSC-2022 publican la
+      distribución completa de horas de sueño por sexo y grupo de edad, entre
+      semana y en fin de semana.</p>
+      <p>Los agregados que aparecen aquí (por ejemplo «7 horas o menos» o «8
+      horas o más») son sumas directas de esas categorías publicadas, no
+      reanálisis de los microdatos.</p>
+      <p>El informe declara la tendencia de fondo: desde 2010, primer año en que
+      se mide el indicador, la proporción de adolescentes que duerme las horas
+      que necesita desciende en todas las edades.</p>
+    </div>
+  </div>
+  <figure class="fig">
+  <div class="fig-plate"><svg viewBox="0 0 860 396" width="860" height="396" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Distribución del número de horas de sueño entre semana por grupo de edad en España, 2022" xmlns="http://www.w3.org/2000/svg">
+<rect x="118" y="24" width="11" height="11" fill="#8C6508"/>
+<text x="134.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">5 h o menos</text>
+<rect x="220.4" y="24" width="11" height="11" fill="#B8860B"/>
+<text x="236.4" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">6 h</text>
+<rect x="271.6" y="24" width="11" height="11" fill="#D9C28A"/>
+<text x="287.6" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">7 h</text>
+<rect x="322.8" y="24" width="11" height="11" fill="#C9C9C9"/>
+<text x="338.8" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">8 h</text>
+<rect x="374.0" y="24" width="11" height="11" fill="#A3A3A3"/>
+<text x="390.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">9 h</text>
+<rect x="425.2" y="24" width="11" height="11" fill="#1A1A1A"/>
+<text x="441.2" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">10 h o más</text>
+<rect x="118.0" y="74" width="24.07" height="42" fill="#8C6508"/>
+<rect x="142.1" y="74" width="41.77" height="42" fill="#B8860B"/>
+<rect x="183.8" y="74" width="87.79" height="42" fill="#D9C28A"/>
+<text x="227.7" y="99.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">12,4</text>
+<rect x="271.6" y="74" width="242.14" height="42" fill="#C9C9C9"/>
+<text x="392.7" y="99.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">34,2</text>
+<rect x="513.8" y="74" width="218.06" height="42" fill="#A3A3A3"/>
+<text x="622.8" y="99.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">30,8</text>
+<rect x="731.8" y="74" width="94.16" height="42" fill="#1A1A1A"/>
+<text x="778.9" y="99.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">13,3</text>
+<text x="106.0" y="100.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">11-12 años</text>
+<line x1="271.6" y1="68" x2="271.6" y2="122" stroke="#1A1A1A" stroke-width="1.8"/>
+<text x="271.6" y="62.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">21,7 % duerme 7 h o menos</text>
+<rect x="118.0" y="150" width="48.14" height="42" fill="#8C6508"/>
+<text x="142.1" y="175.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">6,8</text>
+<rect x="166.1" y="150" width="80.00" height="42" fill="#B8860B"/>
+<text x="206.1" y="175.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">11,3</text>
+<rect x="246.1" y="150" width="184.79" height="42" fill="#D9C28A"/>
+<text x="338.5" y="175.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">26,1</text>
+<rect x="430.9" y="150" width="257.00" height="42" fill="#C9C9C9"/>
+<text x="559.4" y="175.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">36,3</text>
+<rect x="687.9" y="150" width="109.74" height="42" fill="#A3A3A3"/>
+<text x="742.8" y="175.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">15,5</text>
+<rect x="797.7" y="150" width="28.32" height="42" fill="#1A1A1A"/>
+<text x="106.0" y="176.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">13-14 años</text>
+<line x1="430.9" y1="144" x2="430.9" y2="198" stroke="#1A1A1A" stroke-width="1.8"/>
+<text x="430.9" y="138.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">44,2 % duerme 7 h o menos</text>
+<rect x="118.0" y="226" width="70.09" height="42" fill="#8C6508"/>
+<text x="153.0" y="251.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">9,9</text>
+<rect x="188.1" y="226" width="138.77" height="42" fill="#B8860B"/>
+<text x="257.5" y="251.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">19,6</text>
+<rect x="326.9" y="226" width="239.30" height="42" fill="#D9C28A"/>
+<text x="446.5" y="251.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">33,8</text>
+<rect x="566.2" y="226" width="201.78" height="42" fill="#C9C9C9"/>
+<text x="667.1" y="251.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">28,5</text>
+<rect x="767.9" y="226" width="46.73" height="42" fill="#A3A3A3"/>
+<text x="791.3" y="251.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">6,6</text>
+<rect x="814.7" y="226" width="11.33" height="42" fill="#1A1A1A"/>
+<text x="106.0" y="252.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">15-16 años</text>
+<line x1="566.2" y1="220" x2="566.2" y2="274" stroke="#1A1A1A" stroke-width="1.8"/>
+<text x="566.2" y="214.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">63,3 % duerme 7 h o menos</text>
+<rect x="118.0" y="302" width="109.74" height="42" fill="#8C6508"/>
+<text x="172.9" y="327.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">15,5</text>
+<rect x="227.7" y="302" width="193.28" height="42" fill="#B8860B"/>
+<text x="324.4" y="327.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">27,3</text>
+<rect x="421.0" y="302" width="238.60" height="42" fill="#D9C28A"/>
+<text x="540.3" y="327.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">33,7</text>
+<rect x="659.6" y="302" width="132.40" height="42" fill="#C9C9C9"/>
+<text x="725.8" y="327.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">18,7</text>
+<rect x="792.0" y="302" width="24.78" height="42" fill="#A3A3A3"/>
+<rect x="816.8" y="302" width="8.50" height="42" fill="#1A1A1A"/>
+<text x="106.0" y="328.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">17-18 años</text>
+<line x1="659.6" y1="296" x2="659.6" y2="350" stroke="#1A1A1A" stroke-width="1.8"/>
+<text x="659.6" y="290.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">76,5 % duerme 7 h o menos</text>
+<line x1="118" y1="354" x2="826" y2="354" stroke="#D9C28A" stroke-width="1"/>
+<text x="118.0" y="374.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">0 %</text>
+<text x="295.0" y="374.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">25 %</text>
+<text x="472.0" y="374.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">50 %</text>
+<text x="649.0" y="374.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">75 %</text>
+<text x="826.0" y="374.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">100 %</text>
+</svg></div>
+  <p class="swipe">Desliza horizontalmente para ver la figura completa.</p>
+  <figcaption>
+    <span class="fig-num">Figura 2</span>
+    <span class="cap"><span class="cap-k">Visual.</span> Cuatro barras apiladas, una por grupo de edad, con la distribución del número de horas de sueño entre semana; la línea vertical marca el umbral de siete horas o menos.</span>
+    <span class="cap"><span class="cap-k">Cuantitativo.</span> La proporción que duerme siete horas o menos pasa del 21,7 % a los 11-12 años al 44,2 % a los 13-14, al 63,3 % a los 15-16 y al 76,5 % a los 17-18.</span>
+    <span class="cap"><span class="cap-k">Conclusión.</span> El déficit no es un rasgo de la adolescencia en bloque: aparece y se agrava exactamente en los cursos en los que el horario escolar se adelanta y la carga académica aumenta.</span>
+  </figcaption>
+</figure>
+  <div class="tablebox">
+  <table>
+    <caption>Número de horas de sueño entre semana. Porcentajes por grupo de
+    edad. Estudio HBSC-2022 en España, Tabla 19 (n = 33.630).</caption>
+    <thead><tr><th>Horas</th>
+      <th class="num">11-12</th><th class="num">13-14</th>
+      <th class="num">15-16</th><th class="num">17-18</th>
+      <th class="num">Total</th></tr></thead>
+    <tbody><tr><td>5 h o menos</td><td class="num">3,4</td><td class="num">6,8</td><td class="num">9,9</td><td class="num">15,5</td><td class="num">9,0</td></tr><tr><td>6 h</td><td class="num">5,9</td><td class="num">11,3</td><td class="num">19,6</td><td class="num">27,3</td><td class="num">16,1</td></tr><tr><td>7 h</td><td class="num">12,4</td><td class="num">26,1</td><td class="num">33,8</td><td class="num">33,7</td><td class="num">26,7</td></tr><tr><td>8 h</td><td class="num">34,2</td><td class="num">36,3</td><td class="num">28,5</td><td class="num">18,7</td><td class="num">29,4</td></tr><tr><td>9 h</td><td class="num">30,8</td><td class="num">15,5</td><td class="num">6,6</td><td class="num">3,5</td><td class="num">13,9</td></tr><tr><td>10 h o más</td><td class="num">13,3</td><td class="num">4,0</td><td class="num">1,6</td><td class="num">1,2</td><td class="num">4,9</td></tr></tbody>
+  </table>
+  </div>
+</section>
+
+<section id="prueba">
+  <h2><span class="n">03</span>El fin de semana demuestra que el problema es el
+  horario, no el adolescente.</h2>
+  <hr class="rule">
+  <p>Si los adolescentes durmieran poco por incapacidad o por desinterés,
+  dormirían poco también cuando nadie los despierta. Ocurre lo contrario. Con
+  los mismos umbrales por edad, la proporción que alcanza ocho horas o más se
+  sostiene en torno al 80 % en todos los grupos de edad durante el fin de
+  semana, mientras entre semana se desmorona: 23,4 % frente a
+  80,8 % a los 17-18 años. La diferencia, más de cincuenta puntos
+  porcentuales en el mismo grupo de chicos y chicas, no la explica ninguna
+  teoría sobre su carácter. La explica el despertador.</p>
+  <p class="pull">Este patrón tiene nombre desde 2006. Wittmann, Dinich, Merrow
+  y Roenneberg lo llamaron <em>jet lag social</em>: la discrepancia sistemática
+  entre el tiempo biológico y el tiempo social. En su muestra de 501
+  voluntarios, los cronotipos tardíos mostraban la mayor diferencia de horarios
+  entre días laborables y días libres, acumulaban deuda de sueño en los primeros
+  y la compensaban en los segundos, y las asociaciones con el malestar y el
+  consumo de estimulantes eran más intensas precisamente en adolescentes y
+  jóvenes hasta los 25 años.
+  <cite>Wittmann et al., Chronobiology International, 2006</cite></p>
+  <figure class="fig">
+  <div class="fig-plate"><svg viewBox="0 0 860 410" width="860" height="410" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Porcentaje de adolescentes que duerme ocho horas o más, entre semana frente a fin de semana, por grupo de edad" xmlns="http://www.w3.org/2000/svg">
+<line x1="72" y1="314.0" x2="826" y2="314.0" stroke="#D9C28A" stroke-width="0.6" opacity="0.75"/>
+<text x="62.0" y="318.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">0 %</text>
+<line x1="72" y1="263.6" x2="826" y2="263.6" stroke="#D9C28A" stroke-width="0.6" opacity="0.75"/>
+<text x="62.0" y="267.6" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">20 %</text>
+<line x1="72" y1="213.2" x2="826" y2="213.2" stroke="#D9C28A" stroke-width="0.6" opacity="0.75"/>
+<text x="62.0" y="217.2" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">40 %</text>
+<line x1="72" y1="162.8" x2="826" y2="162.8" stroke="#D9C28A" stroke-width="0.6" opacity="0.75"/>
+<text x="62.0" y="166.8" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">60 %</text>
+<line x1="72" y1="112.4" x2="826" y2="112.4" stroke="#D9C28A" stroke-width="0.6" opacity="0.75"/>
+<text x="62.0" y="116.4" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">80 %</text>
+<line x1="72" y1="62.0" x2="826" y2="62.0" stroke="#D9C28A" stroke-width="0.6" opacity="0.75"/>
+<text x="62.0" y="66.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">100 %</text>
+<rect x="107.2" y="116.7" width="54" height="197.3" fill="#8C6508" opacity="0.92"/>
+<text x="134.2" y="107.7" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#8C6508" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">78,3 %</text>
+<rect x="171.2" y="109.1" width="54" height="204.9" fill="#8A8A8A" opacity="0.42"/>
+<text x="198.2" y="100.1" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">81,3 %</text>
+<text x="166.2" y="338.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">11-12 años</text>
+<rect x="295.8" y="173.4" width="54" height="140.6" fill="#8C6508" opacity="0.92"/>
+<text x="322.8" y="164.4" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#8C6508" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">55,8 %</text>
+<rect x="359.8" y="116.7" width="54" height="197.3" fill="#8A8A8A" opacity="0.42"/>
+<text x="386.8" y="107.7" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">78,3 %</text>
+<text x="354.8" y="338.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">13-14 años</text>
+<rect x="484.2" y="221.5" width="54" height="92.5" fill="#8C6508" opacity="0.92"/>
+<text x="511.2" y="212.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#8C6508" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">36,7 %</text>
+<rect x="548.2" y="107.6" width="54" height="206.4" fill="#8A8A8A" opacity="0.42"/>
+<text x="575.2" y="98.6" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">81,9 %</text>
+<text x="543.2" y="338.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">15-16 años</text>
+<rect x="672.8" y="255.0" width="54" height="59.0" fill="#8C6508" opacity="0.92"/>
+<text x="699.8" y="246.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#8C6508" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">23,4 %</text>
+<rect x="736.8" y="110.4" width="54" height="203.6" fill="#8A8A8A" opacity="0.42"/>
+<text x="763.8" y="101.4" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">80,8 %</text>
+<text x="731.8" y="338.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">17-18 años</text>
+<line x1="72" y1="314.0" x2="826" y2="314.0" stroke="#1A1A1A" stroke-width="0.9"/>
+<rect x="72" y="24" width="12" height="12" fill="#8C6508" opacity="0.92"/>
+<text x="90.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">Días de clase</text>
+<rect x="222" y="24" width="12" height="12" fill="#8A8A8A" opacity="0.42"/>
+<text x="240.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">Fin de semana</text>
+<text x="72.0" y="372.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">El fin de semana la proporción se mantiene en torno al 80 % en todas las edades.</text>
+<text x="72.0" y="392.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#8C6508" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">Entre semana se hunde del 78,3 % a los 11-12 años al 23,4 % a los 17-18: la capacidad de dormir no cambia, lo que cambia es el horario.</text>
+</svg></div>
+  <p class="swipe">Desliza horizontalmente para ver la figura completa.</p>
+  <figcaption>
+    <span class="fig-num">Figura 3</span>
+    <span class="cap"><span class="cap-k">Visual.</span> Barras agrupadas por grupo de edad que comparan el porcentaje que duerme ocho horas o más entre semana y en fin de semana.</span>
+    <span class="cap"><span class="cap-k">Cuantitativo.</span> A los 17-18 años: 23,4 % entre semana frente a 80,8 % en fin de semana. A los 11-12 años la brecha es de apenas tres puntos.</span>
+    <span class="cap"><span class="cap-k">Conclusión.</span> La capacidad de dormir permanece intacta a lo largo de la adolescencia. Lo que se estrecha, curso a curso, es la ventana que el calendario escolar deja libre.</span>
+  </figcaption>
+</figure>
+</section>
+
+<section id="espana">
+  <h2><span class="n">04</span>España añade su propia agravante: el reloj
+  oficial va muy por delante del Sol.</h2>
+  <hr class="rule">
+  <p>La España peninsular usa la hora central europea desde 1940, un huso que no
+  le corresponde geográficamente. La consecuencia es medible con precisión
+  astronómica. Según los datos del Observatorio Naval de los Estados Unidos, en
+  Madrid el paso del Sol por el meridiano (el mediodía solar verdadero) ocurre
+  el 15 de enero a las 13:24 de la hora oficial. Es decir, el reloj civil va una
+  hora y veinticuatro minutos por delante del Sol, y las 8:00 de la mañana
+  oficiales equivalen a las 6:36 solares. En verano, con el cambio horario, el
+  desfase se amplía: el 21 de junio el mediodía solar cae a las 14:17, y las 8:00
+  oficiales son las 5:43 solares.</p>
+  <p>Añádase el detalle más elemental y más incómodo. El 15 de enero el Sol sale
+  en Madrid a las 8:36, y el 21 de diciembre a las 8:34. Durante buena parte del
+  curso, un instituto que empieza a las 8:00 hace entrar a sus alumnos a un aula
+  media hora antes de que salga el Sol, en plena oscuridad, en el tramo horario
+  en que la melatonina de un adolescente todavía está circulando. Puesto que la
+  luz matinal es la señal principal que adelanta el reloj circadiano, el horario
+  español no solo recorta el sueño por el extremo del despertar, sino que
+  entrega la señal correctora más tarde de lo que la entregaría cualquier país
+  al oeste del meridiano de Greenwich con su huso natural.</p>
+  <figure class="fig">
+  <div class="fig-plate"><svg viewBox="0 0 860 336" width="860" height="336" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hora oficial frente a hora solar en Madrid: amanecer y mediodía solar en enero y en junio" xmlns="http://www.w3.org/2000/svg">
+<text x="114.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8A8A8A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">Madrid (40,42 N; 3,70 O). Horas del reloj oficial. Fuente: US Naval Observatory.</text>
+<text x="112.0" y="118.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">15 de enero</text>
+<text x="112.0" y="135.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">UTC+1</text>
+<rect x="126.0" y="98" width="210.2" height="30" fill="#1A1A1A" opacity="0.82"/>
+<rect x="336.2" y="98" width="373.8" height="30" fill="#F5EBD3"/>
+<rect x="126.0" y="98" width="584.0" height="30" fill="none" stroke="#D9C28A" stroke-width="0.8"/>
+<line x1="336.2" y1="91" x2="336.2" y2="135" stroke="#B8860B" stroke-width="1.5"/>
+<text x="336.2" y="86.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8C6508" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">amanece 08:36</text>
+<circle cx="616.6" cy="113" r="4.5" fill="#8C6508"/>
+<text x="627.6" y="117.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8C6508" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">mediodía solar 13:24</text>
+<line x1="301.2" y1="91" x2="301.2" y2="135" stroke="#1A1A1A" stroke-width="2.2"/>
+<text x="301.2" y="152.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">08:00 oficiales = 06:36 solares</text>
+<text x="112.0" y="202.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="14" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">21 de junio</text>
+<text x="112.0" y="219.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">UTC+2</text>
+<rect x="126.0" y="182" width="102.2" height="30" fill="#1A1A1A" opacity="0.82"/>
+<rect x="228.2" y="182" width="481.8" height="30" fill="#F5EBD3"/>
+<rect x="126.0" y="182" width="584.0" height="30" fill="none" stroke="#D9C28A" stroke-width="0.8"/>
+<line x1="228.2" y1="175" x2="228.2" y2="219" stroke="#B8860B" stroke-width="1.5"/>
+<text x="228.2" y="170.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8C6508" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">amanece 06:45</text>
+<circle cx="668.1" cy="197" r="4.5" fill="#8C6508"/>
+<text x="679.1" y="201.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8C6508" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">mediodía solar 14:17</text>
+<line x1="301.2" y1="175" x2="301.2" y2="219" stroke="#1A1A1A" stroke-width="2.2"/>
+<text x="301.2" y="236.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">08:00 oficiales = 05:43 solares</text>
+<line x1="126.0" y1="264" x2="710.0" y2="264" stroke="#1A1A1A" stroke-width="0.8"/>
+<line x1="126.0" y1="264" x2="126.0" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="126.0" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">05:00</text>
+<line x1="184.4" y1="264" x2="184.4" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="184.4" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">06:00</text>
+<line x1="242.8" y1="264" x2="242.8" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="242.8" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">07:00</text>
+<line x1="301.2" y1="264" x2="301.2" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="301.2" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">08:00</text>
+<line x1="359.6" y1="264" x2="359.6" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="359.6" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">09:00</text>
+<line x1="418.0" y1="264" x2="418.0" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="418.0" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">10:00</text>
+<line x1="476.4" y1="264" x2="476.4" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="476.4" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">11:00</text>
+<line x1="534.8" y1="264" x2="534.8" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="534.8" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">12:00</text>
+<line x1="593.2" y1="264" x2="593.2" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="593.2" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">13:00</text>
+<line x1="651.6" y1="264" x2="651.6" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="651.6" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">14:00</text>
+<line x1="710.0" y1="264" x2="710.0" y2="269" stroke="#8A8A8A" stroke-width="0.8"/>
+<text x="710.0" y="283.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">15:00</text>
+<rect x="126" y="298" width="12" height="12" fill="#1A1A1A" opacity="0.82"/>
+<text x="144.0" y="308.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">noche</text>
+<text x="204.0" y="308.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8C6508" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">En enero la campana suena 36 minutos antes de que salga el Sol.</text>
+</svg></div>
+  <p class="swipe">Desliza horizontalmente para ver la figura completa.</p>
+  <figcaption>
+    <span class="fig-num">Figura 4</span>
+    <span class="cap"><span class="cap-k">Visual.</span> Dos líneas temporales, enero y junio, con la franja nocturna, el amanecer, el mediodía solar y la posición de la campana de las 8:00 en Madrid.</span>
+    <span class="cap"><span class="cap-k">Cuantitativo.</span> Mediodía solar a las 13:24 el 15 de enero y a las 14:17 el 21 de junio; amanecer a las 8:36 y a las 6:45 respectivamente. Las 8:00 oficiales son las 6:36 y las 5:43 solares.</span>
+    <span class="cap"><span class="cap-k">Conclusión.</span> El adelanto estructural del reloj español sobre el solar traslada la entrada al instituto a un momento que, en tiempo biológico, corresponde a la madrugada.</span>
+  </figcaption>
+</figure>
+  <div class="method">
+    <h3>Sobre la hora de entrada en España</h3>
+    <p>La hora exacta de inicio de la jornada no está fijada por norma estatal:
+    es competencia autonómica y, en la práctica, cada centro concreta su horario
+    general dentro de las instrucciones de su comunidad. La Orden andaluza de 20
+    de agosto de 2010, por ejemplo, regula el horario general de los institutos
+    sin fijar hora de comienzo. No existe, por tanto, una estadística oficial
+    consolidada de horas de entrada.</p>
+    <p>Lo que sí está documentado es el modelo: la jornada continua es
+    mayoritaria en la secundaria española y lleva a que muchos institutos
+    empiecen antes de las nueve de la mañana, con inicios habituales entre las
+    8:00 y las 8:30. Esta caracterización procede del encuentro del Science
+    Media Center España con Marta Ferrero (Universidad Autónoma de Madrid) y
+    Daniel Gabaldón (Universitat de València), y debe leerse como valoración
+    experta, no como dato administrativo.</p>
+  </div>
+</section>
+
+<section id="coste">
+  <h2><span class="n">05</span>El coste cognitivo de dormir cinco horas está
+  medido en laboratorio, y no se paga solo al día siguiente.</h2>
+  <hr class="rule">
+  <p>El experimento más limpio sobre esta cuestión es el <em>Need for Sleep
+  Study</em>. Lo y colaboradores reclutaron 56 adolescentes sanos de 15 a 19
+  años, estudiantes de institutos de alto rendimiento y que no eran dormidores
+  cortos habituales, y los asignaron aleatoriamente a dos grupos en un internado
+  durante dos semanas: tres noches basales con nueve horas de oportunidad de
+  sueño, siete noches con cinco horas en el grupo restringido y nueve en el
+  control, y tres noches de recuperación con nueve horas. Se les administró una
+  batería cognitiva tres veces al día.</p>
+  <p>El resultado tiene dos partes, y la segunda es la relevante para cualquiera
+  que dé clase. Durante la restricción, el grupo de cinco horas mostró un
+  deterioro incremental, noche a noche, en atención sostenida, memoria de
+  trabajo y función ejecutiva, junto a un aumento de la somnolencia subjetiva y
+  una caída del afecto positivo. Y después: la somnolencia subjetiva y la
+  atención sostenida no volvieron a los valores basales ni siquiera tras dos
+  noches de recuperación. Además, la mejora por repetición de las pruebas, es
+  decir el aprendizaje, apareció en el grupo control pero quedó atenuada en el
+  restringido, que siguió rindiendo peor pese a haber recuperado sueño.</p>
+  <p class="pull">Dormir de más el sábado no cancela la factura de la semana. Y
+  el sueño no es tiempo muerto: la consolidación de lo aprendido, la
+  estabilización de las trazas de memoria y su integración en el conocimiento
+  previo ocurren durante el sueño, no a pesar de él.
+  <cite>Lo et al., Sleep, 2016; Diekelmann y Born, Nature Reviews Neuroscience,
+  2010</cite></p>
+  <p>Conviene subrayar el diseño: los participantes no eran adolescentes con mal
+  rendimiento ni con hábitos de sueño patológicos, sino alumnos selectos y
+  buenos dormidores. La conclusión de los autores es que una semana de privación
+  parcial de sueño deteriora un amplio rango de funciones cognitivas, la alerta
+  subjetiva y el estado de ánimo incluso en adolescentes de alto rendimiento. El
+  alumno que mira al vacío a las 8:15 no está desmotivado: está ejecutando una
+  tarea de atención sostenida en el peor momento posible de su curva circadiana
+  y con déficit acumulado.</p>
+</section>
+
+<section id="evidencia">
+  <h2><span class="n">06</span>Retrasar la campana funciona, y la evidencia es
+  experimental, no solo correlacional.</h2>
+  <hr class="rule">
+  <p>La objeción intuitiva es conocida: si se entra más tarde, se acostarán más
+  tarde y el sueño total no cambiará. Es una hipótesis contrastable, y está
+  contrastada. Minges y Redeker revisaron sistemáticamente la evidencia
+  experimental disponible, seis estudios con diseños pre-post, ensayos
+  aleatorizados y cuasiexperimentales, en los que la entrada se retrasó entre 25
+  y 60 minutos. El tiempo total de sueño aumentó entre 25 y 77 minutos por noche
+  de clase. Es decir, la hora de acostarse no se desplaza en la misma medida, y
+  la ganancia se conserva.</p>
+  <p>El caso mejor documentado es Seattle. En 2016 el distrito retrasó la
+  entrada de los institutos de las 7:50 a las 8:45, y Dunster y colaboradores
+  midieron el sueño con actímetros de pulsera, no con autoinforme, en dos
+  cohortes comparables de alumnos de segundo curso, 94 en 2016 y 84 en 2017. La
+  duración mediana del sueño en días de clase pasó de 6 horas y 50 minutos a 7
+  horas y 24 minutos, un incremento de 34 minutos. Las calificaciones medianas
+  subieron un 4,5 % (p = 0,0261), la somnolencia diurna medida con la escala de
+  Epworth bajó de 7,0 a 6,0 (p = 0,0370), y en uno de los dos institutos se
+  registró una reducción significativa de faltas y retrasos (p &lt; 0,0001).</p>
+  <figure class="fig">
+  <div class="fig-plate"><svg viewBox="0 0 860 224" width="860" height="224" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Minutos de sueño ganados por noche escolar al retrasar la hora de entrada" xmlns="http://www.w3.org/2000/svg">
+<text x="266.0" y="34.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8A8A8A" text-anchor="start" font-weight="normal" font-style="normal" letter-spacing="0">minutos de sueño ganados por noche de clase</text>
+<line x1="280.0" y1="56" x2="280.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="280.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+0</text>
+<line x1="364.0" y1="56" x2="364.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="364.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+15</text>
+<line x1="448.0" y1="56" x2="448.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="448.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+30</text>
+<line x1="532.0" y1="56" x2="532.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="532.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+45</text>
+<line x1="616.0" y1="56" x2="616.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="616.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+60</text>
+<line x1="700.0" y1="56" x2="700.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="700.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+75</text>
+<line x1="784.0" y1="56" x2="784.0" y2="176" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="784.0" y="194.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">+90</text>
+<text x="264.0" y="80.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">Minges y Redeker (2016)</text>
+<text x="264.0" y="97.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">6 estudios experimentales, retrasos de 25-60 min</text>
+<rect x="420.0" y="65" width="291.2" height="26" fill="#B8860B" opacity="0.55" rx="2"/>
+<text x="565.6" y="83.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">+25 a +77 min</text>
+<text x="264.0" y="142.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13.5" fill="#1A1A1A" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">Dunster et al. (2018)</text>
+<text x="264.0" y="159.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Seattle, 07:50 → 08:45, actigrafía</text>
+<rect x="280.0" y="127" width="190.4" height="26" fill="#8C6508" opacity="0.85" rx="2"/>
+<text x="482.4" y="145.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#8C6508" text-anchor="start" font-weight="bold" font-style="normal" letter-spacing="0">+34 min</text>
+<line x1="280.0" y1="56" x2="280.0" y2="176" stroke="#1A1A1A" stroke-width="1.1"/>
+</svg></div>
+  <p class="swipe">Desliza horizontalmente para ver la figura completa.</p>
+  <figcaption>
+    <span class="fig-num">Figura 5</span>
+    <span class="cap"><span class="cap-k">Visual.</span> Barras horizontales con los minutos de sueño ganados por noche de clase en la revisión de estudios experimentales y en el caso de Seattle.</span>
+    <span class="cap"><span class="cap-k">Cuantitativo.</span> Retrasos de 25 a 60 minutos producen entre 25 y 77 minutos más de sueño por noche en seis estudios experimentales. En Seattle, un retraso de 55 minutos produjo 34 minutos más, medidos con actigrafía.</span>
+    <span class="cap"><span class="cap-k">Conclusión.</span> La ganancia de sueño es real y persistente: los adolescentes no compensan íntegramente retrasando la hora de acostarse.</span>
+  </figcaption>
+</figure>
+  <p>El metaanálisis de Bowers y Moyer, que agrega cinco estudios
+  longitudinales y quince comparaciones transversales, apunta en la misma
+  dirección: horarios de entrada más tardíos se asocian a más horas de sueño,
+  menos somnolencia diurna y menos retrasos, si bien los autores piden cautela
+  interpretativa por la necesidad de más investigación longitudinal
+  primaria.</p>
+  <p>Queda por descartar una explicación alternativa: que lo que mejora sea el
+  alumno mañanero y no el horario. El diseño que lo resuelve es argentino.
+  Goldin, Sigman, Braier, Golombek y Leone estudiaron 753 estudiantes de un
+  instituto público de Buenos Aires asignados <em>por sorteo</em> a uno de tres
+  turnos, con entrada a las 07:45, a las 12:40 o a las 17:20. La asignación
+  aleatoria elimina la autoselección. En el turno de mañana, los cronotipos
+  tempranos rinden mejor que los tardíos en todas las asignaturas, con el efecto
+  más grande en matemáticas; ese efecto se desvanece en el turno de tarde; y los
+  cronotipos tardíos se benefician de las clases vespertinas. El rendimiento no
+  depende solo del alumno ni solo del horario, sino del ajuste entre ambos.</p>
+  <p>Por eso la Academia Americana de Pediatría, en su declaración de política
+  de 2014, señala los horarios de entrada anteriores a las 8:30 como el factor
+  modificable clave del sueño insuficiente y de la disrupción circadiana en esta
+  población, e insta a institutos y centros de secundaria a fijar horarios que
+  permitan a los alumnos alcanzar entre 8,5 y 9,5 horas de sueño.</p>
+</section>
+
+<section id="pantallas">
+  <h2><span class="n">07</span>Sí, el móvil también. Pero el móvil no explica el
+  gradiente por edad ni la brecha del fin de semana.</h2>
+  <hr class="rule">
+  <div class="two">
+    <div>
+      <p>Nada de lo anterior exculpa a las pantallas. El metaanálisis de Carter
+      y colaboradores, veinte estudios y 125.198 niños y adolescentes con una
+      edad media de 14,5 años, encuentra una asociación fuerte y consistente
+      entre el uso de dispositivos móviles al acostarse y el sueño insuficiente
+      (OR = 2,17; IC 95 % 1,42-3,32), la mala calidad del sueño (OR = 1,46;
+      1,14-1,88) y la somnolencia diurna excesiva (OR = 2,72; 1,32-5,61).</p>
+      <p>El hallazgo más interesante es el otro: los adolescentes que
+      simplemente <em>tenían acceso</em> al dispositivo por la noche, sin
+      declarar usarlo, presentaban también más sueño insuficiente (OR = 1,79;
+      1,39-2,31) y más somnolencia diurna (OR = 2,27; 1,54-3,35). La presencia
+      del dispositivo en la habitación es en sí misma un factor de riesgo.</p>
+      <p>Pero repárese en lo que el móvil no puede explicar. No explica por qué
+      la misma cohorte duerme ocho horas o más el fin de semana y no entre
+      semana, ni por qué el retraso de fase aparece asociado al estadio puberal
+      y no a los factores psicosociales, ni por qué mover la campana 55 minutos
+      produce 34 minutos más de sueño medidos con actímetro. Son dos causas que
+      se suman, y solo una de ellas está en manos del centro educativo.</p>
+    </div>
+    <div class="aside">
+      <h3>Qué se deduce de todo esto</h3>
+      <p>Primero, que el sueño insuficiente adolescente es un problema
+      estructural de horarios, no un problema de carácter, y que responde a una
+      intervención barata y reversible.</p>
+      <p>Segundo, que en España el efecto está agravado por un desfase de una
+      hora y veinticuatro minutos entre el reloj oficial y el Sol, de modo que
+      cualquier discusión sobre la entrada a las 8:00 debería partir de que son
+      las 6:36 solares.</p>
+      <p>Y tercero, que el margen práctico existe: retirar los dispositivos de
+      la habitación, proteger la exposición a luz matinal y, sobre todo,
+      discutir en serio la hora de inicio de la jornada en secundaria.</p>
+    </div>
+  </div>
+  <figure class="fig">
+  <div class="fig-plate"><svg viewBox="0 0 860 386" width="860" height="386" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Gráfico de bosque con las razones de probabilidad de sueño insuficiente, mala calidad del sueño y somnolencia diurna asociadas al uso o al acceso a dispositivos móviles al acostarse" xmlns="http://www.w3.org/2000/svg">
+<text x="272.0" y="36.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">razón de probabilidad (OR) con intervalo de confianza al 95 %</text>
+<line x1="304.9" y1="68" x2="304.9" y2="338" stroke="#1A1A1A" stroke-width="1.4"/>
+<text x="304.9" y="358.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#1A1A1A" text-anchor="middle" font-weight="bold" font-style="normal" letter-spacing="0">1</text>
+<line x1="387.3" y1="68" x2="387.3" y2="338" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="387.3" y="358.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">1,5</text>
+<line x1="445.7" y1="68" x2="445.7" y2="338" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="445.7" y="358.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">2</text>
+<line x1="528.1" y1="68" x2="528.1" y2="338" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="528.1" y="358.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">3</text>
+<line x1="586.5" y1="68" x2="586.5" y2="338" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="586.5" y="358.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">4</text>
+<line x1="668.9" y1="68" x2="668.9" y2="338" stroke="#D9C28A" stroke-width="0.6"/>
+<text x="668.9" y="358.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12" fill="#8A8A8A" text-anchor="middle" font-weight="normal" font-style="normal" letter-spacing="0">6</text>
+<text x="304.9" y="60.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#1A1A1A" text-anchor="middle" font-weight="normal" font-style="italic" letter-spacing="0">sin asociación</text>
+<text x="272.0" y="96.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#8C6508" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">Uso del dispositivo al acostarse</text>
+<line x1="376.2" y1="129.0" x2="548.7" y2="129.0" stroke="#8C6508" stroke-width="1.6"/>
+<line x1="376.2" y1="123.0" x2="376.2" y2="135.0" stroke="#8C6508" stroke-width="1.6"/>
+<line x1="548.7" y1="123.0" x2="548.7" y2="135.0" stroke="#8C6508" stroke-width="1.6"/>
+<circle cx="462.3" cy="129.0" r="5.5" fill="#8C6508"/>
+<text x="272.0" y="133.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Sueño insuficiente</text>
+<text x="846.0" y="133.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">2,17  [1,42 – 3,32]</text>
+<line x1="331.6" y1="159.0" x2="433.2" y2="159.0" stroke="#8C6508" stroke-width="1.6"/>
+<line x1="331.6" y1="153.0" x2="331.6" y2="165.0" stroke="#8C6508" stroke-width="1.6"/>
+<line x1="433.2" y1="153.0" x2="433.2" y2="165.0" stroke="#8C6508" stroke-width="1.6"/>
+<circle cx="381.8" cy="159.0" r="5.5" fill="#8C6508"/>
+<text x="272.0" y="163.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Mala calidad del sueño</text>
+<text x="846.0" y="163.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">1,46  [1,14 – 1,88]</text>
+<line x1="361.3" y1="189.0" x2="655.2" y2="189.0" stroke="#8C6508" stroke-width="1.6"/>
+<line x1="361.3" y1="183.0" x2="361.3" y2="195.0" stroke="#8C6508" stroke-width="1.6"/>
+<line x1="655.2" y1="183.0" x2="655.2" y2="195.0" stroke="#8C6508" stroke-width="1.6"/>
+<circle cx="508.2" cy="189.0" r="5.5" fill="#8C6508"/>
+<text x="272.0" y="193.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Somnolencia diurna excesiva</text>
+<text x="846.0" y="193.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">2,72  [1,32 – 5,61]</text>
+<text x="272.0" y="216.0" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="13" fill="#8C6508" text-anchor="end" font-weight="bold" font-style="normal" letter-spacing="0">Solo acceso, sin uso declarado</text>
+<line x1="371.8" y1="249.0" x2="475.0" y2="249.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<line x1="371.8" y1="243.0" x2="371.8" y2="255.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<line x1="475.0" y1="243.0" x2="475.0" y2="255.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<circle cx="423.2" cy="249.0" r="5.5" fill="#8A8A8A"/>
+<text x="272.0" y="253.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Sueño insuficiente</text>
+<text x="846.0" y="253.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">1,79  [1,39 – 2,31]</text>
+<line x1="326.1" y1="279.0" x2="455.6" y2="279.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<line x1="326.1" y1="273.0" x2="326.1" y2="285.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<line x1="455.6" y1="273.0" x2="455.6" y2="285.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<circle cx="391.3" cy="279.0" r="5.5" fill="#8A8A8A"/>
+<text x="272.0" y="283.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Mala calidad del sueño</text>
+<text x="846.0" y="283.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">1,53  [1,11 – 2,10]</text>
+<line x1="392.6" y1="309.0" x2="550.5" y2="309.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<line x1="392.6" y1="303.0" x2="392.6" y2="315.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<line x1="550.5" y1="303.0" x2="550.5" y2="315.0" stroke="#8A8A8A" stroke-width="1.6"/>
+<circle cx="471.5" cy="309.0" r="5.5" fill="#8A8A8A"/>
+<text x="272.0" y="313.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="12.5" fill="#1A1A1A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">Somnolencia diurna excesiva</text>
+<text x="846.0" y="313.5" font-family='"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif' font-size="11.5" fill="#8A8A8A" text-anchor="end" font-weight="normal" font-style="normal" letter-spacing="0">2,27  [1,54 – 3,35]</text>
+<line x1="284" y1="338" x2="690" y2="338" stroke="#1A1A1A" stroke-width="0.8"/>
+</svg></div>
+  <p class="swipe">Desliza horizontalmente para ver la figura completa.</p>
+  <figcaption>
+    <span class="fig-num">Figura 6</span>
+    <span class="cap"><span class="cap-k">Visual.</span> Gráfico de bosque con seis razones de probabilidad y sus intervalos de confianza al 95 %, agrupadas según uso o mero acceso al dispositivo.</span>
+    <span class="cap"><span class="cap-k">Cuantitativo.</span> Las seis estimaciones son mayores que 1 y sus intervalos de confianza no cruzan la unidad. El uso al acostarse duplica la probabilidad de sueño insuficiente; el mero acceso la multiplica por 1,79.</span>
+    <span class="cap"><span class="cap-k">Conclusión.</span> Las pantallas son un factor real y modificable, pero de magnitud comparable, no superior, al efecto del propio horario escolar.</span>
+  </figcaption>
+</figure>
+</section>
+
+<section id="fuentes">
+  <h2><span class="n">08</span>Fuentes</h2>
+  <hr class="rule">
+  <p>Todas las cifras citadas provienen de las publicaciones que siguen. Los
+  metadatos bibliográficos de cada referencia (autores, año, título, revista,
+  volumen, número y páginas) se han descargado de Crossref y de PubMed y se
+  comparan mecánicamente con el texto de esta página mediante el script de
+  validación que se indica más abajo.</p>
+  <ol class="refs">
+  <li>Carskadon, M. A., Vieira, C. y Acebo, C. (1993). Association between puberty and delayed phase preference. <i>Sleep</i>, 16(3), 258–262. <a class="doi" href="https://doi.org/10.1093/sleep/16.3.258" target="_blank" rel="noopener">doi: 10.1093/sleep/16.3.258</a></li><li>Roenneberg, T., Kuehnle, T., Pramstaller, P. P., Ricken, J., Havel, M., Guth, A. y Merrow, M. (2004). A marker for the end of adolescence. <i>Current Biology</i>, 14(24), R1038–R1039. <a class="doi" href="https://doi.org/10.1016/j.cub.2004.11.039" target="_blank" rel="noopener">doi: 10.1016/j.cub.2004.11.039</a></li><li>Crowley, S. J., Acebo, C., Fallone, G. y Carskadon, M. A. (2006). Estimating dim light melatonin onset (DLMO) phase in adolescents using summer or school-year sleep/wake schedules. <i>Sleep</i>, 29(12), 1632–1641. <a class="doi" href="https://doi.org/10.1093/sleep/29.12.1632" target="_blank" rel="noopener">doi: 10.1093/sleep/29.12.1632</a></li><li>Paruthi, S., Brooks, L. J., D’Ambrosio, C., Hall, W. A., Kotagal, S., Lloyd, R. M., Malow, B. A., Maski, K., Nichols, C., Quan, S. F., Rosen, C. L., Troester, M. M. y Wise, M. S. (2016). Recommended amount of sleep for pediatric populations: a consensus statement of the American Academy of Sleep Medicine. <i>Journal of Clinical Sleep Medicine</i>, 12(6), 785–786. <a class="doi" href="https://doi.org/10.5664/jcsm.5866" target="_blank" rel="noopener">doi: 10.5664/jcsm.5866</a></li><li>Paruthi, S., Brooks, L. J., D’Ambrosio, C., Hall, W. A., Kotagal, S., Lloyd, R. M., Malow, B. A., Maski, K., Nichols, C., Quan, S. F., Rosen, C. L., Troester, M. M. y Wise, M. S. (2016). Consensus statement of the American Academy of Sleep Medicine on the recommended amount of sleep for healthy children: methodology and discussion. <i>Journal of Clinical Sleep Medicine</i>, 12(11), 1549–1561. <a class="doi" href="https://doi.org/10.5664/jcsm.6288" target="_blank" rel="noopener">doi: 10.5664/jcsm.6288</a></li><li>Hirshkowitz, M., Whiton, K., Albert, S. M., Alessi, C., Bruni, O., DonCarlos, L., Hazen, N., Herman, J., Adams Hillard, P. J., Katz, E. S., Kheirandish-Gozal, L., Neubauer, D. N., O’Donnell, A. E., Ohayon, M., Peever, J., Rawding, R., Sachdeva, R. C., Setters, B., Vitiello, M. V. y Ware, J. C. (2015). National Sleep Foundation’s updated sleep duration recommendations: final report. <i>Sleep Health</i>, 1(4), 233–243. <a class="doi" href="https://doi.org/10.1016/j.sleh.2015.10.004" target="_blank" rel="noopener">doi: 10.1016/j.sleh.2015.10.004</a></li><li>Moreno, C., Rivera, F., Sánchez-Queija, I. y cols. (2025). <i>La adolescencia española analizada desde el Estudio HBSC-2022: estilos de vida, contextos de desarrollo y bienestar emocional</i>. Informe divulgativo de los resultados más significativos obtenidos. Ministerio de Sanidad. Tablas 19 y 20; n = 33.630 adolescentes de 11 a 18 años. <a class="doi" href="https://www.sanidad.gob.es/areas/promocionPrevencion/entornosSaludables/escuela/estudioHBSC/2022/docs/HBSC2022_DivulgativoEstudio.pdf" target="_blank" rel="noopener">www.sanidad.gob.es/areas/promocionPrevencion/entornosSaludables/escuela/estudioHBSC/2022/docs/HBSC2022_DivulgativoEstudio.pdf</a></li><li>Wittmann, M., Dinich, J., Merrow, M. y Roenneberg, T. (2006). Social jetlag: misalignment of biological and social time. <i>Chronobiology International</i>, 23(1–2), 497–509. <a class="doi" href="https://doi.org/10.1080/07420520500545979" target="_blank" rel="noopener">doi: 10.1080/07420520500545979</a></li><li>Lo, J. C., Ong, J. L., Leong, R. L. F., Gooley, J. J. y Chee, M. W. L. (2016). Cognitive performance, sleepiness, and mood in partially sleep deprived adolescents: the Need for Sleep Study. <i>Sleep</i>, 39(3), 687–698. <a class="doi" href="https://doi.org/10.5665/sleep.5552" target="_blank" rel="noopener">doi: 10.5665/sleep.5552</a></li><li>Diekelmann, S. y Born, J. (2010). The memory function of sleep. <i>Nature Reviews Neuroscience</i>, 11(2), 114–126. <a class="doi" href="https://doi.org/10.1038/nrn2762" target="_blank" rel="noopener">doi: 10.1038/nrn2762</a></li><li>Adolescent Sleep Working Group, Committee on Adolescence y Council on School Health (2014). School start times for adolescents. <i>Pediatrics</i>, 134(3), 642–649. <a class="doi" href="https://doi.org/10.1542/peds.2014-1697" target="_blank" rel="noopener">doi: 10.1542/peds.2014-1697</a></li><li>Minges, K. E. y Redeker, N. S. (2016). Delayed school start times and adolescent sleep: a systematic review of the experimental evidence. <i>Sleep Medicine Reviews</i>, 28, 86–95. <a class="doi" href="https://doi.org/10.1016/j.smrv.2015.06.002" target="_blank" rel="noopener">doi: 10.1016/j.smrv.2015.06.002</a></li><li>Bowers, J. M. y Moyer, A. (2017). Effects of school start time on students’ sleep duration, daytime sleepiness, and attendance: a meta-analysis. <i>Sleep Health</i>, 3(6), 423–431. <a class="doi" href="https://doi.org/10.1016/j.sleh.2017.08.004" target="_blank" rel="noopener">doi: 10.1016/j.sleh.2017.08.004</a></li><li>Dunster, G. P., de la Iglesia, L., Ben-Hamo, M., Nave, C., Fleischer, J. G., Panda, S. y de la Iglesia, H. O. (2018). Sleepmore in Seattle: later school start times are associated with more sleep and better performance in high school students. <i>Science Advances</i>, 4(12), eaau6200. <a class="doi" href="https://doi.org/10.1126/sciadv.aau6200" target="_blank" rel="noopener">doi: 10.1126/sciadv.aau6200</a></li><li>Goldin, A. P., Sigman, M., Braier, G., Golombek, D. A. y Leone, M. J. (2020). Interplay of chronotype and school timing predicts school performance. <i>Nature Human Behaviour</i>, 4(4), 387–396. <a class="doi" href="https://doi.org/10.1038/s41562-020-0820-2" target="_blank" rel="noopener">doi: 10.1038/s41562-020-0820-2</a></li><li>Carter, B., Rees, P., Hale, L., Bhattacharjee, D. y Paradkar, M. S. (2016). Association between portable screen-based media device access or use and sleep outcomes: a systematic review and meta-analysis. <i>JAMA Pediatrics</i>, 170(12), 1202–1208. <a class="doi" href="https://doi.org/10.1001/jamapediatrics.2016.2341" target="_blank" rel="noopener">doi: 10.1001/jamapediatrics.2016.2341</a></li><li>US Naval Observatory, Astronomical Applications Department. <i>Sun and Moon Data for One Day</i> (API rstt/oneday). Consultas para Madrid (40,4168 N; −3,7038) en las fechas citadas. <a class="doi" href="https://aa.usno.navy.mil/data/RS_OneDay" target="_blank" rel="noopener">aa.usno.navy.mil/data/RS_OneDay</a></li>
+  </ol>
+  <div class="method">
+    <h3>Nota metodológica y de reproducibilidad</h3>
+    <p>Los porcentajes del Estudio HBSC-2022 se toman literalmente de las tablas
+    19 y 20 del informe divulgativo del Ministerio de Sanidad. Los agregados «7
+    horas o menos» y «8 horas o más» son sumas aritméticas de esas categorías
+    publicadas, calculadas en el propio generador de esta página; las dos que el
+    informe también publica como texto (23,4 % y 78,3 %) se
+    reproducen exactamente, lo que sirve de comprobación.</p>
+    <p>Los datos astronómicos de Madrid se obtienen de la API del Observatorio
+    Naval de los Estados Unidos para las coordenadas 40,4168 N y −3,7038, y se
+    expresan en la hora del reloj oficial español (UTC+1 en enero y diciembre,
+    UTC+2 en abril y junio). La hora solar equivalente se calcula como la hora
+    oficial menos el desfase entre el paso del Sol por el meridiano y las
+    12:00.</p>
+    <p>Esta página es un único fichero HTML sin dependencias externas: todas las
+    figuras son SVG generado programáticamente a partir de los datos declarados
+    en <code>build.py</code>. La verificación es mecánica y reproducible en tres
+    niveles: <code>data/validate_refs.py</code> coteja cada campo de cada
+    referencia contra Crossref y PubMed, <code>data/validate_claims.py</code>
+    comprueba que cada cifra atribuida a un trabajo aparece literalmente en su
+    texto, y <code>data/validate_astro.py</code> vuelve a consultar al
+    Observatorio Naval. Los metadatos y textos descargados quedan cacheados en
+    <code>data/refs_cache/</code> para que la comparación sea auditable.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p class="name">Eduardo C. Garrido-Merchán</p>
+  <hr class="rule2">
+  <p>Universidad Pontificia Comillas ·
+  <a href="mailto:ecgarrido@comillas.edu">ecgarrido@comillas.edu</a></p>
+  <p>Madrid, 2026</p>
+</footer>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav a'));
+  var secs  = links.map(function(a){ return document.getElementById(a.dataset.sec); });
+  function mark(id){
+    links.forEach(function(a){ a.classList.toggle('on', a.dataset.sec === id); });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) mark(e.target.id); });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    secs.forEach(function(s){ if (s) io.observe(s); });
+  } else {
+    window.addEventListener('scroll', function(){
+      var best = null, bd = Infinity;
+      secs.forEach(function(s){
+        if (!s) return;
+        var d = Math.abs(s.getBoundingClientRect().top - 120);
+        if (d < bd) { bd = d; best = s.id; }
+      });
+      if (best) mark(best);
+    }, { passive: true });
+  }
+  mark('reloj');
+})();
+</script>
+</body>
+</html>

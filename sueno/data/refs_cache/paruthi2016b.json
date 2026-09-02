@@ -1,0 +1,351 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    1
+   ]
+  ],
+  "date-time": "2026-09-01T21:01:02Z",
+  "timestamp": 1788296462026,
+  "version": "build-2803163510"
+ },
+ "reference-count": 0,
+ "publisher": "Springer Science and Business Media LLC",
+ "issue": "11",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Journal of Clinical Sleep Medicine"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    15
+   ]
+  ]
+ },
+ "DOI": "10.5664/jcsm.6288",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    14
+   ]
+  ],
+  "date-time": "2016-11-14T15:04:00Z",
+  "timestamp": 1479135840000
+ },
+ "page": "1549-1561",
+ "source": "Crossref",
+ "is-referenced-by-count": 718,
+ "title": [
+  "Consensus Statement of the American Academy of Sleep Medicine on the Recommended Amount of Sleep for Healthy Children: Methodology and Discussion"
+ ],
+ "prefix": "10.1007",
+ "volume": "12",
+ "author": [
+  {
+   "given": "Shalini",
+   "family": "Paruthi",
+   "sequence": "first",
+   "affiliation": [
+    {
+     "name": "Saint Louis University, St. Louis, MO"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lee J.",
+   "family": "Brooks",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Children's Hospital of Philadelphia, Philadelphia, PA"
+    },
+    {
+     "name": "Liaison for the American Academy of Pediatrics"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Carolyn",
+   "family": "D'Ambrosio",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Brigham &amp; Women's Hospital, Boston, MA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Wendy A.",
+   "family": "Hall",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "University of British Columbia School of Nursing, Vancouver, BC"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Suresh",
+   "family": "Kotagal",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Mayo Clinic, Rochester, MN"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Robin M.",
+   "family": "Lloyd",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Mayo Clinic, Rochester, MN"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Beth A.",
+   "family": "Malow",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Vanderbilt University Medical Center, Nashville, TN"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kiran",
+   "family": "Maski",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Boston Children's Hospital, Boston, MA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Cynthia",
+   "family": "Nichols",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Munson Sleep Disorders Center, Traverse City, MI"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Stuart F.",
+   "family": "Quan",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Harvard Medical School, Boston, MA"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Carol L.",
+   "family": "Rosen",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Rainbow Babies &amp; Children's Hospital, Cleveland, OH"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Matthew M.",
+   "family": "Troester",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Barrow Neurologic Institute at Phoenix Children's Hospital, Phoenix, AZ"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Merrill S.",
+   "family": "Wise",
+   "sequence": "additional",
+   "affiliation": [
+    {
+     "name": "Methodist Healthcare Sleep Disorders Center, Memphis, TN"
+    }
+   ],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "297",
+ "container-title": [
+  "Journal of Clinical Sleep Medicine"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.aasmnet.org/jcsm/ViewAbstract.aspx?pid=30863",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2026,
+    2,
+    3
+   ]
+  ],
+  "date-time": "2026-02-03T09:12:34Z",
+  "timestamp": 1770109954000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://link.springer.com/article/10.5664/jcsm.6288"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    15
+   ]
+  ]
+ },
+ "references-count": 0,
+ "journal-issue": {
+  "issue": "11",
+  "published-print": {
+   "date-parts": [
+    [
+     2016,
+     11,
+     15
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.5664/jcsm.6288"
+ ],
+ "URL": "https://doi.org/10.5664/jcsm.6288",
+ "relation": {},
+ "ISSN": [
+  "1550-9389",
+  "1550-9397"
+ ],
+ "issn-type": [
+  {
+   "value": "1550-9389",
+   "type": "print"
+  },
+  {
+   "value": "1550-9397",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2016,
+    11,
+    15
+   ]
+  ]
+ }
+}

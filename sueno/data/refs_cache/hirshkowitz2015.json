@@ -1,0 +1,414 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    1
+   ]
+  ],
+  "date-time": "2026-09-01T16:14:27Z",
+  "timestamp": 1788279267101,
+  "version": "build-2803163510"
+ },
+ "reference-count": 2,
+ "publisher": "Elsevier BV",
+ "issue": "4",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2015,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2015-12-01T00:00:00Z",
+    "timestamp": 1448928000000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+  }
+ ],
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Sleep Health"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2015,
+    12
+   ]
+  ]
+ },
+ "DOI": "10.1016/j.sleh.2015.10.004",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2015,
+    10,
+    31
+   ]
+  ],
+  "date-time": "2015-10-31T01:16:42Z",
+  "timestamp": 1446254202000
+ },
+ "page": "233-243",
+ "source": "Crossref",
+ "is-referenced-by-count": 2061,
+ "title": [
+  "National Sleep Foundation’s updated sleep duration recommendations: final report"
+ ],
+ "prefix": "10.1016",
+ "volume": "1",
+ "author": [
+  {
+   "given": "Max",
+   "family": "Hirshkowitz",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Kaitlyn",
+   "family": "Whiton",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Steven M.",
+   "family": "Albert",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Cathy",
+   "family": "Alessi",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Oliviero",
+   "family": "Bruni",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Lydia",
+   "family": "DonCarlos",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Nancy",
+   "family": "Hazen",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "John",
+   "family": "Herman",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Paula J.",
+   "family": "Adams Hillard",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Eliot S.",
+   "family": "Katz",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Leila",
+   "family": "Kheirandish-Gozal",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "David N.",
+   "family": "Neubauer",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Anne E.",
+   "family": "O’Donnell",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Maurice",
+   "family": "Ohayon",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "John",
+   "family": "Peever",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Robert",
+   "family": "Rawding",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Ramesh C.",
+   "family": "Sachdeva",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Belinda",
+   "family": "Setters",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Michael V.",
+   "family": "Vitiello",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "J. Catesby",
+   "family": "Ware",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "78",
+ "reference": [
+  {
+   "key": "10.1016/j.sleh.2015.10.004_bb0005",
+   "doi-asserted-by": "crossref",
+   "first-page": "40",
+   "DOI": "10.1016/j.sleh.2014.12.010",
+   "article-title": "National Sleep Foundation’s sleep time duration recommendations: methodology and results summary",
+   "volume": "1",
+   "author": "Hirshkowitz",
+   "year": "2015",
+   "journal-title": "Sleep Health"
+  },
+  {
+   "key": "10.1016/j.sleh.2015.10.004_bb0010",
+   "series-title": "The RAND/UCLA Appropriateness Method user’s manual",
+   "author": "Fitch",
+   "year": "2001"
+  }
+ ],
+ "container-title": [
+  "Sleep Health"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S2352721815001606?httpAccept=text/xml",
+   "content-type": "text/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S2352721815001606?httpAccept=text/plain",
+   "content-type": "text/plain",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2018,
+    9,
+    18
+   ]
+  ],
+  "date-time": "2018-09-18T00:52:29Z",
+  "timestamp": 1537231949000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://linkinghub.elsevier.com/retrieve/pii/S2352721815001606"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2015,
+    12
+   ]
+  ]
+ },
+ "references-count": 2,
+ "journal-issue": {
+  "issue": "4",
+  "published-print": {
+   "date-parts": [
+    [
+     2015,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S2352721815001606"
+ ],
+ "URL": "https://doi.org/10.1016/j.sleh.2015.10.004",
+ "relation": {},
+ "ISSN": [
+  "2352-7218"
+ ],
+ "issn-type": [
+  {
+   "value": "2352-7218",
+   "type": "print"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2015,
+    12
+   ]
+  ]
+ }
+}

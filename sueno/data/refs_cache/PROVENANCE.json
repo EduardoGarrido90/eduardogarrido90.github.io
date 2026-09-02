@@ -1,0 +1,30 @@
+{
+ "dunster2018_fulltext": {
+  "pmc": "PMC6291308",
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=6291308&retmode=xml"
+ },
+ "paruthi2016b_fulltext": {
+  "pmc": "PMC5078711",
+  "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=5078711&retmode=xml"
+ },
+ "_pubmed_abstracts": {
+  "api": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml",
+  "files": [
+   "aap2014_pubmed.xml",
+   "bowers2017_pubmed.xml",
+   "carskadon1993_pubmed.xml",
+   "carter2016_pubmed.xml",
+   "crowley2006_pubmed.xml",
+   "diekelmann2010_pubmed.xml",
+   "dunster2018_pubmed.xml",
+   "goldin2020_pubmed.xml",
+   "hirshkowitz2015_pubmed.xml",
+   "lo2016_pubmed.xml",
+   "minges2016_pubmed.xml",
+   "paruthi2016_pubmed.xml",
+   "paruthi2016b_pubmed.xml",
+   "roenneberg2004_pubmed.xml",
+   "wittmann2006_pubmed.xml"
+  ]
+ }
+}

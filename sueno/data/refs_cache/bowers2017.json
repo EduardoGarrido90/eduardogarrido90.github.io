@@ -1,0 +1,848 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    8,
+    29
+   ]
+  ],
+  "date-time": "2026-08-29T08:24:42Z",
+  "timestamp": 1787991882262,
+  "version": "build-2784847793"
+ },
+ "reference-count": 55,
+ "publisher": "Elsevier BV",
+ "issue": "6",
+ "license": [
+  {
+   "start": {
+    "date-parts": [
+     [
+      2017,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2017-12-01T00:00:00Z",
+    "timestamp": 1512086400000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+  },
+  {
+   "start": {
+    "date-parts": [
+     [
+      2017,
+      12,
+      1
+     ]
+    ],
+    "date-time": "2017-12-01T00:00:00Z",
+    "timestamp": 1512086400000
+   },
+   "content-version": "tdm",
+   "delay-in-days": 0,
+   "URL": "https://www.elsevier.com/legal/tdmrep-license"
+  }
+ ],
+ "content-domain": {
+  "domain": [
+   "sleephealthjournal.org",
+   "clinicalkey.fr",
+   "clinicalkey.jp",
+   "clinicalkey.com.au",
+   "clinicalkey.es",
+   "clinicalkey.com",
+   "elsevier.com",
+   "sciencedirect.com"
+  ],
+  "crossmark-restriction": true
+ },
+ "short-container-title": [
+  "Sleep Health"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2017,
+    12
+   ]
+  ]
+ },
+ "DOI": "10.1016/j.sleh.2017.08.004",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2017,
+    9,
+    28
+   ]
+  ],
+  "date-time": "2017-09-28T14:01:49Z",
+  "timestamp": 1506607309000
+ },
+ "page": "423-431",
+ "update-policy": "https://doi.org/10.1016/elsevier_cm_policy",
+ "source": "Crossref",
+ "is-referenced-by-count": 146,
+ "title": [
+  "Effects of school start time on students’ sleep duration, daytime sleepiness, and attendance: a meta-analysis"
+ ],
+ "prefix": "10.1016",
+ "volume": "3",
+ "author": [
+  {
+   "given": "Jennifer M.",
+   "family": "Bowers",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Anne",
+   "family": "Moyer",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "78",
+ "reference": [
+  {
+   "issue": "1",
+   "key": "10.1016/j.sleh.2017.08.004_bb0005",
+   "doi-asserted-by": "crossref",
+   "first-page": "40",
+   "DOI": "10.1016/j.sleh.2014.12.010",
+   "article-title": "National Sleep Foundation's sleep time duration recommendations: methodology and results summary",
+   "volume": "1",
+   "author": "Hirshkowitz",
+   "year": "2015",
+   "journal-title": "Sleep Health"
+  },
+  {
+   "issue": "4",
+   "key": "10.1016/j.sleh.2017.08.004_bb0010",
+   "doi-asserted-by": "crossref",
+   "first-page": "453",
+   "DOI": "10.1093/sleep/2.4.453",
+   "article-title": "Pubertal changes in daytime sleepiness",
+   "volume": "2",
+   "author": "Carskadon",
+   "year": "1980",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "1",
+   "key": "10.1016/j.sleh.2017.08.004_bb0015",
+   "first-page": "71",
+   "article-title": "Sleep insufficiency, sleep health problems and performance in high school students",
+   "volume": "5",
+   "author": "Ming",
+   "year": "2011",
+   "journal-title": "Clin Med Insights Circ Respir Pulm Med"
+  },
+  {
+   "issue": "5",
+   "key": "10.1016/j.sleh.2017.08.004_bb0020",
+   "doi-asserted-by": "crossref",
+   "first-page": "224",
+   "DOI": "10.1111/j.1746-1561.2009.00402.x",
+   "article-title": "Adolescents' sleep behaviors and perceptions of sleep",
+   "volume": "79",
+   "author": "Noland",
+   "year": "2009",
+   "journal-title": "J Sch Health"
+  },
+  {
+   "issue": "6",
+   "key": "10.1016/j.sleh.2017.08.004_bb0025",
+   "doi-asserted-by": "crossref",
+   "first-page": "491",
+   "DOI": "10.1016/S1087-0792(03)90003-7",
+   "article-title": "Understanding adolescents' sleep patterns and school performance: a critical appraisal",
+   "volume": "7",
+   "author": "Wolfson",
+   "year": "2003",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0030",
+   "doi-asserted-by": "crossref",
+   "first-page": "106",
+   "DOI": "10.1016/j.paid.2013.02.011",
+   "article-title": "Predicting school achievement: the role of inductive reasoning, sleep length and morningness-eveningness",
+   "volume": "55",
+   "author": "Díaz-Morales",
+   "year": "2013",
+   "journal-title": "Pers Individ Dif"
+  },
+  {
+   "issue": "7",
+   "key": "10.1016/j.sleh.2017.08.004_bb0035",
+   "doi-asserted-by": "crossref",
+   "first-page": "e40963",
+   "DOI": "10.1371/journal.pone.0040963",
+   "article-title": "The timing of learning before night-time sleep differentially affects declarative and procedural long-term memory consolidation in adolescents",
+   "volume": "7",
+   "author": "Holz",
+   "year": "2012",
+   "journal-title": "PLoS One"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0040",
+   "doi-asserted-by": "crossref",
+   "first-page": "167",
+   "DOI": "10.1016/j.smrv.2009.10.006",
+   "article-title": "Sleep and memory in healthy children and adolescents—a critical review",
+   "volume": "14",
+   "author": "Kopasz",
+   "year": "2010",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0045",
+   "doi-asserted-by": "crossref",
+   "first-page": "137",
+   "DOI": "10.1016/B978-0-444-53817-8.00008-6",
+   "article-title": "Sleep's Effects on cognition and learning in adolescence",
+   "volume": "190",
+   "author": "Carskadon",
+   "year": "2011",
+   "journal-title": "Prog Brain Res"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0050",
+   "doi-asserted-by": "crossref",
+   "first-page": "271",
+   "DOI": "10.5665/sleep.5426",
+   "article-title": "Longitudinal outcomes of start time delay on sleep, behavior, and achievement in high school",
+   "volume": "39",
+   "author": "Thacher",
+   "year": "2016",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "1",
+   "key": "10.1016/j.sleh.2017.08.004_bb0055",
+   "doi-asserted-by": "crossref",
+   "first-page": "55",
+   "DOI": "10.1080/00313831.2011.567396",
+   "article-title": "School start time, sleepiness and functioning in Norwegian adolescents",
+   "volume": "56",
+   "author": "Vedaa",
+   "year": "2012",
+   "journal-title": "Scan J Educ Res"
+  },
+  {
+   "issue": "6",
+   "key": "10.1016/j.sleh.2017.08.004_bb0060",
+   "doi-asserted-by": "crossref",
+   "first-page": "533",
+   "DOI": "10.5664/jcsm.27345",
+   "article-title": "Adolescent sleep, school start times, and teen motor vehicle crashes",
+   "volume": "4",
+   "author": "Danner",
+   "year": "2008",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0065",
+   "doi-asserted-by": "crossref",
+   "first-page": "145",
+   "DOI": "10.5664/jcsm.28101",
+   "article-title": "Dissimilar teen crash rates in two neighboring southeastern Virginia cities with different high school start times",
+   "volume": "7",
+   "author": "Vorona",
+   "year": "2011",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "11",
+   "key": "10.1016/j.sleh.2017.08.004_bb0070",
+   "doi-asserted-by": "crossref",
+   "first-page": "1169",
+   "DOI": "10.5664/jcsm.4192",
+   "article-title": "Adolescent crash rates and school start times in two central Virginia counties, 2009-2011: a follow-up study to a southeastern Virginia study, 2007-2008",
+   "volume": "10",
+   "author": "Vorona",
+   "year": "2014",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0075",
+   "doi-asserted-by": "crossref",
+   "first-page": "642",
+   "DOI": "10.1542/peds.2014-1697",
+   "article-title": "School start times for adolescents",
+   "volume": "134",
+   "author": "American Academy of Pediatrics",
+   "year": "2014",
+   "journal-title": "Pediatrics"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0080",
+   "doi-asserted-by": "crossref",
+   "first-page": "425",
+   "DOI": "10.2147/IJGM.S11557",
+   "article-title": "Sleep and its importance in adolescence and in common adolescent somatic and psychiatric conditions",
+   "volume": "4",
+   "author": "Brand",
+   "year": "2011",
+   "journal-title": "Int J Gen Med"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0085",
+   "doi-asserted-by": "crossref",
+   "first-page": "86",
+   "DOI": "10.1016/j.smrv.2015.06.002",
+   "article-title": "Delayed school start times and adolescent sleep: a systematic review of the experimental evidence",
+   "volume": "28",
+   "author": "Minges",
+   "year": "2016",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "issue": "1",
+   "key": "10.1016/j.sleh.2017.08.004_bb0090",
+   "doi-asserted-by": "crossref",
+   "first-page": "75",
+   "DOI": "10.1016/j.smrv.2013.03.005",
+   "article-title": "Functional consequences of inadequate sleep in adolescents: a systematic review",
+   "volume": "18",
+   "author": "Shochat",
+   "year": "2014",
+   "journal-title": "Sleep Med Rev"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0095",
+   "doi-asserted-by": "crossref",
+   "first-page": "518",
+   "DOI": "10.1007/s10964-014-0160-5",
+   "article-title": "The effects of age, gender, hopelessness, and exposure to violence on sleep disorder symptoms and daytime sleepiness among adolescents in impoverished neighborhoods",
+   "volume": "44",
+   "author": "Umlauf",
+   "year": "2015",
+   "journal-title": "J Youth Adolesc"
+  },
+  {
+   "issue": "5",
+   "key": "10.1016/j.sleh.2017.08.004_bb0100",
+   "doi-asserted-by": "crossref",
+   "first-page": "e295",
+   "DOI": "10.1016/j.whi.2013.06.002",
+   "article-title": "Associations between poor sleep quality and psychosocial stress with obesity in reproductive-age women of lower socioeconomic status",
+   "volume": "23",
+   "author": "Tom",
+   "year": "2013",
+   "journal-title": "Womens Health Issues"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0105",
+   "doi-asserted-by": "crossref",
+   "first-page": "56",
+   "DOI": "10.3102/0013189X11402323",
+   "article-title": "School start times and the sleep-wake cycle of adolescents: a review and critical evaluation of available evidence",
+   "volume": "40",
+   "author": "Kirby",
+   "year": "2011",
+   "journal-title": "Ed Res"
+  },
+  {
+   "issue": "6",
+   "key": "10.1016/j.sleh.2017.08.004_bb0110",
+   "doi-asserted-by": "crossref",
+   "first-page": "602",
+   "DOI": "10.1016/j.sleep.2006.12.002",
+   "article-title": "Sleep, circadian rhythms, and delayed phase in adolescence",
+   "volume": "8",
+   "author": "Crowley",
+   "year": "2007",
+   "journal-title": "Sleep Med"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0115",
+   "doi-asserted-by": "crossref",
+   "first-page": "276",
+   "DOI": "10.1196/annals.1308.032",
+   "article-title": "Regulation of adolescent sleep: implications for behavior",
+   "volume": "1021",
+   "author": "Carskadon",
+   "year": "2004",
+   "journal-title": "Ann N Y Acad Sci"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0125",
+   "doi-asserted-by": "crossref",
+   "first-page": "e921",
+   "DOI": "10.1542/peds.2014-1696",
+   "article-title": "Insufficient sleep in adolescents and young adults: an update on causes and consequences",
+   "volume": "134",
+   "author": "Owens",
+   "year": "2014",
+   "journal-title": "Pediatrics"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0130",
+   "author": "Wahlstrom"
+  },
+  {
+   "issue": "7",
+   "key": "10.1016/j.sleh.2017.08.004_bb0135",
+   "doi-asserted-by": "crossref",
+   "first-page": "552",
+   "DOI": "10.1111/josh.12405",
+   "article-title": "Setting adolescents up for success: promoting a policy to delay high school start times",
+   "volume": "86",
+   "author": "Barnes",
+   "year": "2016",
+   "journal-title": "J Sch Health"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0140",
+   "doi-asserted-by": "crossref",
+   "first-page": "182",
+   "DOI": "10.1111/mbe.12059",
+   "article-title": "School start time change: an in-depth examination of school districts in the United States",
+   "volume": "8",
+   "author": "Owens",
+   "year": "2014",
+   "journal-title": "Mind Brain Educ"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0145",
+   "doi-asserted-by": "crossref",
+   "first-page": "194",
+   "DOI": "10.1080/15402000701263809",
+   "article-title": "Middle school start times: the importance of a good night's sleep for young adolescents",
+   "volume": "5",
+   "author": "Wolfson",
+   "year": "2007",
+   "journal-title": "Behav Sleep Med"
+  },
+  {
+   "issue": "633",
+   "key": "10.1016/j.sleh.2017.08.004_bb0150",
+   "doi-asserted-by": "crossref",
+   "first-page": "3",
+   "DOI": "10.1177/019263650208663302",
+   "article-title": "Changing times: findings from the first longitudinal study of later high school start times",
+   "volume": "86",
+   "author": "Wahlstrom",
+   "year": "2002",
+   "journal-title": "NASSP Bull"
+  },
+  {
+   "issue": "1",
+   "key": "10.1016/j.sleh.2017.08.004_bb0155",
+   "doi-asserted-by": "crossref",
+   "first-page": "11",
+   "DOI": "10.1097/DBP.0000000000000018",
+   "article-title": "Later school start time is associated with improved sleep and daytime functioning in adolescents",
+   "volume": "35",
+   "author": "Boergers",
+   "year": "2014",
+   "journal-title": "J Dev Behav Pediatr"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0160",
+   "doi-asserted-by": "crossref",
+   "first-page": "1681",
+   "DOI": "10.5664/jcsm.6358",
+   "article-title": "High school start times and the impact on high school students: what we know, and what we hope to learn",
+   "volume": "12",
+   "author": "Morgenthaler",
+   "year": "2016",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0165",
+   "first-page": "CD009467",
+   "article-title": "Later school start times for supporting the education, health, and well-being of high school students",
+   "volume": "7",
+   "author": "Marx",
+   "year": "2017",
+   "journal-title": "Cochrane Database Syst Rev"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0170",
+   "doi-asserted-by": "crossref",
+   "first-page": "363",
+   "DOI": "10.1111/josh.12388",
+   "article-title": "School start times, sleep, behavioral, health, and academic outcomes: a review of the literature",
+   "volume": "86",
+   "author": "Wheaton",
+   "year": "2016",
+   "journal-title": "J Sch Health"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0175",
+   "first-page": "92",
+   "article-title": "Early school schedules modify adolescent sleepiness",
+   "volume": "24",
+   "author": "Carskadon",
+   "year": "1995",
+   "journal-title": "Sleep Res"
+  },
+  {
+   "issue": "8",
+   "key": "10.1016/j.sleh.2017.08.004_bb0180",
+   "doi-asserted-by": "crossref",
+   "first-page": "871",
+   "DOI": "10.1093/sleep/21.8.871",
+   "article-title": "Adolescent sleep patterns, circadian timing, and sleepiness at a transition to early school days",
+   "volume": "21",
+   "author": "Carskadon",
+   "year": "1998",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "7",
+   "key": "10.1016/j.sleh.2017.08.004_bb0185",
+   "doi-asserted-by": "crossref",
+   "first-page": "1351",
+   "DOI": "10.2105/AJPH.2015.302619",
+   "article-title": "School start time and adolescent sleep patterns: results from the US National Comorbidity Survey—Adolescent Supplement",
+   "volume": "105",
+   "author": "Paksarian",
+   "year": "2015",
+   "journal-title": "Am J Public Health"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0190",
+   "series-title": "Comprehensive Meta-Analysis [Computer Program]. Version 2",
+   "year": "2006"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0195",
+   "series-title": "Statistical Power Analysis for the Behavioral Sciences",
+   "author": "Cohen",
+   "year": "1988"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0200",
+   "doi-asserted-by": "crossref",
+   "first-page": "109",
+   "DOI": "10.1016/j.sleh.2015.02.004",
+   "article-title": "School start time changes and sleep patterns in elementary school students",
+   "volume": "1",
+   "author": "Appleman",
+   "year": "2015",
+   "journal-title": "Sleep Health"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0205",
+   "doi-asserted-by": "crossref",
+   "first-page": "638",
+   "DOI": "10.1037/0033-2909.86.3.638",
+   "article-title": "The file drawer problem and tolerance for null results",
+   "volume": "86",
+   "author": "Rosenthal",
+   "year": "1979",
+   "journal-title": "Psychol Bull"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0210",
+   "doi-asserted-by": "crossref",
+   "first-page": "629",
+   "DOI": "10.1136/bmj.315.7109.629",
+   "article-title": "Bias in meta-analysis detected by a simple, graphical test",
+   "volume": "315",
+   "author": "Egger",
+   "year": "1997",
+   "journal-title": "BMJ"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0215",
+   "doi-asserted-by": "crossref",
+   "first-page": "455",
+   "DOI": "10.1111/j.0006-341X.2000.00455.x",
+   "article-title": "Trim and fill: a simple funnel-plot-based method of testing and adjusting for publication bias in meta-analysis",
+   "volume": "56",
+   "author": "Duval",
+   "year": "2000",
+   "journal-title": "Biometrics"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0220",
+   "doi-asserted-by": "crossref",
+   "first-page": "250",
+   "DOI": "10.1093/sleep/21.3.250",
+   "article-title": "Starting times of school: effects on daytime functioning fifth-grade children in Israel",
+   "volume": "21",
+   "author": "Epstein",
+   "year": "1998",
+   "journal-title": "Sleep"
+  },
+  {
+   "issue": "7",
+   "key": "10.1016/j.sleh.2017.08.004_bb0225",
+   "doi-asserted-by": "crossref",
+   "first-page": "e67928",
+   "DOI": "10.1371/journal.pone.0067928",
+   "article-title": "Sleep, school performance, and a school-based intervention among school-aged children: a sleep series study in China",
+   "volume": "8",
+   "author": "Li",
+   "year": "2013",
+   "journal-title": "PLoS One"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0230",
+   "doi-asserted-by": "crossref",
+   "first-page": "137",
+   "DOI": "10.5664/jcsm.28100",
+   "article-title": "Delaying school starting time by one hour: some effects on attention levels in adolescents",
+   "volume": "7",
+   "author": "Lufi",
+   "year": "2011",
+   "journal-title": "J Clin Sleep Med"
+  },
+  {
+   "issue": "7",
+   "key": "10.1016/j.sleh.2017.08.004_bb0235",
+   "doi-asserted-by": "crossref",
+   "first-page": "608",
+   "DOI": "10.1001/archpediatrics.2010.96",
+   "article-title": "Impact of delaying school start time on adolescent sleep, mood, and behavior",
+   "volume": "164",
+   "author": "Owens",
+   "year": "2010",
+   "journal-title": "Arch Pediatr Adolesc Med"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0240",
+   "first-page": "115",
+   "article-title": "Sleep, behavior, and stress at the transition to senior high school",
+   "volume": "24",
+   "author": "Wolfson",
+   "year": "1995",
+   "journal-title": "Sleep Res"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0245",
+   "doi-asserted-by": "crossref",
+   "first-page": "164",
+   "DOI": "10.1016/j.sleep.2016.09.018",
+   "article-title": "Impact of a modest delay in school start time in Hong Kong school adolescents",
+   "volume": "30",
+   "author": "Chan",
+   "year": "2017",
+   "journal-title": "Sleep Med"
+  },
+  {
+   "issue": "1",
+   "key": "10.1016/j.sleh.2017.08.004_bb0250",
+   "first-page": "44",
+   "article-title": "Sleep, sleepiness and school start times: a preliminary study",
+   "volume": "102",
+   "author": "Dexter",
+   "year": "2003",
+   "journal-title": "Wis Med J"
+  },
+  {
+   "issue": "6",
+   "key": "10.1016/j.sleh.2017.08.004_bb0255",
+   "doi-asserted-by": "crossref",
+   "first-page": "761",
+   "DOI": "10.3109/07420528.2014.898649",
+   "article-title": "Daily fluctuations in attention at school considering starting time and chronotype: an exploratory study",
+   "volume": "31",
+   "author": "Escribano",
+   "year": "2014",
+   "journal-title": "Chronobiol Int"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0260",
+   "first-page": "A74",
+   "article-title": "Sleep patterns of high school students before and after delayed school start time",
+   "volume": "31",
+   "author": "Htwe",
+   "year": "2008",
+   "journal-title": "J Sleep Disord Res"
+  },
+  {
+   "key": "10.1016/j.sleh.2017.08.004_bb0265",
+   "first-page": "124",
+   "article-title": "School sleep lag is less but persists with a very late starting high school",
+   "volume": "24",
+   "author": "Kowalski",
+   "year": "1995",
+   "journal-title": "Sleep Res"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0270",
+   "doi-asserted-by": "crossref",
+   "first-page": "140",
+   "DOI": "10.1080/15402002.2014.963584",
+   "article-title": "Start later, sleep later: school start times and adolescent sleep in homeschool versus public/private school students",
+   "volume": "14",
+   "author": "Meltzer",
+   "year": "2016",
+   "journal-title": "Behav Sleep Med"
+  },
+  {
+   "issue": "2",
+   "key": "10.1016/j.sleh.2017.08.004_bb0275",
+   "doi-asserted-by": "crossref",
+   "first-page": "311",
+   "DOI": "10.1016/j.adolescence.2012.11.008",
+   "article-title": "Sleep duration, positive attitude toward life, and academic achievement: the role of daytime tiredness, behavioral persistence, and school start times",
+   "volume": "36",
+   "author": "Perkinson-Gloor",
+   "year": "2013",
+   "journal-title": "J Adolesc"
+  },
+  {
+   "issue": "3",
+   "key": "10.1016/j.sleh.2017.08.004_bb0280",
+   "doi-asserted-by": "crossref",
+   "first-page": "323",
+   "DOI": "10.1177/1090198112451266",
+   "article-title": "A cross-cultural comparison of sleep duration between U.S. and Australian adolescents: the effect of school start time, parent-set bedtimes, and extracurricular load",
+   "volume": "40",
+   "author": "Short",
+   "year": "2013",
+   "journal-title": "Health Educ Behav"
+  }
+ ],
+ "container-title": [
+  "Sleep Health"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S2352721817301547?httpAccept=text/xml",
+   "content-type": "text/xml",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  },
+  {
+   "URL": "https://api.elsevier.com/content/article/PII:S2352721817301547?httpAccept=text/plain",
+   "content-type": "text/plain",
+   "content-version": "vor",
+   "intended-application": "text-mining"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2024,
+    12,
+    20
+   ]
+  ],
+  "date-time": "2024-12-20T19:48:33Z",
+  "timestamp": 1734724113000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "https://linkinghub.elsevier.com/retrieve/pii/S2352721817301547"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2017,
+    12
+   ]
+  ]
+ },
+ "references-count": 55,
+ "journal-issue": {
+  "issue": "6",
+  "published-print": {
+   "date-parts": [
+    [
+     2017,
+     12
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "S2352721817301547"
+ ],
+ "URL": "https://doi.org/10.1016/j.sleh.2017.08.004",
+ "relation": {},
+ "ISSN": [
+  "2352-7218"
+ ],
+ "issn-type": [
+  {
+   "value": "2352-7218",
+   "type": "print"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2017,
+    12
+   ]
+  ]
+ },
+ "assertion": [
+  {
+   "value": "Elsevier",
+   "name": "publisher",
+   "label": "This article is maintained by"
+  },
+  {
+   "value": "Effects of school start time on students’ sleep duration, daytime sleepiness, and attendance: a meta-analysis",
+   "name": "articletitle",
+   "label": "Article Title"
+  },
+  {
+   "value": "Sleep Health",
+   "name": "journaltitle",
+   "label": "Journal Title"
+  },
+  {
+   "value": "https://doi.org/10.1016/j.sleh.2017.08.004",
+   "name": "articlelink",
+   "label": "CrossRef DOI link to publisher maintained version"
+  },
+  {
+   "value": "article",
+   "name": "content_type",
+   "label": "Content Type"
+  },
+  {
+   "value": "© 2017 National Sleep Foundation. Published by Elsevier Inc. All rights reserved.",
+   "name": "copyright",
+   "label": "Copyright"
+  }
+ ]
+}

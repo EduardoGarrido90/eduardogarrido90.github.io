@@ -1,0 +1,546 @@
+{
+ "indexed": {
+  "date-parts": [
+   [
+    2026,
+    9,
+    2
+   ]
+  ],
+  "date-time": "2026-09-02T05:50:24Z",
+  "timestamp": 1788328224557,
+  "version": "build-2803163510"
+ },
+ "reference-count": 38,
+ "publisher": "Informa UK Limited",
+ "issue": "1-2",
+ "content-domain": {
+  "domain": [],
+  "crossmark-restriction": false
+ },
+ "short-container-title": [
+  "Chronobiology International"
+ ],
+ "published-print": {
+  "date-parts": [
+   [
+    2006,
+    1
+   ]
+  ]
+ },
+ "DOI": "10.1080/07420520500545979",
+ "type": "journal-article",
+ "created": {
+  "date-parts": [
+   [
+    2006,
+    5,
+    8
+   ]
+  ],
+  "date-time": "2006-05-08T20:23:20Z",
+  "timestamp": 1147119800000
+ },
+ "page": "497-509",
+ "source": "Crossref",
+ "is-referenced-by-count": 2321,
+ "title": [
+  "Social Jetlag: Misalignment of Biological and Social Time"
+ ],
+ "prefix": "10.1080",
+ "volume": "23",
+ "author": [
+  {
+   "given": "Marc",
+   "family": "Wittmann",
+   "sequence": "first",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Jenny",
+   "family": "Dinich",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Martha",
+   "family": "Merrow",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  },
+  {
+   "given": "Till",
+   "family": "Roenneberg",
+   "sequence": "additional",
+   "affiliation": [],
+   "role": [
+    {
+     "vocabulary": "crossref",
+     "role": "author"
+    }
+   ]
+  }
+ ],
+ "member": "301",
+ "published-online": {
+  "date-parts": [
+   [
+    2009,
+    7,
+    7
+   ]
+  ]
+ },
+ "reference": [
+  {
+   "key": "CIT0001",
+   "doi-asserted-by": "crossref",
+   "first-page": "455",
+   "DOI": "10.1111/j.1360-0443.1994.tb00926.x",
+   "volume": "89",
+   "author": "Adan A",
+   "year": "1994",
+   "journal-title": "Addiction"
+  },
+  {
+   "key": "CIT0002",
+   "doi-asserted-by": "crossref",
+   "first-page": "80",
+   "DOI": "10.1007/BF00440545",
+   "volume": "65",
+   "author": "Aschoff J.",
+   "year": "1978",
+   "journal-title": "Naturwiss."
+  },
+  {
+   "key": "CIT0003",
+   "doi-asserted-by": "crossref",
+   "first-page": "181",
+   "DOI": "10.1016/0301-0511(91)90009-6",
+   "volume": "32",
+   "author": "Bailey S. L.",
+   "year": "1991",
+   "journal-title": "Biol. Psychol."
+  },
+  {
+   "key": "CIT0004",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1081/CBI-100103189"
+  },
+  {
+   "key": "CIT0005",
+   "first-page": "53",
+   "volume": "11",
+   "author": "Bullinger M.",
+   "year": "1990",
+   "journal-title": "Zeitschr. Diff. Diag. Psychol."
+  },
+  {
+   "key": "CIT0006",
+   "doi-asserted-by": "crossref",
+   "first-page": "28",
+   "DOI": "10.1016/S0002-8223(21)39775-9",
+   "volume": "74",
+   "author": "Bunker M. C.",
+   "year": "1979",
+   "journal-title": "J. Am. Diet. Assoc."
+  },
+  {
+   "key": "CIT0007",
+   "first-page": "301",
+   "volume": "139",
+   "author": "Carskadon M. A.",
+   "year": "2001",
+   "journal-title": "Arch. Ital. Biol."
+  },
+  {
+   "key": "CIT0008",
+   "doi-asserted-by": "crossref",
+   "first-page": "129",
+   "DOI": "10.1016/S0304-3940(98)00971-9",
+   "volume": "260",
+   "author": "Carskadon M. A.",
+   "year": "1999",
+   "journal-title": "Neurosci. Lett."
+  },
+  {
+   "key": "CIT0009",
+   "doi-asserted-by": "crossref",
+   "first-page": "19",
+   "DOI": "10.1016/S0165-0327(98)00051-2",
+   "volume": "52",
+   "author": "Chelminski I.",
+   "year": "1999",
+   "journal-title": "J. Affect. Dis."
+  },
+  {
+   "key": "CIT0010",
+   "doi-asserted-by": "crossref",
+   "first-page": "829",
+   "DOI": "10.1038/35057006",
+   "volume": "409",
+   "author": "Clayton J. D.",
+   "year": "2001",
+   "journal-title": "Nature"
+  },
+  {
+   "key": "CIT0011",
+   "doi-asserted-by": "crossref",
+   "first-page": "895",
+   "DOI": "10.1037/0735-7044.115.4.895",
+   "volume": "115",
+   "author": "Duffy J. F.",
+   "year": "2001",
+   "journal-title": "Behav. Neurosci."
+  },
+  {
+   "key": "CIT0012",
+   "doi-asserted-by": "crossref",
+   "first-page": "191",
+   "DOI": "10.1046/j.1365-2869.2002.00302.x",
+   "volume": "11",
+   "author": "Giannotti F.",
+   "year": "2002",
+   "journal-title": "Sleep Res."
+  },
+  {
+   "key": "CIT0013",
+   "first-page": "93",
+   "volume-title": "Methods of Sleep Research",
+   "author": "Goertelmeyer R",
+   "year": "1985"
+  },
+  {
+   "key": "CIT0014",
+   "volume-title": "Basler Befindlichkeits‐Skala",
+   "author": "Hobi V",
+   "year": "1985"
+  },
+  {
+   "key": "CIT0015",
+   "first-page": "97",
+   "volume": "4",
+   "author": "Horne J. A.",
+   "year": "1976",
+   "journal-title": "Int. J. Chronobiol."
+  },
+  {
+   "key": "CIT0016",
+   "doi-asserted-by": "crossref",
+   "first-page": "179",
+   "DOI": "10.1016/0301-0511(77)90001-1",
+   "volume": "45",
+   "author": "Horne J. A.",
+   "year": "1977",
+   "journal-title": "Biol. Psychol."
+  },
+  {
+   "key": "CIT0017",
+   "doi-asserted-by": "crossref",
+   "first-page": "537",
+   "DOI": "10.1016/S0191-8869(98)00087-7",
+   "volume": "25",
+   "author": "Mecacci L.",
+   "year": "1998",
+   "journal-title": "Personal. Individ. Diff."
+  },
+  {
+   "key": "CIT0018",
+   "doi-asserted-by": "crossref",
+   "first-page": "209",
+   "DOI": "10.1159/000067803",
+   "volume": "46",
+   "author": "Natale V.",
+   "year": "2002",
+   "journal-title": "Neuropsychobiology"
+  },
+  {
+   "key": "CIT0019",
+   "doi-asserted-by": "crossref",
+   "first-page": "1",
+   "DOI": "10.1542/peds.106.2.e23",
+   "volume": "106",
+   "author": "Patten C. A.",
+   "year": "2000",
+   "journal-title": "Pediatrics"
+  },
+  {
+   "key": "CIT0020",
+   "doi-asserted-by": "crossref",
+   "first-page": "109",
+   "DOI": "10.1007/s00420-004-0585-3",
+   "volume": "78",
+   "author": "Petru R.",
+   "year": "2005",
+   "journal-title": "Int. Arch. Occupt. Environ. Health"
+  },
+  {
+   "key": "CIT0021",
+   "doi-asserted-by": "crossref",
+   "first-page": "183",
+   "DOI": "10.1177/0748730403018003001",
+   "volume": "18",
+   "author": "Roenneberg T.",
+   "year": "2003",
+   "journal-title": "J. Biol. Rhythms"
+  },
+  {
+   "key": "CIT0022",
+   "doi-asserted-by": "crossref",
+   "first-page": "80",
+   "DOI": "10.1177/0748730402239679",
+   "volume": "18",
+   "author": "Roenneberg T.",
+   "year": "2003",
+   "journal-title": "J. Biol. Rhythms"
+  },
+  {
+   "key": "CIT0023",
+   "doi-asserted-by": "crossref",
+   "first-page": "R1038",
+   "DOI": "10.1016/j.cub.2004.11.039",
+   "volume": "14",
+   "author": "Roenneberg T.",
+   "year": "2004",
+   "journal-title": "Curr. Biol."
+  },
+  {
+   "key": "CIT0024",
+   "doi-asserted-by": "crossref",
+   "first-page": "387",
+   "DOI": "10.1017/S0021963097002151",
+   "volume": "39",
+   "author": "Steinhausen H. C.",
+   "year": "1998",
+   "journal-title": "J. Child Psych. Psych. Allied Dis."
+  },
+  {
+   "key": "CIT0025",
+   "doi-asserted-by": "crossref",
+   "first-page": "1366",
+   "DOI": "10.1093/ajcn/80.5.1366",
+   "volume": "80",
+   "author": "Strandberg A. Y.",
+   "year": "2004",
+   "journal-title": "Am. J. Clin.l Nutr."
+  },
+  {
+   "key": "CIT0026",
+   "doi-asserted-by": "crossref",
+   "first-page": "291",
+   "DOI": "10.1046/j.1365-2869.1999.00176.x",
+   "volume": "8",
+   "author": "Taillard J. P.P.",
+   "year": "1999",
+   "journal-title": "J. Sleep Res."
+  },
+  {
+   "key": "CIT0027",
+   "doi-asserted-by": "crossref",
+   "first-page": "275",
+   "DOI": "10.1046/j.0962-1105.2003.00369.x",
+   "volume": "12",
+   "author": "Taillard J.",
+   "year": "2003",
+   "journal-title": "J. Sleep Res."
+  },
+  {
+   "key": "CIT0028",
+   "doi-asserted-by": "crossref",
+   "first-page": "227",
+   "DOI": "10.1046/j.1440-1819.2002.00985.x",
+   "volume": "56",
+   "author": "Takeuchi H.",
+   "year": "2002",
+   "journal-title": "Psych. Clin. Neurosci."
+  },
+  {
+   "key": "CIT0029",
+   "doi-asserted-by": "crossref",
+   "first-page": "1055",
+   "DOI": "10.1080/07420520500398007",
+   "volume": "22",
+   "author": "Takeuchi H.",
+   "year": "2005",
+   "journal-title": "Chronobiol. Int."
+  },
+  {
+   "key": "CIT0030",
+   "doi-asserted-by": "crossref",
+   "first-page": "283",
+   "DOI": "10.5271/sjweh.2608",
+   "volume": "6",
+   "author": "Torsvall L.",
+   "year": "1980",
+   "journal-title": "Scand. J. Work Environ. Health"
+  },
+  {
+   "key": "CIT0031",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1081/CBI-120030045"
+  },
+  {
+   "key": "CIT0032",
+   "doi-asserted-by": "crossref",
+   "first-page": "324",
+   "DOI": "10.1046/j.1365-3016.2003.00507.x",
+   "volume": "17",
+   "author": "Vik T.",
+   "year": "2003",
+   "journal-title": "Paediatr. Perinat. Epi."
+  },
+  {
+   "key": "CIT0033",
+   "doi-asserted-by": "crossref",
+   "first-page": "138",
+   "DOI": "10.1111/j.1365-2869.1994.tb00120.x",
+   "volume": "3",
+   "author": "Volk S.",
+   "year": "1994",
+   "journal-title": "J. Sleep Res."
+  },
+  {
+   "key": "CIT0034",
+   "doi-asserted-by": "crossref",
+   "first-page": "227",
+   "DOI": "10.1081/CBI-100103188",
+   "volume": "18",
+   "author": "Waterhouse J.",
+   "year": "2001",
+   "journal-title": "Chronobiol. Int."
+  },
+  {
+   "key": "CIT0035",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1081/CBI-120025249"
+  },
+  {
+   "key": "CIT0036",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1081/CBI-200036909"
+  },
+  {
+   "key": "CIT0037",
+   "doi-asserted-by": "crossref",
+   "first-page": "702",
+   "DOI": "10.1038/35088576",
+   "volume": "2",
+   "author": "Young M. W.",
+   "year": "2001",
+   "journal-title": "Nature Rev. Genet."
+  },
+  {
+   "key": "CIT0038",
+   "doi-asserted-by": "publisher",
+   "DOI": "10.1081/CBI-200053536"
+  }
+ ],
+ "container-title": [
+  "Chronobiology International"
+ ],
+ "original-title": [],
+ "language": "en",
+ "link": [
+  {
+   "URL": "http://www.tandfonline.com/doi/pdf/10.1080/07420520500545979",
+   "content-type": "unspecified",
+   "content-version": "vor",
+   "intended-application": "similarity-checking"
+  }
+ ],
+ "deposited": {
+  "date-parts": [
+   [
+    2023,
+    5,
+    7
+   ]
+  ],
+  "date-time": "2023-05-07T06:50:15Z",
+  "timestamp": 1683442215000
+ },
+ "score": 1,
+ "resource": {
+  "primary": {
+   "URL": "http://www.tandfonline.com/doi/full/10.1080/07420520500545979"
+  }
+ },
+ "subtitle": [],
+ "short-title": [],
+ "issued": {
+  "date-parts": [
+   [
+    2006,
+    1
+   ]
+  ]
+ },
+ "references-count": 38,
+ "journal-issue": {
+  "issue": "1-2",
+  "published-online": {
+   "date-parts": [
+    [
+     2009,
+     7,
+     7
+    ]
+   ]
+  },
+  "published-print": {
+   "date-parts": [
+    [
+     2006,
+     1
+    ]
+   ]
+  }
+ },
+ "alternative-id": [
+  "10.1080/07420520500545979"
+ ],
+ "URL": "https://doi.org/10.1080/07420520500545979",
+ "relation": {},
+ "ISSN": [
+  "0742-0528",
+  "1525-6073"
+ ],
+ "issn-type": [
+  {
+   "value": "0742-0528",
+   "type": "print"
+  },
+  {
+   "value": "1525-6073",
+   "type": "electronic"
+  }
+ ],
+ "subject": [],
+ "published": {
+  "date-parts": [
+   [
+    2006,
+    1
+   ]
+  ]
+ }
+}
