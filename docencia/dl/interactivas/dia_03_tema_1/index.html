@@ -55,8 +55,8 @@
     box-shadow:0 0 0 2px var(--goldPale)}
   .nterm{padding:1px 3px;border-radius:3px}
   .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
-  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
-    font-size:0.9em;color:#333}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px;
+    font-size:0.86em;line-height:1.4;color:#333}
   .miniglos b{color:var(--goldDeep)}
   #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
     background:#fff;padding:0 4px}
@@ -67,6 +67,15 @@
     border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
     padding:2px 16px;cursor:pointer;margin:0 4px}
   #arrows button:hover{background:var(--goldPale)}
+  /* Proyector 1280x720: la columna de texto no cabe a 17px, sobre todo cuando
+     aparece el aviso de d+1>=N. Se encoge el cuerpo, no la figura. */
+  @media (max-height:760px){
+    html,body{font-size:15px}
+    .slide{padding-top:10px;padding-bottom:52px}
+    .ctrlbox{padding:9px 12px}
+    .ctrlbox .row{margin:7px 0}
+    #slidetitle{font-size:1.35em}
+  }
 </style>
 </head>
 <body>
@@ -87,9 +96,9 @@
         <span class="term" id="t_lam">&lambda;</span> &middot; &Vert;w&Vert;<sup>2</sup>
       </div>
       <div class="eqnum">
-        d = <span class="nterm" id="n_d">9</span>,
+        d = <span class="nterm" id="n_d">12</span>,
         &lambda; = <span class="nterm" id="n_lam">0.10</span>,
-        N = <span class="nterm" id="n_n">10</span>,
+        N = <span class="nterm" id="n_n">25</span>,
         &sigma; = <span class="nterm" id="n_sig">0.12</span>
         &rarr; train <b id="n_tr">0.00</b> &middot; val <b id="n_va">0.00</b>
       </div>
@@ -98,22 +107,21 @@
   </div>
   <div class="txtcol">
     <p><span class="hd">El caso.</span> Mapfre quiere predecir el <b>coste de un
-    siniestro</b> a partir de unos pocos expedientes. Con tan pocos datos, un modelo
-    demasiado flexible <b>memoriza el ruido</b> en vez de la tendencia. La
-    regularización lo frena.</p>
+    siniestro</b> con pocos expedientes. Un modelo demasiado flexible <b>memoriza el
+    ruido</b> en vez de la tendencia; la regularización lo frena.</p>
 
     <div class="ctrlbox">
       <div class="sub">El modelo &mdash; complejidad y castigo</div>
       <div class="row"><span class="lab">d</span>
-        <input type="range" id="d" min="1" max="9" step="1" value="9"
-          oninput="hot('d');upd()"><span class="val" id="v_d">9</span></div>
+        <input type="range" id="d" min="1" max="20" step="1" value="12"
+          oninput="hot('d');upd()"><span class="val" id="v_d">12</span></div>
       <div class="row"><span class="lab">&lambda;</span>
         <input type="range" id="lam" min="0" max="1" step="0.02" value="0.10"
           oninput="hot('lam');upd()"><span class="val" id="v_lam">0.10</span></div>
       <div class="sub second">Los datos &mdash; cuántos y cuán ruidosos</div>
       <div class="row"><span class="lab">N</span>
-        <input type="range" id="n" min="4" max="40" step="1" value="10"
-          oninput="hot('n');upd()"><span class="val" id="v_n">10</span></div>
+        <input type="range" id="n" min="4" max="60" step="1" value="25"
+          oninput="hot('n');upd()"><span class="val" id="v_n">25</span></div>
       <div class="row"><span class="lab">&sigma;</span>
         <input type="range" id="sig" min="0" max="0.35" step="0.01" value="0.12"
           oninput="hot('sig');upd()"><span class="val" id="v_sig">0.12</span></div>
@@ -121,10 +129,10 @@
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Sube el <b>grado d</b> con &lambda;=0 y la curva
-    se retuerce para pasar por cada punto: sobreajuste. Sube <b>&lambda;</b> y se calma.
-    Ahora mueve los datos: con <b>N</b> grande el sobreajuste casi desaparece solo, y con
-    <b>&sigma;</b> grande necesitas mucho más &lambda; para no perseguir el ruido.</p>
+    <p><span class="hd">Lee así.</span> Baja <b>&lambda;</b> a 0 y lleva el <b>grado d</b>
+    al tope: la curva se sale del gráfico y el error de validación pasa de centésimas a
+    decenas. Sube <b>&lambda;</b> y se calma. Con <b>N</b> grande el sobreajuste desaparece
+    casi solo; con <b>&sigma;</b> grande hace falta mucho más &lambda;.</p>
 
     <div class="miniglos">
       <b>L<sub>datos</sub></b> error sobre los expedientes conocidos.
@@ -143,12 +151,14 @@
       <div class="eqtitle">Para llevarte a casa</div>
       <div class="eq">L(w) = L<sub>datos</sub>(w) + &lambda; &middot; &Vert;w&Vert;<sup>2</sup></div>
     </div>
-    <canvas id="cv2" width="720" height="330"></canvas>
+    <canvas id="cv2" width="720" height="400"></canvas>
   </div>
   <div class="txtcol">
     <p><span class="hd">La idea.</span> Aumentar la complejidad baja siempre el error de
     <b>entrenamiento</b>, pero el de <b>validación</b> dibuja una U: primero mejora,
-    luego empeora. Regularizar mueve ese punto óptimo hacia modelos estables.</p>
+    luego empeora. Regularizar mueve ese punto óptimo hacia modelos estables.
+    La curva es siempre la misma muestra: 25 expedientes, &sigma;=0.12, sin castigo
+    (&lambda;=0). Pasado el grado 18 el error de validación se sale del gráfico.</p>
     <p><span class="hd">Negocio.</span> Para Mapfre, un modelo que memoriza los pocos
     siniestros vistos falla con el próximo cliente. La regularización compra
     <b>generalización</b>: predicciones fiables sobre expedientes nuevos.</p>
@@ -213,7 +223,7 @@ function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a
 const trueF=x=>0.5+0.36*Math.sin(2*Math.PI*(x-0.03));   // smooth ground truth
 // the sample itself is a variable of the slide: N expedientes with noise sigma.
 // rebuilt from the same seed on every change, so the picture is reproducible.
-let NOISE=0.12, N=10;
+let NOISE=0.12, N=25;
 let TX=[],TY=[],VX=[],VY=[];
 function buildData(){
   const rng=mulberry32(20260716);
@@ -226,7 +236,17 @@ function buildData(){
 buildData();
 
 // ---------- polynomial basis + ridge (Gauss elimination) ----------
-function feats(x,d){const u=2*x-1;const r=[1];let p=1;for(let j=1;j<=d;j++){p*=u;r.push(p);}return r;}
+// Chebyshev basis T_j(u), u = 2x-1 in [-1,1]. The monomial basis u^j makes XᵀX
+// hopelessly ill-conditioned past d≈10 and the fit degenerates into numerical noise;
+// Chebyshev keeps the normal equations solvable up to DMAX so the high-degree
+// wiggling on screen is genuine overfitting, not a linear-algebra artefact.
+const DMAX=20;
+function feats(x,d){
+  const u=Math.max(-1,Math.min(1,2*x-1));
+  const r=[1]; if(d>=1)r.push(u);
+  for(let j=2;j<=d;j++)r.push(2*u*r[j-1]-r[j-2]);
+  return r;
+}
 function solve(A,b){                                      // solves A w = b in place
   const n=b.length;
   const M=A.map((r,i)=>r.concat(b[i]));
@@ -248,12 +268,23 @@ function fitRidge(d,lam){                                 // (XᵀX + λI) w = X
     for(let i=0;i<m;i++){b[i]+=f[i]*TY[k];for(let j=0;j<m;j++)A[i][j]+=f[i]*f[j];}
   }
   const pen=lam*3;                        // penalty scale (bias term unpenalised)
-  // 1e-6 floor keeps the system solvable when d+1 > N (fewer expedientes than coefficients)
-  for(let i=1;i<m;i++)A[i][i]+=pen+1e-6;
+  // Floor relative to the scale of XᵀX: keeps the system solvable when d+1 > N
+  // (fewer expedientes que coeficientes) without damping the fit at low degree.
+  let tr=0; for(let i=0;i<m;i++)tr+=A[i][i];
+  const floor=1e-7*(tr/m)+1e-12;
+  for(let i=1;i<m;i++)A[i][i]+=pen+floor;
   return solve(A,b);
 }
 function predict(w,x){const f=feats(x,w.length-1);let s=0;for(let i=0;i<f.length;i++)s+=w[i]*f[i];return s;}
 function mse(w,XS,YS){let s=0;for(let k=0;k<XS.length;k++){const e=predict(w,XS[k])-YS[k];s+=e*e;}return s/XS.length;}
+// a degree-20 fit with lambda=0 sends the validation error into the hundreds;
+// toFixed(3) would print an unreadable wall of digits.
+function fmtE(e){
+  if(!isFinite(e))return '&infin;';
+  if(e<10)return e.toFixed(3);
+  if(e<1000)return e.toFixed(1);
+  return e.toExponential(1);
+}
 
 // ---------- slide 0: interactive fit ----------
 function upd(){
@@ -272,8 +303,8 @@ function upd(){
   document.getElementById('n_sig').textContent=NOISE.toFixed(2);
   const w=fitRidge(d,lam);
   const trE=mse(w,TX,TY), vaE=mse(w,VX,VY);
-  document.getElementById('n_tr').textContent=trE.toFixed(3);
-  document.getElementById('n_va').textContent=vaE.toFixed(3);
+  document.getElementById('n_tr').innerHTML=fmtE(trE);
+  document.getElementById('n_va').innerHTML=fmtE(vaE);
   // thresholds scale with the irreducible error sigma^2, so the verdict stays
   // meaningful when the user changes the noise level
   const s2=NOISE*NOISE;
@@ -281,11 +312,17 @@ function upd(){
   if(trE>1.5*s2+0.004){msg='Demasiado rígido: no captura la forma (infraajuste)';cls='bad';}
   else if(vaE>1.8*s2+0.004){msg='Sobreajuste: memoriza el ruido, falla en validación';cls='bad';}
   else {msg='Buen equilibrio: ajusta la señal sin memorizar el ruido';cls='ok';}
+  // Con d+1 > N el modelo tiene más coeficientes que expedientes: ya interpola,
+  // y subir d no puede empeorar más el ajuste. Conviene decirlo en pantalla para
+  // que la curva suave que se ve en ese régimen no contradiga el relato.
+  const sat = (d+1>=N)
+    ? '<br><span style="color:#8C6508">Ojo: d+1 &ge; N, hay tantos coeficientes como expedientes. '+
+      'El modelo ya pasa por todos los puntos; para ver más sobreajuste sube N.</span>' : '';
   document.getElementById('ro').innerHTML=
     'Polinomio de grado <b>'+d+'</b> con &lambda;=<b>'+lam.toFixed(2)+'</b> sobre <b>'+N+
     '</b> expedientes de ruido &sigma;=<b>'+NOISE.toFixed(2)+'</b>.<br>'+
-    'Error entrenamiento <b>'+trE.toFixed(3)+'</b> &middot; error validación <b>'+vaE.toFixed(3)+'</b>.<br>'+
-    '<span class="badge '+cls+'">'+msg+'</span>';
+    'Error entrenamiento <b>'+fmtE(trE)+'</b> &middot; error validación <b>'+fmtE(vaE)+'</b>.<br>'+
+    '<span class="badge '+cls+'">'+msg+'</span>'+sat;
   drawFit(w);
 }
 function drawFit(w){
@@ -326,18 +363,26 @@ function drawCurves(){
   const cv=document.getElementById('cv2'); const {ctx,w:W0,h}=fitCanvas(cv);
   ctx.clearRect(0,0,W0,h);
   const mx=48,my=22,W=W0-mx-18,H=h-my-34;
+  // Curva canónica: se calcula sobre una muestra FIJA (25 expedientes, sigma=0.12),
+  // no sobre la que el alumno haya dejado en los sliders de la slide anterior.
+  // Con N pequeño el grado alto entra en régimen de interpolación y la U se
+  // convierte en un pico seguido de descenso, que no es el mensaje de esta slide.
+  const keepN=N, keepS=NOISE;
+  N=25; NOISE=0.12; buildData();
   const trs=[],vas=[];
-  for(let d=1;d<=9;d++){const w=fitRidge(d,0);trs.push(mse(w,TX,TY));vas.push(mse(w,VX,VY));}
+  for(let d=1;d<=DMAX;d++){const w=fitRidge(d,0);trs.push(mse(w,TX,TY));vas.push(mse(w,VX,VY));}
+  N=keepN; NOISE=keepS; buildData();
   const cap=0.12;
-  const px=d=>mx+(d-1)/8*W;
+  const px=d=>mx+(d-1)/(DMAX-1)*W;
   const py=e=>my+(1-Math.min(e,cap)/cap)*H;
   // axes
   ctx.strokeStyle='#ccc';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my+H);ctx.lineTo(mx+W,my+H);ctx.stroke();
   ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
   ctx.fillText('error',6,my+10);
+  ctx.font='11px Georgia';ctx.fillText('≥'+cap.toFixed(2),4,my+26);ctx.font='13px Georgia';
   ctx.fillText('complejidad (grado d) →',mx+W-190,my+H+24);
-  for(let d=1;d<=9;d++){ctx.fillText(d,px(d)-3,my+H+16);}
+  for(let d=1;d<=DMAX;d++){if(d===1||d%2===0)ctx.fillText(d,px(d)-(d>9?6:3),my+H+16);}
   // train curve (ink)
   ctx.strokeStyle='#1A1A1A';ctx.lineWidth=2.2;ctx.beginPath();
   trs.forEach((e,i)=>{const x=px(i+1),y=py(e);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();
