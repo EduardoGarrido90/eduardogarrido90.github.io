@@ -35,7 +35,7 @@
   .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
   .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
-  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
+  .ctrlbox .val{width:4.4em;text-align:right;font-variant-numeric:tabular-nums;
     color:var(--goldDeep);font-weight:bold}
   .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
     border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
@@ -67,9 +67,9 @@
     border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
     padding:2px 16px;cursor:pointer;margin:0 4px}
   #arrows button:hover{background:var(--goldPale)}
-  /* Proyector 1280x720: la columna de texto no cabe a 17px, sobre todo cuando
-     aparece el aviso de d+1>=N. Se encoge el cuerpo, no la figura. */
-  @media (max-height:760px){
+  /* Proyectores de 720p y 768p: la columna de texto no cabe a 17px, sobre todo
+     cuando aparece el aviso de d+1>=N. Se encoge el cuerpo, no la figura. */
+  @media (max-height:800px){
     html,body{font-size:15px}
     .slide{padding-top:10px;padding-bottom:52px}
     .ctrlbox{padding:9px 12px}
@@ -97,7 +97,7 @@
       </div>
       <div class="eqnum">
         d = <span class="nterm" id="n_d">12</span>,
-        &lambda; = <span class="nterm" id="n_lam">0.10</span>,
+        &lambda; = <span class="nterm" id="n_lam">0.100</span>,
         N = <span class="nterm" id="n_n">25</span>,
         &sigma; = <span class="nterm" id="n_sig">0.12</span>
         &rarr; train <b id="n_tr">0.00</b> &middot; val <b id="n_va">0.00</b>
@@ -116,8 +116,8 @@
         <input type="range" id="d" min="1" max="20" step="1" value="12"
           oninput="hot('d');upd()"><span class="val" id="v_d">12</span></div>
       <div class="row"><span class="lab">&lambda;</span>
-        <input type="range" id="lam" min="0" max="1" step="0.02" value="0.10"
-          oninput="hot('lam');upd()"><span class="val" id="v_lam">0.10</span></div>
+        <input type="range" id="lam" min="0" max="51" step="1" value="31"
+          oninput="hot('lam');upd()"><span class="val" id="v_lam">0.100</span></div>
       <div class="sub second">Los datos &mdash; cuántos y cuán ruidosos</div>
       <div class="row"><span class="lab">N</span>
         <input type="range" id="n" min="4" max="60" step="1" value="25"
@@ -129,10 +129,9 @@
 
     <div class="readout" id="ro"></div>
 
-    <p><span class="hd">Lee así.</span> Baja <b>&lambda;</b> a 0 y lleva el <b>grado d</b>
-    al tope: la curva se sale del gráfico y el error de validación pasa de centésimas a
-    decenas. Sube <b>&lambda;</b> y se calma. Con <b>N</b> grande el sobreajuste desaparece
-    casi solo; con <b>&sigma;</b> grande hace falta mucho más &lambda;.</p>
+    <p><span class="hd">Lee así.</span> Con <b>&lambda;</b>=0 y <b>d</b> al tope la curva se
+    sale del gráfico. Sube <b>&lambda;</b> y se calma; llévalo al extremo y se aplana:
+    demasiado castigo también estropea. <b>&lambda;</b> tiene su óptimo, como <b>d</b>.</p>
 
     <div class="miniglos">
       <b>L<sub>datos</sub></b> error sobre los expedientes conocidos.
@@ -174,7 +173,7 @@
 
 <script>
 const SECTIONS=["Regularización","Para llevar"];
-const TITLES=["Con pocos datos, penalizar los pesos frena el sobreajuste: sube λ y la curva se calma.",
+const TITLES=["Penalizar los pesos frena el sobreajuste, pero pasarse aplana el modelo: λ tiene su punto justo.",
               "Regularizar es cambiar un poco de ajuste por mucha estabilidad."];
 let cur=0;
 function buildNav(){
@@ -267,7 +266,12 @@ function fitRidge(d,lam){                                 // (XᵀX + λI) w = X
     const f=feats(TX[k],d);
     for(let i=0;i<m;i++){b[i]+=f[i]*TY[k];for(let j=0;j<m;j++)A[i][j]+=f[i]*f[j];}
   }
-  const pen=lam*3;                        // penalty scale (bias term unpenalised)
+  // El término de datos es una SUMA sobre los N expedientes, así que crece con N.
+  // Si el castigo fuese fijo, el mismo lambda pesaría la mitad al doblar la muestra
+  // y el slider se sentiría muerto con N grande. Escalando con N, lambda es
+  // "castigo por expediente" y significa lo mismo en todo el rango. El factor
+  // 3/25 deja la calibración idéntica a la del caso por defecto (N=25).
+  const pen=lam*3*(N/25);                 // bias term unpenalised
   // Floor relative to the scale of XᵀX: keeps the system solvable when d+1 > N
   // (fewer expedientes que coeficientes) without damping the fit at low degree.
   let tr=0; for(let i=0;i<m;i++)tr+=A[i][i];
@@ -286,19 +290,33 @@ function fmtE(e){
   return e.toExponential(1);
 }
 
+// ---------- lambda en escala logarítmica ----------
+// En escala lineal el slider era inútil: con d alto todo el efecto ocurre entre
+// 0 y 0.01 (el primer 1% del recorrido) y el resto no movía nada; y con d moderado
+// el tope de 1 ni siquiera alcanzaba a infraajustar. El slider es ahora un índice
+// entero: la posición 0 es lambda=0 exacto (sin castigo, un caso que hay que poder
+// enseñar) y las posiciones 1..51 recorren 1e-4 a 10 a una décima de década por paso.
+function lamOf(i){return i<=0?0:Math.pow(10,-4+(i-1)*0.1);}
+function fmtLam(l){
+  if(l===0)return '0';
+  if(l>=1)return l.toFixed(2);
+  if(l>=0.01)return l.toFixed(3);
+  return l.toExponential(0);
+}
+
 // ---------- slide 0: interactive fit ----------
 function upd(){
   const d  =+document.getElementById('d').value;
-  const lam=+document.getElementById('lam').value;
+  const lam=lamOf(+document.getElementById('lam').value);
   const nn =+document.getElementById('n').value;
   const sg =+document.getElementById('sig').value;
   if(nn!==N||sg!==NOISE){N=nn;NOISE=sg;buildData();}
   document.getElementById('v_d').textContent=d;
-  document.getElementById('v_lam').textContent=lam.toFixed(2);
+  document.getElementById('v_lam').textContent=fmtLam(lam);
   document.getElementById('v_n').textContent=N;
   document.getElementById('v_sig').textContent=NOISE.toFixed(2);
   document.getElementById('n_d').textContent=d;
-  document.getElementById('n_lam').textContent=lam.toFixed(2);
+  document.getElementById('n_lam').textContent=fmtLam(lam);
   document.getElementById('n_n').textContent=N;
   document.getElementById('n_sig').textContent=NOISE.toFixed(2);
   const w=fitRidge(d,lam);
@@ -319,7 +337,7 @@ function upd(){
     ? '<br><span style="color:#8C6508">Ojo: d+1 &ge; N, hay tantos coeficientes como expedientes. '+
       'El modelo ya pasa por todos los puntos; para ver más sobreajuste sube N.</span>' : '';
   document.getElementById('ro').innerHTML=
-    'Polinomio de grado <b>'+d+'</b> con &lambda;=<b>'+lam.toFixed(2)+'</b> sobre <b>'+N+
+    'Polinomio de grado <b>'+d+'</b> con &lambda;=<b>'+fmtLam(lam)+'</b> sobre <b>'+N+
     '</b> expedientes de ruido &sigma;=<b>'+NOISE.toFixed(2)+'</b>.<br>'+
     'Error entrenamiento <b>'+fmtE(trE)+'</b> &middot; error validación <b>'+fmtE(vaE)+'</b>.<br>'+
     '<span class="badge '+cls+'">'+msg+'</span>'+sat;
