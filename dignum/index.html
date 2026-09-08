@@ -3,672 +3,1050 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>La dignidad humana en la era del dato · Jornada inaugural DIGNUM · Comillas</title>
-<meta name="description" content="Jornada inaugural DIGNUM. La dignidad humana en la era del dato. El contrato social que nunca se firmó. Universidad Pontificia Comillas, Madrid, 17 de junio de 2026." />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>DIGNUM · La dignidad de la persona en la gobernanza del dato y de la inteligencia artificial · Universidad Pontificia Comillas</title>
+<meta name="description" content="DIGNUM es una iniciativa académica de la Universidad Pontificia Comillas, con la colaboración de la Fundación La Caixa, que sitúa la dignidad de la persona en el núcleo del debate sobre la inteligencia artificial y la gobernanza del dato. Manifiesto, líneas de investigación, miembros, publicaciones y convocatoria abierta de expresiones de interés." />
+<meta name="author" content="Iniciativa DIGNUM · Universidad Pontificia Comillas" />
+<meta property="og:title" content="DIGNUM · Universidad Pontificia Comillas" />
+<meta property="og:description" content="Soberanía del dato, ética aplicada a la IA y contrato social digital desde una perspectiva humanista." />
+<meta property="og:type" content="website" />
 <style>
   :root{
-    --gold:#c9a24a;
-    --gold-soft:#e3c47b;
-    --gold-dark:#8a6d29;
-    --black:#0a0a0a;
-    --ink:#1a1a1a;
-    --paper:#ffffff;
-    --muted:#6b6b6b;
-    --line:rgba(201,162,74,0.25);
+    --ink:#1A1A1A;
+    --gold:#B8860B;
+    --gold-deep:#8C6508;
+    --gold-pale:#F5EBD3;
+    --mute:#8A8A8A;
+    --rule:#D9C28A;
+    --paper:#FFFFFF;
+    --serif:"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;scroll-padding-top:5.5rem}
   body{
-    font-family:'Inter',sans-serif;
+    font-family:var(--serif);
     color:var(--ink);
     background:var(--paper);
-    line-height:1.6;
-    font-weight:400;
+    line-height:1.62;
+    font-size:17.5px;
     -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
   }
-  h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:500;letter-spacing:-0.01em;line-height:1.15;color:var(--black)}
-  h1{font-size:clamp(2.4rem,5.6vw,4.6rem);font-weight:600}
-  h2{font-size:clamp(1.8rem,3.4vw,2.8rem);font-weight:500;margin-bottom:0.4em}
-  h3{font-size:1.4rem;font-weight:600}
-  a{color:var(--gold-dark);text-decoration:none;transition:color .2s}
-  a:hover{color:var(--black)}
-  .container{max-width:1200px;margin:0 auto;padding:0 2rem}
-  .eyebrow{
-    text-transform:uppercase;
-    letter-spacing:0.24em;
-    font-size:0.72rem;
-    font-weight:600;
-    color:var(--gold-dark);
-    margin-bottom:1rem;
-  }
-  .divider{
-    width:60px;height:1px;background:var(--gold);
-    margin:1.2rem 0;
-  }
-  .divider.center{margin:1.2rem auto}
+  h1,h2,h3,h4{font-family:var(--serif);line-height:1.16;color:var(--ink);font-weight:700}
+  h1{font-size:clamp(2.3rem,5.2vw,3.9rem);letter-spacing:-0.015em}
+  h2{font-size:clamp(1.6rem,3vw,2.25rem);letter-spacing:-0.01em}
+  h3{font-size:1.22rem}
+  h4{font-size:1.02rem}
+  p{margin-bottom:1rem}
+  a{color:var(--gold-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:color .2s,border-color .2s}
+  a:hover{color:var(--ink);border-color:var(--gold)}
+  em{font-style:italic}
 
-  /* ===== NAV ===== */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 2rem}
+  .col{max-width:800px}
+  .eyebrow{
+    text-transform:uppercase;letter-spacing:.22em;font-size:.72rem;
+    font-weight:700;color:var(--gold-deep);margin-bottom:.9rem;
+  }
+  .rule{width:6em;height:1px;background:var(--gold);margin:1rem 0}
+  .rule.center{margin:1rem auto}
+
+  /* ============ NAV ============ */
   nav{
-    position:fixed;top:0;left:0;right:0;z-index:50;
-    background:rgba(10,10,10,0.92);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid rgba(201,162,74,0.2);
+    position:sticky;top:0;z-index:60;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--rule);
   }
   nav .inner{
-    max-width:1200px;margin:0 auto;padding:1rem 2rem;
-    display:flex;align-items:center;justify-content:space-between;gap:2rem;
+    max-width:1180px;margin:0 auto;padding:.7rem 2rem;
+    display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
   }
-  .nav-brand{
-    display:flex;align-items:center;gap:.9rem;
-    color:var(--paper);font-weight:600;letter-spacing:.05em;font-size:.9rem;
+  .nav-mark{
+    font-weight:700;letter-spacing:.16em;font-size:.95rem;color:var(--ink);
+    border:none;white-space:nowrap;
   }
-  .nav-brand img{height:54px;width:auto}
-  .nav-links{display:flex;gap:2rem;list-style:none}
-  .nav-links a{color:rgba(255,255,255,0.75);font-size:.83rem;letter-spacing:.05em;text-transform:uppercase;font-weight:500}
-  .nav-links a:hover{color:var(--gold-soft)}
-  @media(max-width:800px){.nav-links{display:none}}
+  .nav-mark:hover{color:var(--gold-deep)}
+  .nav-links{display:flex;gap:1.45rem;list-style:none;overflow-x:auto;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{
+    color:var(--mute);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;border:none;white-space:nowrap;
+  }
+  .nav-links a:hover,.nav-links a.on{color:var(--gold);font-weight:700}
 
-  /* ===== HERO ===== */
-  .hero{
-    min-height:100vh;
-    background:
-      radial-gradient(ellipse at top right, rgba(201,162,74,0.08), transparent 60%),
-      linear-gradient(180deg, #070707 0%, #0a0a0a 100%);
-    color:var(--paper);
-    display:flex;align-items:center;
-    position:relative;overflow:hidden;
-    padding:8rem 0 6rem;
+  /* ============ HERO ============ */
+  header.hero{
+    background:var(--ink);color:var(--paper);
+    padding:5.5rem 0 4.2rem;position:relative;overflow:hidden;
   }
-  .hero::before{
+  header.hero::before{
     content:"";position:absolute;inset:0;
-    background-image:
-      linear-gradient(var(--line) 1px,transparent 1px),
-      linear-gradient(90deg,var(--line) 1px,transparent 1px);
-    background-size:80px 80px;
-    opacity:.25;
-    mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+    background-image:linear-gradient(rgba(217,194,138,.16) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(217,194,138,.16) 1px,transparent 1px);
+    background-size:76px 76px;
+    -webkit-mask-image:radial-gradient(ellipse at 30% 40%,#000 10%,transparent 70%);
+    mask-image:radial-gradient(ellipse at 30% 40%,#000 10%,transparent 70%);
   }
-  .hero .container{position:relative;z-index:1}
+  header.hero .wrap{position:relative;z-index:1}
   .hero-top{
-    display:flex;align-items:center;gap:2rem;margin-bottom:2.5rem;
-    padding-bottom:2rem;border-bottom:1px solid rgba(201,162,74,0.2);
+    display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;
+    padding-bottom:1.6rem;margin-bottom:2.4rem;border-bottom:1px solid rgba(217,194,138,.28);
   }
-  .hero-top img{height:110px;width:auto}
-  .hero-top .sep{width:1px;height:80px;background:var(--gold);opacity:.6}
-  .hero-top span{letter-spacing:.18em;text-transform:uppercase;font-size:.75rem;color:var(--gold-soft);font-weight:600}
-  .hero h1{color:var(--paper);margin-bottom:1.2rem;max-width:15ch}
-  .hero h1 em{font-style:italic;font-weight:400;color:var(--gold-soft)}
-  .hero .lead{
-    font-size:clamp(1.05rem,1.6vw,1.25rem);
-    max-width:58ch;color:rgba(255,255,255,0.78);font-weight:300;
-    margin-bottom:2.5rem;
+  .hero-top img{height:46px;width:auto}
+  .hero-top span.tag{
+    letter-spacing:.2em;text-transform:uppercase;font-size:.72rem;color:var(--rule);font-weight:700;
   }
-  .hero-meta{
-    display:flex;flex-wrap:wrap;gap:2.5rem;margin-top:2.5rem;
-    padding-top:2rem;border-top:1px solid rgba(201,162,74,0.2);
+  header.hero h1{color:var(--paper);max-width:19ch;margin-bottom:1.1rem}
+  header.hero h1 em{color:var(--rule);font-weight:400}
+  .hero-lead{max-width:64ch;color:rgba(255,255,255,.8);font-size:1.1rem;margin-bottom:2rem}
+  .hero-facts{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(217,194,138,.28);
+    border:1px solid rgba(217,194,138,.28);margin-top:2.4rem;
   }
-  .hero-meta div{min-width:0}
-  .hero-meta .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold-soft);margin-bottom:.4rem;font-weight:600}
-  .hero-meta .v{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:500}
-
-  /* ===== SECTION ===== */
-  section{padding:7rem 0;position:relative}
-  section.dark{background:var(--black);color:var(--paper)}
-  section.dark h2,section.dark h3{color:var(--paper)}
-  section.cream{background:#faf8f3}
-
-  .section-head{text-align:center;margin-bottom:4rem}
-  .section-head h2{max-width:22ch;margin:0 auto .4em}
-  .section-head p{max-width:62ch;margin:0 auto;color:var(--muted);font-size:1.05rem}
-  section.dark .section-head p{color:rgba(255,255,255,0.65)}
-
-  /* ===== PAPER CARD ===== */
-  .paper-card{
-    background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);
-    color:var(--paper);
-    border:1px solid rgba(201,162,74,0.35);
-    border-radius:2px;
-    padding:3rem;
-    display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;
-  }
-  .paper-card .eyebrow{color:var(--gold)}
-  .paper-card h3{color:var(--paper);font-size:1.8rem;margin-bottom:.6rem}
-  .paper-card p{color:rgba(255,255,255,0.72);max-width:52ch;margin-bottom:1.2rem}
-  @media(max-width:700px){.paper-card{grid-template-columns:1fr;padding:2rem}}
+  .hero-facts > div{background:var(--ink);padding:1.2rem 1.3rem}
+  .hero-facts .k{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rule);font-weight:700;margin-bottom:.35rem}
+  .hero-facts .v{font-size:1.02rem;color:rgba(255,255,255,.92)}
 
   .btn{
-    display:inline-flex;align-items:center;gap:.6rem;
-    padding:.9rem 1.8rem;
-    background:transparent;color:var(--gold-soft);
-    border:1px solid var(--gold);
-    font-size:.78rem;text-transform:uppercase;letter-spacing:.18em;font-weight:600;
-    transition:all .25s;cursor:pointer;
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.72rem 1.5rem;border:1px solid var(--gold);
+    color:var(--gold-deep);background:transparent;
+    font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+    transition:background .2s,color .2s;
   }
-  .btn:hover{background:var(--gold);color:var(--black)}
-  .btn.solid{background:var(--gold);color:var(--black)}
-  .btn.solid:hover{background:var(--gold-soft)}
+  .btn:hover{background:var(--gold);color:var(--paper);border-color:var(--gold)}
+  .btn.on-dark{color:var(--rule);border-color:var(--rule)}
+  .btn.on-dark:hover{background:var(--rule);color:var(--ink)}
+  .btn.solid{background:var(--gold);color:#fff;border-color:var(--gold)}
+  .btn.solid:hover{background:var(--gold-deep);border-color:var(--gold-deep)}
+  .btn-row{display:flex;gap:.8rem;flex-wrap:wrap}
 
-  /* ===== PALLETE FEATURE ===== */
-  .pallete{
-    display:grid;grid-template-columns:1fr 1.5fr;gap:4rem;align-items:center;
-  }
-  .pallete-photo{
-    position:relative;aspect-ratio:3/4;
-    background:#111;
-    overflow:hidden;
-    box-shadow:0 30px 80px rgba(0,0,0,0.4);
-  }
-  .pallete-photo::after{
-    content:"";position:absolute;inset:0;
-    border:1px solid var(--gold);transform:translate(20px,20px);
-    pointer-events:none;
-  }
-  .pallete-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(15%) contrast(1.05)}
-  .pallete-content .quote{
-    font-family:'Cormorant Garamond',serif;font-style:italic;
-    font-size:1.4rem;color:var(--gold-soft);
-    border-left:2px solid var(--gold);padding-left:1.4rem;margin:1.8rem 0;
-    line-height:1.35;
-  }
-  .pallete-content .role{
-    font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--gold);font-weight:600;margin-bottom:.6rem;
-  }
-  @media(max-width:900px){
-    .pallete{grid-template-columns:1fr;gap:2.5rem}
-    .pallete-photo{max-width:360px;margin:0 auto}
-  }
+  /* ============ SECTIONS ============ */
+  main section{padding:5rem 0;border-top:1px solid var(--rule)}
+  main section:first-child{border-top:none}
+  section.tint{background:#FCFAF5}
+  .sec-head{margin-bottom:2.6rem}
+  .sec-head h2{margin-bottom:.5rem}
+  .sec-head .sub{color:var(--mute);max-width:70ch}
+  .sec-head .bar{height:1px;background:var(--gold);width:100%;margin-top:1.1rem}
 
-  /* ===== AGENDA ===== */
-  .agenda{max-width:900px;margin:0 auto}
-  .agenda-item{
-    display:grid;grid-template-columns:140px 1fr;gap:2.5rem;
-    padding:2rem 0;border-bottom:1px solid var(--line);
-  }
-  .agenda-item:last-child{border-bottom:none}
-  .agenda-time{
-    font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;
-    color:var(--gold-dark);letter-spacing:.02em;
-  }
-  .agenda-body h3{margin-bottom:.5rem;font-size:1.35rem}
-  .agenda-body p{color:var(--muted);margin-bottom:.8rem;font-size:.98rem}
-  .agenda-body .who{font-size:.85rem;color:var(--ink);font-weight:500}
-  .agenda-body .who strong{color:var(--black)}
-  .agenda-tag{
-    display:inline-block;padding:.2rem .7rem;background:rgba(201,162,74,0.12);
-    color:var(--gold-dark);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
-    font-weight:700;margin-bottom:.6rem;
-  }
-  @media(max-width:700px){
-    .agenda-item{grid-template-columns:1fr;gap:.6rem}
-  }
+  .two{display:grid;grid-template-columns:1.05fr .95fr;gap:3.2rem;align-items:start}
+  .two.narrow{grid-template-columns:1.3fr .7fr}
 
-  /* ===== SPEAKERS ===== */
-  .speakers-grid{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;
+  figure.fig{margin:0}
+  figure.fig svg{width:100%;height:auto;display:block}
+  figure.fig figcaption{
+    font-size:.8rem;color:var(--mute);margin-top:.7rem;line-height:1.5;
+    padding-top:.6rem;border-top:1px solid var(--rule);
   }
-  @media(max-width:900px){.speakers-grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:600px){.speakers-grid{grid-template-columns:1fr}}
-  .speaker{
-    background:var(--paper);
-    border:1px solid rgba(0,0,0,0.06);
-    padding:0;display:flex;flex-direction:column;
-    transition:transform .3s,box-shadow .3s;
+  figure.fig figcaption b{color:var(--ink);font-variant:small-caps;font-weight:700}
+
+  /* ============ VALUES ============ */
+  .values{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:2.6rem}
+  .values > div{background:var(--paper);padding:1.3rem 1.2rem}
+  .values h4{color:var(--gold-deep);margin-bottom:.35rem;font-size:.95rem}
+  .values p{font-size:.88rem;color:var(--mute);margin:0;line-height:1.5}
+
+  /* ============ LÍNEAS ============ */
+  .linea{border-top:1px solid var(--rule);padding:2.2rem 0}
+  .linea:first-of-type{border-top:none;padding-top:.5rem}
+  .linea-head{display:grid;grid-template-columns:5.2rem 1fr;gap:1.6rem;align-items:baseline}
+  .linea-code{
+    font-size:2.1rem;font-weight:700;color:var(--gold);line-height:1;letter-spacing:-.02em;
   }
-  .speaker:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.1)}
-  .speaker-photo{
-    aspect-ratio:1/1;background:linear-gradient(135deg,#1a1a1a,#333);
-    position:relative;overflow:hidden;
+  .linea-head h3{margin-bottom:.5rem;font-size:1.32rem}
+  .linea-head > div > p{color:var(--ink);margin-bottom:0}
+  .props{list-style:none;margin:1.3rem 0 0 6.8rem;display:grid;gap:.85rem}
+  .prop{
+    border-left:2px solid var(--rule);padding:.15rem 0 .15rem 1rem;
   }
-  .speaker-photo img{
-    width:100%;height:100%;object-fit:cover;
-    filter:grayscale(30%) contrast(1.03);
-  }
-  .speaker-photo.placeholder{
+  .prop .ph{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+  .prop .code{font-weight:700;color:var(--gold-deep);font-size:.9rem;letter-spacing:.04em}
+  .prop .name{font-weight:700;font-size:.98rem}
+  .prop .disc{font-variant:small-caps;color:var(--mute);font-size:.82rem;letter-spacing:.04em}
+  .prop .q{font-size:.92rem;color:var(--mute);margin:.2rem 0 0;line-height:1.55}
+
+  /* ============ MIEMBROS ============ */
+  .members{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem}
+  .member{display:flex;flex-direction:column}
+  .member .ph{
+    aspect-ratio:1/1;overflow:hidden;background:var(--ink);
+    border:1px solid var(--rule);
     display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#1a1a1a,#3a3a3a);
-    color:var(--gold-soft);
-    font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:600;letter-spacing:.05em;
   }
-  .speaker-info{padding:1.4rem 1.4rem 1.6rem;flex:1;display:flex;flex-direction:column}
-  .speaker-info h3{font-size:1.15rem;margin-bottom:.25rem;font-weight:600}
-  .speaker-info .sub{
-    font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--gold-dark);font-weight:700;margin-bottom:.6rem;
+  .member .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.05)}
+  .member .ph .mono{
+    font-size:2.6rem;font-weight:700;color:var(--rule);letter-spacing:.06em;
   }
-  .speaker-info p{font-size:.88rem;color:var(--muted);line-height:1.5}
+  .member h3{font-size:1.02rem;margin:.85rem 0 .15rem;line-height:1.25}
+  .member .role{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:.35rem}
+  .member .aff{font-size:.87rem;color:var(--mute);line-height:1.45}
+  .member.lead .ph{border-color:var(--gold);border-width:2px}
 
-  /* ===== INSTITUTIONS ===== */
-  .institutions{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;align-items:stretch;
+  /* ============ PUBLICACIONES ============ */
+  .featured{
+    border:1px solid var(--gold);background:#FCFAF5;padding:2.2rem;margin-bottom:2.6rem;
+    display:grid;grid-template-columns:.92fr 1.08fr;gap:2.6rem;align-items:start;
   }
-  .inst{
-    padding:2.5rem;background:rgba(255,255,255,0.02);
-    border:1px solid rgba(201,162,74,0.25);
-  }
-  .inst h3{color:var(--gold-soft);margin-bottom:1rem;font-size:1.4rem}
-  .inst p{color:rgba(255,255,255,0.72);font-size:.95rem}
-  @media(max-width:900px){.institutions{grid-template-columns:1fr}}
+  .featured h3{font-size:1.4rem;margin-bottom:.6rem}
+  .featured .authors{font-size:.93rem;color:var(--ink);margin-bottom:1rem}
+  .featured .abs{font-size:.94rem;color:var(--mute);margin:0}
+  .featured .kw{font-size:.84rem;color:var(--gold-deep);font-variant:small-caps;letter-spacing:.03em;margin:1rem 0 0}
 
-  /* ===== INFO BLOCK ===== */
-  .info{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-    background:var(--line);border:1px solid var(--line);
+  table.pubs{width:100%;border-collapse:collapse;font-size:.93rem}
+  table.pubs th{
+    text-align:left;padding:.6rem .8rem;color:var(--ink);background:var(--paper);
+    border-bottom:2px solid var(--gold);
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
   }
-  .info > div{background:var(--paper);padding:2rem 1.6rem;text-align:center}
-  .info .k{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:.6rem;font-weight:700}
-  .info .v{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--black)}
-  @media(max-width:800px){.info{grid-template-columns:repeat(2,1fr)}}
+  table.pubs td{padding:.85rem .8rem;vertical-align:top;border-bottom:1px solid var(--rule)}
+  table.pubs tbody tr:nth-child(odd){background:var(--gold-pale)}
+  table.pubs .t{font-weight:700;display:block;margin-bottom:.2rem;line-height:1.4}
+  table.pubs .a{color:var(--mute);font-size:.88rem;display:block}
+  table.pubs .v{white-space:nowrap;color:var(--gold-deep);font-size:.88rem}
+  .badge{
+    display:inline-block;border:1px solid var(--rule);background:var(--paper);
+    padding:.1rem .5rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:700;color:var(--gold-deep);white-space:nowrap;
+  }
+  .only-narrow{display:none}
 
-  /* ===== FOOTER ===== */
-  footer{
-    background:#050505;color:rgba(255,255,255,0.55);
-    padding:4rem 0 2rem;font-size:.88rem;
+  /* ============ CONVOCATORIA ============ */
+  .lang-switch{display:flex;gap:0;border:1px solid var(--rule);width:max-content;margin-bottom:2rem}
+  .lang-switch button{
+    font-family:var(--serif);cursor:pointer;background:var(--paper);color:var(--mute);
+    border:none;padding:.5rem 1.1rem;font-size:.74rem;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:700;
   }
-  footer .inner{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:3rem}
-  @media(max-width:700px){footer .inner{grid-template-columns:1fr}}
-  footer h4{color:var(--gold-soft);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem;font-weight:700;font-family:'Inter',sans-serif}
-  footer .logos{display:flex;gap:2rem;align-items:center;flex-wrap:wrap;margin-top:1rem}
-  footer .logos img{height:78px;width:auto;opacity:.9}
-  footer .copy{
-    border-top:1px solid rgba(201,162,74,0.15);
-    padding-top:1.5rem;text-align:center;font-size:.78rem;
-    color:rgba(255,255,255,0.35);
-  }
+  .lang-switch button + button{border-left:1px solid var(--rule)}
+  .lang-switch button[aria-pressed="true"]{background:var(--gold);color:#fff}
+  .strands{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin:1.6rem 0 2rem}
+  .strands > div{background:var(--paper);padding:1.1rem 1.2rem;font-size:.93rem;line-height:1.5}
+  .strands .n{color:var(--gold);font-weight:700;margin-right:.45rem}
+  .modes{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6rem;margin:1.4rem 0 2rem}
+  .mode{border:1px solid var(--rule);padding:1.4rem 1.5rem;background:var(--paper)}
+  .mode h4{color:var(--gold-deep);margin-bottom:.4rem}
+  .mode p{font-size:.93rem;color:var(--mute);margin:0}
+  .apply{border:1px solid var(--gold);background:#FCFAF5;padding:1.8rem 2rem;margin-top:1.6rem}
+  .apply h4{margin-bottom:.6rem}
+  .apply ol{margin:.6rem 0 1rem 1.2rem;font-size:.95rem}
+  .apply li{margin-bottom:.25rem}
+  .mail{font-size:1.15rem;font-weight:700;color:var(--gold-deep)}
 
-  /* ===== ANIMATIONS ===== */
-  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  .hero h1,.hero .lead,.hero-meta{animation:fadeUp .9s ease both}
-  .hero .lead{animation-delay:.12s}
-  .hero-meta{animation-delay:.24s}
+  /* ============ ACTIVIDADES ============ */
+  .archive{display:grid;grid-template-columns:.85fr 1.15fr;gap:3rem;align-items:start}
+  .archive .meta{border-left:2px solid var(--gold);padding-left:1.3rem}
+  .archive .meta .k{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-top:1rem}
+  .archive .meta .k:first-child{margin-top:0}
+  .archive .meta .v{margin-bottom:.2rem}
+  .roster{list-style:none;display:grid;gap:.55rem;font-size:.93rem}
+  .roster li{border-bottom:1px solid var(--rule);padding-bottom:.5rem}
+  .roster b{font-weight:700}
+  .roster span{color:var(--mute)}
+
+  /* ============ FOOTER ============ */
+  footer{background:var(--ink);color:rgba(255,255,255,.62);padding:3.6rem 0 1.6rem;font-size:.93rem}
+  footer h4{color:var(--rule);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:.8rem}
+  footer a{color:var(--rule);border-color:rgba(217,194,138,.4)}
+  footer a:hover{color:#fff;border-color:var(--rule)}
+  footer .grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:2.6rem;margin-bottom:2.6rem}
+  footer img.logo{height:40px;width:auto;margin-top:1.1rem}
+  footer .copy{border-top:1px solid rgba(217,194,138,.22);padding-top:1.2rem;font-size:.78rem;color:rgba(255,255,255,.38);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+  .todo{background:var(--gold-pale);border:1px dashed var(--gold);padding:.15rem .45rem;font-size:.85rem;color:var(--gold-deep);font-weight:700}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:700px){
+    body{font-size:16.5px}
+    .wrap{padding:0 1.2rem}
+    nav .inner{padding:.6rem 1.2rem;gap:.9rem}
+    .nav-links{gap:1rem}
+    header.hero{padding:3.2rem 0 2.6rem}
+    .hero-top img{height:34px}
+    .hero-facts{grid-template-columns:1fr}
+    main section{padding:3.2rem 0}
+    .two,.two.narrow,.archive{grid-template-columns:1fr;gap:2rem}
+    .values,.strands,.modes{grid-template-columns:1fr}
+    .members{grid-template-columns:repeat(2,1fr);gap:1.1rem}
+    .linea-head{grid-template-columns:1fr;gap:.4rem}
+    .linea-code{font-size:1.5rem}
+    .props{margin-left:0}
+    .featured{padding:1.4rem;grid-template-columns:1fr;gap:1.4rem}
+    table.pubs th:nth-child(2),table.pubs td:nth-child(2),
+    table.pubs th:nth-child(3),table.pubs td:nth-child(3){display:none}
+    .only-narrow{display:block;margin-top:.5rem}
+    footer .grid{grid-template-columns:1fr;gap:1.8rem}
+  }
 </style>
+<noscript><style>#call-en{display:block !important}#h2-en{display:none !important}.lang-switch{display:none}</style></noscript>
 </head>
 <body>
 
 <nav>
   <div class="inner">
-    <div class="nav-brand">
-      <img src="assets/logos/comillas-horizontal.jpg" alt="Universidad Pontificia Comillas" />
-    </div>
+    <a class="nav-mark" href="#top">DIGNUM</a>
     <ul class="nav-links">
-      <li><a href="#jornada">Jornada</a></li>
-      <li><a href="#pallete">Representante</a></li>
-      <li><a href="#agenda">Agenda</a></li>
-      <li><a href="#ponentes">Ponentes</a></li>
-      <li><a href="#instituto">Iniciativa</a></li>
+      <li><a href="#manifiesto">Manifiesto</a></li>
+      <li><a href="#lineas">Líneas</a></li>
+      <li><a href="#miembros">Miembros</a></li>
+      <li><a href="#publicaciones">Publicaciones</a></li>
+      <li><a href="#convocatoria">Convocatoria</a></li>
+      <li><a href="#actividades">Actividades</a></li>
+      <li><a href="#contacto">Contacto</a></li>
     </ul>
   </div>
 </nav>
 
-<header class="hero">
-  <div class="container">
+<header class="hero" id="top">
+  <div class="wrap">
     <div class="hero-top">
-      <img src="assets/logos/comillas-horizontal.jpg" alt="Universidad Pontificia Comillas" />
-      <span class="sep"></span>
-      <span>Jornada inaugural · DIGNUM</span>
+      <img src="assets/logos/comillas-blanco.png" alt="Universidad Pontificia Comillas" />
+      <span class="tag">Iniciativa DIGNUM · Comillas ICADE · Con la colaboración de la Fundación La Caixa</span>
     </div>
-    <div class="eyebrow" style="color:var(--gold-soft)">Universidad Pontificia Comillas · Madrid · 17 de junio de 2026</div>
-    <h1>La dignidad humana <em>en la era del dato.</em> El contrato social pendiente.</h1>
-    <p class="lead">Una jornada al más alto nivel sobre los fundamentos éticos, científicos, económicos y normativos de una nueva gobernanza del dato, articulada desde una perspectiva humanista en la Universidad Pontificia Comillas.</p>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap">
-      <a class="btn solid" href="#agenda">Ver el programa</a>
-      <a class="btn" href="assets/paper.pdf" target="_blank">Descargar el paper fundacional</a>
+    <h1>La dignidad de la persona <em>en la era del dato.</em></h1>
+    <p class="hero-lead">DIGNUM es una iniciativa académica e interdisciplinar de la Universidad Pontificia Comillas
+      sobre la soberanía del dato, la ética aplicada a la inteligencia artificial y el contrato social digital
+      —el contrato social que nunca se firmó—. Reúne ingeniería, derecho, economía y filosofía en torno a una sola
+      exigencia: que los compromisos normativos sobre dignidad humana terminen en artefactos que un tercero pueda comprobar.</p>
+    <div class="btn-row">
+      <a class="btn on-dark" href="#manifiesto">Leer el manifiesto</a>
+      <a class="btn on-dark" href="assets/paper.pdf" target="_blank" rel="noopener">Position paper fundacional (PDF)</a>
+      <a class="btn on-dark" href="#convocatoria">Convocatoria abierta</a>
     </div>
-    <div class="hero-meta">
+    <div class="hero-facts">
       <div>
-        <div class="k">Fecha</div>
-        <div class="v">17 de junio de 2026</div>
-      </div>
-      <div>
-        <div class="k">Horario</div>
-        <div class="v">8:30 – 16:00</div>
-      </div>
-      <div>
-        <div class="k">Lugar</div>
+        <div class="k">Sede</div>
         <div class="v">Alberto Aguilera 23 · Madrid</div>
       </div>
       <div>
-        <div class="k">Organiza</div>
-        <div class="v">Universidad Pontificia Comillas</div>
+        <div class="k">Programa científico</div>
+        <div class="v">Cinco líneas · 2026–2029</div>
+      </div>
+      <div>
+        <div class="k">Contacto</div>
+        <div class="v"><a href="mailto:dignum@comillas.edu">dignum@comillas.edu</a></div>
       </div>
     </div>
   </div>
 </header>
 
-<!-- ===== JORNADA ===== -->
-<section id="jornada">
-  <div class="container" style="max-width:880px;text-align:center">
-    <div class="eyebrow">La jornada</div>
-    <h2>Un contrato social a la altura de la era digital</h2>
-    <div class="divider center"></div>
-    <p style="font-size:1.15rem;color:var(--muted);margin-bottom:1.4rem">
-      Vivimos en una sociedad cuya vida cotidiana, desde la salud a la educación, el trabajo o la participación política, está mediada por datos. Esos datos, sin embargo, no fluyen en un marco de reglas que hayamos deliberado colectivamente. El contrato social de la era digital es el que nunca se firmó.
+<main>
+
+<!-- ==================== MANIFIESTO ==================== -->
+<section id="manifiesto">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Manifiesto</div>
+      <h2>La dignidad humana como restricción primera del diseño.</h2>
+      <div class="bar"></div>
+    </div>
+
+    <div class="two">
+      <div>
+        <p>DIGNUM parte de una convicción sobre el estatuto del dato personal: los datos que una persona
+          genera, y los que se infieren de ella, son emanaciones de esa persona y llevan sus derechos adheridos.
+          De ahí se sigue una exigencia normativa concreta, y de esa exigencia una obligación de ingeniería. La era
+          algorítmica ha reorganizado la vida cotidiana —la salud, la educación, el trabajo, el crédito, la
+          deliberación pública— alrededor de infraestructuras que registran, infieren y deciden de forma continua,
+          mientras las reglas que gobiernan esas infraestructuras se fijaban en una negociación bilateral entre
+          reguladores y plataformas de la que la ciudadanía quedó excluida. Ese es el contrato social que nunca se
+          firmó, y escribirlo es el trabajo de esta iniciativa. DIGNUM contrasta el <em>DatAIsm</em> —el paradigma
+          extractivo que reduce a la persona a un punto de datos y optimiza para la predicción y el control— con el
+          <em>HumAIsm</em>, que devuelve agencia, control y dividendos a quien genera el dato. Sitúa la dignidad
+          humana como restricción primera de todo diseño técnico, jurídico, económico y político, operativa desde
+          la primera línea de código y la primera cláusula del contrato. Y se impone una disciplina que ordena todo
+          su portafolio: cada principio debe descender hasta una especificación operacional, una métrica auditable y
+          un artefacto verificable por terceros. Nada es ético si no se puede comprobar.</p>
+        <p>Esta convicción viene de la tradición humanista que define la identidad académica de Comillas y se
+          proyecta sobre la era algorítmica en forma de programa de trabajo: un <em>Dignity of Data Index</em> que
+          mida empíricamente hasta qué punto un producto, un proceso o una regulación respetan la soberanía personal
+          sobre el dato; un cuerpo de principios de <em>design by dignity</em>; y la propuesta articulada de un nuevo
+          contrato social digital entre la ciudadanía, la administración pública y los actores tecnológicos.</p>
+      </div>
+
+      <figure class="fig">
+        <svg viewBox="0 0 420 400" role="img" aria-label="Diagrama: la dignidad humana en el núcleo, con siete valores orbitando a su alrededor">
+          <g fill="none" stroke="#D9C28A" stroke-width="1">
+            <circle cx="210" cy="200" r="140" stroke-dasharray="3 5"/>
+          </g>
+          <g stroke="#D9C28A" stroke-width="1">
+            <line x1="210" y1="200" x2="210" y2="60"/>
+            <line x1="210" y1="200" x2="319" y2="113"/>
+            <line x1="210" y1="200" x2="347" y2="243"/>
+            <line x1="210" y1="200" x2="271" y2="333"/>
+            <line x1="210" y1="200" x2="149" y2="333"/>
+            <line x1="210" y1="200" x2="73"  y2="243"/>
+            <line x1="210" y1="200" x2="101" y2="113"/>
+          </g>
+          <circle cx="210" cy="200" r="56" fill="#B8860B"/>
+          <text x="210" y="194" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-size="14" font-weight="bold">Dignidad</text>
+          <text x="210" y="212" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-size="14" font-weight="bold">humana</text>
+          <g font-family="Georgia,serif" font-size="11.5" fill="#1A1A1A" text-anchor="middle">
+            <circle cx="210" cy="60"  r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="210" y="57">Sobera-</text><text x="210" y="70">nía</text>
+            <circle cx="319" cy="113" r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="319" y="110">Verifica-</text><text x="319" y="123">bilidad</text>
+            <circle cx="347" cy="243" r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="347" y="240">Interdis-</text><text x="347" y="253">ciplina</text>
+            <circle cx="271" cy="333" r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="271" y="330">Indepen-</text><text x="271" y="343">dencia</text>
+            <circle cx="149" cy="333" r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="149" y="330">Huma-</text><text x="149" y="343">nismo</text>
+            <circle cx="73"  cy="243" r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="73"  y="240">Delibe-</text><text x="73"  y="253">ración</text>
+            <circle cx="101" cy="113" r="30" fill="#F5EBD3" stroke="#D9C28A"/><text x="101" y="110">Transpa-</text><text x="101" y="123">rencia</text>
+          </g>
+        </svg>
+        <figcaption><b>Carta de compromisos.</b> Un núcleo y siete valores satélite. La dignidad humana opera como
+          criterio último de validación; los siete restantes son los compromisos operativos que la hacen exigible.</figcaption>
+      </figure>
+    </div>
+
+    <div class="values">
+      <div><h4>Soberanía</h4><p>Control efectivo sobre el dato: almacén personal, consentimiento granular, trazabilidad criptográfica y revocación exigible.</p></div>
+      <div><h4>Verificabilidad</h4><p>Principio normativo → especificación operacional → métrica auditable → artefacto comprobable por un tercero.</p></div>
+      <div><h4>Interdisciplinariedad</h4><p>Ninguna propuesta se aprueba si no integra al menos dos facultades con responsabilidad sustantiva en diseño y ejecución.</p></div>
+      <div><h4>Independencia</h4><p>Interlocución simultánea con academia, regulador e industria, sin reducirse a contratista de ninguno de los tres.</p></div>
+      <div><h4>Humanismo aplicado</h4><p>Ni nostalgia restauradora ni tecnocracia: el humanismo se prueba fijando restricciones de diseño verificables.</p></div>
+      <div><h4>Deliberación democrática</h4><p>La ciudadanía es contraparte del contrato social digital, con instrumentos que le devuelven capacidad deliberativa.</p></div>
+      <div><h4>Transparencia</h4><p>Trazabilidad pública de la cadena datos → modelo → evaluación → decisión → auditoría civil, con cada eslabón firmado.</p></div>
+      <div><h4>Auditoría propia</h4><p>DIGNUM enuncia, publica y audita estos valores: los traduce en indicadores internos revisados anualmente sobre su portafolio.</p></div>
+    </div>
+
+    <div class="two" style="margin-top:3.2rem">
+      <figure class="fig">
+        <svg viewBox="0 0 520 190" role="img" aria-label="Cadena de verificabilidad: principio normativo, especificación operacional, métrica auditable y artefacto verificable">
+          <defs>
+            <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+              <path d="M0,0 L9,4.5 L0,9 z" fill="#B8860B"/>
+            </marker>
+          </defs>
+          <g font-family="Georgia,serif" text-anchor="middle">
+            <rect x="6"   y="52" width="112" height="76" fill="#F5EBD3" stroke="#D9C28A"/>
+            <text x="62"  y="84" font-size="12.5" fill="#1A1A1A">Principio</text>
+            <text x="62"  y="101" font-size="12.5" fill="#1A1A1A">normativo</text>
+
+            <rect x="140" y="52" width="112" height="76" fill="#F5EBD3" stroke="#D9C28A"/>
+            <text x="196" y="84" font-size="12.5" fill="#1A1A1A">Especificación</text>
+            <text x="196" y="101" font-size="12.5" fill="#1A1A1A">operacional</text>
+
+            <rect x="274" y="52" width="112" height="76" fill="#F5EBD3" stroke="#D9C28A"/>
+            <text x="330" y="84" font-size="12.5" fill="#1A1A1A">Métrica</text>
+            <text x="330" y="101" font-size="12.5" fill="#1A1A1A">auditable</text>
+
+            <rect x="408" y="52" width="106" height="76" fill="#B8860B" stroke="#B8860B"/>
+            <text x="461" y="84" font-size="12.5" fill="#fff" font-weight="bold">Artefacto</text>
+            <text x="461" y="101" font-size="12.5" fill="#fff" font-weight="bold">verificable</text>
+          </g>
+          <g stroke="#B8860B" stroke-width="1.4" marker-end="url(#ar)">
+            <line x1="120" y1="90" x2="134" y2="90"/>
+            <line x1="254" y1="90" x2="268" y2="90"/>
+            <line x1="388" y1="90" x2="402" y2="90"/>
+          </g>
+          <text x="260" y="24" text-anchor="middle" font-family="Georgia,serif" font-size="13" font-style="italic" fill="#8C6508">Nada es ético si no se puede comprobar.</text>
+          <text x="260" y="164" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#8A8A8A">Prueba última: auditoría por un tercero independiente.</text>
+        </svg>
+        <figcaption><b>La cadena de verificabilidad.</b> Todo proyecto de DIGNUM produce, junto al artefacto
+          académico, un instrumento trasladable al regulador, a la industria o a la sociedad civil.</figcaption>
+      </figure>
+
+      <div>
+        <h3>Cuatro facultades, un solo problema</h3>
+        <div class="rule"></div>
+        <p>La gobernanza del dato es un problema híbrido. Lo puramente ingenieril produce herramientas sin
+          legitimidad; lo puramente jurídico, normas sin implementación; lo puramente filosófico, discurso sin
+          tracción. DIGNUM se construye sobre la disciplina de mantener las cuatro perspectivas operando a la vez.</p>
+        <p><b>ICAI</b> aporta el diseño y la auditoría de sistemas de inteligencia artificial, la ingeniería de
+          privacidad y de soberanía digital. La <b>Facultad de Derecho</b> articula el estatuto del dato como derecho
+          fundamental, la arquitectura constitucional del consentimiento y la responsabilidad algorítmica.
+          <b>ICADE</b> examina las dinámicas de mercado, la concentración de poder informacional y las distorsiones
+          competitivas de la asimetría de datos. La <b>Facultad de Ciencias Humanas y Sociales</b> ancla el edificio
+          en la filosofía, la antropología, la teología pública y la teoría política.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== LÍNEAS ==================== -->
+<section id="lineas" class="tint">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Programa científico 2026–2029</div>
+      <h2>Cinco líneas de investigación articuladas por una tesis común.</h2>
+      <p class="sub">La gobernanza del dato y de la inteligencia artificial es operativa cuando los compromisos
+        normativos se traducen en artefactos verificables, y cuando los artefactos de ingeniería se diseñan con esos
+        compromisos como restricciones de primera clase. Cada línea combina un eje normativo y un eje ingenieril, y
+        se despliega en propuestas de <em>research</em> con pregunta explícita, métodos y salida prevista.</p>
+      <div class="bar"></div>
+    </div>
+
+    <div class="two narrow" style="margin-bottom:2.6rem">
+      <div>
+        <p>El programa rechaza tres asimetrías recurrentes del debate contemporáneo. La que separa el discurso ético
+          del diseño técnico y produce principios sin tracción. La que reduce la gobernanza a cumplimiento normativo
+          descarnado e ignora la pregunta antropológica por el tipo de persona que produce la era algorítmica. Y la
+          que delega la legitimidad democrática del orden digital a la negociación entre regulador y plataforma,
+          dejando a la ciudadanía como objeto pasivo de un contrato del que nunca fue parte.</p>
+        <p>Las diecisiete propuestas que siguen constituyen una primera ola. La iniciativa está abierta a iterarlas
+          con los integrantes de las cuatro facultades implicadas y con colaboradores externos, y revisa anualmente
+          el portafolio a la luz del progreso y de la evolución regulatoria europea e internacional.</p>
+      </div>
+      <figure class="fig">
+        <svg viewBox="0 0 340 320" role="img" aria-label="Diagrama: cinco líneas de investigación equidistantes en torno al núcleo DIGNUM">
+          <g stroke="#D9C28A" stroke-width="1">
+            <line x1="170" y1="160" x2="170" y2="46"/>
+            <line x1="170" y1="160" x2="278" y2="239"/>
+            <line x1="170" y1="160" x2="62"  y2="239"/>
+            <line x1="170" y1="160" x2="278" y2="82"/>
+            <line x1="170" y1="160" x2="62"  y2="82"/>
+          </g>
+          <g font-family="Georgia,serif" font-size="10.5" text-anchor="middle" fill="#1A1A1A">
+            <circle cx="170" cy="46"  r="38" fill="#fff" stroke="#B8860B"/>
+            <text x="170" y="38" font-weight="bold" fill="#8C6508">L1</text><text x="170" y="52">Soberanía</text><text x="170" y="64">del dato</text>
+            <circle cx="278" cy="82"  r="38" fill="#fff" stroke="#B8860B"/>
+            <text x="278" y="74" font-weight="bold" fill="#8C6508">L2</text><text x="278" y="88">Gobernanza</text><text x="278" y="100">algorítmica</text>
+            <circle cx="278" cy="239" r="38" fill="#fff" stroke="#B8860B"/>
+            <text x="278" y="231" font-weight="bold" fill="#8C6508">L3</text><text x="278" y="245">Dignity of</text><text x="278" y="257">Data Index</text>
+            <circle cx="62"  cy="239" r="38" fill="#fff" stroke="#B8860B"/>
+            <text x="62"  y="231" font-weight="bold" fill="#8C6508">L4</text><text x="62"  y="245">Contrato</text><text x="62"  y="257">social digital</text>
+            <circle cx="62"  cy="82"  r="38" fill="#fff" stroke="#B8860B"/>
+            <text x="62"  y="74" font-weight="bold" fill="#8C6508">L5</text><text x="62"  y="88">Gobernanza</text><text x="62"  y="100">humanista</text>
+          </g>
+          <circle cx="170" cy="160" r="42" fill="#1A1A1A"/>
+          <text x="170" y="157" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="#fff" font-weight="bold">DIGNUM</text>
+          <text x="170" y="173" text-anchor="middle" font-family="Georgia,serif" font-size="9" fill="#D9C28A">dignidad · dato · IA</text>
+        </svg>
+        <figcaption><b>El portafolio.</b> Cinco líneas y diecisiete propuestas en torno a un núcleo normativo común.</figcaption>
+      </figure>
+    </div>
+
+    <div class="linea">
+      <div class="linea-head">
+        <div class="linea-code">L1</div>
+        <div>
+          <h3>Soberanía del dato y arquitectura de derechos</h3>
+          <p>Estudia el estatuto del dato personal como extensión de la persona desde el derecho, la filosofía y la
+            ingeniería de sistemas. La hipótesis de trabajo es que el régimen contemporáneo de consentimiento
+            informado es estructuralmente insuficiente: produce la ilusión de control sin transferirlo. La línea
+            explora arquitecturas que combinan derecho fundamental, contratos verificables, infraestructura
+            criptográfica y mecanismos de redistribución del valor generado por el dato.</p>
+        </div>
+      </div>
+      <ul class="props">
+        <li class="prop"><div class="ph"><span class="code">P1.1</span><span class="name">Personalismo del dato como categoría jurídica</span><span class="disc">Derecho · Filosofía</span></div>
+          <p class="q">¿Bajo qué condiciones constitucionales puede tratarse el dato personal como derecho fundamental análogo a la integridad corporal, frente a su estatuto actual de bien transable bajo contrato de adhesión?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P1.2</span><span class="name">Arquitectura técnica de soberanía sobre datos personales</span><span class="disc">Ingeniería · Derecho</span></div>
+          <p class="q">¿Qué combinación de <em>personal data stores</em>, identificadores descentralizados, agregación segura y <em>policy enforcement</em> en el borde permite implementar soberanía individual sin sacrificar utilidad analítica colectiva?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P1.3</span><span class="name">Mecanismos de redistribución del dividendo del dato</span><span class="disc">Economía · Ingeniería</span></div>
+          <p class="q">¿Qué mecanismos de mercado y de fiscalidad redistribuyen de forma incentivo-compatible el valor generado por la explotación agregada de datos personales, respetando la voluntariedad del titular?</p></li>
+      </ul>
+    </div>
+
+    <div class="linea">
+      <div class="linea-head">
+        <div class="linea-code">L2</div>
+        <div>
+          <h3>Ingeniería de gobernanza algorítmica</h3>
+          <p>Desarrolla los instrumentos técnicos que convierten la gobernanza de la inteligencia artificial en
+            ingeniería verificable: auditabilidad, trazabilidad, privacidad y robustez de los sistemas desplegados en
+            contextos de alto impacto. El énfasis está en lo que un regulador, un auditor externo o una organización
+            de la sociedad civil pueden efectivamente comprobar.</p>
+        </div>
+      </div>
+      <ul class="props">
+        <li class="prop"><div class="ph"><span class="code">P2.1</span><span class="name">Auditoría algorítmica externa de modelos opacos</span><span class="disc">Ingeniería</span></div>
+          <p class="q">¿Qué procedimientos de auditoría caja-negra son robustos al <em>audit washing</em> y al <em>shift</em> entre entorno auditado y entorno de despliegue?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P2.2</span><span class="name">Privacidad diferencial operacional en sistemas reales</span><span class="disc">Ingeniería</span></div>
+          <p class="q">¿Cómo deben fijarse los parámetros ε y δ para que el régimen de protección sea efectivo en escenarios reales, y no solo formalmente correcto?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P2.3</span><span class="name">Aprendizaje federado como sustrato de soberanía</span><span class="disc">Ingeniería · Derecho</span></div>
+          <p class="q">¿En qué condiciones el aprendizaje federado satisface las exigencias de soberanía del dato del Reglamento Europeo de IA y del GDPR, y cuándo constituye una transferencia disfrazada?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P2.4</span><span class="name">Procedencia criptográfica y marca de agua de contenido sintético</span><span class="disc">Ingeniería</span></div>
+          <p class="q">¿Qué combinación de marca de agua adversarialmente robusta, firma de procedencia y detección mantiene una cadena de trazabilidad fiable para contenido generado por modelos de IA?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P2.5</span><span class="name">Casos de seguridad para modelos de fundación</span><span class="disc">Ingeniería · Filosofía</span></div>
+          <p class="q">¿Qué estructura debe tener un <em>safety case</em> formal para que un modelo de fundación desplegado en alto riesgo sea evaluable por un tercero y compatible con el Reglamento Europeo de IA?</p></li>
+      </ul>
+    </div>
+
+    <div class="linea">
+      <div class="linea-head">
+        <div class="linea-code">L3</div>
+        <div>
+          <h3>Dignity of Data Index</h3>
+          <p>El primer instrumento operacional propio de DIGNUM: un índice compuesto que evalúa, sobre un producto,
+            un proceso o una regulación, el grado en que respeta la soberanía personal sobre el dato. La línea cubre
+            simultáneamente su fundamentación normativa, su definición métrica, su validación empírica y su
+            despliegue como instrumento auditable.</p>
+        </div>
+      </div>
+      <ul class="props">
+        <li class="prop"><div class="ph"><span class="code">P3.1</span><span class="name">Definición axiomática del índice</span><span class="disc">Filosofía · Estadística</span></div>
+          <p class="q">¿Qué propiedades axiomáticas —monotonicidad, agregabilidad, sensibilidad a asimetrías— caracterizan unívocamente el índice, y bajo qué supuestos normativos se justifican esos axiomas?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P3.2</span><span class="name">Construcción y calibración empírica</span><span class="disc">Estadística · Ingeniería</span></div>
+          <p class="q">¿Cómo se calibra el índice sobre una muestra representativa de productos digitales y regulaciones, y qué niveles de fiabilidad inter-<em>rater</em> se alcanzan?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P3.3</span><span class="name">Despliegue como instrumento de auditoría civil</span><span class="disc">Ingeniería · Comunicación</span></div>
+          <p class="q">¿Qué interfaz, frecuencia de actualización y mecanismo de impugnación permiten usar el índice como instrumento de auditoría ciudadana sin caer en la ley de Goodhart?</p></li>
+      </ul>
+    </div>
+
+    <div class="linea">
+      <div class="linea-head">
+        <div class="linea-code">L4</div>
+        <div>
+          <h3>Contrato social digital</h3>
+          <p>Articula la propuesta normativa central del trabajo fundacional: la formulación de un nuevo contrato
+            social digital entre la ciudadanía, el Estado y los actores tecnológicos. Combina filosofía política,
+            derecho constitucional, economía institucional e ingeniería de mecanismos, evitando tanto la nostalgia
+            contractualista clásica como el determinismo tecnocrático contemporáneo.</p>
+        </div>
+      </div>
+      <ul class="props">
+        <li class="prop"><div class="ph"><span class="code">P4.1</span><span class="name">Las seis dimensiones del contrato social digital</span><span class="disc">Filosofía · Derecho</span></div>
+          <p class="q">¿Cómo se articulan dignidad, soberanía, representación, transparencia, redistribución y supervisión humana en un marco constitucional coherente?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P4.2</span><span class="name">DatAIsm frente a HumAIsm: análisis comparado de paradigmas</span><span class="disc">Economía · Filosofía</span></div>
+          <p class="q">¿Qué consecuencias empíricas distinguen el régimen extractivo de datos del régimen centrado en la agencia humana en términos de concentración, innovación, productividad y bienestar?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P4.3</span><span class="name">Supervisión humana significativa: del principio al diseño</span><span class="disc">Ingeniería · Filosofía</span></div>
+          <p class="q">¿Bajo qué arquitecturas técnicas la cláusula de <em>meaningful human oversight</em> del Reglamento Europeo de IA tiene contenido comprobable?</p></li>
+      </ul>
+    </div>
+
+    <div class="linea">
+      <div class="linea-head">
+        <div class="linea-code">L5</div>
+        <div>
+          <h3>Gobernanza humanista de la era digital</h3>
+          <p>Línea transversal sobre los marcos institucionales, regulatorios, educativos y culturales que mantienen
+            a la persona como criterio último frente a la deriva tecnocrática. Articula DIGNUM con su entorno: la
+            política pública europea, la gobernanza global de la IA, la educación universitaria y la deliberación
+            pública mediada algorítmicamente.</p>
+        </div>
+      </div>
+      <ul class="props">
+        <li class="prop"><div class="ph"><span class="code">P5.1</span><span class="name">Implementación del Reglamento Europeo de IA en la práctica</span><span class="disc">Derecho · Ingeniería</span></div>
+          <p class="q">¿Qué distancia existe entre los requisitos formales del Reglamento Europeo de IA y la capacidad técnica e institucional de los Estados miembros para implementarlos?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P5.2</span><span class="name">Currículum humanista para la ingeniería de IA</span><span class="disc">Educación · Filosofía</span></div>
+          <p class="q">¿Qué currículum integrado forma ingenieros de IA capaces de operar sobre los criterios normativos del contrato social digital?</p></li>
+        <li class="prop"><div class="ph"><span class="code">P5.3</span><span class="name">Deliberación pública mediada algorítmicamente</span><span class="disc">Filosofía · Ingeniería</span></div>
+          <p class="q">¿Qué arquitectura algorítmica de plataformas de deliberación pública es compatible con un debate democrático no extractivo?</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MIEMBROS ==================== -->
+<section id="miembros">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Equipo</div>
+      <h2>Miembros de DIGNUM.</h2>
+      <p class="sub">La iniciativa está co-liderada por la Dra. Reyes Calderón Cuadrado y D. José María
+        Álvarez-Pallete, y reúne a investigadores de las cuatro unidades académicas implicadas de Comillas junto a
+        profesionales del regulador financiero y de la práctica jurídica.</p>
+      <div class="bar"></div>
+    </div>
+
+    <div class="members">
+      <div class="member lead">
+        <div class="ph"><img src="assets/members/calderon.jpg" alt="Reyes Calderón Cuadrado" /></div>
+        <h3>Reyes Calderón Cuadrado</h3>
+        <div class="role">Co-lidera la iniciativa</div>
+        <p class="aff">Universidad Pontificia Comillas. Doctora en Economía y en Filosofía (Universidad de Navarra). Ética empresarial y gobierno corporativo.</p>
+      </div>
+
+      <div class="member lead">
+        <div class="ph"><img src="assets/members/pallete.jpg" alt="José María Álvarez-Pallete" /></div>
+        <h3>José María Álvarez-Pallete</h3>
+        <div class="role">Co-lidera la iniciativa</div>
+        <p class="aff">Associate Researcher, Universidad Pontificia Comillas. Ex presidente ejecutivo de Telefónica. Contrato social digital y soberanía tecnológica europea.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">MC</span></div>
+        <h3>María Teresa Corzo</h3>
+        <div class="role">Economía y finanzas</div>
+        <p class="aff">Facultad de Ciencias Económicas y Empresariales (Comillas ICADE). Economía de datos y mercados financieros.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">IN</span></div>
+        <h3>Íñigo Navarro Mendizábal</h3>
+        <div class="role">Derecho</div>
+        <p class="aff">Facultad de Derecho, Universidad Pontificia Comillas. Derecho civil, responsabilidad y estatuto jurídico del dato personal.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">RR</span></div>
+        <h3>Raquel Redondo</h3>
+        <div class="role">Métodos cuantitativos</div>
+        <p class="aff">Facultad de Ciencias Económicas y Empresariales (Comillas ICADE). Estadística y medición aplicada al Dignity of Data Index.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">GL</span></div>
+        <h3>Gregorio López López</h3>
+        <div class="role">Ingeniería</div>
+        <p class="aff">Escuela Técnica Superior de Ingeniería (Comillas ICAI). Sistemas, privacidad e infraestructura de soberanía digital.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><img src="assets/members/garrido.jpg" alt="Eduardo César Garrido-Merchán" /></div>
+        <h3>Eduardo César Garrido-Merchán</h3>
+        <div class="role">Inteligencia artificial</div>
+        <p class="aff">Comillas ICADE e Institute for Research in Technology (IIT). Aprendizaje automático, optimización bayesiana y ética de la IA.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">SP</span></div>
+        <h3>Sergio Padilla</h3>
+        <div class="role">Regulación financiera</div>
+        <p class="aff">Banco de España. Supervisión, regulación y gobernanza institucional del dato.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">AP</span></div>
+        <h3>Alejandro Padín</h3>
+        <div class="role">Práctica jurídica</div>
+        <p class="aff">Garrigues. Protección de datos, privacidad y cumplimiento normativo en entornos digitales.</p>
+      </div>
+
+      <div class="member">
+        <div class="ph"><span class="mono" aria-hidden="true">EG</span></div>
+        <h3>Elsa Gutiérrez</h3>
+        <div class="role">Miembro de la iniciativa</div>
+        <p class="aff"><span class="todo">[[ADSCRIPCIÓN Y ÁREA DE ELSA GUTIÉRREZ]]</span></p>
+      </div>
+    </div>
+
+    <p style="margin-top:2.4rem;color:var(--mute);font-size:.93rem;max-width:78ch">
+      DIGNUM incorpora además investigadores asociados y colaboradores a través de su
+      <a href="#convocatoria">convocatoria abierta de expresiones de interés</a>.
     </p>
-    <p style="font-size:1.15rem;color:var(--muted)">
-      Esta jornada inaugural reúne a investigadores y a una primera línea de pensadores en torno a DIGNUM, una iniciativa académica de la Universidad Pontificia Comillas que sitúa la dignidad de la persona en el núcleo del debate sobre la inteligencia artificial y la soberanía del dato.
+  </div>
+</section>
+
+<!-- ==================== PUBLICACIONES ==================== -->
+<section id="publicaciones" class="tint">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Producción científica</div>
+      <h2>Publicaciones.</h2>
+      <p class="sub">La producción de DIGNUM combina el trabajo fundacional de la iniciativa con contribuciones
+        técnicas y filosóficas en revistas indexadas. Toda referencia de esta página está verificada contra Crossref
+        y arXiv.</p>
+      <div class="bar"></div>
+    </div>
+
+    <div class="featured">
+      <div>
+      <div class="eyebrow">Working paper fundacional</div>
+      <h3>Personal Data as a Human Right: A New Social Contract Based on Data Sovereignty, Human Dignity and Data Personalism</h3>
+      <p class="authors">Álvarez-Pallete, J. M., Calderón, R., Corzo, M. T., Garrido-Merchán, E. C., López, G.,
+        Navarro-Mendizábal, I., Padilla, S., Padín, A., &amp; Redondo, R. (2026).
+        <em>arXiv preprint</em> arXiv:2602.23918. <span style="color:var(--mute)">Todos los autores contribuyeron por igual.</span></p>
+      <div class="btn-row">
+        <a class="btn solid" href="assets/paper.pdf" target="_blank" rel="noopener">Leer el paper (PDF, 75 pp.)</a>
+        <a class="btn" href="https://arxiv.org/abs/2602.23918" target="_blank" rel="noopener">arXiv:2602.23918</a>
+      </div>
+      </div>
+      <div>
+      <p class="abs">En una era de recolección ubicua de datos, dominancia de plataformas y gobernanza mediada por
+        inteligencia artificial, el contrato social implícito de la vida digital lo configura un número reducido de
+        actores privados antes que la deliberación democrática. El trabajo propone un contrato social digital
+        centrado en la dignidad, fundado en la soberanía del dato y en el personalismo del dato: la tesis de que los
+        datos personales son emanaciones de la persona cargadas de derechos y deben protegerse, en sustancia, como
+        un derecho humano. Contrasta el <em>DatAIsm</em> —paradigma extractivo que reduce a las personas a puntos de
+        datos y optimiza para la predicción y el control— con el <em>HumAIsm</em>, que recentra al sujeto humano y la
+        irreductibilidad de la dignidad al cálculo, y articula una arquitectura de gobernanza operativa en seis
+        dimensiones: diseño y supervisión tecnológica mediante <em>Dignity-by-Design</em>, límites a la automatización
+        y control humano significativo, valoración contextual y redistribución, legitimidad político-institucional,
+        cohesión sociocultural y procomún digital, y garantías jurídico-regulatorias.</p>
+      <p class="kw">Palabras clave: contrato social digital · datos personales como derecho humano · soberanía del dato ·
+        dignidad humana · personalismo del dato · Dignity-by-Design · disrupción humana</p>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom:1rem">Artículos en revista</h3>
+    <table class="pubs">
+      <thead>
+        <tr><th scope="col">Referencia</th><th scope="col">Área</th><th scope="col">Venue</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <span class="t">GOFAI meets generative AI: Development of expert systems by means of large language models</span>
+            <span class="a">Garrido-Merchán, E. C., &amp; Puente, C. (2026). <em>Knowledge-Based Systems</em>, 351, 116657.
+              <a href="https://doi.org/10.1016/j.knosys.2026.116657" target="_blank" rel="noopener">doi:10.1016/j.knosys.2026.116657</a></span>
+            <span class="only-narrow"><span class="badge">Técnico</span> <span class="badge">Q1 · Computer Science</span></span>
+          </td>
+          <td><span class="badge">Técnico</span></td>
+          <td class="v">Knowledge-Based Systems<br><span style="color:var(--mute)">Q1 · Computer Science</span></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="t">Kalman-Annealing: Calibrated Uncertainty for Simulated Annealing via a Probabilistic-Numerics Filter, with an Application to Reinforcement-Learning Hyperparameter Tuning</span>
+            <span class="a">Garrido-Merchán, E. C. (2026). <em>Algorithms</em>, 19(7), 581.
+              <a href="https://doi.org/10.3390/a19070581" target="_blank" rel="noopener">doi:10.3390/a19070581</a></span>
+            <span class="only-narrow"><span class="badge">Técnico</span> <span class="badge">Q2 · Computer Science</span></span>
+          </td>
+          <td><span class="badge">Técnico</span></td>
+          <td class="v">Algorithms<br><span style="color:var(--mute)">Q2 · Computer Science</span></td>
+        </tr>
+        <tr>
+          <td>
+            <span class="t">Humanist Acceleration and the Digital Social Contract: A Politically Agnostic Reading of Dignity-Centric Data Governance in the Age of Robotic Infrastructure</span>
+            <span class="a">Garrido-Merchán, E. C. (2026). <em>Journal of Ethics and Emerging Technologies</em>, 36(2), 1–11.
+              <a href="https://doi.org/10.55613/jeet.v36i2.242" target="_blank" rel="noopener">doi:10.55613/jeet.v36i2.242</a></span>
+            <span class="only-narrow"><span class="badge">Filosofía</span> <span class="badge">Ética de la tecnología</span></span>
+          </td>
+          <td><span class="badge">Filosofía</span></td>
+          <td class="v">J. Ethics &amp; Emerging Tech.<br><span style="color:var(--mute)">Ética de la tecnología</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:1.6rem;color:var(--mute);font-size:.92rem;max-width:78ch">
+      El portafolio en curso prevé, entre otras salidas, la caracterización axiomática y la calibración empírica del
+      <em>Dignity of Data Index</em>, protocolos públicos de auditoría algorítmica y <em>policy briefs</em>
+      trasladables al regulador europeo.
     </p>
   </div>
+</section>
 
-  <div class="container" style="margin-top:5rem">
-    <div class="paper-card" style="grid-template-columns:1fr">
-      <div>
-        <div class="eyebrow">Position paper fundacional</div>
-        <h3>Personal Data as a Human Right</h3>
-        <p>El marco conceptual de la iniciativa DIGNUM. Un paper elaborado por un equipo interdisciplinar de nueve investigadores que articula el nuevo contrato social digital con la dignidad de la persona como eje normativo.</p>
-        <a class="btn" href="assets/paper.pdf" target="_blank">Leer el paper (PDF)</a>
+<!-- ==================== CONVOCATORIA ==================== -->
+<section id="convocatoria">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Convocatoria abierta · Open call</div>
+      <h2><span id="h2-es">Expresiones de interés.</span><span id="h2-en" lang="en" style="display:none">Expressions of interest.</span></h2>
+      <div class="bar"></div>
+    </div>
+
+    <div class="lang-switch" role="group" aria-label="Idioma de la convocatoria">
+      <button type="button" id="btn-es" aria-pressed="true" onclick="setCallLang('es')">Español</button>
+      <button type="button" id="btn-en" aria-pressed="false" onclick="setCallLang('en')">English</button>
+    </div>
+
+    <!-- ---------- ES ---------- -->
+    <div id="call-es" class="col" style="max-width:none">
+      <h3>Qué buscamos</h3>
+      <div class="rule"></div>
+      <p>DIGNUM abre una convocatoria de expresiones de interés dirigida a investigadores que deseen incorporarse a
+        sus líneas de trabajo. Nos interesan especialmente propuestas que dialoguen con alguno de estos ejes.</p>
+      <div class="strands">
+        <div><span class="n">01</span>Soberanía del dato y arquitectura institucional de su gobernanza.</div>
+        <div><span class="n">02</span>Ética aplicada a la inteligencia artificial y diseño tecnológico responsable.</div>
+        <div><span class="n">03</span>Fundamentos filosóficos y jurídicos de los datos personales como cuestión de dignidad.</div>
+        <div><span class="n">04</span>Medición y evaluación: desarrollo y validación del <em>Dignity of Data Index</em>.</div>
+        <div><span class="n">05</span>El contrato social digital: implicaciones económicas, sociales y normativas.</div>
+        <div><span class="n">06</span>Desarrollo de metodologías de IA justa y explicable para la dignidad de la persona.</div>
+      </div>
+
+      <h3>Perfiles</h3>
+      <div class="rule"></div>
+      <p>Buscamos preferentemente, aunque no de forma excluyente, perfiles procedentes de Psicología, Sociología,
+        Antropología, Filosofía, Derecho, Economía, Ingeniería de Inteligencia Artificial e Ingeniería Informática.
+        Damos la bienvenida tanto a investigadores con trayectoria consolidada como a doctorandos y personal
+        investigador en formación. La colaboración interdisciplinar es el rasgo distintivo del proyecto.</p>
+
+      <h3>Modalidades de colaboración</h3>
+      <div class="rule"></div>
+      <div class="modes">
+        <div class="mode">
+          <h4>Investigador asociado</h4>
+          <p>Colaboración remunerada dirigida a personal investigador postdoctoral, con distintas posibilidades de
+            dedicación, desde la exclusividad hasta la compatibilización a tiempo parcial con otras actividades
+            académicas o profesionales.</p>
+        </div>
+        <div class="mode">
+          <h4>Investigador colaborador</h4>
+          <p>Dirigida a quienes deseen participar en los proyectos del grupo —investigadores en formación o
+            posdoctorales— sin percepción de remuneración.</p>
+        </div>
+      </div>
+      <p>DIGNUM está abierto a otras formas de vinculación, tanto de personas físicas que no encajen en las
+        modalidades anteriores como de entidades interesadas en colaborar con sus actividades: instituciones
+        públicas, empresas, iniciativas de colaboración público-privada, fundaciones y asociaciones sin ánimo de
+        lucro, entre otras. Estas colaboraciones se articularán caso a caso, en función de la naturaleza del interés
+        manifestado.</p>
+
+      <div class="apply">
+        <h4>Cómo participar</h4>
+        <p style="margin-bottom:.4rem">Las personas interesadas pueden enviar a <a class="mail" href="mailto:dignum@comillas.edu">dignum@comillas.edu</a>:</p>
+        <ol>
+          <li>Su <em>curriculum vitae</em>.</li>
+          <li>Una descripción breve (máximo una página) de sus intereses de investigación y de su encaje con las líneas del grupo.</li>
+        </ol>
+        <p style="margin:0;color:var(--mute)">Las candidaturas se examinarán de forma continua. Nos pondremos en
+          contacto con los perfiles que encajen con las líneas en desarrollo.</p>
+      </div>
+    </div>
+
+    <!-- ---------- EN ---------- -->
+    <div id="call-en" lang="en" class="col" style="max-width:none;display:none">
+      <h3>What we are looking for</h3>
+      <div class="rule"></div>
+      <p>DIGNUM invites expressions of interest from established researchers and early-career researchers wishing to
+        contribute to its research agenda. We are particularly interested in proposals engaging with any of the
+        following strands.</p>
+      <div class="strands">
+        <div><span class="n">01</span>Data sovereignty and the institutional architecture of data governance.</div>
+        <div><span class="n">02</span>Applied AI ethics and responsible technological design.</div>
+        <div><span class="n">03</span>Philosophical and legal foundations of personal data as a matter of human dignity.</div>
+        <div><span class="n">04</span>Measurement and assessment: development and validation of the <em>Dignity of Data Index</em>.</div>
+        <div><span class="n">05</span>The digital social contract: economic, social and regulatory implications.</div>
+        <div><span class="n">06</span>Development of fair and explainable AI methodologies at the service of human dignity.</div>
+      </div>
+
+      <h3>Profiles</h3>
+      <div class="rule"></div>
+      <p>We are especially, though not exclusively, interested in candidates from psychology, sociology,
+        anthropology, philosophy, law, economics, AI engineering and computer science. Applications are welcome from
+        established researchers as well as from PhD candidates and early-career researchers. Interdisciplinarity is
+        central to the project.</p>
+
+      <h3>Collaboration formats</h3>
+      <div class="rule"></div>
+      <div class="modes">
+        <div class="mode">
+          <h4>Research Associate</h4>
+          <p>A paid position open to postdoctoral researchers, with different possible levels of dedication, ranging
+            from full-time exclusivity to part-time involvement compatible with other academic or professional
+            activities.</p>
+        </div>
+        <div class="mode">
+          <h4>Collaborating Researcher</h4>
+          <p>Open to those who wish to take part in the group's projects —PhD candidates and postdoctoral
+            researchers— on a voluntary, unpaid basis.</p>
+        </div>
+      </div>
+      <p>DIGNUM is likewise open to other forms of association, both with individuals who do not fit the categories
+        above and with organizations wishing to collaborate in its activities: public institutions, companies,
+        public–private partnership initiatives, foundations and non-profit associations, among others. Such
+        collaborations will be arranged on a case-by-case basis, according to the nature of the interest expressed.</p>
+
+      <div class="apply">
+        <h4>How to apply</h4>
+        <p style="margin-bottom:.4rem">Interested candidates should send the following to <a class="mail" href="mailto:dignum@comillas.edu">dignum@comillas.edu</a>:</p>
+        <ol>
+          <li>A <em>curriculum vitae</em>.</li>
+          <li>A short statement (one page maximum) outlining their research interests and how these relate to the group's lines of work.</li>
+        </ol>
+        <p style="margin:0;color:var(--mute)">Applications will be reviewed on a rolling basis. We shall contact
+          those whose profile matches the strands currently under development.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== PALLETE FEATURED ===== -->
-<section id="pallete" class="dark">
-  <div class="container">
-    <div class="section-head">
-      <div class="eyebrow">Nuestro representante</div>
-      <h2>José María Álvarez-Pallete</h2>
+<!-- ==================== ACTIVIDADES ==================== -->
+<section id="actividades" class="tint">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Actividades</div>
+      <h2>Jornada inaugural.</h2>
+      <p class="sub">DIGNUM se presentó públicamente en la jornada <em>La dignidad humana en la era del dato. El
+        contrato social que nunca se firmó</em>, celebrada en la Universidad Pontificia Comillas.</p>
+      <div class="bar"></div>
     </div>
 
-    <div class="pallete">
-      <div class="pallete-photo">
-        <img src="assets/speakers/pallete.jpg" alt="José María Álvarez-Pallete" />
+    <div class="archive">
+      <div class="meta">
+        <div class="k">Fecha</div><div class="v">17 de junio de 2026</div>
+        <div class="k">Lugar</div><div class="v">Alberto Aguilera 23 · Madrid</div>
+        <div class="k">Organiza</div><div class="v">Universidad Pontificia Comillas<br>Facultad de Ciencias Económicas y Empresariales (ICADE)</div>
+        <div class="k">Bloques</div><div class="v">Apertura institucional · Mesa redonda sobre soberanía digital · Las cuatro dimensiones del contrato social digital · Clausura</div>
+        <div class="k">Estado</div><div class="v" style="color:var(--gold-deep);font-weight:700">Celebrada</div>
       </div>
-      <div class="pallete-content">
-        <div class="role">Co-lidera la iniciativa DIGNUM · Ex presidente de Telefónica</div>
-        <h2 style="margin-bottom:.5rem">Una voz de referencia para el contrato social digital.</h2>
-        <div class="divider"></div>
-        <p style="color:rgba(255,255,255,0.78);font-size:1.05rem;margin-bottom:1rem">
-          José María Álvarez-Pallete, ex presidente ejecutivo de Telefónica y Associate Researcher en Comillas, co-lidera la iniciativa DIGNUM junto a la Dra. Reyes Calderón. Desde hace años lidera en primera línea el debate europeo e internacional sobre una tecnología al servicio de la persona, impulsando un nuevo pacto digital que ponga la dignidad humana en el núcleo.
+
+      <div>
+        <h3 style="margin-bottom:1rem">Intervinieron</h3>
+        <ul class="roster">
+          <li><b>Juan Ignacio Cirac</b> <span>· Director del Instituto Max Planck de Óptica Cuántica. Dimensión científica.</span></li>
+          <li><b>Carissa Véliz</b> <span>· Institute for Ethics in AI, University of Oxford. Dimensión filosófica.</span></li>
+          <li><b>Francisco Herrera</b> <span>· Universidad de Granada, Academia Europaea. Dimensión tecnológica.</span></li>
+          <li><b>Reyes Calderón</b> <span>· Universidad Pontificia Comillas. Dimensión normativa.</span></li>
+          <li><b>Leonardo Cervera</b> <span>· Secretario General del European Data Protection Supervisor. Mesa redonda.</span></li>
+          <li><b>Giorgia Abeltino</b> <span>· Directora institucional de Google Cloud para EMEA. Mesa redonda.</span></li>
+          <li><b>Begoña Villacís</b> <span>· Directora Ejecutiva de Spain DC. Mesa redonda.</span></li>
+          <li><b>Carlos Santana (DotCSV)</b> <span>· Divulgador y especialista en inteligencia artificial. Mesa redonda.</span></li>
+          <li><b>Josep Ollé</b> <span>· Director del Palau Macaya, Fundación «la Caixa». Moderación de la mesa redonda.</span></li>
+          <li><b>Javier Márquez</b> <span>· Decano de la Facultad. Apertura institucional.</span></li>
+          <li><b>Esther Planas</b> <span>· Directora general adjunta de la Fundación «la Caixa». Apertura institucional.</span></li>
+          <li><b>Fernando Vives</b> <span>· Presidente ejecutivo de Garrigues. Apertura institucional.</span></li>
+          <li><b>José María Álvarez-Pallete</b> <span>· Representante de la iniciativa DIGNUM. Clausura.</span></li>
+          <li><b>Jaime Tatay, SJ</b> <span>· Universidad Pontificia Comillas. Clausura.</span></li>
+        </ul>
+        <div class="btn-row" style="margin-top:1.5rem">
+          <a class="btn" href="jornada-2026.html">Página original de la jornada (archivo)</a>
+        </div>
+        <p style="margin-top:1.3rem;color:var(--mute);font-size:.92rem">
+          La agenda completa de la jornada, la presentación de la iniciativa y el material asociado están disponibles
+          bajo petición en <a href="mailto:dignum@comillas.edu">dignum@comillas.edu</a>.
         </p>
-        <div class="quote">
-          La tecnología sin humanismo es una amenaza. El humanismo sin tecnología es una ingenuidad. El contrato social digital es el lugar donde los dos se reencuentran.
-        </div>
-        <p style="color:rgba(255,255,255,0.6);font-size:.95rem">
-          Como representante de la iniciativa, Álvarez-Pallete extiende personalmente la invitación a los ponentes de la jornada y modera la mesa redonda sobre soberanía digital con las voces que están dando forma a la gobernanza del dato en Europa.
-        </p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== AGENDA ===== -->
-<section id="agenda" class="cream">
-  <div class="container">
-    <div class="section-head">
-      <div class="eyebrow">Programa</div>
-      <h2>Agenda de la jornada</h2>
-      <p>Miércoles 17 de junio de 2026 · Alberto Aguilera 23, Madrid · Universidad Pontificia Comillas</p>
-    </div>
+</main>
 
-    <div class="agenda">
-
-      <div class="agenda-item">
-        <div class="agenda-time">8:30 – 9:00</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Acogida</span>
-          <h3>Café de bienvenida y registro</h3>
-          <p>Recepción de asistentes y entrega de materiales de la jornada.</p>
-        </div>
-      </div>
-
-      <div class="agenda-item">
-        <div class="agenda-time">9:00 – 9:40</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Apertura</span>
-          <h3>Representación institucional y presentación del centro DIGNUM</h3>
-          <p>Acto inaugural de la jornada, palabras institucionales de la Universidad y presentación pública del centro DIGNUM.</p>
-          <p class="who"><strong>Intervienen:</strong> Dr. Javier Márquez, Decano de la Facultad · Dra. Reyes Calderón, en nombre de la casa · D. José María Méndez, Consejero Delegado de Criteria · Presentación del centro DIGNUM.</p>
-        </div>
-      </div>
-
-      <div class="agenda-item">
-        <div class="agenda-time">9:45 – 11:00</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Mesa redonda</span>
-          <h3>Soberanía digital: contexto y retos actuales</h3>
-          <p>Presentación del contexto y de los retos actuales de la soberanía digital en un diálogo al más alto nivel europeo.</p>
-          <p class="who"><strong>Modera:</strong> José María Álvarez-Pallete.<br><strong>Intervienen:</strong> Leonardo Cervera, Secretario General del European Data Protection Supervisor · Giorgia Abeltino, Director of Public Policy, Google Southern Europe · Carlos Santana (DotCSV), divulgador y especialista en inteligencia artificial.</p>
-        </div>
-      </div>
-
-      <div class="agenda-item">
-        <div class="agenda-time">11:00 – 11:30</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Pausa</span>
-          <h3>Pausa café</h3>
-          <p>Espacio de networking entre ponentes y asistentes.</p>
-        </div>
-      </div>
-
-      <div class="agenda-item">
-        <div class="agenda-time">11:30 – 14:00</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Bloque académico</span>
-          <h3>Las cuatro dimensiones del contrato social digital</h3>
-          <p>Cuatro conferencias consecutivas que articulan las dimensiones científica, filosófica, tecnológica y normativa del nuevo contrato social digital, con la dignidad de la persona como eje vertebrador.</p>
-          <p class="who"><strong>11:30 – 12:10 · Dimensión científica.</strong> Dr. Juan Ignacio Cirac, Director del Instituto Max Planck de Óptica Cuántica. <em>La frontera cuántica: ciencia, cómputo y soberanía tecnológica.</em></p>
-          <p class="who"><strong>12:10 – 12:50 · Dimensión normativa.</strong> Dra. Reyes Calderón, Universidad Pontificia Comillas. <em>El contrato social digital: dignidad humana y arquitectura ética del dato.</em></p>
-          <p class="who"><strong>12:50 – 13:25 · Dimensión tecnológica.</strong> Dr. Francisco Herrera, Universidad de Granada, Academia Europaea. <em>Inteligencia artificial responsable: del laboratorio a la gobernanza.</em></p>
-          <p class="who"><strong>13:25 – 14:00 · Dimensión filosófica.</strong> Dra. Carissa Véliz, Institute for Ethics in AI, University of Oxford. <em>La privacidad como poder: repensar los datos personales en la era de la IA.</em></p>
-        </div>
-      </div>
-
-      <div class="agenda-item">
-        <div class="agenda-time">14:00 – 14:10</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Clausura</span>
-          <h3>Una tecnología al servicio de la dignidad humana</h3>
-          <p>Cierre institucional de la jornada con la representación del Banco de España y de la Universidad Pontificia Comillas.</p>
-          <p class="who"><strong>Intervienen:</strong> Representación del Banco de España · Dr. Jaime Tatay Nieto, SJ, Universidad Pontificia Comillas.</p>
-        </div>
-      </div>
-
-      <div class="agenda-item">
-        <div class="agenda-time">14:10 – 16:00</div>
-        <div class="agenda-body">
-          <span class="agenda-tag">Catering</span>
-          <h3>Cóctel-almuerzo</h3>
-          <p>Espacio de conversación entre ponentes, asistentes e invitados institucionales.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ===== PONENTES ===== -->
-<section id="ponentes">
-  <div class="container">
-    <div class="section-head">
-      <div class="eyebrow">Primeras espadas</div>
-      <h2>Ponentes confirmados</h2>
-      <p>Representación institucional, ciencia de frontera, filosofía de la privacidad, gobernanza europea del dato, política pública digital y la voz divulgativa de la inteligencia artificial. La lista se irá ampliando a medida que se confirmen nuevas participaciones.</p>
-    </div>
-
-    <div class="speakers-grid">
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/pallete.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Representante DIGNUM</div>
-          <h3>José María Álvarez-Pallete</h3>
-          <p>Ex presidente de Telefónica. Co-lidera la iniciativa DIGNUM y Associate Researcher en Comillas.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/calderon.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Co-lidera DIGNUM</div>
-          <h3>Dra. Reyes Calderón</h3>
-          <p>Doctora en Economía y en Filosofía por Navarra. Co-lidera la iniciativa DIGNUM y coautora del position paper fundacional.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/marquez.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Apertura institucional</div>
-          <h3>Dr. Javier Márquez</h3>
-          <p>Decano de la Facultad. Representación institucional de la Universidad Pontificia Comillas en la apertura de la jornada.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/cirac.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Max Planck</div>
-          <h3>Dr. Juan Ignacio Cirac</h3>
-          <p>Director del Instituto Max Planck de Óptica Cuántica. Premio Príncipe de Asturias de Investigación Científica y Técnica (2006).</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/veliz.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Oxford</div>
-          <h3>Dra. Carissa Véliz</h3>
-          <p>Associate Professor en el Institute for Ethics in AI de Oxford. Autora de Privacy Is Power (Economist Book of the Year).</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/herrera.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Universidad de Granada</div>
-          <h3>Dr. Francisco Herrera</h3>
-          <p>Catedrático de Ciencias de la Computación e Inteligencia Artificial. Académico de la Academia Europaea. Referencia internacional en inteligencia artificial responsable.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/cervera.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">EDPS · Bruselas</div>
-          <h3>Leonardo Cervera</h3>
-          <p>Secretario General del European Data Protection Supervisor. Voz de referencia europea en la gobernanza institucional del dato.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/santana.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">DotCSV</div>
-          <h3>Carlos Santana</h3>
-          <p>Divulgador y especialista en inteligencia artificial. Referencia hispanohablante en la difusión rigurosa de los avances en IA.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/mendez.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Criteria</div>
-          <h3>José María Méndez</h3>
-          <p>Consejero Delegado de Criteria. Interviene en la apertura institucional de la jornada.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/abeltino.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Google · Southern Europe</div>
-          <h3>Giorgia Abeltino</h3>
-          <p>Director of Public Policy de Google para el sur de Europa. Voz de referencia en políticas públicas de la era digital.</p>
-        </div>
-      </div>
-
-      <div class="speaker">
-        <div class="speaker-photo"><img src="assets/speakers/tatay.jpg" alt="" /></div>
-        <div class="speaker-info">
-          <div class="sub">Comillas · Clausura</div>
-          <h3>Dr. Jaime Tatay, SJ</h3>
-          <p>Profesor de la Universidad Pontificia Comillas. Cierra institucionalmente la jornada en representación de la casa.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ===== INICIATIVA ===== -->
-<section id="instituto" class="dark">
-  <div class="container">
-    <div class="section-head">
-      <div class="eyebrow">La iniciativa</div>
-      <h2>Sobre DIGNUM</h2>
-      <p>Una iniciativa académica de la Universidad Pontificia Comillas que articula desde la universidad una respuesta humanista a los desafíos de la era digital.</p>
-    </div>
-
-    <div class="institutions">
-      <div class="inst">
-        <h3>Misión</h3>
-        <p>Articular una reflexión rigurosa e interdisciplinar sobre la gobernanza del dato y la inteligencia artificial desde una perspectiva humanista. Soberanía del dato, ética aplicada a la IA, Dignity of Data Index y contrato social digital.</p>
-      </div>
-      <div class="inst">
-        <h3>Leading scholars · Masterminds</h3>
-        <p>La iniciativa está impulsada por una constelación de voces académicas e institucionales de primer nivel, con la participación transversal de la Escuela Técnica Superior de Ingeniería (Comillas ICAI), la Facultad de Derecho, la Facultad de Ciencias Económicas y Empresariales (Comillas ICADE) y la Facultad de Ciencias Humanas y Sociales.</p>
-      </div>
-      <div class="inst">
-        <h3>Marco conceptual</h3>
-        <p>El position paper fundacional <em>Personal Data as a Human Right</em> (arXiv, 2026), elaborado por un equipo interdisciplinar de nueve investigadores, articula el marco conceptual de la iniciativa.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== INFO ===== -->
-<section class="cream" style="padding:5rem 0">
-  <div class="container">
-    <div class="section-head" style="margin-bottom:2.5rem">
-      <div class="eyebrow">Información práctica</div>
-      <h2>Asistencia</h2>
-      <p>Aforo limitado. Se reservan plazas para invitados institucionales. La inscripción se gestiona a través de la plataforma de eventos de la Universidad Pontificia Comillas.</p>
-    </div>
-    <div class="info">
+<footer id="contacto">
+  <div class="wrap">
+    <div class="grid">
       <div>
-        <div class="k">Fecha</div>
-        <div class="v">17 de junio de 2026</div>
-      </div>
-      <div>
-        <div class="k">Horario</div>
-        <div class="v">8:30 – 16:00</div>
-      </div>
-      <div>
-        <div class="k">Lugar</div>
-        <div class="v">Alberto Aguilera 23 · Madrid</div>
-      </div>
-      <div>
-        <div class="k">Inscripción</div>
-        <div class="v"><a href="#" style="color:var(--gold-dark)">Reservar plaza</a></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <div class="inner">
-      <div>
-        <h4>Organiza</h4>
+        <h4>Iniciativa DIGNUM</h4>
         <p>Universidad Pontificia Comillas<br>
-        Escuela Técnica Superior de Ingeniería (Comillas ICAI) · Facultad de Derecho · Facultad de Ciencias Económicas y Empresariales (Comillas ICADE) · Facultad de Ciencias Humanas y Sociales</p>
-        <div class="logos">
-          <img src="assets/logos/comillas-horizontal.jpg" alt="Comillas" />
-        </div>
+          Facultad de Ciencias Económicas y Empresariales (Comillas ICADE)<br>
+          Alberto Aguilera 23 · 28015 Madrid, España</p>
+        <p style="font-size:.85rem;color:rgba(255,255,255,.45)">Con la colaboración de la Fundación La Caixa.</p>
+        <img class="logo" src="assets/logos/comillas-blanco.png" alt="Universidad Pontificia Comillas" />
       </div>
       <div>
-        <h4>Contacto académico</h4>
-        <p>Dra. Reyes Calderón<br>Universidad Pontificia Comillas</p>
+        <h4>Contacto</h4>
+        <p><a href="mailto:dignum@comillas.edu">dignum@comillas.edu</a></p>
+        <p style="font-size:.88rem">Convocatoria de expresiones de interés, colaboraciones institucionales y
+          solicitudes de material.</p>
+      </div>
+      <div>
+        <h4>Secciones</h4>
+        <p style="line-height:1.9">
+          <a href="#manifiesto">Manifiesto</a><br>
+          <a href="#lineas">Líneas de investigación</a><br>
+          <a href="#miembros">Miembros</a><br>
+          <a href="#publicaciones">Publicaciones</a><br>
+          <a href="#convocatoria">Convocatoria abierta</a><br>
+          <a href="#actividades">Actividades</a>
+        </p>
       </div>
     </div>
     <div class="copy">
-      © 2026 DIGNUM · Universidad Pontificia Comillas. Todos los derechos reservados.
+      <span>© 2026 Iniciativa DIGNUM · Universidad Pontificia Comillas.</span>
+      <span>Dignidad · Soberanía · Verificabilidad · Humanismo</span>
     </div>
   </div>
 </footer>
+
+<script>
+  function setCallLang(lang){
+    var es = document.getElementById('call-es'), en = document.getElementById('call-en');
+    var bes = document.getElementById('btn-es'), ben = document.getElementById('btn-en');
+    var isEs = (lang === 'es');
+    es.style.display = isEs ? '' : 'none';
+    en.style.display = isEs ? 'none' : '';
+    bes.setAttribute('aria-pressed', isEs ? 'true' : 'false');
+    ben.setAttribute('aria-pressed', isEs ? 'false' : 'true');
+    document.getElementById('h2-es').style.display = isEs ? '' : 'none';
+    document.getElementById('h2-en').style.display = isEs ? 'none' : '';
+  }
+
+  (function(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+    var targets = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+    function sync(){
+      var y = window.scrollY + 120, current = 0;
+      for (var i = 0; i < targets.length; i++){
+        if (targets[i] && targets[i].offsetTop <= y) current = i;
+      }
+      links.forEach(function(a, i){ a.classList.toggle('on', i === current); });
+    }
+    window.addEventListener('scroll', sync, {passive:true});
+    window.addEventListener('resize', sync);
+    sync();
+  })();
+</script>
 
 </body>
 </html>
