@@ -1604,13 +1604,21 @@ const updaters={};
                  [P.x1,P.h2,MLP0.w3,"w₃=0.2"],[P.x2,P.h2,MLP0.w4,"w₄=0.7"],
                  [P.h1,P.o,MLP0.w5,"w₅=0.6"],[P.h2,P.o,MLP0.w6,"w₆=−0.4"]];
     ctx.font="10px Georgia,serif";
+    /* Las diagonales x₁→h₂ y x₂→h₁ se cruzan en el centro del grafo: con la
+       etiqueta en el punto medio, w₂ y w₃ caían las dos sobre el cruce y cada
+       peso parecía pertenecer a la flecha contraria (w₂=0.3 se leía como si
+       saliera de x₁, y entonces z₁ ya no daba 1.2). Se anclan al 28% de su
+       propia arista, todavía cerca del nodo de origen, donde no hay ambigüedad
+       posible. El fondo blanco se dimensiona con el ancho real del texto. */
+    const TLBL=0.28;
     for(const [a,b,w,lb] of edges){
       ctx.strokeStyle=w>=0?GOLD:MUTE;ctx.lineWidth=1+2.2*Math.abs(w);
       ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
-      const mx=0.5*(a[0]+b[0]),my=0.5*(a[1]+b[1]);
-      ctx.fillStyle="#fff";ctx.fillRect(mx-18,my-14,38,12);
-      ctx.fillStyle=w>=0?GOLDD:"#555";ctx.textAlign="left";
-      ctx.fillText(lb,mx-16,my-4);}
+      const mx=a[0]+TLBL*(b[0]-a[0]),my=a[1]+TLBL*(b[1]-a[1]);
+      const tw=ctx.measureText(lb).width;
+      ctx.fillStyle="#fff";ctx.fillRect(mx-tw/2-3,my-13,tw+6,12);
+      ctx.fillStyle=w>=0?GOLDD:"#555";ctx.textAlign="center";
+      ctx.fillText(lb,mx,my-4);}
     function node(p,lines,dead){
       ctx.beginPath();ctx.arc(p[0],p[1],27,0,7);
       ctx.fillStyle=dead?"#f2f2f2":"#fff";ctx.fill();

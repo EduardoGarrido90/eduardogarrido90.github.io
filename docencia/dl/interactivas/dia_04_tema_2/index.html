@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Día 04 — Convolución — slide interactiva</title>
+<title>Día 04 — Convolución y pooling — slide interactiva</title>
 <style>
   :root{
     --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
@@ -19,48 +19,73 @@
   #navstrip span.cur{color:var(--gold);font-weight:bold}
   #slidetitle{padding:2px 26px 8px 26px;font-size:1.5em;font-weight:bold;line-height:1.2}
   #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 26px}
-  .slide{display:none;padding:16px 26px 66px 26px;
-    grid-template-columns:54% 44%;gap:2%;align-items:start}
+  .slide{display:none;padding:14px 26px 62px 26px;
+    grid-template-columns:56% 42%;gap:2%;align-items:start}
   .slide.active{display:grid}
-  .figcol canvas{width:100%;display:block;margin:4px 0 10px 0;
+  .figcol canvas{width:100%;display:block;margin:4px 0 8px 0;
     border:1px solid #eee;border-radius:3px;background:#fff}
-  .txtcol{font-size:0.98em;line-height:1.45}
-  .txtcol p{margin:0 0 10px 0}
+  .txtcol{font-size:0.96em;line-height:1.42}
+  .txtcol p{margin:0 0 9px 0}
   .hd{font-weight:bold;color:var(--goldDeep);font-variant:small-caps;letter-spacing:0.04em}
   .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:5px;
-    padding:12px 14px;margin:6px 0 12px 0}
-  .ctrlbox .row{display:flex;align-items:center;gap:10px;margin:9px 0}
+    padding:10px 13px;margin:6px 0 10px 0}
+  .ctrlbox .row{display:flex;align-items:center;gap:9px;margin:8px 0}
   .ctrlbox .sub{font-variant:small-caps;letter-spacing:0.05em;font-weight:bold;
-    color:var(--goldDeep);font-size:0.82em;margin:2px 0 0 0}
-  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
-  .ctrlbox .lab{width:2.2em;font-weight:bold;text-align:center}
+    color:var(--goldDeep);font-size:0.8em;margin:2px 0 0 0}
+  .ctrlbox .sub.second{border-top:1px solid var(--rule);margin-top:9px;padding-top:7px}
+  .ctrlbox .lab{width:4.4em;font-weight:bold;font-size:0.9em}
+  .ctrlbox .lab.narrow{width:2.2em;text-align:center}
   .ctrlbox input[type=range]{flex:1;accent-color:var(--gold)}
-  .ctrlbox .val{width:3.6em;text-align:right;font-variant-numeric:tabular-nums;
-    color:var(--goldDeep);font-weight:bold}
+  .ctrlbox select{flex:1;font-family:inherit;font-size:0.92em;padding:3px 5px;
+    border:1px solid var(--rule);border-radius:3px;background:#fff;color:var(--ink)}
+  .ctrlbox .val{width:3.4em;text-align:right;font-variant-numeric:tabular-nums;
+    color:var(--goldDeep);font-weight:bold;font-size:0.92em}
+  .btn{font-family:inherit;font-size:0.9em;background:#fff;border:1px solid var(--rule);
+    color:var(--goldDeep);border-radius:3px;padding:3px 11px;cursor:pointer}
+  .btn:hover{background:#fff8e8}
+  .btn.on{background:var(--goldDeep);color:#fff;border-color:var(--goldDeep)}
+  .btnrow{display:flex;gap:8px;margin:4px 0 2px 0;flex-wrap:wrap}
+  .btnrow button{font-family:inherit;font-size:0.92em;background:#fff;
+    border:1px solid var(--goldDeep);color:var(--goldDeep);border-radius:4px;
+    padding:3px 11px;cursor:pointer;font-weight:bold}
+  .btnrow button:hover{background:#fff8e8}
+  .btnrow button.on{background:var(--goldDeep);color:#fff}
   .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
-    border-radius:4px;padding:10px 12px;margin:10px 0;font-size:0.96em;line-height:1.55}
-  .badge{display:inline-block;border-radius:3px;padding:2px 12px;font-weight:bold;margin-top:3px}
+    border-radius:4px;padding:9px 11px;margin:9px 0;font-size:0.93em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;margin-top:4px}
   .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
   .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
   .eqpanel{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
-    padding:12px 16px;margin:2px 0 12px 0}
+    padding:10px 14px;margin:2px 0 10px 0}
   .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
-    font-size:0.86em;letter-spacing:0.05em;margin-bottom:8px}
-  .eq{text-align:center;margin:12px 0;font-size:1.5em;line-height:1.7}
-  .eqnum{text-align:center;margin:8px 0 2px 0;font-size:1.12em;
-    font-variant-numeric:tabular-nums;color:#444}
-  /* highlightable equation terms */
+    font-size:0.84em;letter-spacing:0.05em;margin-bottom:6px}
+  .eq{text-align:center;margin:8px 0;font-size:1.26em;line-height:1.6}
+  .eqnum{text-align:center;margin:5px 0 2px 0;font-size:0.98em;
+    font-variant-numeric:tabular-nums;color:#333;line-height:1.7}
+  .kn{color:var(--goldDeep);font-weight:bold}
+  .xn{color:var(--ink)}
+  .res{background:var(--gold);color:#fff;font-weight:bold;padding:1px 8px;border-radius:4px}
   .term{padding:1px 4px;border-radius:4px;transition:background .12s,color .12s}
   .term.hot{background:var(--gold);color:#fff;font-weight:bold;
     box-shadow:0 0 0 2px var(--goldPale)}
-  .nterm{padding:1px 3px;border-radius:3px}
-  .nterm.hot{background:var(--goldPale);color:var(--goldDeep);font-weight:bold}
-  .miniglos{border-top:1px solid var(--rule);margin-top:12px;padding-top:9px;
-    font-size:0.9em;color:#333}
+  .guide{border:1px solid var(--rule);border-radius:5px;background:#fffdf7;
+    padding:10px 14px;margin:10px 0}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.86em;letter-spacing:0.05em;margin-bottom:6px}
+  .guide ol{margin:0;padding-left:1.2em}
+  .guide li{margin:5px 0}
+  .obs{color:var(--goldDeep);font-style:italic}
+  details.check{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px;
+    font-size:0.94em}
+  details.check summary{cursor:pointer;font-weight:bold;color:var(--goldDeep);
+    font-variant:small-caps;letter-spacing:0.04em}
+  details.check p{margin:8px 0 0 0}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px;
+    font-size:0.88em;color:#333}
   .miniglos b{color:var(--goldDeep)}
   #footer{position:fixed;bottom:8px;right:20px;font-size:0.8em;color:var(--mute);
     background:#fff;padding:0 4px}
-  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.74em;color:var(--mute);
+  #footerL{position:fixed;bottom:8px;left:20px;font-size:0.72em;color:var(--mute);
     font-style:italic;background:#fff;padding:0 4px}
   #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;padding:0 6px}
   #arrows button{font-family:inherit;font-size:1em;background:#fff;
@@ -74,138 +99,280 @@
 <div id="slidetitle"></div>
 <hr id="goldrule">
 
-<!-- ============ SLIDE 1: interactiva ============ -->
+<!-- ============ SLIDE 1 · PASO 1: el filtro sobre la matriz ============ -->
 <section class="slide" id="s0">
   <div class="figcol">
     <div class="eqpanel">
-      <div class="eqtitle">La ecuación de la convolución 1D</div>
+      <div class="eqtitle">Paso 1 &mdash; la casilla que el kernel está calculando ahora</div>
       <div class="eq">
-        y<sub>i</sub> =
-        <span class="term" id="t_k1">k<sub>1</sub></span>&middot;<span class="term" data-hot="x">x<sub>i-1</sub></span> +
-        <span class="term" id="t_k2">k<sub>2</sub></span>&middot;<span class="term" data-hot="x">x<sub>i</sub></span> +
-        <span class="term" id="t_k3">k<sub>3</sub></span>&middot;<span class="term" data-hot="x">x<sub>i+1</sub></span>
+        Y<sub><span id="e_ij">0,0</span></sub> =
+        &Sigma;<sub>u=0</sub><sup>2</sup>&Sigma;<sub>v=0</sub><sup>2</sup>
+        K<sub>u,v</sub> &middot; X<sub>i+u,&thinsp;j+v</sub>
       </div>
-      <div class="eqnum">
-        y<sub>i</sub> =
-        <span class="nterm" id="n_k1">0.0</span>&middot;<span class="nterm" data-hot="x" id="n_xa">0.00</span> +
-        <span class="nterm" id="n_k2">0.0</span>&middot;<span class="nterm" data-hot="x" id="n_xb">0.00</span> +
-        <span class="nterm" id="n_k3">0.0</span>&middot;<span class="nterm" data-hot="x" id="n_xc">0.00</span>
-        = <b id="n_y">0.00</b> &nbsp;(en i = <span class="nterm" id="n_pos">11</span>)
-      </div>
+      <div class="eqnum" id="e_num"></div>
     </div>
-    <canvas id="cv" width="720" height="360"></canvas>
+    <canvas id="cv1" width="760" height="430"></canvas>
   </div>
   <div class="txtcol">
-    <p><span class="hd">El caso.</span> Inditex escanea el tejido en fábrica.
-    Una cámara recorre una <b>línea del rollo</b> y devuelve una señal de brillo
-    x. Un pequeño <b>filtro</b> (kernel) de 3 números se desliza sobre esa línea
-    para resaltar <b>bordes</b> y delatar <b>defectos</b>.</p>
+    <p><span class="hd">El caso.</span> Una app de supermercado fotografía el
+    estante y avisa cuando hay un <b>hueco</b>, un espacio vacío donde debería
+    haber producto. El recorte es una matriz 6&times;6 de grises (0 negro, 9
+    blanco) y el primer filtro de la CNN busca <b>bordes verticales</b>: la
+    frontera producto&ndash;hueco es exactamente una línea vertical.</p>
 
     <div class="ctrlbox">
-      <div class="sub">El filtro &mdash; los tres pesos del kernel</div>
-      <div class="row"><span class="lab">k<sub>1</sub></span>
-        <input type="range" id="k1" min="-2" max="2" step="0.1" value="-1.0"
-          oninput="hot('k1');upd()"><span class="val" id="v_k1">-1.0</span></div>
-      <div class="row"><span class="lab">k<sub>2</sub></span>
-        <input type="range" id="k2" min="-2" max="2" step="0.1" value="0.0"
-          oninput="hot('k2');upd()"><span class="val" id="v_k2">0.0</span></div>
-      <div class="row"><span class="lab">k<sub>3</sub></span>
-        <input type="range" id="k3" min="-2" max="2" step="0.1" value="1.0"
-          oninput="hot('k3');upd()"><span class="val" id="v_k3">1.0</span></div>
-      <div class="sub second">El tejido &mdash; la señal de entrada x</div>
-      <div class="row"><span class="lab">salto</span>
-        <input type="range" id="salto" min="0" max="0.8" step="0.02" value="0.60"
-          oninput="hot('salto');upd()"><span class="val" id="v_salto">0.60</span></div>
-      <div class="row"><span class="lab">pos</span>
-        <input type="range" id="pos" min="4" max="26" step="1" value="11"
-          oninput="hot('pos');upd()"><span class="val" id="v_pos">11</span></div>
-      <div class="row"><span class="lab">&sigma;</span>
-        <input type="range" id="ruido" min="0" max="0.15" step="0.005" value="0.02"
-          oninput="hot('ruido');upd()"><span class="val" id="v_ruido">0.02</span></div>
+      <div class="sub">La foto y el filtro</div>
+      <div class="row"><span class="lab">foto</span>
+        <select id="foto1" onchange="setFoto(this.value)"></select></div>
+      <div class="row"><span class="lab">kernel</span>
+        <select id="ker1" onchange="setKernel(this.value)"></select></div>
+      <div class="sub second">Dónde está el kernel ahora</div>
+      <div class="row"><span class="lab">posición</span>
+        <input type="range" id="pos" min="0" max="15" step="1" value="0"
+          oninput="stopAnim();S.pos=+this.value;render1()"><span class="val" id="v_pos">1/16</span></div>
+      <div class="btnrow">
+        <button onclick="stepPos(-1)">&#9664;</button>
+        <button onclick="stepPos(1)">&#9654;</button>
+        <button id="b_anim" onclick="toggleAnim()">&#9654; deslizar</button>
+        <button onclick="stopAnim();S.pos=0;render1()">reiniciar</button>
+      </div>
+      <div class="sub second">Tamaño del mapa: H&prime; = &lfloor;(H+2p&minus;k)/s&rfloor;+1</div>
+      <div class="row"><span class="lab narrow">p</span>
+        <input type="range" id="pad" min="0" max="1" step="1" value="0"
+          oninput="stopAnim();S.pad=+this.value;S.pos=0;render1()"><span class="val" id="v_pad">0</span>
+        <span class="lab narrow">s</span>
+        <input type="range" id="str" min="1" max="2" step="1" value="1"
+          oninput="stopAnim();S.stride=+this.value;S.pos=0;render1()"><span class="val" id="v_str">1</span></div>
     </div>
 
-    <div class="readout" id="ro"></div>
+    <div class="readout" id="ro1"></div>
 
-    <p><span class="hd">Lee así.</span> Arriba mueves el <b>filtro</b>, abajo mueves el
-    <b>tejido</b>: <b>salto</b> es cuánto contrasta el defecto, <b>pos</b> dónde está y
-    <b>&sigma;</b> cuánta textura tiene la tela. Un detector de bordes sigue al defecto
-    allá donde lo pongas, y se ahoga cuando la textura tapa el salto.</p>
+    <p><span class="hd">Lee así.</span> El cuadro dorado sobre la foto es el
+    kernel. Multiplica sus 9 pesos por los 9 píxeles que tapa, los suma, y ese
+    único número entra en el mapa <b>Y</b> de la derecha. Luego se desliza
+    <b>s</b> casillas y repite la misma cuenta. <b>Haz clic</b> en un píxel de la
+    foto (o en una casilla del kernel) para cambiar su valor y ver qué pasa.</p>
 
     <div class="miniglos">
-      <b>x</b> señal de entrada (brillo del tejido). <b>k</b> kernel: los pesos del
-      filtro. <b>y</b> salida filtrada: grande donde el filtro reconoce su patrón.
-      <b>salto</b>, <b>pos</b> y <b>&sigma;</b> describen el rollo que entra por la
-      cámara, no el modelo.
+      <b>X</b> la foto, matriz de píxeles. <b>K</b> el kernel: 9 pesos, lo único
+      que la red aprende aquí, los mismos en todas las posiciones. <b>Y</b> mapa
+      de activación: un número por posición del kernel. <b>p</b> padding,
+      <b>s</b> stride: no cambian qué busca el filtro, solo el tamaño del mapa.
     </div>
   </div>
 </section>
 
-<!-- ============ SLIDE 2: cierre ============ -->
+<!-- ============ SLIDE 2 · PASO 2: el pooling ============ -->
 <section class="slide" id="s1">
   <div class="figcol">
     <div class="eqpanel">
-      <div class="eqtitle">Para llevarte a casa</div>
-      <div class="eq">y<sub>i</sub> = k<sub>1</sub>&middot;x<sub>i-1</sub> + k<sub>2</sub>&middot;x<sub>i</sub> + k<sub>3</sub>&middot;x<sub>i+1</sub></div>
+      <div class="eqtitle">Paso 2 &mdash; el bloque 2&times;2 que el pooling está resumiendo</div>
+      <div class="eq" id="e_pool">P<sub>0,0</sub> = max{ &hellip; }</div>
+      <div class="eqnum" id="e_pnum"></div>
     </div>
-    <canvas id="cv2" width="720" height="330"></canvas>
+    <canvas id="cv2" width="760" height="384"></canvas>
   </div>
   <div class="txtcol">
-    <p><span class="hd">La idea.</span> Convolucionar es <b>deslizar</b> un kernel
-    pequeño por toda la señal y calcular en cada posición la misma suma ponderada.
-    En imágenes es idéntico, solo que el kernel es 2D y barre filas y columnas.</p>
-    <p><span class="hd">Negocio.</span> Inditex no programa a mano "qué es un
-    defecto": entrena los kernels para que reaccionen a costuras rotas, manchas o
-    hilos sueltos. Un mismo filtro revisa todo el rollo a velocidad de línea.</p>
-    <p><span class="hd">Y ahora.</span> Apilando muchos filtros convolucionales se
+    <p><span class="hd">El caso.</span> El mapa <b>Y</b> del paso 1 todavía es
+    grande. El <b>pooling</b> lo trocea en bloques 2&times;2 y se queda con un
+    solo número por bloque: el <b>máximo</b> o la <b>media</b>. Cero parámetros
+    entrenables, y de ahí sale el resumen con el que la app decide si avisa.</p>
+
+    <div class="ctrlbox">
+      <div class="sub">La foto (la misma del paso 1)</div>
+      <div class="row"><span class="lab">foto</span>
+        <select id="foto2" onchange="setFoto(this.value)"></select></div>
+      <div class="sub second">El pooling</div>
+      <div class="row"><span class="lab">tipo</span>
+        <button class="btn" id="b_max" onclick="S.pool='max';render2()">máximo</button>
+        <button class="btn" id="b_avg" onclick="S.pool='avg';render2()">media</button></div>
+      <div class="row"><span class="lab">bloque</span>
+        <input type="range" id="ppos" min="0" max="3" step="1" value="0"
+          oninput="S.ppos=+this.value;render2()"><span class="val" id="v_ppos">1/4</span></div>
+      <div class="row"><span class="lab">umbral</span>
+        <input type="range" id="umb" min="0" max="25" step="1" value="12"
+          oninput="S.umbral=+this.value;render2()"><span class="val" id="v_umb">12</span></div>
+    </div>
+
+    <div class="readout" id="ro2"></div>
+
+    <div class="guide">
+      <div class="gtitle">Guion paso a paso</div>
+      <ol>
+        <li>Con <b>máximo</b>, recorre los cuatro bloques.
+          <span class="obs">Los dos de arriba son grandes y los dos de abajo casi
+          cero: la evidencia del hueco vive en la mitad superior de la foto.</span></li>
+        <li>Cambia a <b>media</b> sin tocar nada más.
+          <span class="obs">El mismo bloque cae a menos de la mitad: promediar
+          diluye el borde con las casillas donde no pasa nada.</span></li>
+        <li>Cambia la foto a <i>el mismo hueco, más abajo</i>.
+          <span class="obs">El número grande se muda de bloque, pero el máximo
+          global apenas cambia: eso es invarianza a traslación, y sale gratis.</span></li>
+        <li>Pon la foto de <i>estante lleno</i>.
+          <span class="obs">Ningún bloque pasa el umbral: sin borde vertical no
+          hay alarma. El filtro no ve «producto», ve cambios de brillo.</span></li>
+      </ol>
+    </div>
+
+    <p><span class="hd">Negocio.</span> Con la media, el hueco se diluye entre
+    las tres cuartas partes de la foto donde no pasa nada y la alarma no salta.
+    En este negocio el <b>falso negativo</b> es venta perdida: el resumen que va
+    a producción es el máximo.</p>
+
+    <div class="miniglos">
+      <b>P</b> mapa después del pooling. <b>Máximo</b>: ¿apareció el patrón en
+      algún sitio del bloque? <b>Media</b>: ¿cuánto patrón hay de media?
+      <b>Umbral</b>: el corte de negocio a partir del cual la app avisa.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3 · el mismo kernel sobre una foto de verdad ============ -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">La misma cuenta, ahora sobre 36&times;36 píxeles</div>
+      <div class="eq">
+        y<sub>i,j</sub> = &Sigma;<sub>u=0</sub><sup>2</sup> &Sigma;<sub>v=0</sub><sup>2</sup>
+        <span class="term" id="t_ker">K<sub>u,v</sub></span> &middot;
+        <span class="term" id="t_img">x<sub>i+u,&thinsp;j+v</sub></span>
+      </div>
+      <div class="eqnum" id="n_cuenta">&nbsp;</div>
+    </div>
+    <canvas id="cvK" width="760" height="322"></canvas>
+    <canvas id="cvP" width="760" height="196"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Es la misma operación del paso 1, pero
+    con 34&times;34 = 1156 posiciones en vez de 16, así que ya no se dibuja con
+    números sino con brillos. La foto es un <b>lineal</b> con tres baldas y una
+    <b>rotura de stock</b> en la del medio.</p>
+
+    <div class="ctrlbox">
+      <div class="sub">El recorrido del kernel</div>
+      <div class="btnrow">
+        <button id="b_play" onclick="k2dPlay()">&#9654; play</button>
+        <button onclick="k2dStep(1)">&#9197; paso</button>
+        <button onclick="k2dStep(34)">&#8681; fila</button>
+        <button onclick="k2dReset()">&#9198; reiniciar</button>
+      </div>
+      <div class="row"><span class="lab">vel</span>
+        <input type="range" id="k2vel" min="4" max="200" step="2" value="70"
+          oninput="k2dUpd()"><span class="val" id="v_k2vel">70</span></div>
+      <div class="row"><span class="lab">pos</span>
+        <input type="range" id="k2pos" min="0" max="1155" step="1" value="0"
+          oninput="k2dScrub()"><span class="val" id="v_k2pos">0</span></div>
+      <div class="sub second">El filtro &mdash; los nueve pesos del kernel</div>
+      <div class="row">
+        <select id="k2ker" onchange="k2dKernel()">
+          <option value="bv">borde vertical &nbsp; [+1 0 &minus;1] por filas</option>
+          <option value="bh">borde horizontal &nbsp; [+1 0 &minus;1] por columnas</option>
+          <option value="sv">Sobel vertical &nbsp; (fila central reforzada)</option>
+          <option value="sh">realce (sharpen) &nbsp; centro +5, vecinos &minus;1</option>
+          <option value="id">identidad &nbsp; centro 1, resto 0</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="readout" id="k2ro"></div>
+
+    <p><span class="hd">Lee así.</span> La ventana dorada recorre la fila entera,
+    baja una fila y vuelve a empezar por la izquierda; el mapa de la derecha se
+    rellena en ese mismo orden. Abajo tienes los nueve productos de la ventana
+    actual: el mismo cálculo que hiciste a mano en el paso 1.</p>
+
+    <details class="check">
+      <summary>Comprueba que entiendes</summary>
+      <p>¿Por qué el mapa es 34&times;34 y no 36&times;36, si la foto tiene
+      36&times;36 píxeles?<br>
+      <b>Respuesta.</b> Porque la ventana 3&times;3 solo cabe entera en las
+      posiciones cuyo parche está dentro de la imagen: la primera arranca en la
+      fila 0 y la última en la 33. Con stride 1 y padding 0 la salida mide
+      36 &minus; 3 + 1 = 34 por lado, la misma fórmula del paso 1. Para
+      conservar 36&times;36 haría falta un anillo de ceros alrededor (p = 1).</p>
+    </details>
+
+    <div class="miniglos">
+      <b>Ventana / parche</b>: el trozo 3&times;3 que el kernel pisa ahora.
+      <b>K</b>: los nueve pesos, idénticos en las 1156 posiciones.
+      <b>y<sub>i,j</sub></b>: un píxel del mapa de activación. Detrás de esto
+      iría el pooling del paso 2, que reduce el mapa a 17&times;17.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4 · cierre ============ -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Los dos pasos, seguidos</div>
+      <div class="eq">X &nbsp;&rarr;<sub style="font-size:.62em">&nbsp;conv K&nbsp;</sub>&nbsp;
+        Y &nbsp;&rarr;<sub style="font-size:.62em">&nbsp;pool 2&times;2&nbsp;</sub>&nbsp; P
+        &nbsp;&rarr;&nbsp; alarma</div>
+    </div>
+    <canvas id="cv3" width="760" height="384"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">Paso 1.</span> Convolucionar es <b>deslizar</b> un kernel
+    pequeño por toda la imagen y repetir en cada posición la misma suma
+    ponderada. Los 9 pesos son los mismos en las 16 posiciones: eso son
+    <b>pesos compartidos</b>, y es la razón de que una CNN tenga dos órdenes de
+    magnitud menos parámetros que un MLP sobre los mismos píxeles.</p>
+    <p><span class="hd">Paso 2.</span> El pooling tira resolución a propósito y
+    a cambio compra <b>invarianza</b>: da igual en qué casilla del mapa aparezca
+    la evidencia del hueco, el máximo la conserva. Y no añade ni un parámetro.</p>
+    <p><span class="hd">Negocio.</span> El supermercado no programa a mano «qué
+    es un hueco»: entrena los kernels para que reaccionen a la frontera
+    producto&ndash;vacío. Un mismo filtro revisa todas las baldas de todas las
+    tiendas.</p>
+    <p><span class="hd">Y ahora.</span> Apilar conv + pooling muchas veces
     construye la CNN del resto del tema. El principio no cambia: kernel pequeño,
-    misma operación repetida por toda la imagen.</p>
+    misma cuenta repetida por toda la imagen.</p>
   </div>
 </section>
 
 <div id="arrows"><button onclick="go(cur-1)">&larr;</button><button onclick="go(cur+1)">&rarr;</button></div>
 <div id="footer"></div>
-<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 04 · Convolución</div>
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 04 · Convolución y pooling</div>
 
 <script>
-const SECTIONS=["Convolución","Para llevar"];
-const TITLES=["Un filtro de 3 números que se desliza ya detecta bordes en el tejido.",
-              "La convolución es un kernel pequeño repetido; apilarla construye la CNN."];
+/* ================= navegación ================= */
+const SECTIONS=["Paso 1 · El filtro","Paso 2 · El pooling","En una foto real","Para llevar"];
+const TITLES=[
+ "Un kernel de nueve números recorre la matriz de la foto y deja un mapa donde brilla el borde.",
+ "El pooling resume el mapa: el máximo conserva la alarma, la media la diluye.",
+ "La misma operación sobre una foto de verdad: 1156 ventanas y el mismo kernel.",
+ "Convolución y pooling encadenados ya son una CNN: kernel pequeño, misma cuenta repetida."];
+const SLIDE_FOTO=2;
 let cur=0;
+const updaters={};
 function buildNav(){
   const ns=document.getElementById('navstrip');
   ns.innerHTML='';
-  SECTIONS.forEach((s,i)=>{const e=document.createElement('span');e.textContent=s;
-    if(i===cur)e.className='cur';e.onclick=()=>go(i);ns.appendChild(e);});
+  SECTIONS.forEach(function(s,i){const e=document.createElement('span');e.textContent=s;
+    if(i===cur)e.className='cur';e.onclick=function(){go(i);};ns.appendChild(e);});
 }
 function go(i){
   if(i<0||i>=SECTIONS.length)return;
-  cur=i;
-  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  cur=i; stopAnim();
+  document.querySelectorAll('.slide').forEach(function(s,k){s.classList.toggle('active',k===i);});
   document.getElementById('slidetitle').textContent=TITLES[i];
   document.getElementById('footer').textContent=(i+1)+' / '+SECTIONS.length;
   buildNav();
   if(updaters[i])updaters[i]();
 }
-document.addEventListener('keydown',e=>{
+document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight'||e.key==='PageDown')go(cur+1);
   if(e.key==='ArrowLeft'||e.key==='PageUp')go(cur-1);
 });
-const updaters={};
 
-// ---- highlight helper: light up one equation term + its numeric twin ----
-// the three input sliders all describe the same object, the signal x, so they
-// light up every x in the equation instead of a single symbol
-const HOTGROUP={salto:'x',pos:'x',ruido:'x'};
+/* ---- resaltado de un término de la ecuación (slide de la foto real) ---- */
 function hot(id){
-  document.querySelectorAll('.term').forEach(t=>t.classList.remove('hot'));
-  document.querySelectorAll('.nterm').forEach(t=>t.classList.remove('hot'));
+  document.querySelectorAll('.term').forEach(function(t){t.classList.remove('hot');});
   const t=document.getElementById('t_'+id); if(t)t.classList.add('hot');
-  const n=document.getElementById('n_'+id); if(n)n.classList.add('hot');
-  if(HOTGROUP[id])document.querySelectorAll('[data-hot="'+HOTGROUP[id]+'"]')
-    .forEach(e=>e.classList.add('hot'));
 }
 
-// ---- canvas helper ----
+/* ---- canvas ---- */
 function fitCanvas(cv){
   const dpr=window.devicePixelRatio||1;
   if(cv._lw===undefined){cv._lw=cv.width; cv._lh=cv.height;}
@@ -213,163 +380,626 @@ function fitCanvas(cv){
   cv.style.height=h+'px';
   cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
   const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
-  return {ctx,w,h};
+  return {ctx:ctx,w:w,h:h};
 }
-
-// the input line is a variable of the slide too: a low flat stretch, a step up of
-// height `salto` at position `pos`, and texture noise of scale `ruido`.
-// Rebuilt from a fixed seed on every change, so the picture is reproducible.
-const N=30;
-const LO=0.20;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
   t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-let X=new Array(N).fill(LO);
-let SALTO=0.60, POS=11, RUIDO=0.02;
-function buildX(){
-  const rng=mulberry32(20260716);
-  X=new Array(N);
-  for(let i=0;i<N;i++){
-    const t=Math.max(0,Math.min(1,(i-(POS-1))/2));   // two-cell ramp at the edge
-    X[i]=LO+SALTO*t+RUIDO*(2*rng()-1)*1.7;
+
+/* ================= los datos del ejemplo a mano ================= */
+// Cuatro recortes 6x6 en escala de grises (0 negro, 9 blanco): fotos de estante
+// con un bloque de producto iluminado frente a un hueco vacío y oscuro.
+const PHOTOS=[
+ {nombre:"Estante con hueco (mitad de arriba)", m:[
+   [8,9,8,1,2,1],
+   [9,8,9,2,1,1],
+   [8,9,8,1,2,2],
+   [5,6,5,6,5,6],
+   [6,5,6,5,6,5],
+   [5,6,6,6,5,5]]},
+ {nombre:"El mismo hueco, fotografiado más abajo", m:[
+   [5,6,5,6,5,6],
+   [6,5,6,5,6,5],
+   [8,9,8,1,2,1],
+   [9,8,9,2,1,1],
+   [8,9,8,1,2,2],
+   [9,8,9,1,1,2]]},
+ {nombre:"Estante lleno, sin hueco", m:[
+   [7,8,7,8,7,8],
+   [8,7,8,7,8,7],
+   [7,8,8,7,8,7],
+   [8,7,7,8,7,8],
+   [7,8,7,7,8,7],
+   [8,7,8,8,7,8]]},
+ {nombre:"Balda horizontal (el borde, tumbado)", m:[
+   [8,9,8,9,8,9],
+   [9,8,9,8,9,8],
+   [8,9,8,9,8,9],
+   [2,1,2,1,2,1],
+   [1,2,1,2,1,2],
+   [2,1,2,1,2,1]]}
+];
+const KERS=[
+ {nombre:"Bordes verticales", k:[[1,0,-1],[1,0,-1],[1,0,-1]], div:1,
+  lee:"resta a cada píxel el que tiene dos columnas a la derecha: se dispara en la frontera producto–hueco."},
+ {nombre:"Bordes horizontales", k:[[1,1,1],[0,0,0],[-1,-1,-1]], div:1,
+  lee:"resta la fila de abajo a la de arriba: ve baldas, no huecos."},
+ {nombre:"Suavizado (media 3×3)", k:[[1,1,1],[1,1,1],[1,1,1]], div:9,
+  lee:"promedia los nueve vecinos: borra la textura, y también el borde."},
+ {nombre:"Realce (sharpen)", k:[[0,-1,0],[-1,5,-1],[0,-1,0]], div:1,
+  lee:"resalta el píxel central frente a sus vecinos: sube el contraste local."},
+ {nombre:"Manual (edítalo en el dibujo)", k:[[1,0,-1],[1,0,-1],[1,0,-1]], div:1,
+  lee:"lo decides tú; en una CNN real estos nueve números los aprende el descenso de gradiente."}
+];
+const NX=6, KS=3;
+const S={foto:0, ker:0, K:KERS[0].k.map(function(r){return r.slice();}), div:1,
+         pad:0, stride:1, pos:0, pool:'max', umbral:12, ppos:0};
+
+function setFoto(v){S.foto=+v;
+  document.getElementById('foto1').value=v;
+  document.getElementById('foto2').value=v;
+  if(cur===0)render1(); else if(cur===1)render2(); else if(cur===3)render3();}
+function setKernel(v){S.ker=+v;
+  S.K=KERS[S.ker].k.map(function(r){return r.slice();}); S.div=KERS[S.ker].div;
+  document.getElementById('ker1').value=v; render1();}
+
+/* ================= álgebra ================= */
+function padX(){
+  const base=PHOTOS[S.foto].m, p=S.pad, n=NX+2*p, M=[];
+  for(let i=0;i<n;i++){const row=[];
+    for(let j=0;j<n;j++){
+      const bi=i-p, bj=j-p;
+      row.push((bi<0||bj<0||bi>=NX||bj>=NX)?0:base[bi][bj]);
+    } M.push(row);}
+  return M;
+}
+function outSize(){return Math.floor((NX+2*S.pad-KS)/S.stride)+1;}
+function convolve(){
+  const M=padX(), ny=outSize(), Y=[];
+  for(let i=0;i<ny;i++){const row=[];
+    for(let j=0;j<ny;j++){
+      let acc=0;
+      for(let u=0;u<KS;u++)for(let v=0;v<KS;v++)
+        acc+=S.K[u][v]*M[i*S.stride+u][j*S.stride+v];
+      row.push(acc/S.div);
+    } Y.push(row);}
+  return {Y:Y,ny:ny,M:M};
+}
+function poolMap(Y,ny,tipo){
+  const np=Math.max(1,Math.floor(ny/2)), P=[], blocks=[];
+  for(let m=0;m<np;m++){const rp=[],rb=[];
+    for(let n=0;n<np;n++){
+      const idx=[[2*m,2*n],[2*m,2*n+1],[2*m+1,2*n],[2*m+1,2*n+1]];
+      const vals=idx.map(function(ij){return Y[ij[0]][ij[1]];});
+      rp.push(tipo==='max'?Math.max.apply(null,vals):vals.reduce(function(a,b){return a+b;},0)/4);
+      rb.push(idx);
+    } P.push(rp); blocks.push(rb);}
+  return {P:P,np:np,blocks:blocks};
+}
+function fmt(v){
+  if(Math.abs(v-Math.round(v))<1e-9)return String(Math.round(v));
+  return v.toFixed(1);
+}
+
+/* ================= dibujo de matrices ================= */
+function mix(c,a){ // blanco -> color c con peso a
+  return 'rgb('+Math.round(255+(c[0]-255)*a)+','+Math.round(255+(c[1]-255)*a)+
+         ','+Math.round(255+(c[2]-255)*a)+')';
+}
+const GOLD=[184,134,11], MUTE=[138,138,138];
+function drawMatrix(ctx,M,x0,y0,cell,opts){
+  const n=M.length, o=opts||{};
+  let amax=0.5;
+  if(o.mode==='act')for(const r of M)for(const v of r)amax=Math.max(amax,Math.abs(v));
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let i=0;i<n;i++)for(let j=0;j<M[i].length;j++){
+    const x=x0+j*cell, y=y0+i*cell, v=M[i][j];
+    const shown=o.reveal?o.reveal(i,j):true;
+    let fill='#fbfbfb', txt='#1A1A1A';
+    if(shown&&o.mode==='img'){
+      const g=Math.round(v/9*255); fill='rgb('+g+','+g+','+g+')';
+      txt=(v>4.5)?'#1A1A1A':'#ffffff';
+    } else if(shown&&o.mode==='act'){
+      const a=Math.min(1,Math.abs(v)/amax);
+      fill=mix(v>=0?GOLD:MUTE,a*0.9); txt=(a>0.6&&v>=0)?'#ffffff':'#1A1A1A';
+    } else if(shown&&o.mode==='ker'){
+      fill=v>0?mix(GOLD,0.32):(v<0?mix(MUTE,0.3):'#ffffff');
+    }
+    ctx.fillStyle=fill; ctx.fillRect(x,y,cell,cell);
+    const esPad=o.padMask&&o.padMask(i,j);
+    if(esPad){
+      ctx.fillStyle='#faf6ec'; ctx.fillRect(x,y,cell,cell);
+      ctx.strokeStyle='#D9C28A'; ctx.setLineDash([3,3]); ctx.lineWidth=1;
+      ctx.strokeRect(x+0.5,y+0.5,cell-1,cell-1); ctx.setLineDash([]);
+      txt='#B9A46A';
+    } else {
+      ctx.strokeStyle='#dcdcdc'; ctx.lineWidth=1;
+      ctx.strokeRect(x+0.5,y+0.5,cell-1,cell-1);
+    }
+    if(shown){
+      ctx.fillStyle=txt;
+      ctx.font=(o.bold?'bold ':'')+Math.round(cell*0.40)+'px Georgia';
+      ctx.fillText(fmt(v),x+cell/2,y+cell/2+1);
+    }
+    if(o.hits)o.hits.push({x:x,y:y,w:cell,h:cell,r:i,c:j,tag:o.tag});
   }
+  ctx.strokeStyle='#8A8A8A'; ctx.lineWidth=1;
+  ctx.strokeRect(x0+0.5,y0+0.5,M[0].length*cell-1,n*cell-1);
+  if(o.hl){const r=o.hl[0],c=o.hl[1],rs=o.hl[2],cs=o.hl[3];
+    ctx.strokeStyle='#B8860B'; ctx.lineWidth=2.8;
+    ctx.strokeRect(x0+c*cell-1.4,y0+r*cell-1.4,cs*cell+2.8,rs*cell+2.8);}
+  if(o.hlcell){const r=o.hlcell[0],c=o.hlcell[1];
+    ctx.strokeStyle='#8C6508'; ctx.lineWidth=2.8;
+    ctx.strokeRect(x0+c*cell-1.4,y0+r*cell-1.4,cell+2.8,cell+2.8);}
 }
-buildX();
+function label(ctx,txt,x,y,col,size,align){
+  ctx.textAlign=align||'center'; ctx.textBaseline='alphabetic';
+  ctx.fillStyle=col||'#8A8A8A'; ctx.font=(size||12)+'px Georgia'; ctx.fillText(txt,x,y);
+}
+function arrowH(ctx,x0,x1,y,txt,sub){
+  ctx.strokeStyle='#B8860B'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1-7,y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x1-9,y-5); ctx.lineTo(x1,y); ctx.lineTo(x1-9,y+5); ctx.stroke();
+  label(ctx,txt,(x0+x1)/2,y-10,'#8C6508',12);
+  if(sub)label(ctx,sub,(x0+x1)/2,y+17,'#8A8A8A',10);
+}
 
-// 1D convolution with replicate padding -> same length
-function conv(k1,k2,k3){
-  const y=new Array(N);
-  for(let i=0;i<N;i++){
-    const a=X[Math.max(0,i-1)], b=X[i], c=X[Math.min(N-1,i+1)];
-    y[i]=k1*a+k2*b+k3*c;
+/* ================= SLIDE 1 · el filtro ================= */
+let HITS1=[];
+function render1(){
+  const R=convolve(), Y=R.Y, ny=R.ny, M=R.M;
+  const nPos=ny*ny;
+  if(S.pos>=nPos)S.pos=nPos-1;
+  const sl=document.getElementById('pos'); sl.max=nPos-1; sl.value=S.pos;
+  const pi=Math.floor(S.pos/ny), pj=S.pos%ny;
+  const ri=pi*S.stride, rj=pj*S.stride;
+  document.getElementById('v_pos').textContent=(S.pos+1)+'/'+nPos;
+  document.getElementById('v_pad').textContent=S.pad;
+  document.getElementById('v_str').textContent=S.stride;
+  document.getElementById('e_ij').textContent=pi+','+pj;
+
+  // la cuenta, una fila del kernel por línea
+  let html='';
+  for(let u=0;u<KS;u++){
+    let linea='';
+    for(let v=0;v<KS;v++){
+      const k=S.K[u][v], primero=(u===0&&v===0);
+      const signo=primero?(k<0?'&minus;':''):(k<0?' &minus; ':' + ');
+      linea+=signo+'<span class="kn">'+fmt(Math.abs(k))+'</span>&middot;<span class="xn">'+
+             fmt(M[ri+u][rj+v])+'</span>';
+    }
+    html+=linea+(u<KS-1?'<br>':'');
   }
-  return y;
-}
+  if(S.div!==1)html+='<br>y todo dividido entre '+S.div;
+  html+=' &nbsp;=&nbsp; <span class="res">'+fmt(Y[pi][pj])+'</span>';
+  document.getElementById('e_num').innerHTML=html;
 
-function upd(){
-  const k1=+document.getElementById('k1').value;
-  const k2=+document.getElementById('k2').value;
-  const k3=+document.getElementById('k3').value;
-  const sa=+document.getElementById('salto').value;
-  const po=+document.getElementById('pos').value;
-  const ru=+document.getElementById('ruido').value;
-  if(sa!==SALTO||po!==POS||ru!==RUIDO){SALTO=sa;POS=po;RUIDO=ru;buildX();}
-  document.getElementById('v_k1').textContent=k1.toFixed(1);
-  document.getElementById('v_k2').textContent=k2.toFixed(1);
-  document.getElementById('v_k3').textContent=k3.toFixed(1);
-  document.getElementById('v_salto').textContent=SALTO.toFixed(2);
-  document.getElementById('v_pos').textContent=POS;
-  document.getElementById('v_ruido').textContent=RUIDO.toFixed(2);
-  document.getElementById('n_k1').textContent=k1.toFixed(1);
-  document.getElementById('n_k2').textContent=k2.toFixed(1);
-  document.getElementById('n_k3').textContent=k3.toFixed(1);
-  const y=conv(k1,k2,k3);
-  // the numeric line is evaluated right on the edge, where the filter is being tested
-  const ia=Math.max(0,POS-1), ib=POS, ic=Math.min(N-1,POS+1);
-  document.getElementById('n_xa').textContent=X[ia].toFixed(2);
-  document.getElementById('n_xb').textContent=X[ib].toFixed(2);
-  document.getElementById('n_xc').textContent=X[ic].toFixed(2);
-  document.getElementById('n_y').textContent=y[POS].toFixed(2);
-  document.getElementById('n_pos').textContent=POS;
-  // characterise the filter
-  const s=k1+k2+k3, anti=Math.abs(k1+k3)<0.25 && Math.abs(k1)>0.2 && Math.abs(k3)>0.2;
-  const smooth=(k1>0.15&&k2>0.15&&k3>0.15)&&Math.abs(k1-k2)<0.6&&Math.abs(k2-k3)<0.6;
-  // peak response magnitude (edge strength)
-  let amax=0,ipk=0; for(let i=0;i<N;i++){if(Math.abs(y[i])>amax){amax=Math.abs(y[i]);ipk=i;}}
-  const acierta=Math.abs(ipk-POS)<=1;   // did the peak land on the real defect?
-  let msg,cls;
-  if(anti&&acierta){msg='Detector de bordes: el pico cae justo en el defecto (i='+ipk+').';cls='ok';}
-  else if(anti){msg='Detector de bordes, pero el pico (i='+ipk+') no cae en el defecto (i='+POS+'): la textura lo tapa.';cls='bad';}
-  else if(smooth){msg='Filtro de suavizado (promedia vecinos): aplana la textura y difumina el borde.';cls='ok';}
-  else if(Math.abs(s)>2.2){msg='Filtro de ganancia: amplifica el nivel global; no aísla el borde.';cls='bad';}
-  else{msg='Filtro mixto: ni borde limpio ni suavizado puro. Ajusta hacia [-1, 0, 1].';cls='bad';}
-  document.getElementById('ro').innerHTML=
-    'Kernel k = ['+k1.toFixed(1)+', '+k2.toFixed(1)+', '+k3.toFixed(1)+
-    '] &nbsp; suma='+s.toFixed(1)+'.<br>Defecto real en i=<b>'+POS+
-    '</b> &middot; respuesta máxima |y| = <b>'+amax.toFixed(2)+'</b> en i=<b>'+ipk+
-    '</b>.<br><span class="badge '+cls+'">'+msg+'</span>';
-  drawConv(y);
-}
+  let amax=0,ai=0,aj=0;
+  for(let i=0;i<ny;i++)for(let j=0;j<ny;j++)
+    if(Math.abs(Y[i][j])>amax){amax=Math.abs(Y[i][j]);ai=i;aj=j;}
+  const visto=amax>3&&Math.abs(Y[pi][pj])>=0.55*amax;
+  document.getElementById('ro1').innerHTML=
+    'Entrada '+M.length+'&times;'+M.length+' (p='+S.pad+'), kernel 3&times;3, s='+S.stride+
+    ' &rArr; mapa <b>'+ny+'&times;'+ny+'</b>, es decir '+nPos+' posiciones.<br>'+
+    'Este kernel '+KERS[S.ker].lee+'<br>'+
+    'Respuesta máxima |Y| = <b>'+fmt(amax)+'</b>, en la casilla ('+ai+','+aj+').<br>'+
+    '<span class="badge '+(visto?'ok':'bad')+'">'+
+    (visto?'Aquí el filtro reconoce su patrón: Y = '+fmt(Y[pi][pj])+'.'
+          :'Aquí el filtro no ve nada: Y = '+fmt(Y[pi][pj])+'. Llévalo a ('+ai+','+aj+').')+
+    '</span>';
 
-function drawConv(y){
-  const cv=document.getElementById('cv'); const {ctx,w,h}=fitCanvas(cv);
+  // ---- X  ⊛  K  =  Y ----
+  const cv=document.getElementById('cv1'); const F=fitCanvas(cv), ctx=F.ctx, w=F.w, h=F.h;
   ctx.clearRect(0,0,w,h);
-  const mx=42, mr=14;
-  const W=w-mx-mr;
-  const topH=(h-70)*0.5, gap=26, botY0=44+topH+gap, botH=(h-70)*0.5;
-  const xpx=i=>mx+i/(N-1)*W;
-  // ---- top panel: input signal x ----
-  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
-  ctx.fillText('Entrada  x  (brillo del tejido)',mx,18);
-  const t0=28, tH=topH;
-  let xmax=1.0; for(let i=0;i<N;i++)xmax=Math.max(xmax,X[i]);
-  const yx=v=>t0+(1-v/xmax)*tH;   // x in [0,xmax]
-  ctx.strokeStyle='#eee';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(mx,t0+tH);ctx.lineTo(mx+W,t0+tH);ctx.stroke();
-  ctx.strokeStyle='#1A1A1A';ctx.lineWidth=2;ctx.beginPath();
-  for(let i=0;i<N;i++){const px=xpx(i),py=yx(X[i]);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
-  ctx.stroke();
-  ctx.fillStyle='#1A1A1A';for(let i=0;i<N;i++){ctx.beginPath();ctx.arc(xpx(i),yx(X[i]),2,0,7);ctx.fill();}
-  // ---- bottom panel: output y ----
-  ctx.fillStyle='#8C6508';ctx.font='12px Georgia';
-  ctx.fillText('Salida  y = conv(x, k)   (respuesta del filtro)',mx,botY0-8);
-  // symmetric scale around 0 for y
-  let ym=0.3; for(let i=0;i<N;i++)ym=Math.max(ym,Math.abs(y[i]));
-  const b0=botY0, bH=botH;
-  const yy=v=>b0+bH/2-(v/ym)*(bH/2);
-  ctx.strokeStyle='#eee';ctx.beginPath();ctx.moveTo(mx,yy(0));ctx.lineTo(mx+W,yy(0));ctx.stroke();
-  ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';ctx.fillText('0',mx-14,yy(0)+4);
-  ctx.strokeStyle='#B8860B';ctx.lineWidth=2;ctx.beginPath();
-  for(let i=0;i<N;i++){const px=xpx(i),py=yy(y[i]);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);}
-  ctx.stroke();
-  ctx.fillStyle='#B8860B';for(let i=0;i<N;i++){ctx.beginPath();ctx.arc(xpx(i),yy(y[i]),2,0,7);ctx.fill();}
-  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
-  ctx.fillText('posición i sobre la línea',mx+W-160,b0+bH+14);
-}
-updaters[0]=upd;
+  HITS1=[];
+  const n=M.length;
+  const cell=Math.max(16,Math.min(56,(w-118)/(n+2.1+ny),(h-78)/n));
+  const cK=cell*0.70;
+  const wTot=n*cell+34+3*cK+34+ny*cell;
+  const x0=Math.max(8,(w-wTot)/2), midY=h/2+8;
+  const yX=midY-n*cell/2, yK=midY-3*cK/2, yY=midY-ny*cell/2;
+  const xK=x0+n*cell+34, xY=xK+3*cK+34;
 
-function drawSchema(){
-  const cv=document.getElementById('cv2'); const {ctx,w,h}=fitCanvas(cv);
-  ctx.clearRect(0,0,w,h);
-  const mx=30, cell=(w-60)/N, rowY=64, ch=30;
-  // input strip of cells
-  ctx.font='11px Georgia';ctx.textAlign='center';
-  for(let i=0;i<N;i++){
-    const x0=mx+i*cell;
-    const g=Math.round(255-X[i]*150);
-    ctx.fillStyle='rgb('+g+','+g+','+g+')';
-    ctx.fillRect(x0,rowY,cell-1,ch);
+  label(ctx,'PASO 1 · CONVOLUCIÓN',w/2,20,'#8C6508',13);
+  label(ctx,'Foto X ('+n+'×'+n+')',x0+n*cell/2,yX-10,'#1A1A1A',12);
+  label(ctx,'Kernel K',xK+3*cK/2,yK-10,'#8C6508',12);
+  label(ctx,'Mapa Y ('+ny+'×'+ny+')',xY+ny*cell/2,yY-10,'#8C6508',12);
+
+  drawMatrix(ctx,M,x0,yX,cell,{mode:'img',hl:[ri,rj,KS,KS],hits:HITS1,tag:'img',
+    padMask:function(i,j){return S.pad===1&&(i===0||j===0||i===n-1||j===n-1);}});
+  drawMatrix(ctx,S.K,xK,yK,cK,{mode:'ker',hits:HITS1,tag:'ker'});
+  drawMatrix(ctx,Y,xY,yY,cell,{mode:'act',hlcell:[pi,pj],
+    reveal:function(i,j){return (i*ny+j)<=S.pos;}});
+
+  label(ctx,'⊛',xK-17,midY+7,'#8C6508',19);
+  label(ctx,'=',xY-17,midY+7,'#8C6508',19);
+  label(ctx,'clic en un píxel para cambiarlo',x0+n*cell/2,yX+n*cell+16,'#8A8A8A',10);
+  label(ctx,'clic para editar',xK+3*cK/2,yK+3*cK+15,'#8A8A8A',10);
+  label(ctx,'en blanco: aún sin calcular',xY+ny*cell/2,yY+ny*cell+16,'#8A8A8A',10);
+}
+updaters[0]=render1;
+
+document.getElementById('cv1').addEventListener('mousedown',function(ev){
+  const r=ev.target.getBoundingClientRect();
+  const mx=ev.clientX-r.left, my=ev.clientY-r.top;
+  for(const hp of HITS1){
+    if(mx>=hp.x&&mx<=hp.x+hp.w&&my>=hp.y&&my<=hp.y+hp.h){
+      const d=(ev.shiftKey||ev.altKey||ev.button===2)?-1:1;
+      if(hp.tag==='img'){
+        const p=S.pad, bi=hp.r-p, bj=hp.c-p;
+        if(bi<0||bj<0||bi>=NX||bj>=NX)return;          // el anillo de padding no se edita
+        const base=PHOTOS[S.foto].m;
+        base[bi][bj]=(base[bi][bj]+d+10)%10;
+      } else if(hp.tag==='ker'){
+        S.K[hp.r][hp.c]=((S.K[hp.r][hp.c]+2+d+5)%5)-2;  // ciclo -2..2
+        S.div=1; S.ker=4;
+        KERS[4].k=S.K.map(function(x){return x.slice();}); KERS[4].div=1;
+        document.getElementById('ker1').value=4;
+      }
+      render1(); ev.preventDefault(); return;
+    }
   }
-  ctx.strokeStyle='#8A8A8A';ctx.lineWidth=1;ctx.strokeRect(mx,rowY,cell*N,ch);
-  ctx.fillStyle='#1A1A1A';ctx.font='13px Georgia';
-  ctx.fillText('Línea de entrada x (una fila de la imagen del tejido)',w/2,rowY-32);
-  // sliding kernel of width 3 highlighted over the edge region
-  const kpos=Math.max(1,Math.min(N-2,POS));
-  const kx=mx+kpos*cell;
-  ctx.strokeStyle='#B8860B';ctx.lineWidth=2.6;ctx.strokeRect(kx-cell,rowY-4,cell*3,ch+8);
-  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';
-  ctx.fillText('kernel [k1,k2,k3]',kx+cell/2,rowY-14);
-  // arrow down to the output value
-  const oy=rowY+ch+56;
-  ctx.strokeStyle='#B8860B';ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(kx+cell/2,rowY+ch+6);ctx.lineTo(kx+cell/2,oy-20);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(kx+cell/2-5,oy-28);ctx.lineTo(kx+cell/2,oy-20);ctx.lineTo(kx+cell/2+5,oy-28);ctx.stroke();
-  // output cell
-  ctx.fillStyle='#F5EBD3';ctx.strokeStyle='#B8860B';ctx.lineWidth=2;
-  ctx.fillRect(kx+cell/2-24,oy-16,48,30);ctx.strokeRect(kx+cell/2-24,oy-16,48,30);
-  ctx.fillStyle='#8C6508';ctx.font='bold 14px Georgia';ctx.fillText('y_i',kx+cell/2,oy+4);
-  // caption of the operation
-  ctx.fillStyle='#1A1A1A';ctx.font='14px Georgia';
-  ctx.fillText('y_i = k1·x_{i-1} + k2·x_i + k3·x_{i+1}',w/2,oy+42);
-  ctx.fillStyle='#8A8A8A';ctx.font='12px Georgia';
-  ctx.fillText('El kernel se desliza una casilla a la derecha y repite la misma cuenta →',w/2,oy+64);
-  ctx.textAlign='left';
-}
-updaters[1]=drawSchema;
+});
+document.getElementById('cv1').addEventListener('contextmenu',function(e){e.preventDefault();});
 
-window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
-buildNav();
-hot('k1');
-go(0);
+let animId=null;
+function stepPos(d){
+  stopAnim();
+  const nPos=outSize()*outSize();
+  S.pos=(S.pos+d+nPos)%nPos; render1();
+}
+function toggleAnim(){ if(animId)stopAnim(); else startAnim(); }
+function startAnim(){
+  const b=document.getElementById('b_anim');
+  b.innerHTML='&#9208; pausa'; b.classList.add('on');
+  S.pos=0; render1();
+  animId=setInterval(function(){
+    const nPos=outSize()*outSize();
+    if(S.pos>=nPos-1){stopAnim();return;}
+    S.pos++; render1();
+  },620);
+}
+function stopAnim(){
+  if(animId){clearInterval(animId);animId=null;}
+  const b=document.getElementById('b_anim');
+  if(b){b.innerHTML='&#9654; deslizar'; b.classList.remove('on');}
+}
+
+/* ================= SLIDE 2 · el pooling ================= */
+function pipeline(ctx,w,h,titulo){
+  const R=convolve(), Y=R.Y, ny=R.ny;
+  const PP=poolMap(Y,ny,S.pool), P=PP.P, np=PP.np;
+  const n=NX+2*S.pad;
+  const GAP=132;   // hueco para la flecha y su etiqueta, que no pisan las matrices
+  const cell=Math.max(14,Math.min(46,(w-2*GAP-40)/(n+ny+np),(h-84)/n));
+  const wTot=n*cell+GAP+ny*cell+GAP+np*cell;
+  const x0=Math.max(8,(w-wTot)/2), midY=h/2+10;
+  const xY=x0+n*cell+GAP, xP=xY+ny*cell+GAP;
+  const yX=midY-n*cell/2, yY=midY-ny*cell/2, yP=midY-np*cell/2;
+  const bm=Math.floor(S.ppos/np), bn=S.ppos%np;
+
+  label(ctx,titulo,w/2,20,'#8C6508',13);
+  label(ctx,'Foto X ('+n+'×'+n+')',x0+n*cell/2,yX-10,'#1A1A1A',12);
+  label(ctx,'Mapa Y ('+ny+'×'+ny+')',xY+ny*cell/2,yY-10,'#8C6508',12);
+  label(ctx,'Mapa P ('+np+'×'+np+')',xP+np*cell/2,yP-10,'#8C6508',12);
+
+  drawMatrix(ctx,padX(),x0,yX,cell,{mode:'img',
+    padMask:function(i,j){return S.pad===1&&(i===0||j===0||i===n-1||j===n-1);}});
+  drawMatrix(ctx,Y,xY,yY,cell,{mode:'act',hl:[2*bm,2*bn,2,2]});
+  drawMatrix(ctx,P,xP,yP,cell,{mode:'act',hlcell:[bm,bn],bold:true});
+
+  arrowH(ctx,x0+n*cell+14,xY-14,midY,'PASO 1 · conv K','9 pesos, s = '+S.stride);
+  arrowH(ctx,xY+ny*cell+14,xP-14,midY,'PASO 2 · pool 2×2',
+         (S.pool==='max'?'máximo':'media')+', 0 parámetros');
+  return {Y:Y,ny:ny,P:P,np:np,blocks:PP.blocks,bm:bm,bn:bn,
+          geom:{xP:xP,yP:yP,np:np,cell:cell}};
+}
+function render2(){
+  const ny=outSize(), np=Math.max(1,Math.floor(ny/2)), nB=np*np;
+  if(S.ppos>=nB)S.ppos=nB-1;
+  const sl=document.getElementById('ppos'); sl.max=nB-1; sl.value=S.ppos;
+  document.getElementById('v_ppos').textContent=(S.ppos+1)+'/'+nB;
+  document.getElementById('v_umb').textContent=S.umbral;
+  document.getElementById('b_max').classList.toggle('on',S.pool==='max');
+  document.getElementById('b_avg').classList.toggle('on',S.pool==='avg');
+
+  const cv=document.getElementById('cv2'); const F=fitCanvas(cv), ctx=F.ctx;
+  ctx.clearRect(0,0,F.w,F.h);
+  const R=pipeline(ctx,F.w,F.h,'PASO 1 + PASO 2');
+
+  const bm=R.bm, bn=R.bn;
+  const vals=R.blocks[bm][bn].map(function(ij){return R.Y[ij[0]][ij[1]];});
+  document.getElementById('e_pool').innerHTML='P<sub>'+bm+','+bn+'</sub> = '+
+    (S.pool==='max'?'max':'media')+'{ '+
+    'Y<sub>'+(2*bm)+','+(2*bn)+'</sub>, Y<sub>'+(2*bm)+','+(2*bn+1)+'</sub>, '+
+    'Y<sub>'+(2*bm+1)+','+(2*bn)+'</sub>, Y<sub>'+(2*bm+1)+','+(2*bn+1)+'</sub> }';
+  document.getElementById('e_pnum').innerHTML=
+    (S.pool==='max'?'max':'media')+'{ '+
+    vals.map(function(v){return '<span class="xn">'+fmt(v)+'</span>';}).join(', ')+
+    ' } &nbsp;=&nbsp; <span class="res">'+fmt(R.P[bm][bn])+'</span>';
+
+  let best=-Infinity,bi=0,bj=0;
+  for(let i=0;i<R.np;i++)for(let j=0;j<R.np;j++)
+    if(R.P[i][j]>best){best=R.P[i][j];bi=i;bj=j;}
+  const alt=poolMap(R.Y,R.ny,S.pool==='max'?'avg':'max');
+  let altBest=-Infinity;
+  for(const r of alt.P)for(const v of r)altBest=Math.max(altBest,v);
+  const salta=best>=S.umbral, saltaAlt=altBest>=S.umbral;
+  const sobra=(R.ny%2===1)?'El mapa Y es '+R.ny+'×'+R.ny+', impar: la última fila y la última columna se quedan fuera de los bloques.<br>':'';
+  document.getElementById('ro2').innerHTML= sobra+
+    'Resumen con <b>'+(S.pool==='max'?'máximo':'media')+'</b>: mayor casilla de P = <b>'+
+    fmt(best)+'</b>, en ('+bi+','+bj+'). Umbral de alarma = '+S.umbral+'.<br>'+
+    'Con el otro criterio (<b>'+(S.pool==='max'?'media':'máximo')+'</b>) saldría <b>'+
+    fmt(altBest)+'</b>.<br>'+
+    '<span class="badge '+(salta?'ok':'bad')+'">'+
+    (salta?'ALARMA: hay hueco de estante.':'Sin alarma: la app no avisa.')+'</span>'+
+    (salta!==saltaAlt?' <span class="badge '+(saltaAlt?'ok':'bad')+
+      '">Con el otro criterio la decisión sería la contraria.</span>':'');
+}
+updaters[1]=render2;
+
+/* ================= SLIDE 4 · cierre ================= */
+function render3(){
+  const cv=document.getElementById('cv3'); const F=fitCanvas(cv), ctx=F.ctx;
+  ctx.clearRect(0,0,F.w,F.h);
+  const R=pipeline(ctx,F.w,F.h,'LA CNN ENTERA, EN PEQUEÑO');
+  let best=-Infinity;
+  for(const r of R.P)for(const v of r)best=Math.max(best,v);
+  const g=R.geom, bx=g.xP+g.np*g.cell/2, by=g.yP+g.np*g.cell+36;
+  const salta=best>=S.umbral;
+  ctx.fillStyle=salta?'#F5EBD3':'#f5f5f5';
+  ctx.strokeStyle=salta?'#B8860B':'#8A8A8A'; ctx.lineWidth=1.6;
+  ctx.fillRect(bx-68,by-16,136,28); ctx.strokeRect(bx-68,by-16,136,28);
+  label(ctx,salta?'ALARMA: hueco':'sin alarma',bx,by+3,salta?'#8C6508':'#8A8A8A',13);
+  label(ctx,'resumen '+fmt(best)+' frente a umbral '+S.umbral,bx,by+28,'#8A8A8A',10);
+}
+updaters[3]=render3;
+
+/* ================================================================
+   SLIDE 3 — la misma convolución sobre una foto de 36×36.
+   La foto se genera por código (el deck es autocontenido) y la
+   convolución se calcula de verdad en cada una de las 1156 ventanas.
+   ================================================================ */
+let k2dPlay, k2dStep, k2dReset, k2dScrub, k2dUpd, k2dKernel;
+(function(){
+  const N=36, K=3, M=N-K+1, TOT=M*M;        // 36x36 -> salida 34x34
+
+  function buildShelf(){
+    const rng=mulberry32(20260904);
+    const a=new Float64Array(N*N).fill(0.66);      // fondo del lineal
+    const shelves=[3,15,27];                       // fila superior de cada balda
+    shelves.forEach(function(sy,si){
+      let x=1;
+      while(x<N-1){
+        const wbox=2+Math.floor(rng()*3);          // cajas de 2 a 4 px de ancho
+        const shade=0.20+0.62*rng();               // cada producto, su brillo
+        const hueco=(si===1 && x>=15 && x<=25);    // rotura de stock en la balda central
+        for(let dy=0;dy<9;dy++){
+          const yy=sy+dy; if(yy>=N) continue;
+          for(let dx=0;dx<wbox && x+dx<N;dx++){
+            a[yy*N+x+dx]= hueco ? 0.26 : shade+(dy===0?0.06:0);
+          }
+        }
+        x+=wbox+1;                                 // 1 px de hueco entre cajas
+      }
+      const yy=sy+9;                               // canto claro de la balda
+      if(yy<N) for(let dx=0;dx<N;dx++) a[yy*N+dx]=0.90;
+    });
+    for(let i=0;i<N*N;i++) a[i]=Math.max(0,Math.min(1,a[i]+0.02*(2*rng()-1)));
+    return Array.from(a,function(v){return Math.round(255*v);});
+  }
+  const IMG=buildShelf();
+
+  const KERNELS={
+    bv:{n:'borde vertical', w:[1,0,-1, 1,0,-1, 1,0,-1]},
+    bh:{n:'borde horizontal',w:[1,1,1, 0,0,0, -1,-1,-1]},
+    sv:{n:'Sobel vertical', w:[1,0,-1, 2,0,-2, 1,0,-1]},
+    sh:{n:'realce',         w:[0,-1,0, -1,5,-1, 0,-1,0]},
+    id:{n:'identidad',      w:[0,0,0, 0,1,0, 0,0,0]}
+  };
+  let kid='bv', W=KERNELS.bv.w, OUT=null, AMAX=1;
+
+  function conv2(){
+    const o=new Float64Array(TOT);
+    for(let i=0;i<M;i++)for(let j=0;j<M;j++){
+      let s=0;
+      for(let u=0;u<K;u++)for(let v=0;v<K;v++) s+=W[u*K+v]*IMG[(i+u)*N+j+v];
+      o[i*M+j]=s;
+    }
+    OUT=o; AMAX=0;
+    for(let i=0;i<TOT;i++) AMAX=Math.max(AMAX,Math.abs(o[i]));
+    if(AMAX===0) AMAX=1;
+  }
+  conv2();
+
+  let pos=0, running=false, last=0, acc=0;
+
+  function rampColor(t){
+    t=Math.max(0,Math.min(1,t));
+    const st=[[255,255,255],[245,235,211],[184,134,11],[74,50,8]];
+    const x=t*(st.length-1), i=Math.min(st.length-2,Math.floor(x)), f=x-i;
+    const c=[0,1,2].map(function(k){return Math.round(st[i][k]+(st[i+1][k]-st[i][k])*f);});
+    return 'rgb('+c[0]+','+c[1]+','+c[2]+')';
+  }
+
+  function drawMain(){
+    const cv=document.getElementById('cvK'); const F=fitCanvas(cv);
+    const ctx=F.ctx, w=F.w, h=F.h;
+    ctx.clearRect(0,0,w,h);
+    const top=22, pad=10, gap=26;
+    const side=Math.min((w-2*pad-gap)/2, h-top-16);
+    const x1=pad, x2=pad+side+gap;
+    const cI=side/N, cO=side/M;
+    const i0=Math.floor(pos/M), j0=pos%M;
+
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.font='12px Georgia'; ctx.fillStyle='#1A1A1A';
+    ctx.fillText('Foto del lineal — 36 × 36 píxeles',x1,14);
+    ctx.fillStyle='#8C6508';
+    ctx.fillText('Mapa de activación — 34 × 34',x2,14);
+
+    for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+      const g=IMG[i*N+j];
+      ctx.fillStyle='rgb('+g+','+g+','+g+')';
+      ctx.fillRect(x1+j*cI, top+i*cI, cI+0.6, cI+0.6);
+    }
+    ctx.strokeStyle='#D9C28A'; ctx.lineWidth=1; ctx.strokeRect(x1,top,side,side);
+    ctx.strokeStyle='#B8860B'; ctx.lineWidth=2.6;
+    ctx.strokeRect(x1+j0*cI-1, top+i0*cI-1, 3*cI+2, 3*cI+2);
+
+    for(let k=0;k<TOT;k++){
+      const i=Math.floor(k/M), j=k%M;
+      ctx.fillStyle = k<=pos ? rampColor(Math.abs(OUT[k])/AMAX) : '#fbfbfb';
+      ctx.fillRect(x2+j*cO, top+i*cO, cO+0.6, cO+0.6);
+    }
+    ctx.strokeStyle='#D9C28A'; ctx.lineWidth=1; ctx.strokeRect(x2,top,side,side);
+    ctx.strokeStyle='#1A1A1A'; ctx.lineWidth=1.6;
+    ctx.strokeRect(x2+j0*cO-1, top+i0*cO-1, cO+2, cO+2);
+    ctx.fillStyle='#8A8A8A'; ctx.font='11px Georgia';
+    ctx.fillText('la ventana avanza 1 casilla (stride 1)',x1,top+side+13);
+    ctx.fillText('oscuro = respuesta |y| alta',x2,top+side+13);
+  }
+
+  function drawPatch(){
+    const cv=document.getElementById('cvP'); const F=fitCanvas(cv);
+    const ctx=F.ctx, w=F.w, h=F.h;
+    ctx.clearRect(0,0,w,h);
+    const i0=Math.floor(pos/M), j0=pos%M;
+    const cell=Math.min(34,(h-64)/3);
+    const top=26;
+    const blocks=[
+      {x:14, t:'parche de la foto', get:function(u,v){return IMG[(i0+u)*N+j0+v];},
+        fill:function(u,v){const g=IMG[(i0+u)*N+j0+v];return 'rgb('+g+','+g+','+g+')';},
+        fg:function(u,v){return IMG[(i0+u)*N+j0+v]>128?'#1A1A1A':'#FFFFFF';}},
+      {x:0, t:'kernel K', get:function(u,v){return W[u*K+v];},
+        fill:function(){return '#F5EBD3';}, fg:function(){return '#8C6508';}},
+      {x:0, t:'productos K·x',
+        get:function(u,v){return W[u*K+v]*IMG[(i0+u)*N+j0+v];},
+        fill:function(u,v){const p=W[u*K+v]*IMG[(i0+u)*N+j0+v];
+          return p===0?'#ffffff':rampColor(0.25+0.6*Math.abs(p)/(AMAX/2));},
+        fg:function(u,v){const p=W[u*K+v]*IMG[(i0+u)*N+j0+v];
+          return Math.abs(p)/(AMAX/2)>0.7?'#FFFFFF':'#1A1A1A';}}
+    ];
+    const bw=3*cell, sepw=34;
+    let x=14;
+    blocks.forEach(function(b){ b.x=x; x+=bw+sepw; });
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    blocks.forEach(function(b,bi){
+      ctx.fillStyle='#8C6508'; ctx.font='bold 11px Georgia';
+      ctx.fillText(b.t,b.x+bw/2,16);
+      for(let u=0;u<K;u++)for(let v=0;v<K;v++){
+        ctx.fillStyle=b.fill(u,v);
+        ctx.fillRect(b.x+v*cell, top+u*cell, cell-2, cell-2);
+        ctx.strokeStyle=bi===1?'#8C6508':'#D9C28A'; ctx.lineWidth=1;
+        ctx.strokeRect(b.x+v*cell, top+u*cell, cell-2, cell-2);
+        const val=b.get(u,v);
+        ctx.fillStyle=b.fg(u,v); ctx.font='11px Georgia';
+        ctx.fillText(bi===1&&val>0?'+'+val:String(Math.round(val)),
+                     b.x+v*cell+(cell-2)/2, top+u*cell+(cell-2)/2+4);
+      }
+      if(bi<blocks.length-1){
+        ctx.fillStyle='#8A8A8A'; ctx.font='16px Georgia';
+        ctx.fillText(bi===0?'×':'=',b.x+bw+sepw/2,top+1.5*cell+6);
+      }
+    });
+    let s=0; for(let u=0;u<K;u++)for(let v=0;v<K;v++) s+=W[u*K+v]*IMG[(i0+u)*N+j0+v];
+    const sx=blocks[2].x+bw+sepw/2+14;
+    ctx.fillStyle='#8A8A8A'; ctx.font='16px Georgia';
+    ctx.fillText('→',blocks[2].x+bw+sepw/2-6,top+1.5*cell+6);
+    ctx.fillStyle='#8C6508'; ctx.font='bold 11px Georgia';
+    ctx.fillText('suma',sx+37,16);
+    ctx.fillStyle='#F5EBD3'; ctx.fillRect(sx,top+cell-6,74,cell+12);
+    ctx.strokeStyle='#B8860B'; ctx.lineWidth=2; ctx.strokeRect(sx,top+cell-6,74,cell+12);
+    ctx.fillStyle='#8C6508'; ctx.font='bold 15px Georgia';
+    ctx.fillText((s>0?'+':'')+Math.round(s),sx+37,top+1.5*cell+7);
+    ctx.fillStyle='#8A8A8A'; ctx.font='11px Georgia';
+    ctx.fillText('y en la fila '+i0+', columna '+j0, sx+37, top+3*cell+18);
+    ctx.textAlign='left';
+  }
+
+  function refresh(){
+    const i0=Math.floor(pos/M), j0=pos%M;
+    const y=OUT[pos], rel=Math.abs(y)/AMAX;
+    document.getElementById('v_k2pos').textContent=pos;
+    document.getElementById('k2pos').value=pos;
+    document.getElementById('v_k2vel').textContent=
+      document.getElementById('k2vel').value;
+    const terms=[];
+    for(let u=0;u<K;u++)for(let v=0;v<K;v++){
+      const kw=W[u*K+v]; if(kw===0) continue;
+      terms.push((kw>0?'+':'−')+(Math.abs(kw)===1?'':Math.abs(kw)+'·')+
+                 IMG[(i0+u)*N+j0+v]);
+    }
+    const str=terms.join(' ').replace(/^\+/,'');
+    document.getElementById('n_cuenta').innerHTML=
+      'y<sub>'+i0+','+j0+'</sub> = '+str+' = <b>'+Math.round(OUT[pos])+'</b>';
+    let msg,cls;
+    if(rel>0.5){msg='Respuesta fuerte: aquí el brillo cambia de golpe, hay borde.';cls='ok';}
+    else if(rel>0.18){msg='Respuesta media: cambio de brillo suave.';cls='ok';}
+    else{msg='Respuesta casi nula: zona plana, nada que detectar.';cls='bad';}
+    document.getElementById('k2ro').innerHTML=
+      'Kernel <b>'+KERNELS[kid].n+'</b> &middot; posición <b>'+(pos+1)+'</b> de '+TOT+
+      ' (fila '+i0+', columna '+j0+').<br>y = <b>'+Math.round(OUT[pos])+
+      '</b> &nbsp; máx |y| del mapa = <b>'+Math.round(AMAX)+
+      '</b> &nbsp; |y| relativo = <b>'+(100*rel).toFixed(0)+' %</b>.'+
+      '<br><span class="badge '+cls+'">'+msg+'</span>';
+    drawMain(); drawPatch();
+  }
+
+  let loopTok=0;
+  function startLoop(){
+    const tok=++loopTok;
+    last=0;
+    const step=function(ts){
+      if(!running||tok!==loopTok){last=0;return;}
+      if(cur!==SLIDE_FOTO){running=false;last=0;setBtn();return;}
+      if(!last) last=ts;
+      const dt=Math.min(0.2,(ts-last)/1000); last=ts;
+      const vel=+document.getElementById('k2vel').value;   // posiciones por segundo
+      acc+=dt*vel;
+      if(acc>=1){
+        const adv=Math.floor(acc); acc-=adv;
+        pos=(pos+adv)%TOT;
+        refresh();
+      }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  function setBtn(){
+    const b=document.getElementById('b_play');
+    b.innerHTML=running?'&#9208; pausa':'&#9654; play';
+    b.className=running?'on':'';
+  }
+
+  k2dPlay=function(){running=!running; setBtn(); if(running)startLoop(); else loopTok++;};
+  k2dStep=function(n){running=false;loopTok++;setBtn();pos=(pos+n)%TOT;hot('img');refresh();};
+  k2dReset=function(){running=false;loopTok++;setBtn();pos=0;acc=0;refresh();};
+  k2dScrub=function(){running=false;loopTok++;setBtn();
+    pos=+document.getElementById('k2pos').value;hot('img');refresh();};
+  k2dUpd=function(){refresh();};
+  k2dKernel=function(){
+    kid=document.getElementById('k2ker').value;
+    W=KERNELS[kid].w; conv2(); hot('ker'); refresh();
+  };
+  updaters[SLIDE_FOTO]=refresh;
+  refresh();
+})();
+
+/* ================= arranque ================= */
+(function init(){
+  const f1=document.getElementById('foto1'), f2=document.getElementById('foto2'),
+        k1=document.getElementById('ker1');
+  PHOTOS.forEach(function(p,i){
+    [f1,f2].forEach(function(sel){
+      const o=document.createElement('option');
+      o.value=i; o.textContent=p.nombre; sel.appendChild(o);});});
+  KERS.forEach(function(k,i){
+    const o=document.createElement('option');
+    o.value=i; o.textContent=k.nombre; k1.appendChild(o);});
+  f1.value=0; f2.value=0; k1.value=0;
+  window.addEventListener('resize',function(){if(updaters[cur])updaters[cur]();});
+  buildNav(); go(0);
+})();
 </script>
 </body>
 </html>

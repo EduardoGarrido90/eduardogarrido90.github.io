@@ -83,8 +83,67 @@
 <div id="slidetitle"></div>
 <hr id="goldrule">
 
-<!-- ============ SLIDE 1: interactiva ============ -->
+<!-- ============ SLIDE 1: el bucle de entrenamiento ============ -->
 <section class="slide" id="s0">
+  <div class="figcol">
+    <div class="eqpanel">
+      <div class="eqtitle">Las cuentas del bucle</div>
+      <div class="eq">
+        iteraciones por época = &lceil;<span class="term" id="t_bn">N</span> /
+        <span class="term" id="t_bb">B</span>&rceil; &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+        pasos = <span class="term" id="t_be">E</span> &middot; &lceil;N/B&rceil;
+      </div>
+      <div class="eqnum">
+        N = <span class="nterm" id="n_bn">600</span>,
+        B = <span class="nterm" id="n_bb">32</span>,
+        E = <span class="nterm" id="n_be">12</span>
+        &rarr; <b id="n_bit">19</b> iteraciones/época &middot; <b id="n_bst">228</b> pasos
+      </div>
+    </div>
+    <canvas id="cvbar" width="720" height="118"></canvas>
+    <canvas id="cvland" width="720" height="300"></canvas>
+  </div>
+  <div class="txtcol">
+    <p><span class="hd">El caso.</span> Una telco quiere predecir el churn con dos
+    variables. Arriba, las filas troceadas en batches: eso es <b>una época</b>. Abajo, el
+    camino que recorren de verdad los dos pesos sobre la superficie de pérdida mientras
+    el bucle gira.</p>
+
+    <div class="ctrlbox">
+      <div class="sub">El bucle &mdash; cuánto datos y en qué trozos</div>
+      <div class="row"><span class="lab">N</span>
+        <input type="range" id="bn" min="100" max="1000" step="50" value="600"
+          oninput="hot('bn');updLoop()"><span class="val" id="v_bn">600</span></div>
+      <div class="row"><span class="lab">B</span>
+        <input type="range" id="bb" min="0" max="9" step="1" value="5"
+          oninput="hot('bb');updLoop()"><span class="val" id="v_bb">32</span></div>
+      <div class="sub second">Cuánto entrenas y con qué paso</div>
+      <div class="row"><span class="lab">E</span>
+        <input type="range" id="be" min="1" max="30" step="1" value="12"
+          oninput="hot('be');updLoop()"><span class="val" id="v_be">12</span></div>
+      <div class="row"><span class="lab">lr</span>
+        <input type="range" id="blr" min="0" max="20" step="1" value="17"
+          oninput="updLoop()"><span class="val" id="v_blr">0.50</span></div>
+    </div>
+
+    <div class="readout" id="ro_loop"></div>
+
+    <p><span class="hd">Lee así.</span> Baja <b>B</b> a 1: la barra se llena de trozos, los
+    pasos se disparan y el camino se convierte en un garabato que orbita el mínimo sin
+    posarse. Sube <b>B</b> hasta el tope: el camino sale recto y limpio, y con las mismas
+    épocas se queda a medio camino porque da poquísimos pasos.</p>
+
+    <div class="miniglos">
+      <b>N</b> filas de entrenamiento. <b>B</b> tamaño del batch: cuántas filas mira cada
+      paso. <b>E</b> épocas: cuántas veces se recorre el dataset entero.
+      <b>iteración</b> un batch procesado y un paso del optimizador.
+      <b>lr</b> cuánto se mueve cada paso.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: interactiva ============ -->
+<section class="slide" id="s1">
   <div class="figcol">
     <div class="eqpanel">
       <div class="eqtitle">La ecuación de la regularización</div>
@@ -143,8 +202,8 @@
   </div>
 </section>
 
-<!-- ============ SLIDE 2: cierre ============ -->
-<section class="slide" id="s1">
+<!-- ============ SLIDE 3: cierre ============ -->
+<section class="slide" id="s2">
   <div class="figcol">
     <div class="eqpanel">
       <div class="eqtitle">Para llevarte a casa</div>
@@ -172,8 +231,9 @@
 <div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Día 03 · Regularización</div>
 
 <script>
-const SECTIONS=["Regularización","Para llevar"];
-const TITLES=["Penalizar los pesos frena el sobreajuste, pero pasarse aplana el modelo: λ tiene su punto justo.",
+const SECTIONS=["Bucle de entrenamiento","Regularización","Para llevar"];
+const TITLES=["Mueve el tamaño del batch y mira las dos cosas que decide: cuántos pasos das y cómo de recto es el camino.",
+              "Penalizar los pesos frena el sobreajuste, pero pasarse aplana el modelo: λ tiene su punto justo.",
               "Regularizar es cambiar un poco de ajuste por mucha estabilidad."];
 let cur=0;
 function buildNav(){
@@ -304,6 +364,210 @@ function fmtLam(l){
   return l.toExponential(0);
 }
 
+// ---------- slide 0: el bucle de entrenamiento ----------
+// Regresión logística de DOS pesos sobre datos sintéticos con semilla fija: es
+// el modelo más pequeño cuya superficie de pérdida se puede dibujar entera, así
+// que el alumno ve el camino completo del descenso, no una curva resumen.
+const BS=[1,2,4,8,16,32,64,128,256,512];
+const LR_OF=i=>Math.pow(10,-2+i*0.1);          // 0.01 a 1.0, una décima por paso
+const W_TRUE=[2.0,-1.5];
+const W0=[-2.2,2.4];
+const GW1=[-3.0,3.6], GW2=[-2.6,3.0], GRES=46;
+
+let L={n:0,X:null,Y:null,grid:null,lo:0,hi:1,wmin:null};
+
+function loopData(n){
+  if(L.n===n)return;
+  const rng=mulberry32(20260903);
+  const randn=()=>{let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+  const X=new Float64Array(2*n), Y=new Float64Array(n);
+  for(let i=0;i<n;i++){
+    const a=randn(), b=randn();
+    X[2*i]=a; X[2*i+1]=b;
+    const z=W_TRUE[0]*a+W_TRUE[1]*b;
+    Y[i]=(rng()<1/(1+Math.exp(-z)))?1:0;
+  }
+  L.n=n; L.X=X; L.Y=Y;
+  // superficie: BCE media sobre las n filas. Se cachea por N porque es lo caro.
+  const g=new Float64Array(GRES*GRES);
+  let lo=Infinity, hi=-Infinity;
+  for(let i=0;i<GRES;i++){
+    const w2=GW2[0]+(GW2[1]-GW2[0])*i/(GRES-1);
+    for(let j=0;j<GRES;j++){
+      const w1=GW1[0]+(GW1[1]-GW1[0])*j/(GRES-1);
+      const v=loopLoss([w1,w2]);
+      g[i*GRES+j]=v; if(v<lo)lo=v; if(v>hi)hi=v;
+    }
+  }
+  L.grid=g; L.lo=lo; L.hi=hi;
+  // el mínimo, por descenso completo hasta que deja de moverse
+  let w=[0,0];
+  for(let k=0;k<1500;k++){const gr=loopGrad(w,null,0,n);w[0]-=0.5*gr[0];w[1]-=0.5*gr[1];}
+  L.wmin=w;
+}
+function loopLoss(w){
+  let s=0;
+  for(let i=0;i<L.n;i++){
+    const z=w[0]*L.X[2*i]+w[1]*L.X[2*i+1];
+    s+=(z>0? z+Math.log1p(Math.exp(-z)) : Math.log1p(Math.exp(z)))-L.Y[i]*z;
+  }
+  return s/L.n;
+}
+// gradiente sobre perm[from..to); con perm=null recorre las filas en orden
+function loopGrad(w,perm,from,to){
+  let g0=0,g1=0;
+  for(let k=from;k<to;k++){
+    const i=perm?perm[k]:k;
+    const a=L.X[2*i], b=L.X[2*i+1];
+    const p=1/(1+Math.exp(-(w[0]*a+w[1]*b)));
+    const e=p-L.Y[i];
+    g0+=e*a; g1+=e*b;
+  }
+  const m=to-from;
+  return [g0/m,g1/m];
+}
+function loopTrain(n,B,E,lr){
+  const rng=mulberry32(7);
+  const perm=new Int32Array(n);
+  let w=[W0[0],W0[1]];
+  const traza=[[w[0],w[1]]];
+  for(let e=0;e<E;e++){
+    for(let i=0;i<n;i++)perm[i]=i;
+    for(let i=n-1;i>0;i--){const j=Math.floor(rng()*(i+1));const t=perm[i];perm[i]=perm[j];perm[j]=t;}
+    for(let s0=0;s0<n;s0+=B){
+      const g=loopGrad(w,perm,s0,Math.min(s0+B,n));
+      w=[w[0]-lr*g[0], w[1]-lr*g[1]];
+      if(!isFinite(w[0])||!isFinite(w[1]))return {traza:traza,w:w,roto:true};
+      traza.push([w[0],w[1]]);
+    }
+  }
+  return {traza:traza,w:w,roto:false};
+}
+function updLoop(){
+  const n =+document.getElementById('bn').value;
+  const B =BS[+document.getElementById('bb').value];
+  const E =+document.getElementById('be').value;
+  const lr=LR_OF(+document.getElementById('blr').value);
+  loopData(n);
+  const nb=Math.ceil(n/B), pasos=E*nb, ultimo=n-(nb-1)*B;
+  document.getElementById('v_bn').textContent=n;
+  document.getElementById('v_bb').textContent=B;
+  document.getElementById('v_be').textContent=E;
+  document.getElementById('v_blr').textContent=lr.toFixed(2);
+  document.getElementById('n_bn').textContent=n;
+  document.getElementById('n_bb').textContent=B;
+  document.getElementById('n_be').textContent=E;
+  document.getElementById('n_bit').textContent=nb;
+  document.getElementById('n_bst').textContent=pasos;
+
+  const r=loopTrain(n,B,E,lr);
+  const perdida=r.roto?Infinity:loopLoss(r.w);
+  const suelo=loopLoss(L.wmin);
+  const dist=r.roto?Infinity:Math.hypot(r.w[0]-L.wmin[0],r.w[1]-L.wmin[1]);
+  // Dos fallos distintos que la distancia final sola no sabe separar: quedarse
+  // corto (pocos pasos, camino limpio) y orbitar (muchos pasos, camino ruidoso).
+  // Se miden aparte sobre la última época: dónde está el centro de la nube y
+  // cuánto tiembla alrededor de su propio centro.
+  const cola=r.traza.slice(Math.max(1,r.traza.length-nb));
+  let cx=0,cy=0;
+  cola.forEach(w=>{cx+=w[0];cy+=w[1];});
+  cx/=cola.length; cy/=cola.length;
+  let wobble=0;
+  cola.forEach(w=>{wobble+=Math.hypot(w[0]-cx,w[1]-cy);});
+  wobble/=cola.length;
+  const centro=Math.hypot(cx-L.wmin[0],cy-L.wmin[1]);
+  let msg,cls;
+  if(r.roto){msg='El learning rate es tan alto que el descenso diverge';cls='bad';}
+  else if(centro>0.9){msg='Se queda a medio camino: faltan pasos (sube E o baja B)';cls='bad';}
+  else if(wobble>0.30){msg='Orbita el mínimo sin posarse: ese es el ruido del batch pequeño';cls='bad';}
+  else if(centro>0.35){msg='Cerca del mínimo, pero todavía temblando';cls='bad';}
+  else {msg='Llega al mínimo y se queda quieto';cls='ok';}
+  document.getElementById('ro_loop').innerHTML=
+    '<b>'+nb+'</b> iteraciones por época (el último batch, <b>'+ultimo+'</b> '+
+    (ultimo===1?'fila':'filas')+') '+
+    '&middot; <b>'+pasos+'</b> actualizaciones de los pesos en total.<br>'+
+    'Pérdida final <b>'+(isFinite(perdida)?perdida.toFixed(4):'&infin;')+'</b> '+
+    'frente a <b>'+suelo.toFixed(4)+'</b> en el mínimo '+
+    '&middot; distancia al mínimo <b>'+(isFinite(dist)?dist.toFixed(2):'&infin;')+'</b>.<br>'+
+    '<span class="badge '+cls+'">'+msg+'</span>';
+  drawBar(n,B,nb,ultimo);
+  drawLand(r.traza);
+}
+function drawBar(n,B,nb,ultimo){
+  const cv=document.getElementById('cvbar'); const {ctx,w:W0c,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,W0c,h);
+  const mx=14, W=W0c-2*mx, y0=34, H=34;
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('las '+n+' filas, barajadas',mx,y0-10);
+  ctx.textAlign='right';
+  ctx.fillText(nb+' batches de '+B+(ultimo!==B?' (el último, '+ultimo+')':''),mx+W,y0-10);
+  ctx.textAlign='left';
+  ctx.fillStyle='#F5EBD3';ctx.fillRect(mx,y0,W,H);
+  ctx.strokeStyle='#B8860B';ctx.lineWidth=1.2;ctx.strokeRect(mx,y0,W,H);
+  // con miles de trozos las separaciones se comen la barra: se dibuja una de
+  // cada k y se avisa de que el dibujo está diezmado
+  const k=Math.max(1,Math.ceil(nb/70));
+  ctx.strokeStyle='#D9C28A';ctx.lineWidth=0.7;ctx.beginPath();
+  for(let i=k;i<nb;i+=k){const x=mx+W*i/nb;ctx.moveTo(x,y0);ctx.lineTo(x,y0+H);}
+  ctx.stroke();
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=1.3;
+  ctx.beginPath();ctx.moveTo(mx,y0+H+13);ctx.lineTo(mx+W,y0+H+13);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(mx,y0+H+8);ctx.lineTo(mx,y0+H+18);
+  ctx.moveTo(mx+W,y0+H+8);ctx.lineTo(mx+W,y0+H+18);ctx.stroke();
+  ctx.fillStyle='#8C6508';ctx.font='bold 13px Georgia';ctx.textAlign='center';
+  ctx.fillText('recorrer la barra entera una vez = 1 ÉPOCA',mx+W/2,y0+H+31);
+  if(k>1){ctx.fillStyle='#8A8A8A';ctx.font='11px Georgia';
+    ctx.fillText('(se dibuja una separación de cada '+k+')',mx+W/2,y0-24);}
+  ctx.textAlign='left';
+}
+function drawLand(traza){
+  const cv=document.getElementById('cvland'); const {ctx,w:W0c,h}=fitCanvas(cv);
+  ctx.clearRect(0,0,W0c,h);
+  const mx=40,my=14,W=W0c-mx-14,H=h-my-28;
+  const px=w1=>mx+(w1-GW1[0])/(GW1[1]-GW1[0])*W;
+  const py=w2=>my+(GW2[1]-w2)/(GW2[1]-GW2[0])*H;
+  // superficie como mosaico: pálido en el mínimo, dorado oscuro arriba
+  const cw=W/GRES+0.7, ch=H/GRES+0.7;
+  for(let i=0;i<GRES;i++){
+    for(let j=0;j<GRES;j++){
+      let t=(L.grid[i*GRES+j]-L.lo)/(L.hi-L.lo||1);
+      t=Math.pow(Math.max(0,Math.min(1,t)),0.55);
+      // se cuantiza en bandas: un degradado continuo se ve como una mancha y
+      // no deja leer por dónde sube la pérdida
+      t=Math.round(t*9)/9;
+      const R=Math.round(255+(184-255)*t), G=Math.round(253+(134-253)*t),
+            Bc=Math.round(240+(11-240)*t);
+      ctx.fillStyle='rgb('+R+','+G+','+Bc+')';
+      ctx.fillRect(mx+W*j/GRES, my+H*(GRES-1-i)/GRES, cw, ch);
+    }
+  }
+  ctx.strokeStyle='#ccc';ctx.lineWidth=1;ctx.strokeRect(mx,my,W,H);
+  // camino
+  ctx.strokeStyle='#8C6508';ctx.lineWidth=1.5;ctx.beginPath();
+  traza.forEach((w,i)=>{const x=px(w[0]),y=py(w[1]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.stroke();
+  // arranque, final y mínimo
+  ctx.fillStyle='#1A1A1A';ctx.fillRect(px(W0[0])-4,py(W0[1])-4,8,8);
+  const f=traza[traza.length-1];
+  ctx.fillStyle='#B8860B';ctx.beginPath();ctx.arc(px(f[0]),py(f[1]),5.5,0,7);ctx.fill();
+  ctx.strokeStyle='#1A1A1A';ctx.lineWidth=1.2;ctx.stroke();
+  const m=L.wmin;
+  ctx.fillStyle='#1A1A1A';ctx.font='17px Georgia';ctx.textAlign='center';
+  ctx.fillText('★',px(m[0]),py(m[1])+6);
+  ctx.textAlign='left';
+  ctx.font='12px Georgia';
+  const ly=my+H-46;
+  ctx.fillStyle='rgba(255,255,255,0.78)';ctx.fillRect(mx+5,ly-13,150,52);
+  ctx.fillStyle='#1A1A1A';ctx.fillText('■ arranque',mx+10,ly);
+  ctx.fillStyle='#8C6508';ctx.fillText('— camino de los pesos',mx+10,ly+16);
+  ctx.fillStyle='#1A1A1A';ctx.fillText('★ mínimo',mx+10,ly+32);
+  ctx.fillStyle='#8A8A8A';ctx.font='13px Georgia';
+  ctx.fillText('w₁',mx+W-24,my+H+20);
+  ctx.fillText('w₂',6,my+12);
+}
+updaters[0]=updLoop;
+
 // ---------- slide 0: interactive fit ----------
 function upd(){
   const d  =+document.getElementById('d').value;
@@ -374,7 +638,7 @@ function drawFit(w){
   ctx.fillStyle='#1A1A1A';ctx.fillText('—— modelo',lx,my+30);
   ctx.fillStyle='#B8860B';ctx.fillText('• expedientes',lx,my+46);
 }
-updaters[0]=upd;
+updaters[1]=upd;
 
 // ---------- slide 1: train vs val error across complexity ----------
 function drawCurves(){
@@ -414,11 +678,11 @@ function drawCurves(){
   ctx.fillStyle='#1A1A1A';ctx.fillText('—— entrenamiento',mx+12,my+16);
   ctx.fillStyle='#B8860B';ctx.fillText('—— validación (U)',mx+12,my+34);
 }
-updaters[1]=drawCurves;
+updaters[2]=drawCurves;
 
 window.addEventListener('resize',()=>{if(updaters[cur])updaters[cur]();});
 buildNav();
-hot('lam');
+hot('bb');
 go(0);
 </script>
 </body>
