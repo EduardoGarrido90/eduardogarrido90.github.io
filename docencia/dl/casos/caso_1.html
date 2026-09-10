@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Caso práctico I — Hackathon de HPO en clase (100 min)</title>
+  <title>Caso práctico I — Hackathon de HPO en clase (110 min)</title>
   <style>
     html {
       color: #1a1a1a;
@@ -234,7 +234,7 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Caso práctico I — Hackathon de HPO en clase (100
+<h1 class="title">Caso práctico I — Hackathon de HPO en clase (110
 min)</h1>
 </header>
 <h1
@@ -245,15 +245,15 @@ dirigir a la IA y responder por su código</h1>
 Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 · <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
 2026–2027. <strong>Bloque:</strong> I — Deep Learning (Temas 0–3,
-semanas 1–7). <strong>Modalidad:</strong> sesión única de <strong>100
-minutos en el aula</strong>. IA generativa permitida y fomentada en la
-primera mitad; cuaderno a puerta cerrada, sin ordenador y sin IA, en la
-última fase. <strong>Todo se entrega antes de salir de clase.</strong>
-<strong>Agrupación:</strong> fases 1 y 2 en <strong>grupos de
-tres</strong>, formados para este caso y <strong>sin relación con los
-grupos del proyecto final</strong>; fase 3 <strong>individual</strong>.
-<strong>Peso:</strong> caso práctico evaluado con la rúbrica del
-§10.</p>
+semanas 1–7). <strong>Modalidad:</strong> sesión única de <strong>110
+minutos en el aula</strong>, la clase completa. IA generativa permitida
+y fomentada en la fase de construcción; cuaderno a puerta cerrada, sin
+ordenador y sin IA, en la última fase. <strong>Todo se entrega antes de
+salir de clase.</strong> <strong>Agrupación:</strong> fases 1 y 2 en
+<strong>grupos de tres</strong>, formados para este caso y <strong>sin
+relación con los grupos del proyecto final</strong>; fase 3
+<strong>individual</strong>. <strong>Peso:</strong> caso práctico
+evaluado con la rúbrica del §11.</p>
 <hr />
 <h2 id="contexto-de-negocio">1. Contexto de negocio</h2>
 <p>La mayoría de los problemas de analítica de una empresa no llegan
@@ -291,21 +291,23 @@ resultado para el negocio</strong>.</p>
 <p>La nota vive casi entera en ese último ejercicio a mano. Un grupo que
 gane el <em>leaderboard</em> y no sepa reconstruir su propio bucle de
 entrenamiento suspende el caso.</p>
-<h2 id="estructura-de-la-sesión-100-min">3. Estructura de la sesión (100
+<h2 id="estructura-de-la-sesión-110-min">3. Estructura de la sesión (110
 min)</h2>
 <table style="width:100%;">
 <colgroup>
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th>Fase</th>
 <th>Duración</th>
+<th>Reloj</th>
 <th>Qué se hace</th>
 <th>Ordenador</th>
 <th>IA</th>
@@ -314,53 +316,78 @@ min)</h2>
 </thead>
 <tbody>
 <tr class="odd">
+<td>0. Lectura del enunciado y explicación</td>
+<td>15 min</td>
+<td>0–15</td>
+<td>Se lee este documento, el profesor explica reglas, reloj y las cinco
+preguntas del §9, y se cierran los grupos de tres</td>
+<td>Cerrado</td>
+<td>—</td>
+<td><strong>Prohibido</strong></td>
+</tr>
+<tr class="even">
 <td>1. Construcción, HPO y entrega</td>
 <td>50 min</td>
-<td>La IA escribe el código; vosotros lo dirigís, lanzáis la búsqueda,
-congeláis la mejor configuración, evaluáis el test una vez y subís el
-zip a Moodle</td>
+<td>15–65</td>
+<td>La IA escribe el código; vosotros lo dirigís, lo entendéis conforme
+sale, lanzáis la búsqueda, congeláis la mejor configuración, evaluáis el
+test una vez y subís el zip a Moodle</td>
 <td>Abierto</td>
 <td>Permitida</td>
 <td><strong>Prohibido</strong></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>— Descanso</td>
 <td>10 min</td>
+<td>65–75</td>
 <td>—</td>
 <td>—</td>
 <td>—</td>
 <td>—</td>
 </tr>
-<tr class="odd">
-<td>2. Lectura dirigida</td>
-<td>20 min</td>
-<td>Leer de arriba abajo lo que la IA escribió, siguiendo la lista del
-§6</td>
+<tr class="even">
+<td>2. Última lectura del código</td>
+<td>5 min</td>
+<td>75–80</td>
+<td>Un barrido final al propio script con la lista del §7, en
+silencio</td>
 <td>Abierto</td>
 <td><strong>Prohibida</strong></td>
 <td><strong>Prohibido</strong></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>3. Cuaderno a puerta cerrada</td>
-<td>20 min</td>
+<td>30 min</td>
+<td>80–110</td>
 <td>Ordenadores cerrados y guardados. Se reparten los folios y se
-responde a mano</td>
+responde a mano a las cinco preguntas del §9</td>
 <td><strong>Cerrado</strong></td>
 <td>Prohibida</td>
 <td>Obligatorio</td>
 </tr>
 </tbody>
 </table>
-<p>Dos reglas de disciplina, y ambas son la gracia del ejercicio:</p>
+<p>Tres reglas de disciplina, y las tres son la gracia del
+ejercicio:</p>
+<p><strong>El estudio ocurre durante la fase 1, no después.</strong> La
+ventana de lectura posterior es de cinco minutos y no da para entender
+nada desde cero: da para una última pasada. Entended cada bloque
+conforme la IA os lo entrega, en el momento en que lo pegáis en el
+notebook. Pedidle que os explique lo que no veáis claro mientras la
+tenéis disponible, porque a partir del minuto 65 ya no la tenéis. Un
+grupo que dedique los 50 minutos a producir código sin leerlo llegará al
+cuaderno con las manos vacías.</p>
 <p><strong>No sale papel ni bolígrafo sobre la mesa hasta la fase
 3.</strong> Nada de apuntes, chuletas ni esquemas escritos a mano
-durante las fases 1 y 2. Si queréis anotar algo, lo anotáis como
+durante las fases 0, 1 y 2. Si queréis anotar algo, lo anotáis como
 comentario dentro del propio notebook, que se cierra con el ordenador.
 Lo que llega a la fase 3 es lo que hayáis entendido leyendo.</p>
-<p><strong>La fase 2 se hace en silencio y sin IA.</strong> El objetivo
-es leer código ajeno (porque es ajeno: lo escribió la máquina) hasta
-poder reproducirlo de memoria. El profesor circula y no responde
-preguntas de contenido.</p>
+<p><strong>La fase 2 se hace en silencio y sin IA.</strong> Cinco
+minutos, cada uno con su pantalla, sin preguntas al profesor.</p>
+<p>El reparto consume los 110 minutos de clase y no deja margen. Si la
+fase 1 se desborda, lo que se recorta es la fase 2, y si hace falta se
+recortan minutos de la fase 1 avisando en el minuto 55. La fase 3 se
+respeta íntegra siempre: son treinta minutos y son la nota.</p>
 <h2 id="datos-y-métrica-fijos-para-todos-los-grupos">4. Datos y métrica
 (fijos para todos los grupos)</h2>
 <p>Para que el <em>leaderboard</em> sea comparable y para que los 50
@@ -393,42 +420,60 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a hr
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>idx_tr, idx_tmp <span class="op">=</span> train_test_split(idx, test_size<span class="op">=</span><span class="fl">0.40</span>, stratify<span class="op">=</span>y, random_state<span class="op">=</span>SEED)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>idx_va, idx_te <span class="op">=</span> train_test_split(idx_tmp, test_size<span class="op">=</span><span class="fl">0.50</span>, stratify<span class="op">=</span>y[idx_tmp], random_state<span class="op">=</span>SEED)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 60 / 20 / 20 estratificado. Estas cuatro últimas líneas son intocables.</span></span></code></pre></div>
-<p>Aviso sobre los datos, para que no os pille:
-<code>TotalCharges</code> trae once valores en blanco que la conversión
-anterior deja como <code>NaN</code>, y las clases están desequilibradas
-(~26,5 % de bajas). Cómo tratéis ambas cosas es vuestra decisión, y se
-pregunta en la fase 3.</p>
-<h2 id="fase-1-construcción-hpo-y-entrega-50-min">5. Fase 1 —
+<p>Esta partición deja 4.225 filas de entrenamiento, 1.409 de validación
+y 1.409 de test, con un 26,5 % de bajas en cada una de las tres. Aviso
+sobre los datos, para que no os pille: <code>TotalCharges</code> trae
+once valores en blanco que la conversión anterior deja como
+<code>NaN</code>, y las clases están desequilibradas. Cómo tratéis ambas
+cosas es vuestra decisión, y se pregunta en la fase 3.</p>
+<h2 id="fase-0-lectura-del-enunciado-y-explicación-15-min">5. Fase 0 —
+Lectura del enunciado y explicación (15 min)</h2>
+<p>Ordenadores cerrados y sin papel. Se lee este documento de principio
+a fin y el profesor explica en voz alta cuatro cosas: el reloj de la
+sesión, las tres reglas de disciplina del §3, la partición intocable del
+§4 y <strong>las cinco preguntas del §9, que son exactamente las que se
+reparten al minuto 80</strong>. Se cierran los grupos de tres y cada
+grupo decide quién maneja el teclado y quién va leyendo lo que la IA
+devuelve.</p>
+<p>Este cuarto de hora es la única ocasión de preguntar sobre las reglas
+del juego. Aprovechadlo: durante las fases 2 y 3 no hay preguntas, y
+durante la 1 solo se resuelven bloqueos de entorno.</p>
+<h2 id="fase-1-construcción-hpo-y-entrega-50-min">6. Fase 1 —
 Construcción, HPO y entrega (50 min)</h2>
 <p>Los primeros 40 minutos construyen y buscan; los últimos 10 congelan,
-evalúan el test y suben la entrega. El reparto es orientativo salvo el
-cierre, que es firme: <strong>pasado el minuto 50 no se acepta
+evalúan el test y suben la entrega. El reparto interno es orientativo
+salvo el cierre, que es firme: <strong>pasado el minuto 65 no se acepta
 código</strong>.</p>
 <ul>
-<li><strong>5.1 Preprocesado y baseline.</strong> <em>One-hot</em> de
+<li><strong>6.1 Preprocesado y baseline.</strong> <em>One-hot</em> de
 las categóricas, escalado de las numéricas, imputación de los
 <code>NaN</code>. Un <strong>baseline clásico honesto</strong>:
 regresión logística y, si da tiempo, un <em>gradient boosting</em> con
 hiperparámetros razonables. Reportad su AUC de validación y de
 test.</li>
-<li><strong>5.2 MLP en PyTorch o Keras.</strong> Capas densas,
+<li><strong>6.2 MLP en PyTorch o Keras.</strong> Capas densas,
 activación ReLU o GELU, al menos una técnica de regularización
 (<em>dropout</em>, <em>weight decay</em>, <em>batch/layer norm</em>),
 <em>early stopping</em> sobre validación.</li>
-<li><strong>5.3 Búsqueda de hiperparámetros.</strong> Espacio explícito
+<li><strong>6.3 Búsqueda de hiperparámetros.</strong> Espacio explícito
 sobre, como mínimo, tasa de aprendizaje, número de capas, anchura,
 <em>dropout</em>, <em>weight decay</em>, tamaño de <em>batch</em> y
 optimizador. Estrategia libre (<em>grid</em>, <em>random</em> u Optuna;
 con este presupuesto, <em>random search</em> es la apuesta sensata).
 <strong>Mínimo 20 configuraciones registradas.</strong> La elección se
 hace SIEMPRE con validación.</li>
-<li><strong>5.4 Log de la búsqueda.</strong> Un CSV,
+<li><strong>6.4 Log de la búsqueda.</strong> Un CSV,
 <code>busqueda.csv</code>, con una fila por configuración probada y
 estas columnas:
 <code>trial, lr, n_capas, anchura,   dropout, weight_decay, batch_size, optimizador, epochs_ejecutadas, auc_val</code>.
 Este fichero es la materia prima de la fase 2 y de media fase 3. Sin log
 completo, el caso no se puede responder.</li>
-<li><strong>5.5 Cierre y entrega (últimos 10 min).</strong> Congelad la
+<li><strong>6.5 Lectura conforme se construye.</strong> Cada vez que
+peguéis un bloque que la IA acaba de escribir, leedlo antes de
+ejecutarlo y preguntadle lo que no entendáis <strong>en ese
+momento</strong>. Tened el §9 al lado: sabéis las cinco preguntas desde
+el minuto cero, así que id cerrándolas mentalmente sobre la marcha.</li>
+<li><strong>6.6 Cierre y entrega (últimos 10 min).</strong> Congelad la
 mejor configuración según validación, reentrenad si vuestro protocolo lo
 requiere, y <strong>solo entonces</strong> evaluad el test, una única
 vez. Subid a Moodle <code>grupoNN_caso1_codigo.zip</code> con:
@@ -437,7 +482,7 @@ vez. Subid a Moodle <code>grupoNN_caso1_codigo.zip</code> con:
 visibles (o el <code>.py</code> más su log de ejecución). Debe correr de
 principio a fin sin intervención manual, con las semillas fijadas.</li>
 <li><strong><code>busqueda.csv</code></strong>, el log completo del
-§5.4.</li>
+§6.4.</li>
 <li><strong><code>resultado.txt</code></strong>: una línea con
 <code>grupo, auc_val_mejor, auc_test,    n_trials</code>, y debajo la
 configuración ganadora completa.</li>
@@ -447,14 +492,16 @@ en orden, tal cual.</li>
 </ul>
 <p>El profesor mantiene un <strong>leaderboard</strong> en la pizarra
 con el AUC de validación de cada grupo, actualizado en vivo. Sirve de
-incentivo y pesa cero en la nota: lo que puntúa es el §10. Lo que esté
-subido al minuto 50 es lo que se corrige y lo que tendréis que defender
+incentivo y pesa cero en la nota: lo que puntúa es el §11. Lo que esté
+subido al minuto 65 es lo que se corrige y lo que tendréis que defender
 a mano.</p>
-<h2 id="fase-2-lectura-dirigida-20-min">6. Fase 2 — Lectura dirigida (20
-min)</h2>
-<p>Ordenadores abiertos, IA cerrada, sin papel. Recorred vuestro propio
-script de arriba abajo y aseguraos de poder contestar a esto sin
-mirarlo:</p>
+<h2 id="fase-2-última-lectura-del-código-5-min">7. Fase 2 — Última
+lectura del código (5 min)</h2>
+<p>Ordenadores abiertos, IA cerrada, sin papel, en silencio. Cinco
+minutos para un barrido final del propio script, con las cinco preguntas
+del §9 en la cabeza. Esta es la lista de lo que hay que dominar, y
+deberíais traerla ya sabida de la fase 1; usad el tiempo en el punto que
+os falte:</p>
 <ul>
 <li><strong>El bucle de entrenamiento.</strong> Qué hace cada línea del
 bucle interno y en qué orden: <code>zero_grad</code>, <em>forward</em>,
@@ -468,80 +515,105 @@ clases.</li>
 con qué subconjunto; dónde se imputan los <code>NaN</code>; en qué línea
 entra el test y en cuáles no.</li>
 <li><strong>La búsqueda.</strong> Cuántas configuraciones se probaron,
-sobre qué rangos, cómo se eligió la ganadora, cuántas <em>epochs</em>
-aguantó cada una antes del <em>early stopping</em>.</li>
-<li><strong>El log.</strong> Cuál fue la mejor configuración, cuál la
-peor, y qué distingue a una de otra en <code>busqueda.csv</code>.</li>
+sobre qué rangos y con qué valores salió la ganadora.</li>
+<li><strong>El log.</strong> La mejor y la peor fila de
+<code>busqueda.csv</code>, con sus números.</li>
 <li><strong>Las decisiones de la IA.</strong> Al menos una cosa que la
-máquina decidió sola y que vosotros no habríais decidido igual.</li>
+máquina decidió sola y que vosotros no habríais decidido igual, y al
+menos una línea que no sabéis explicar del todo.</li>
 </ul>
 <p>Al minuto 80 se cierran y se guardan los ordenadores. No se vuelven a
 abrir.</p>
-<h2 id="fase-3-cuaderno-a-puerta-cerrada-20-min">7. Fase 3 — Cuaderno a
-puerta cerrada (20 min)</h2>
+<h2 id="fase-3-cuaderno-a-puerta-cerrada-30-min">8. Fase 3 — Cuaderno a
+puerta cerrada (30 min)</h2>
 <p>Se reparten los folios. Se responde <strong>a mano, en solitario, sin
 ordenador, sin apuntes, sin IA y sin el log delante</strong>. Es un
 examen, con la disciplina de un examen. <strong>Este cuaderno es el
 entregable evaluado del caso.</strong></p>
-<p>La hoja contiene <strong>cinco preguntas</strong>: una de cada bloque
-A–D del §8, sorteadas en el momento, más la pregunta E, que cae siempre.
-Las respuestas son breves; se valora la precisión técnica, no la
-extensión.</p>
-<h2 id="banco-de-preguntas-del-cuaderno">8. Banco de preguntas del
-cuaderno</h2>
-<p>El banco se publica con el enunciado a propósito: la fase 2 existe
-para prepararlo. Las preguntas de la hoja son estas o variantes
-cercanas.</p>
-<p><strong>Bloque A — Lectura del código.</strong> 1. Escribid en
-pseudocódigo el bucle de entrenamiento de vuestro script, en orden. ¿Qué
-ocurre si <code>optimizer.step()</code> se ejecuta antes de
-<code>loss.backward()</code>? ¿Y si se olvida <code>zero_grad()</code>?
-2. ¿Qué función de pérdida usó vuestro script? ¿Aplica la sigmoide
-dentro de la pérdida o antes? Si se aplicase dos veces, ¿qué le pasaría
-a los gradientes? 3. ¿Con qué subconjunto se ajustó el escalador de las
-numéricas y la imputación de <code>TotalCharges</code>? Si se hubiese
-ajustado con la tabla completa, ¿en qué dirección sesgaría eso el AUC de
-test y por qué? 4. Señalad los puntos exactos de vuestro script donde
-una fuga de información entre test y entrenamiento habría sido posible,
-y decid qué la impide.</p>
-<p><strong>Bloque B — Hiperparámetros.</strong> 5. Elegid
-<strong>tres</strong> hiperparámetros de vuestra configuración ganadora
-y explicad por qué ese valor y no otro, apoyándoos en lo que visteis en
+<p>Las cinco preguntas son las del §9, publicadas íntegras con este
+enunciado y repasadas en voz alta en la fase 0. Se publican a propósito
+y no se sortea nada: todas preguntan por <strong>vuestro</strong> código
+y <strong>vuestro</strong> log, así que no hay nada que se pueda traer
+preparado de casa. Saberlas de antemano solo sirve para enfocar la
+lectura de la fase 1, que es exactamente lo que se pretende.</p>
+<p>Las respuestas son breves. Se valora la precisión técnica, no la
+extensión: una respuesta correcta de cuatro líneas puntúa más que media
+cara de divagación.</p>
+<h2 id="la-hoja-del-cuaderno-las-cinco-preguntas">9. La hoja del
+cuaderno — las cinco preguntas</h2>
+<p>Esto es literalmente lo que se reparte al minuto 80. Suma 10 puntos y
+está dimensionada para 30 minutos; el tiempo orientativo de cada
+pregunta va entre paréntesis.</p>
+<hr />
+<p><strong>Pregunta 1 — El bucle de entrenamiento. (3 puntos · ~8
+min)</strong></p>
+<p><strong>(a)</strong> Escribid en pseudocódigo el bucle de
+entrenamiento de vuestro script, en orden y nombrando cada llamada tal
+como aparece en el código. Indicad dónde se pone el modelo en modo
+entrenamiento y dónde en modo evaluación.</p>
+<p><strong>(b)</strong> ¿Qué le ocurre al entrenamiento si se olvida
+<code>zero_grad()</code>? ¿Y si <code>optimizer.step()</code> se ejecuta
+antes de <code>loss.backward()</code>? Responded en términos de lo que
+le pasa al gradiente, no solo “falla”.</p>
+<p><strong>(c)</strong> ¿Qué función de pérdida usó vuestro script y por
+qué es la adecuada para este problema? ¿La sigmoide se aplica dentro de
+la pérdida o antes, en la última capa? Si se aplicase en los dos sitios,
+¿qué le pasaría al entrenamiento?</p>
+<hr />
+<p><strong>Pregunta 2 — El flujo de datos y la fuga. (1,5 puntos · ~4
+min)</strong></p>
+<p><strong>(a)</strong> ¿Con qué subconjunto de filas se ajustó el
+escalador de las variables numéricas, y con cuál se calculó el valor con
+el que se imputaron los once <code>NaN</code> de
+<code>TotalCharges</code>?</p>
+<p><strong>(b)</strong> Si ambas cosas se hubiesen ajustado sobre la
+tabla completa, en qué dirección sesgaría eso el AUC de test (¿arriba o
+abajo?) y por qué. Nombrad el mecanismo concreto por el que la
+información del test entraría en el modelo.</p>
+<hr />
+<p><strong>Pregunta 3 — Los hiperparámetros. (2,5 puntos · ~7
+min)</strong></p>
+<p><strong>(a)</strong> Escribid tres hiperparámetros de vuestra
+configuración ganadora <strong>con su valor</strong> y explicad, para
+cada uno, por qué ese valor y no otro, apoyándoos en lo que visteis en
 <code>busqueda.csv</code>. No vale “porque dio mejor número”: <em>por
-qué</em> dio mejor número. 6. Describid la <strong>peor</strong>
-configuración de vuestro log y diagnosticadla: ¿tasa de aprendizaje
+qué</em> dio mejor número en este dataset.</p>
+<p><strong>(b)</strong> Describid la <strong>peor</strong> configuración
+de vuestro log, con sus valores, y diagnosticadla: ¿tasa de aprendizaje
 divergente, <em>dropout</em> excesivo para una red pequeña,
 <em>batch</em> demasiado grande para las <em>epochs</em> disponibles,
-otra cosa? 7. ¿Ayudó el <em>dropout</em> en vuestro caso, o la red era
-demasiado pequeña para sobreajustar? ¿Ganó la red profunda o la ancha?
-Justificad con el log.</p>
-<p><strong>Bloque C — Protocolo y HPO.</strong> 8. Probasteis N
-configuraciones. Si mañana relanzáis la misma búsqueda con otra semilla,
-¿qué esperáis que cambie del ganador? ¿Cuánto de vuestra Δ AUC es señal
-y cuánto ruido de un conjunto de validación de ~1.400 filas? 9. Con
-siete hiperparámetros y vuestro presupuesto de N <em>trials</em>,
-¿cuántos puntos tendría la <em>grid</em> más pobre imaginable (dos
-valores por hiperparámetro)? Explicad qué gana <em>random search</em>
-frente a esa <em>grid</em>. 10. ¿Por qué el test se toca una sola vez?
-Describid concretamente qué número habríais publicado si hubieseis
-elegido la configuración ganadora mirando el test, y por qué ese número
-sería mentira.</p>
-<p><strong>Bloque D — Negocio.</strong> 11. Rellenad a mano la tabla del
-§9 con vuestros números reales. 12. Traducid la diferencia de AUC entre
-vuestra red y el baseline clásico a euros, bajo un supuesto de coste
-explícito (por ejemplo: retener un cliente cuesta 40 €, perderlo cuesta
-600 € de margen anual). ¿Recomendáis la red o el clásico en producción,
-y a qué coste de complejidad y de tiempo de HPO?</p>
-<p><strong>Bloque E — La IA (cae siempre).</strong> 13. Nombrad una
-decisión que la IA tomó por vosotros y que no habríais tomado igual.
-¿Por qué creéis que la tomó así? ¿Qué habríais hecho vosotros? 14.
-Copiad una línea de vuestro script que <strong>no</strong> sepáis
-explicar del todo y decid qué creéis que hace. La honestidad aquí
-puntúa; fingir que se entiende todo, no.</p>
-<h2 id="tabla-concepto-aplicación-entradas-salidas-kpi">9. Tabla
+red demasiado profunda para 4.225 filas, otra cosa?</p>
+<hr />
+<p><strong>Pregunta 4 — El protocolo. (1,5 puntos · ~5 min)</strong></p>
+<p><strong>(a)</strong> ¿Por qué el conjunto de test se toca una sola
+vez? Decid qué AUC habríais publicado si hubieseis elegido la
+configuración ganadora mirando el test en lugar de la validación, y
+explicad por qué ese número sería mentira.</p>
+<p><strong>(b)</strong> Si mañana relanzáis la misma búsqueda cambiando
+solo la semilla, ¿qué esperáis que cambie de la configuración ganadora?
+Con una validación de 1.409 filas, ¿cuánta de vuestra diferencia de AUC
+frente al baseline es señal y cuánta es ruido? Justificad el orden de
+magnitud.</p>
+<hr />
+<p><strong>Pregunta 5 — El negocio y la IA. (1,5 puntos · ~6
+min)</strong></p>
+<p><strong>(a)</strong> Traducid a euros la diferencia de AUC entre
+vuestra red y el baseline clásico, bajo un supuesto de coste que debéis
+escribir explícitamente (por ejemplo: la campaña de retención cuesta 40
+€ por cliente contactado y perder un cliente cuesta 600 € de margen
+anual). Recomendad red o clásico para producción y decid a qué coste de
+complejidad y de tiempo de HPO.</p>
+<p><strong>(b)</strong> Nombrad una decisión que la IA tomó por vosotros
+y que no habríais tomado igual. ¿Por qué creéis que la tomó así? ¿Qué
+habríais hecho vosotros?</p>
+<p><strong>(c)</strong> Copiad una línea de vuestro script que
+<strong>no</strong> sepáis explicar del todo y escribid qué creéis que
+hace. La honestidad puntúa aquí; fingir que se entiende todo, no.</p>
+<hr />
+<h2 id="tabla-concepto-aplicación-entradas-salidas-kpi">10. Tabla
 Concepto → Aplicación → Entradas → Salidas → KPI</h2>
-<p>Esta es la tabla de la pregunta 11, en blanco. Se rellena a mano con
-los números reales de vuestra sesión.</p>
+<p>Tabla de referencia del caso, para orientar la lectura de la fase 1.
+No se pregunta en el cuaderno.</p>
 <table>
 <colgroup>
 <col style="width: 20%" />
@@ -586,12 +658,12 @@ los números reales de vuestra sesión.</p>
 <td>Responder por lo que la IA escribió</td>
 <td>Script y log de búsqueda</td>
 <td>Explicación línea a línea</td>
-<td>Preguntas del §8 resueltas</td>
+<td>Las cinco preguntas del §9</td>
 </tr>
 </tbody>
 </table>
-<h2 id="rúbrica-10-pts-escala-010">10. Rúbrica (10 pts → escala
-0–10)</h2>
+<h2 id="rúbrica">11. Rúbrica</h2>
+<p>La nota del caso se reparte así:</p>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -600,35 +672,19 @@ los números reales de vuestra sesión.</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th>Dimensión</th>
+<th>Componente</th>
 <th>Peso</th>
 <th>Qué se valora</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Cuaderno — lectura del código (bloque A)</td>
-<td>30 %</td>
-<td>Reconstruir el bucle de entrenamiento en orden, nombrar pérdida y
-optimizador, localizar el ajuste del escalador y los puntos de fuga
-posibles.</td>
+<td><strong>Cuaderno</strong> (hoja del §9, sobre 10 puntos)</td>
+<td>75 %</td>
+<td>Las cinco preguntas, con el desglose de abajo.</td>
 </tr>
 <tr class="even">
-<td>Cuaderno — hiperparámetros (bloques B y C)</td>
-<td>30 %</td>
-<td>Justificación por hiperparámetro apoyada en el log, diagnóstico de
-la peor configuración, comprensión del protocolo validación/test y del
-ruido de la métrica.</td>
-</tr>
-<tr class="odd">
-<td>Cuaderno — negocio y honestidad (bloques D y E)</td>
-<td>15 %</td>
-<td>KPI alineado, Δ AUC traducida a euros con supuestos explícitos,
-recomendación argumentada, reconocimiento honesto de lo que no se
-entiende.</td>
-</tr>
-<tr class="even">
-<td>Entrega de código (fase 1)</td>
+<td>Entrega de código del minuto 65</td>
 <td>15 %</td>
 <td>Corre de principio a fin, semillas fijadas, partición intacta, test
 evaluado una sola vez, ≥ 20 configuraciones en
@@ -642,54 +698,110 @@ cada herramienta.</td>
 </tr>
 </tbody>
 </table>
-<p>El cuaderno pesa el 75 %. <strong>Condición de aprobación:</strong>
-un cuaderno que no consiga reconstruir el bucle de entrenamiento ni
-decir con qué subconjunto se ajustó el escalador suspende el caso, con
+<p>Desglose de los 10 puntos del cuaderno:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pregunta</th>
+<th>Puntos</th>
+<th>Criterio de corrección</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1. Bucle de entrenamiento</td>
+<td>3,0</td>
+<td>El orden de las cinco llamadas es correcto (1,5); el efecto de
+omitir <code>zero_grad</code> se explica como acumulación de gradientes
+entre iteraciones (0,5); la pérdida se nombra bien y se ubica la
+sigmoide (1,0).</td>
+</tr>
+<tr class="even">
+<td>2. Flujo de datos y fuga</td>
+<td>1,5</td>
+<td>Dice “solo con train” y lo sostiene (0,75); nombra el mecanismo de
+la fuga y la dirección del sesgo, optimista (0,75).</td>
+</tr>
+<tr class="odd">
+<td>3. Hiperparámetros</td>
+<td>2,5</td>
+<td>Tres valores correctos con justificación apoyada en el log, no en
+recetas (1,5); diagnóstico de la peor configuración coherente con sus
+valores (1,0).</td>
+</tr>
+<tr class="even">
+<td>4. Protocolo</td>
+<td>1,5</td>
+<td>Explica la selección sobre test como sobreestimación optimista
+(0,75); estima el ruido de la validación con un orden de magnitud
+defendible (0,75).</td>
+</tr>
+<tr class="odd">
+<td>5. Negocio y IA</td>
+<td>1,5</td>
+<td>Supuesto de coste explícito y aritmética coherente con recomendación
+(0,75); decisión de la IA identificada y línea no entendida declarada
+con honestidad (0,75).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Condición de aprobación:</strong> un cuaderno que no consiga
+reconstruir el bucle de entrenamiento (pregunta 1a) ni decir con qué
+subconjunto se ajustó el escalador (pregunta 2a) suspende el caso, con
 independencia del <em>leaderboard</em> y del AUC de test.</p>
 <p>Esta rúbrica se desvía de la rúbrica común del curso (que rige en los
 casos II y III y en el proyecto final) porque este caso no tiene memoria
 escrita, ni slides, ni defensa oral: se resuelve y se entrega dentro del
 aula.</p>
-<h2 id="política-de-ia">11. Política de IA</h2>
+<h2 id="política-de-ia">12. Política de IA</h2>
 <p><strong>Fase 1: IA permitida y fomentada, sin restricciones de
 herramienta.</strong> Escribid con ella el preprocesado, el MLP, el
-bucle de HPO y el análisis del log. Cuanto más código produzca, más
-habrá que leer, que es de lo que va el caso. Requisito único:
+bucle de HPO y el análisis del log, y usadla además para que os explique
+su propio código mientras lo tenéis delante. Cuanto más código produzca,
+más habrá que leer, que es de lo que va el caso. Requisito único:
 <code>prompts.md</code> completo.</p>
-<p><strong>Fases 2 y 3: IA prohibida.</strong> En la fase 2, además,
-prohibido cualquier soporte en papel. En la fase 3, ordenadores cerrados
-y guardados. Usar IA o consultar apuntes en estas dos fases supone un
-cero en el caso (regla C de la política de IA del Día 01).</p>
+<p><strong>Fases 0, 2 y 3: IA prohibida.</strong> En las fases 0 y 2,
+además, prohibido cualquier soporte en papel. En la fase 3, ordenadores
+cerrados y guardados. Usar IA o consultar apuntes en estas fases supone
+un cero en el caso (regla C de la política de IA del Día 01).</p>
 <p>La <strong>decisión</strong> de qué espacio buscar y la
 <strong>justificación</strong> de por qué un hiperparámetro vale lo que
 vale son vuestras, y se responden a mano.</p>
-<h2 id="fechas-y-logística">12. Fechas y logística</h2>
+<h2 id="fechas-y-logística">13. Fechas y logística</h2>
 <ul>
 <li><strong>Sesión completa:</strong> semana 5, durante el Tema 3.
-Enunciado, banco de preguntas y dataset publicados una semana
-antes.</li>
-<li><strong>Entrega del código:</strong> minuto 50 de la sesión, en
+Enunciado, hoja de preguntas y dataset publicados una semana antes;
+conviene traerlo leído, porque los 15 minutos de la fase 0 son para
+dudas y no para la primera lectura.</li>
+<li><strong>Entrega del código:</strong> minuto 65 de la sesión, en
 Moodle.</li>
-<li><strong>Entrega del cuaderno:</strong> minuto 100 de la sesión, en
+<li><strong>Entrega del cuaderno:</strong> minuto 110 de la sesión, en
 mano.</li>
+<li><strong>Descanso:</strong> cae en el minuto 65, al cierre de la fase
+1, no en el 50.</li>
 <li><strong>Feedback y notas:</strong> una semana después.</li>
-<li><strong>Grupos:</strong> de tres personas, cerrados al inicio de la
-sesión y válidos solo para este caso; nada que ver con los grupos del
-proyecto final, y se recomienda expresamente que no coincidan. Si el
-número de asistentes no es múltiplo de tres, el profesor cierra los
-grupos sueltos de dos o de cuatro. El cuaderno de la fase 3 es
-individual, así que el grupo no reparte nota: los tres tienen que haber
-leído el código.</li>
+<li><strong>Grupos:</strong> de tres personas, cerrados en la fase 0 y
+válidos solo para este caso; nada que ver con los grupos del proyecto
+final, y se recomienda expresamente que no coincidan. Si el número de
+asistentes no es múltiplo de tres, el profesor cierra los grupos sueltos
+de dos o de cuatro. El cuaderno de la fase 3 es individual, así que el
+grupo no reparte nota: los tres tienen que haber leído el código.</li>
 <li><strong>Qué traer:</strong> un portátil por grupo como mínimo, con
 Python, PyTorch (o Keras), scikit-learn y pandas ya instalados y
 probados, o bien Colab con sesión iniciada. Diez minutos peleando con un
-<code>pip install</code> son diez minutos menos de búsqueda. Bolígrafo,
-para la última fase.</li>
+<code>pip install</code> son diez minutos menos de búsqueda, y aquí no
+hay diez minutos de sobra. Bolígrafo, para la última fase.</li>
 </ul>
-<h2 id="ayudas">13. Ayudas</h2>
-<p>Durante la fase 1 el profesor circula y resuelve bloqueos de entorno
-y de protocolo (no de contenido). En la fase 2 no responde preguntas.
-Para la búsqueda, empezad simple: <em>random search</em> sobre cuatro
+<h2 id="ayudas">14. Ayudas</h2>
+<p>En la fase 0 se responde cualquier duda sobre las reglas. Durante la
+fase 1 el profesor circula y resuelve bloqueos de entorno y de
+protocolo, no de contenido. En la fase 2 no responde nada. Para la
+búsqueda, empezad simple: <em>random search</em> sobre cuatro
 hiperparámetros bien elegidos y entendidos rinde más en el cuaderno que
 una búsqueda bayesiana de cien <em>trials</em> que no sabéis leer.</p>
 </body>
