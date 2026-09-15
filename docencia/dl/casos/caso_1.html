@@ -238,9 +238,9 @@
 + examen de 30</h1>
 </header>
 <h1
-id="caso-práctico-i-bloque-i-deep-learning-hackathon-de-hpo-dirigir-a-la-ia-y-responder-por-su-código">Caso
+id="caso-práctico-i-bloque-i-deep-learning-hackathon-de-hpo-dirigir-a-la-ia-y-responder-por-lo-que-construye">Caso
 práctico I (Bloque I — Deep Learning) — Hackathon de HPO: dirigir a la
-IA y responder por su código</h1>
+IA y responder por lo que construye</h1>
 <p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
 Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 · <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
@@ -249,8 +249,9 @@ semanas 1–7). <strong>Modalidad:</strong> <strong>dos sesiones</strong>.
 La <strong>sesión A</strong> son 100 minutos de trabajo en el aula con
 IA permitida, dudas al profesor permitidas y entrega del código antes de
 salir. La <strong>sesión B</strong>, en la clase siguiente, son los
-<strong>30 primeros minutos</strong>: examen escrito sobre lo que
-hicisteis, con los ordenadores cerrados y sin IA.
+<strong>30 primeros minutos</strong>: examen escrito y
+<strong>conceptual</strong> sobre lo que hicisteis, con los ordenadores
+cerrados y sin IA. Las cinco preguntas están publicadas en el §8.
 <strong>Agrupación:</strong> sesión A en <strong>grupos de
 tres</strong>, formados para este caso y <strong>sin relación con los
 grupos del proyecto final</strong>; el examen de la sesión B es
@@ -278,21 +279,23 @@ disciplina que convierte ese caos en método se llama
 <strong>optimización de hiperparámetros (HPO)</strong>.</p>
 <p>Hay una segunda capa, y es la que estructura el caso. En 2026 el
 código de este caso lo escribe una IA en cinco minutos. Lo que una
-empresa os paga es <strong>leer ese código, saber si está bien y
-responder por él delante de un comité técnico</strong> cuando el
-ordenador está cerrado. El caso reproduce esa situación literalmente: la
-IA construye en la sesión A, vosotros respondéis en la B.</p>
+empresa os paga es <strong>entender qué se ha construido y responder por
+ello delante de un comité que no lee código</strong>: qué se buscó, qué
+salió, qué significa y si conviene llevarlo a producción. El caso
+reproduce esa situación literalmente: la IA construye en la sesión A,
+vosotros explicáis en la B.</p>
 <h2 id="objetivo">2. Objetivo</h2>
 <p>Dirigir a una IA para que construya una <strong>red neuronal
 (MLP)</strong> sobre un problema tabular real y una <strong>búsqueda de
 hiperparámetros</strong> sistemática; compararla contra un
 <strong>baseline clásico honesto</strong>; y después, en un examen a
-mano y con el ordenador cerrado, <strong>explicar línea a línea qué hizo
-ese código, por qué cada hiperparámetro final vale lo que vale y qué
-significa el resultado para el negocio</strong>.</p>
-<p>La nota vive casi entera en ese examen. Un grupo que gane el
-<em>leaderboard</em> y no sepa reconstruir su propio bucle de
-entrenamiento suspende el caso.</p>
+mano y con el ordenador cerrado, <strong>explicar qué hiperparámetros se
+buscaron y qué controla cada uno, qué dicen los valores que salieron,
+cómo era la red, qué la regularizaba y en qué consistían los
+datos</strong>.</p>
+<p>El examen no pide código ni cuentas: pide entender. La nota vive casi
+entera ahí. Un grupo que gane el <em>leaderboard</em> y no sepa explicar
+qué hace el <em>dropout</em> que puso suspende el caso.</p>
 <h2 id="estructura-del-caso-dos-sesiones">3. Estructura del caso: dos
 sesiones</h2>
 <p><strong>Sesión A — el hackathon (100 minutos de trabajo, la clase
@@ -351,10 +354,11 @@ queráis, con IA incluida. El §6 dice exactamente qué hay que
 dominar.</p>
 <p><strong>Sesión B — el examen (primeros 30 minutos de la clase
 siguiente).</strong> Ordenadores cerrados y guardados, sin apuntes, sin
-IA. Seis preguntas, 10 puntos, 30 minutos. Cinco están publicadas en el
-§8; la sexta es un fragmento de código que veréis por primera vez en el
-examen. Terminado el examen, la clase continúa con el temario
-normal.</p>
+IA. <strong>Cinco preguntas conceptuales</strong>, 10 puntos, 30
+minutos, <strong>publicadas íntegras en el §8</strong> desde el primer
+día. No se pide escribir código ni hacer cuentas: se pregunta qué
+elegisteis, qué significa lo que salió y por qué. Terminado el examen,
+la clase continúa con el temario normal.</p>
 <h2 id="datos-y-métrica-fijos-para-todos-los-grupos">4. Datos y métrica
 (fijos para todos los grupos)</h2>
 <p>Para que el <em>leaderboard</em> sea comparable y para que los 100
@@ -399,41 +403,58 @@ Construcción, HPO y entrega (100 min)</h2>
 para entenderlas mientras se hacen. El cierre es firme: <strong>pasado
 el minuto 110 no se acepta código</strong>.</p>
 <ul>
-<li><strong>5.1 Preprocesado y baseline.</strong> <em>One-hot</em> de
+<li><p><strong>5.1 Preprocesado y baseline.</strong> <em>One-hot</em> de
 las categóricas, escalado de las numéricas, imputación de los
 <code>NaN</code>. Un <strong>baseline clásico honesto</strong>:
 regresión logística <strong>y</strong> un <em>gradient boosting</em> con
 hiperparámetros razonables. Reportad su AUC de validación y de
-test.</li>
-<li><strong>5.2 MLP en PyTorch o Keras.</strong> Capas densas,
+test.</p></li>
+<li><p><strong>5.2 MLP en PyTorch o Keras.</strong> Capas densas,
 activación ReLU o GELU, al menos una técnica de regularización
 (<em>dropout</em>, <em>weight decay</em>, <em>batch/layer norm</em>),
 <em>early stopping</em> sobre validación. Curvas de entrenamiento y
-validación de la configuración ganadora.</li>
-<li><strong>5.3 Búsqueda de hiperparámetros.</strong> Espacio explícito
-sobre, como mínimo, tasa de aprendizaje, número de capas, anchura,
-<em>dropout</em>, <em>weight decay</em>, tamaño de <em>batch</em> y
-optimizador. Estrategia libre (<em>grid</em>, <em>random</em> u Optuna).
-<strong>Mínimo 30 configuraciones registradas.</strong> La elección se
-hace SIEMPRE con validación.</li>
-<li><strong>5.4 Log de la búsqueda.</strong> Un CSV,
-<code>busqueda.csv</code>, con una fila por configuración probada y
-estas columnas:
-<code>trial, lr, n_capas, anchura,   dropout, weight_decay, batch_size, optimizador, epochs_ejecutadas, auc_val</code>.
-Este fichero es la materia prima de media hoja del examen. Sin log
-completo, el caso no se puede responder.</li>
-<li><strong>5.5 Análisis de sensibilidad.</strong> Al menos una curva de
-AUC de validación frente a un hiperparámetro, con el resto en sus
-valores ganadores. Es lo que convierte el log en una explicación.</li>
-<li><strong>5.6 Entended el código mientras lo escribís.</strong> Cada
-vez que peguéis un bloque que la IA acaba de entregar, leedlo antes de
-ejecutarlo y preguntadle lo que no veáis claro, a ella o al profesor.
-Tened el §8 al lado: las cinco preguntas publicadas del examen son la
-lista de lo que hay que sacar de esta sesión.</li>
-<li><strong>5.7 Cierre y entrega (últimos 10 min).</strong> Congelad la
-mejor configuración según validación, reentrenad si vuestro protocolo lo
-requiere, y <strong>solo entonces</strong> evaluad el test, una única
-vez. Subid a Moodle <code>grupoNN_caso1_codigo.zip</code> con:
+validación de la configuración ganadora.</p></li>
+<li><p><strong>5.3 Búsqueda de hiperparámetros: cuatro, elegidos por
+vosotros.</strong> El requisito es un espacio explícito sobre
+<strong>exactamente cuatro hiperparámetros</strong>, escogidos de esta
+lista y con su rango escrito: tasa de aprendizaje, número de capas,
+anchura, <em>dropout</em>, <em>weight decay</em>, tamaño de
+<em>batch</em>, optimizador. Cuatro es el número: suficiente para que la
+búsqueda tenga sentido y pequeño para que en el examen sepáis defender
+cada uno. La combinación por defecto, si no queréis pensarla, es
+<strong>tasa de aprendizaje, anchura, <em>dropout</em> y <em>weight
+decay</em></strong>; el resto se deja fijo y en el examen habrá que
+decir con qué criterio.</p>
+<p>La estrategia mínima es <strong>random search</strong>. Podéis además
+lanzar una <strong>búsqueda bayesiana</strong> (Optuna,
+<code>TPESampler</code>) sobre el mismo espacio y comparar las dos; el
+§5.8 lo puntúa como bonus. <strong>Mínimo 30 configuraciones
+registradas</strong>, y la elección se hace SIEMPRE con validación.</p>
+<p>Tenéis en <code>casos/demo_hpo/</code> una demo ejecutada del
+profesor con este mismo dataset, estos cuatro hiperparámetros y las dos
+estrategias, con sus figuras y sus CSV. Miradla antes de la sesión
+A.</p></li>
+<li><p><strong>5.4 Log de la búsqueda.</strong> Un CSV,
+<code>busqueda.csv</code>, con una fila por configuración probada:
+<code>trial</code>, una columna por cada uno de vuestros cuatro
+hiperparámetros, <code>epochs_ejecutadas</code> y <code>auc_val</code>.
+Si comparáis dos estrategias, añadid una columna <code>metodo</code>.
+Este fichero es la materia prima de la pregunta 2 del examen.</p></li>
+<li><p><strong>5.5 Análisis de sensibilidad.</strong> Al menos una curva
+de AUC de validación frente a un hiperparámetro, con los otros tres
+congelados en sus valores ganadores. Es lo que convierte el log en una
+explicación, y es de donde saldrán vuestras respuestas de las preguntas
+1 y 2.</p></li>
+<li><p><strong>5.6 Entended lo que estáis construyendo mientras lo
+construís.</strong> Cada vez que la IA os entregue un bloque, pedidle
+que os explique qué hace cada decisión antes de ejecutarlo, y
+preguntadle al profesor lo que no quede claro. Tened el §8 al lado: las
+cinco preguntas del examen están publicadas y son exactamente la lista
+de lo que hay que sacar de esta sesión.</p></li>
+<li><p><strong>5.7 Cierre y entrega (últimos 10 min).</strong> Congelad
+la mejor configuración según validación, reentrenad si vuestro protocolo
+lo requiere, y <strong>solo entonces</strong> evaluad el test, una única
+vez. Subid a Moodle <code>grupoNN_caso1_codigo.zip</code> con:</p>
 <ol type="1">
 <li><strong><code>caso_1.ipynb</code></strong> ejecutado y con outputs
 visibles (o el <code>.py</code> más su log de ejecución). Debe correr de
@@ -446,6 +467,34 @@ configuración ganadora completa.</li>
 <li><strong><code>prompts.md</code></strong>: los prompts que usasteis,
 en orden, tal cual.</li>
 </ol></li>
+<li><p><strong>5.8 Bonus (opcionales, hasta 1 punto sobre la nota del
+caso).</strong> Se puntúan solo si lo obligatorio está completo y si
+sabéis defenderlos en el examen; un bonus que no sepáis explicar resta
+credibilidad al resto.</p>
+<ol type="1">
+<li><strong>Más de cuatro hiperparámetros</strong> (0,25). Ampliad el
+espacio a cinco, seis o los siete de la lista. En el examen tendréis que
+explicar qué controla cada uno de los que añadisteis, así que añadid
+solo los que entendáis.</li>
+<li><strong>Búsqueda bayesiana contra random search</strong> (0,5). El
+mismo espacio, el mismo presupuesto de <em>trials</em>, la misma
+partición, y una figura de mejor AUC encontrado hasta el <em>trial</em>
+t para las dos estrategias. Lo que se valora es la lectura: en un
+espacio de cuatro dimensiones y 30 <em>trials</em> la diferencia puede
+ser pequeña, y decir eso con honestidad puntúa más que inventarse una
+victoria. Recordad que las primeras evaluaciones del TPE son aleatorias
+por diseño, así que antes de ese punto los dos métodos son lo
+mismo.</li>
+<li><strong>Una CNN sobre un dataset sencillo de imágenes</strong>
+(0,5). La misma disciplina de HPO, cuatro hiperparámetros, aplicada a
+una red convolucional sobre <code>digits</code> de scikit-learn (1.797
+imágenes de 8×8, sin descarga), MNIST o Fashion-MNIST. Sirven como
+hiperparámetros el número de canales de la primera convolución, la tasa
+de aprendizaje, el <em>dropout</em> de la cabeza densa y el <em>weight
+decay</em>. Es un bloque aparte del entregable tabular, no un sustituto:
+el churn sigue siendo obligatorio. En <code>casos/demo_hpo/</code> hay
+una versión ejecutada de este bonus.</li>
+</ol></li>
 </ul>
 <p>El profesor mantiene un <strong>leaderboard</strong> en la pizarra
 con el AUC de validación de cada grupo, actualizado en vivo. Sirve de
@@ -455,131 +504,113 @@ mano en la sesión B.</p>
 <h2 id="entre-sesiones-qué-hay-que-dominar">6. Entre sesiones — qué hay
 que dominar</h2>
 <p>Estudiad como queráis, con IA incluida: nadie os va a preguntar cómo
-estudiasteis, os van a preguntar por vuestro código. Aviso, y va en
-serio: memorizar respuestas redactadas por una IA no funciona aquí,
-porque la mitad del examen pregunta por los números concretos de vuestro
-log y la última pregunta es un fragmento de código que no habréis visto
-nunca.</p>
-<p>Esta es la lista:</p>
+estudiasteis. Aviso, y va en serio: memorizar una respuesta redactada
+por una IA no funciona aquí, porque las preguntas van sobre
+<strong>vuestras</strong> decisiones y <strong>vuestros</strong>
+resultados, y porque todas piden mecanismo, no definición. La diferencia
+entre un aprobado y un sobresaliente es si sabéis decir <em>qué le pasa
+al modelo</em> cuando movéis algo.</p>
+<p>Esta es la lista, y se corresponde una a una con las cinco preguntas
+del §8:</p>
 <ul>
-<li><strong>El bucle de entrenamiento.</strong> Qué hace cada línea del
-bucle interno y en qué orden: <code>zero_grad</code>, <em>forward</em>,
-cálculo de la pérdida, <code>backward</code>, <code>step</code>. Dónde
-se pone el modelo en <code>train()</code> y dónde en
-<code>eval()</code>, y qué cambia con cada uno.</li>
-<li><strong>La pérdida.</strong> Cuál es, si la sigmoide se aplica
-dentro o fuera de ella, y qué se hizo con el desequilibrio de
-clases.</li>
-<li><strong>El flujo de datos.</strong> Dónde se ajusta el escalador y
-con qué subconjunto; dónde se imputan los <code>NaN</code>; en qué línea
-entra el test y en cuáles no.</li>
-<li><strong>La búsqueda.</strong> Cuántas configuraciones se probaron,
-sobre qué rangos, y con qué valores salió la ganadora.</li>
-<li><strong>El log.</strong> La mejor y la peor fila de
-<code>busqueda.csv</code>, con sus números, y qué distingue a una de
-otra.</li>
-<li><strong>La lectura de código ajeno.</strong> Saber mirar un bucle de
-entrenamiento que no es vuestro y detectar qué le falta. Practicadlo: es
-la pregunta 6.</li>
-<li><strong>El negocio.</strong> Vuestra Δ AUC frente al baseline, y
-cuánto vale en euros bajo un supuesto de coste que sepáis defender.</li>
-<li><strong>Las decisiones de la IA.</strong> Al menos una cosa que la
-máquina decidió sola y que vosotros no habríais decidido igual, y al
-menos una línea que sigáis sin entender del todo.</li>
+<li><strong>Vuestros cuatro hiperparámetros.</strong> Cuáles son y, para
+cada uno, qué controla dentro de la red o del entrenamiento: qué pasa si
+sube y qué pasa si baja. Y qué dejasteis fijo, con qué criterio.</li>
+<li><strong>Los valores que salieron.</strong> Los órdenes de magnitud
+de la configuración ganadora y, sobre todo, qué os dicen sobre este
+dataset. Qué configuraciones fueron mal y por qué. Si la red ganó al
+baseline clásico o no, con el número aproximado delante.</li>
+<li><strong>La arquitectura.</strong> Cuántas capas, de qué anchura, qué
+activación, qué salida. Qué habría pasado con una red mucho más grande:
+sobre el ajuste, sobre la generalización y sobre el tiempo de búsqueda.
+Y qué pasa si se queda corta.</li>
+<li><strong>La regularización.</strong> Cuál usasteis, qué le impide
+hacer al modelo, por qué eso ayuda con clientes que no ha visto, y qué
+ocurre si se pasa de frenada.</li>
+<li><strong>Los datos.</strong> Qué es una fila, qué columnas hay, qué
+se predice, cómo se partió en tres y para qué sirve cada parte, y qué
+peculiaridad hubo que tratar antes de entrenar.</li>
 </ul>
+<p>No hace falta memorizar cifras exactas ni líneas de código. Hace
+falta poder explicárselo a alguien que no programa.</p>
 <h2 id="sesión-b-el-examen-del-caso-30-min">7. Sesión B — El examen del
 caso (30 min)</h2>
 <p>Primeros 30 minutos de la clase siguiente. Ordenadores cerrados y
 guardados. Se responde <strong>a mano, en solitario, sin apuntes, sin IA
 y sin el log delante</strong>. <strong>Este examen es el entregable
 evaluado del caso.</strong></p>
-<p>Seis preguntas, 10 puntos. Las cinco primeras están publicadas
-íntegras en el §8 y se conocen desde el primer día: todas preguntan por
-<strong>vuestro</strong> código y <strong>vuestro</strong> log, así que
-no hay nada que se pueda traer escrito de casa. La sexta es un fragmento
-de código con errores plantados que veréis por primera vez en el examen;
-sabéis su formato y su peso, no su contenido.</p>
-<p>Las respuestas son breves. Se valora la precisión técnica, no la
-extensión: una respuesta correcta de cuatro líneas puntúa más que media
-cara de divagación.</p>
-<h2 id="la-hoja-del-examen-las-preguntas">8. La hoja del examen — las
-preguntas</h2>
-<p>Esto es lo que se reparte, salvo la pregunta 6, que va en la hoja
-pero no se publica. Los tiempos orientativos van entre paréntesis.</p>
+<p>Cinco preguntas, 10 puntos, <strong>publicadas íntegras en el
+§8</strong> desde el primer día. No hay preguntas sorpresa, no se pide
+escribir código, no se pide hacer cuentas y no hacen falta cifras
+exactas: los números que se piden son los órdenes de magnitud que
+recordéis. Todas preguntan por <strong>vuestras</strong> decisiones y
+<strong>vuestros</strong> resultados, así que no hay nada que se pueda
+traer escrito de casa: lo que se puede traer es haber entendido lo que
+hicisteis.</p>
+<p>Las respuestas son breves. Se valora la precisión conceptual, no la
+extensión: media cara bien escrita puntúa más que dos caras de
+relleno.</p>
+<h2 id="la-hoja-del-examen-las-cinco-preguntas">8. La hoja del examen —
+las cinco preguntas</h2>
+<p>Esto es exactamente lo que se reparte en la sesión B. Los tiempos
+orientativos van entre paréntesis.</p>
 <hr />
-<p><strong>Pregunta 1 — El bucle de entrenamiento. (2,5 puntos · ~7
+<p><strong>Pregunta 1 — Los hiperparámetros que elegisteis. (2,5 puntos
+· ~7 min)</strong></p>
+<p><strong>(a)</strong> ¿Qué hiperparámetros metisteis en la búsqueda?
+Nombradlos.</p>
+<p><strong>(b)</strong> Para cada uno, explicad <strong>qué controla
+dentro del modelo o del entrenamiento</strong>: qué cambia en la red o
+en el proceso cuando ese valor sube y qué cambia cuando baja.</p>
+<p><strong>(c)</strong> ¿Por qué esos y no otros? ¿Qué dejasteis fijo y
+con qué criterio?</p>
+<hr />
+<p><strong>Pregunta 2 — La interpretación de los valores obtenidos. (2,5
+puntos · ~7 min)</strong></p>
+<p><strong>(a)</strong> ¿Qué valores salieron en la configuración
+ganadora? <strong>Interpretadlos</strong>: ¿qué os está diciendo el
+dataset sobre el modelo que necesita? Por ejemplo, un <em>dropout</em>
+alto o una red estrecha no son un accidente, dicen algo sobre cuántos
+datos hay y cuánta señal tienen.</p>
+<p><strong>(b)</strong> ¿Qué configuraciones salieron claramente mal, y
+por qué creéis que fallaron?</p>
+<p><strong>(c)</strong> Comparado con el baseline clásico, ¿mereció la
+pena la red? Contestad sí o no y justificadlo en dos líneas.</p>
+<hr />
+<p><strong>Pregunta 3 — La arquitectura. (2 puntos · ~6
 min)</strong></p>
-<p><strong>(a)</strong> Escribid en pseudocódigo el bucle de
-entrenamiento de vuestro script, en orden y nombrando cada llamada tal
-como aparece en el código. Indicad dónde se pone el modelo en modo
-entrenamiento y dónde en modo evaluación.</p>
-<p><strong>(b)</strong> ¿Qué le ocurre al entrenamiento si se olvida
-<code>zero_grad()</code>? ¿Y si <code>optimizer.step()</code> se ejecuta
-antes de <code>loss.backward()</code>? Responded en términos de lo que
-le pasa al gradiente, no solo “falla”.</p>
-<p><strong>(c)</strong> ¿Qué función de pérdida usó vuestro script y por
-qué es la adecuada para este problema? ¿La sigmoide se aplica dentro de
-la pérdida o antes, en la última capa? Si se aplicase en los dos sitios,
-¿qué le pasaría al entrenamiento?</p>
+<p><strong>(a)</strong> ¿Cuál era la arquitectura de vuestra red?
+Describidla: tipo de red, cuántas capas, de qué tamaño, qué activación y
+qué salida.</p>
+<p><strong>(b)</strong> ¿Qué habría pasado si hubierais usado una red
+<strong>bastante más compleja</strong> (muchas más capas o mucho más
+anchas) sobre estos mismos datos? Hablad de lo que le pasa al ajuste, a
+la generalización y al tiempo de búsqueda.</p>
+<p><strong>(c)</strong> ¿Y si hubiera sido demasiado pequeña?</p>
 <hr />
-<p><strong>Pregunta 2 — El flujo de datos y la fuga. (1,5 puntos · ~4
+<p><strong>Pregunta 4 — La regularización. (1,5 puntos · ~5
 min)</strong></p>
-<p><strong>(a)</strong> ¿Con qué subconjunto de filas se ajustó el
-escalador de las variables numéricas, y con cuál se calculó el valor con
-el que se imputaron los once <code>NaN</code> de
-<code>TotalCharges</code>?</p>
-<p><strong>(b)</strong> Si ambas cosas se hubiesen ajustado sobre la
-tabla completa, ¿en qué dirección sesgaría eso el AUC de test, arriba o
-abajo, y por qué? Nombrad el mecanismo concreto por el que la
-información del test entraría en el modelo.</p>
+<p><strong>(a)</strong> ¿Qué técnica o técnicas de regularización
+usasteis?</p>
+<p><strong>(b)</strong> Explicad <strong>qué hace</strong> la que más
+peso tuvo: qué le impide al modelo hacer, y por qué eso ayuda a que
+funcione mejor con clientes que nunca ha visto.</p>
+<p><strong>(c)</strong> ¿Qué pasa si se regulariza demasiado?</p>
 <hr />
-<p><strong>Pregunta 3 — Los hiperparámetros. (2 puntos · ~6
+<p><strong>Pregunta 5 — El conjunto de datos. (1,5 puntos · ~5
 min)</strong></p>
-<p><strong>(a)</strong> Escribid tres hiperparámetros de vuestra
-configuración ganadora <strong>con su valor</strong> y explicad, para
-cada uno, por qué ese valor y no otro, apoyándoos en lo que visteis en
-<code>busqueda.csv</code> y en vuestra curva de sensibilidad. No vale
-“porque dio mejor número”: <em>por qué</em> dio mejor número en este
-dataset.</p>
-<p><strong>(b)</strong> Describid la <strong>peor</strong> configuración
-de vuestro log, con sus valores, y diagnosticadla: ¿tasa de aprendizaje
-divergente, <em>dropout</em> excesivo para una red pequeña,
-<em>batch</em> demasiado grande para las <em>epochs</em> disponibles,
-red demasiado profunda para 4.225 filas, otra cosa?</p>
+<p><strong>(a)</strong> ¿En qué consistía el conjunto de datos? Qué
+representa una fila, qué tipo de columnas hay y qué se está
+prediciendo.</p>
+<p><strong>(b)</strong> ¿Cómo se repartió en entrenamiento, validación y
+test, y para qué sirve cada una de las tres partes?</p>
+<p><strong>(c)</strong> ¿Qué peculiaridad de estos datos hubo que tratar
+antes de entrenar?</p>
 <hr />
-<p><strong>Pregunta 4 — El protocolo. (1,5 puntos · ~4 min)</strong></p>
-<p><strong>(a)</strong> ¿Por qué el conjunto de test se toca una sola
-vez? Decid qué AUC habríais publicado si hubieseis elegido la
-configuración ganadora mirando el test en lugar de la validación, y
-explicad por qué ese número sería mentira.</p>
-<p><strong>(b)</strong> Si mañana relanzáis la misma búsqueda cambiando
-solo la semilla, ¿qué esperáis que cambie de la configuración ganadora?
-Con una validación de 1.409 filas, ¿cuánta de vuestra diferencia de AUC
-frente al baseline es señal y cuánta es ruido? Justificad el orden de
-magnitud.</p>
-<hr />
-<p><strong>Pregunta 5 — El negocio y la IA. (1 punto · ~4
-min)</strong></p>
-<p><strong>(a)</strong> Traducid a euros la diferencia de AUC entre
-vuestra red y el baseline clásico, bajo un supuesto de coste que debéis
-escribir explícitamente (por ejemplo: la campaña de retención cuesta 40
-€ por cliente contactado y perder un cliente cuesta 600 € de margen
-anual). Recomendad red o clásico para producción y decid a qué coste de
-complejidad y de tiempo de HPO.</p>
-<p><strong>(b)</strong> Nombrad una decisión que la IA tomó por vosotros
-y que no habríais tomado igual, y una línea de vuestro script que
-<strong>no</strong> sepáis explicar del todo. La honestidad puntúa aquí;
-fingir que se entiende todo, no.</p>
-<hr />
-<p><strong>Pregunta 6 — Lectura de código ajeno. (1,5 puntos · ~5 min)
-NO PUBLICADA</strong></p>
-<p>En la hoja aparece un bucle de entrenamiento de unas ocho líneas,
-distinto del vuestro, con <strong>tres defectos plantados</strong>. Hay
-que localizarlos y decir, para cada uno, qué le hace al entrenamiento o
-a la métrica. Se avisa del formato y del peso; el fragmento se ve por
-primera vez en el examen. La única preparación posible es haber
-entendido de verdad vuestro propio bucle.</p>
-<hr />
+<p>Quien haya hecho alguno de los bonus del §5.8 tendrá que poder
+defenderlo dentro de estas mismas preguntas: los hiperparámetros extra
+entran en la 1, la comparación entre random search y búsqueda bayesiana
+entra en la 2 y la CNN entra en la 3.</p>
 <h2 id="tabla-concepto-aplicación-entradas-salidas-kpi">9. Tabla
 Concepto → Aplicación → Entradas → Salidas → KPI</h2>
 <p>Tabla de referencia del caso, para orientar el trabajo de la sesión
@@ -619,16 +650,16 @@ A. No se pregunta en el examen.</p>
 <tr class="odd">
 <td>HPO</td>
 <td>Elegir la configuración con método</td>
-<td>Espacio de búsqueda + validación</td>
+<td>Espacio de cuatro hiperparámetros + validación</td>
 <td>Hiperparámetros finales</td>
 <td>Δ AUC vs. configuración inicial; nº de <em>trials</em></td>
 </tr>
 <tr class="even">
-<td>Lectura del código</td>
+<td>Comprensión de lo construido</td>
 <td>Responder por lo que la IA escribió</td>
-<td>Script y log de búsqueda</td>
-<td>Explicación línea a línea</td>
-<td>Las seis preguntas del §8</td>
+<td>Script, log de búsqueda y curva de sensibilidad</td>
+<td>Explicación conceptual de decisiones y resultados</td>
+<td>Las cinco preguntas del §8</td>
 </tr>
 </tbody>
 </table>
@@ -652,20 +683,30 @@ A. No se pregunta en el examen.</p>
 <td><strong>Examen de la sesión B</strong> (hoja del §8, sobre 10
 puntos)</td>
 <td>75 %</td>
-<td>Las seis preguntas, con el desglose de abajo.</td>
+<td>Las cinco preguntas, con el desglose de abajo.</td>
 </tr>
 <tr class="even">
 <td>Entrega de código de la sesión A</td>
 <td>15 %</td>
 <td>Corre de principio a fin, semillas fijadas, partición intacta, test
-evaluado una sola vez, ≥ 30 configuraciones en
-<code>busqueda.csv</code>, curva de sensibilidad presente.</td>
+evaluado una sola vez, cuatro hiperparámetros con su rango explícito, ≥
+30 configuraciones en <code>busqueda.csv</code>, curva de sensibilidad
+presente.</td>
 </tr>
 <tr class="odd">
 <td>Trazabilidad de IA</td>
 <td>10 %</td>
 <td><code>prompts.md</code> completo y en orden, con qué parte escribió
 cada herramienta.</td>
+</tr>
+<tr class="even">
+<td><strong>Bonus del §5.8</strong></td>
+<td>hasta +1 punto sobre la nota final del caso</td>
+<td>Más de cuatro hiperparámetros (0,25); búsqueda bayesiana comparada
+con random search sobre el mismo espacio y presupuesto (0,5); CNN sobre
+un dataset sencillo de imágenes con los mismos cuatro hiperparámetros de
+disciplina (0,5). Solo se cuentan si lo obligatorio está completo y si
+se saben defender en el examen.</td>
 </tr>
 </tbody>
 </table>
@@ -685,52 +726,52 @@ cada herramienta.</td>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1. Bucle de entrenamiento</td>
+<td>1. Los hiperparámetros</td>
 <td>2,5</td>
-<td>El orden de las cinco llamadas es correcto (1,0); omitir
-<code>zero_grad</code> se explica como acumulación de gradientes entre
-iteraciones (0,5); la pérdida se nombra bien y se ubica la sigmoide
-(1,0).</td>
+<td>Los nombra (0,5); explica qué controla cada uno en términos de qué
+le pasa al modelo si sube y si baja (1,5); justifica la elección y dice
+qué quedó fijo (0,5).</td>
 </tr>
 <tr class="even">
-<td>2. Flujo de datos y fuga</td>
-<td>1,5</td>
-<td>Dice “solo con train” y lo sostiene (0,75); nombra el mecanismo de
-la fuga y la dirección del sesgo, optimista (0,75).</td>
+<td>2. Interpretación de los valores</td>
+<td>2,5</td>
+<td>Da los valores ganadores, aunque sea en orden de magnitud, y los
+interpreta como información sobre el dataset (1,25); diagnostica lo que
+fue mal con un mecanismo, no con una etiqueta (0,75); se moja sobre si
+la red mereció la pena frente al baseline (0,5).</td>
 </tr>
 <tr class="odd">
-<td>3. Hiperparámetros</td>
+<td>3. La arquitectura</td>
 <td>2,0</td>
-<td>Tres valores correctos con justificación apoyada en el log y en la
-curva de sensibilidad, no en recetas (1,25); diagnóstico de la peor
-configuración coherente con sus valores (0,75).</td>
+<td>Describe la red que usó (0,75); efectos de una red mucho más
+compleja sobre ajuste, generalización y coste de búsqueda (0,75); efecto
+de quedarse corto, <em>underfitting</em> (0,5).</td>
 </tr>
 <tr class="even">
-<td>4. Protocolo</td>
+<td>4. La regularización</td>
 <td>1,5</td>
-<td>Explica la selección sobre test como sobreestimación optimista
-(0,75); estima el ruido de la validación con un orden de magnitud
-defendible (0,75).</td>
+<td>Nombra la técnica (0,25); explica el mecanismo y por qué mejora el
+comportamiento con datos no vistos (0,75); dice qué pasa si se
+regulariza de más (0,5).</td>
 </tr>
 <tr class="odd">
-<td>5. Negocio y IA</td>
-<td>1,0</td>
-<td>Supuesto de coste explícito y aritmética coherente con la
-recomendación (0,5); decisión de la IA identificada y línea no entendida
-declarada con honestidad (0,5).</td>
-</tr>
-<tr class="even">
-<td>6. Lectura de código ajeno</td>
+<td>5. El conjunto de datos</td>
 <td>1,5</td>
-<td>0,5 por cada uno de los tres defectos localizado <strong>y</strong>
-explicado en su efecto. Localizarlo sin explicarlo vale 0,25.</td>
+<td>Qué es una fila, qué columnas y qué se predice (0,5); la partición
+en tres y para qué sirve cada parte (0,5); la peculiaridad que hubo que
+tratar, desequilibrio, <code>NaN</code> o categóricas (0,5).</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Condición de aprobación:</strong> un examen que no consiga
-reconstruir el bucle de entrenamiento (pregunta 1a) ni decir con qué
-subconjunto se ajustó el escalador (pregunta 2a) suspende el caso, con
-independencia del <em>leaderboard</em> y del AUC de test.</p>
+<p>Criterio transversal de corrección: <strong>describir no es
+explicar</strong>. Un valor correcto sin mecanismo se lleva la mitad de
+su parte; un mecanismo bien contado con el valor olvidado se lleva la
+parte entera.</p>
+<p><strong>Condición de aprobación:</strong> un examen que no sepa decir
+qué hiperparámetros se buscaron y qué controla cada uno (pregunta 1) ni
+describir el conjunto de datos y para qué sirve cada partición (pregunta
+5) suspende el caso, con independencia del <em>leaderboard</em> y del
+AUC de test.</p>
 <p>Esta rúbrica se desvía de la rúbrica común del curso (que rige en los
 casos II y III y en el proyecto final) porque este caso no tiene memoria
 escrita, ni slides, ni defensa oral: se trabaja en clase y se evalúa con
@@ -739,17 +780,17 @@ un examen.</p>
 <p><strong>Sesión A: IA permitida y fomentada, sin restricciones de
 herramienta.</strong> Escribid con ella el preprocesado, el MLP, el
 bucle de HPO y el análisis del log, y usadla además para que os explique
-su propio código. Cuanto más código produzca, más habrá que leer, que es
-de lo que va el caso. Requisito único: <code>prompts.md</code>
-completo.</p>
+cada decisión que ha tomado. Cuanto más produzca, más habrá que
+entender, que es de lo que va el caso. Requisito único:
+<code>prompts.md</code> completo.</p>
 <p><strong>Entre sesiones: IA permitida sin límite</strong> para
 estudiar, repasar y pediros explicaciones de vuestro propio código.</p>
 <p><strong>Sesión B: IA prohibida, ordenadores cerrados y guardados, sin
 apuntes.</strong> Usarla o consultar apuntes supone un cero en el caso
 (regla C de la política de IA del Día 01).</p>
-<p>La <strong>decisión</strong> de qué espacio buscar y la
-<strong>justificación</strong> de por qué un hiperparámetro vale lo que
-vale son vuestras, y se responden a mano.</p>
+<p>La <strong>decisión</strong> de qué cuatro hiperparámetros buscar y
+la <strong>comprensión</strong> de qué hace cada uno son vuestras, y se
+responden a mano.</p>
 <h2 id="fechas-y-logística">12. Fechas y logística</h2>
 <ul>
 <li><strong>Sesión A:</strong> semana 5, durante el Tema 3, la clase
@@ -766,7 +807,7 @@ con los grupos del proyecto final, y se recomienda expresamente que no
 coincidan. Si el número de asistentes no es múltiplo de tres, el
 profesor cierra los grupos sueltos de dos o de cuatro. El examen es
 individual, así que el grupo no reparte nota: los tres tienen que haber
-leído el código.</li>
+entendido lo que se construyó.</li>
 <li><strong>Qué traer a la sesión A:</strong> un portátil por grupo como
 mínimo, con Python, PyTorch (o Keras), scikit-learn y pandas ya
 instalados y probados, o bien Colab con sesión iniciada. Diez minutos
@@ -781,5 +822,38 @@ sesiones, el foro primero y el profesor después. Para la búsqueda,
 empezad simple: <em>random search</em> sobre cuatro hiperparámetros bien
 elegidos y entendidos rinde más en el examen que una búsqueda bayesiana
 de cien <em>trials</em> que no sabéis leer.</p>
+<p><strong>La demo del profesor: <code>casos/demo_hpo/</code>.</strong>
+Está publicada con el enunciado y es el mejor punto de partida. El
+corazón es <strong><code>demo_hpo.ipynb</code></strong>, un cuaderno
+Jupyter ejecutado y lleno de figuras que explica la búsqueda de
+hiperparámetros paso a paso sobre este mismo dataset:</p>
+<ol type="1">
+<li><strong>Qué es una evaluación</strong>: las curvas de entrenamiento
+y validación de una configuración buena y una mala, y dónde para el
+<em>early stopping</em>.</li>
+<li><strong>El paisaje</strong>: la superficie de AUC sobre (tasa de
+aprendizaje, <em>dropout</em>) calculada a la fuerza bruta con 169
+entrenamientos, para ver lo que un buscador nunca llega a ver.</li>
+<li><strong>Rejilla contra sorteo</strong>: por qué el <em>grid
+search</em> desperdicia el presupuesto.</li>
+<li><strong>Random search</strong> y su log.</li>
+<li><strong>El mecanismo de la búsqueda bayesiana</strong>: las
+densidades de configuraciones buenas y malas, y cómo salen de ahí las
+propuestas.</li>
+<li><strong>Las dos, cara a cara</strong>: convergencia y mapa del
+progreso a los 5, 10 y 20 <em>trials</em>.</li>
+<li><strong>Cómo se lee un log</strong>: coordenadas paralelas y curvas
+de sensibilidad.</li>
+<li><strong>El bonus de la CNN</strong>: filtros aprendidos, matriz de
+confusión y errores.</li>
+</ol>
+<p>El mismo cuaderno está en <strong><code>demo_hpo.pdf</code></strong>,
+resuelto y paginado, por si preferís leerlo sin ejecutar nada. Además
+están <code>demo_hpo.py</code> (todo el código, ejecutable con
+<code>python demo_hpo.py --trials 30 --seeds 3 --paisaje 13 --bonus-cnn</code>),
+los CSV de las búsquedas, <code>resultado.txt</code> y todas las figuras
+sueltas en PNG.</p>
+<p>Copiad su estructura, no sus resultados: el trabajo de la sesión A es
+vuestro y el examen pregunta por vuestras decisiones.</p>
 </body>
 </html>
