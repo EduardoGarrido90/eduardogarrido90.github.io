@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -247,16 +247,18 @@ Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 2026–2027. <strong>Bloque:</strong> I — Deep Learning (Temas 0–3,
 semanas 1–7). <strong>Modalidad:</strong> <strong>dos sesiones</strong>.
 La <strong>sesión A</strong> son 100 minutos de trabajo en el aula con
-IA permitida, dudas al profesor permitidas y entrega del código antes de
-salir. La <strong>sesión B</strong>, en la clase siguiente, son los
-<strong>30 primeros minutos</strong>: examen escrito y
-<strong>conceptual</strong> sobre lo que hicisteis, con los ordenadores
-cerrados y sin IA. Las cinco preguntas están publicadas en el §8.
-<strong>Agrupación:</strong> sesión A en <strong>grupos de
-tres</strong>, formados para este caso y <strong>sin relación con los
-grupos del proyecto final</strong>; el examen de la sesión B es
-<strong>individual</strong>. <strong>Peso:</strong> caso práctico
-evaluado con la rúbrica del §10.</p>
+IA permitida y dudas al profesor permitidas. La <strong>sesión
+B</strong>, en la clase siguiente, son los <strong>30 primeros
+minutos</strong>: examen escrito y <strong>conceptual</strong> sobre lo
+que hicisteis, con los ordenadores cerrados y sin IA. Las cinco
+preguntas están publicadas en el §8. <strong>No hay entrega en
+Moodle:</strong> el código se queda con vosotros y el profesor lo revisa
+en pantalla al cierre de la sesión A. <strong>Agrupación:</strong>
+sesión A en <strong>grupos de tres</strong>, formados para este caso y
+<strong>sin relación con los grupos del proyecto final</strong>; el
+examen de la sesión B es <strong>individual</strong>.
+<strong>Peso:</strong> caso práctico evaluado con la rúbrica del
+§10.</p>
 <hr />
 <h2 id="contexto-de-negocio">1. Contexto de negocio</h2>
 <p>La mayoría de los problemas de analítica de una empresa no llegan
@@ -315,10 +317,10 @@ completa).</strong></p>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Reglas y grupos</td>
+<td>Reglas, grupos y dataset</td>
 <td>0–5</td>
-<td>Se cierran los grupos de tres y se reparte el trabajo dentro de cada
-uno</td>
+<td>Se cierran los grupos de tres, se elige el dataset del §4 y se
+reparte el trabajo</td>
 </tr>
 <tr class="even">
 <td>Construcción y búsqueda</td>
@@ -338,10 +340,10 @@ uno</td>
 el análisis de sensibilidad</td>
 </tr>
 <tr class="odd">
-<td>Cierre y entrega</td>
+<td>Cierre y visto bueno</td>
 <td>100–110</td>
 <td>Se congela la mejor configuración, se evalúa el test <strong>una
-sola vez</strong> y se sube el zip a Moodle</td>
+sola vez</strong> y se enseña el cuaderno al profesor</td>
 </tr>
 </tbody>
 </table>
@@ -359,44 +361,171 @@ minutos, <strong>publicadas íntegras en el §8</strong> desde el primer
 día. No se pide escribir código ni hacer cuentas: se pregunta qué
 elegisteis, qué significa lo que salió y por qué. Terminado el examen,
 la clase continúa con el temario normal.</p>
-<h2 id="datos-y-métrica-fijos-para-todos-los-grupos">4. Datos y métrica
-(fijos para todos los grupos)</h2>
-<p>Para que el <em>leaderboard</em> sea comparable y para que los 100
-minutos de la sesión A no se gasten eligiendo dataset, el problema es el
-mismo para toda la clase:</p>
-<ul>
-<li><strong>Dataset:</strong> Telco Customer Churn (7.043 clientes, 20
-variables predictoras, clasificación binaria de baja). Licencia CC0.
-Disponible en Moodle y en <a
+<h2 id="datos-y-métrica">4. Datos y métrica</h2>
+<p>La <strong>métrica es la misma para toda la clase</strong>:
+<strong>AUC-ROC</strong> sobre validación durante la búsqueda, y AUC-ROC
+sobre test una única vez al cierre de la sesión A. Se usa AUC y no
+<em>accuracy</em> porque las cuatro tablas de abajo están
+desequilibradas y un clasificador que diga siempre “no” acierta mucho
+sin predecir nada.</p>
+<p><strong>El dataset lo elige cada grupo</strong>, entre estas cuatro
+opciones, en los primeros cinco minutos de la sesión A. Los cuatro son
+tabulares, de clasificación binaria, de dominio empresarial, de descarga
+libre sin cuenta ni registro y de tamaño cómodo en un portátil. Los
+cuatro tienen su propia trampa, y esa trampa es exactamente la pregunta
+5(c) del examen. Elegid uno y comprometeos con él: cambiar de tabla a
+mitad de sesión es tirar el presupuesto de <em>trials</em>.</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Opción</th>
+<th>Dataset</th>
+<th>Filas</th>
+<th>Predictoras</th>
+<th>Qué se predice</th>
+<th>Positivos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>A</strong></td>
+<td>Telco Customer Churn</td>
+<td>7.043</td>
+<td>20 (categóricas y numéricas)</td>
+<td>Que el cliente se dé de baja</td>
+<td>26,5 %</td>
+</tr>
+<tr class="even">
+<td><strong>B</strong></td>
+<td>Bank Marketing (UCI)</td>
+<td>41.188</td>
+<td>20 (10 categóricas + 10 numéricas)</td>
+<td>Que el cliente contrate un depósito a plazo</td>
+<td>11,3 %</td>
+</tr>
+<tr class="odd">
+<td><strong>C</strong></td>
+<td>Adult / Census Income (UCI)</td>
+<td>48.842</td>
+<td>14 (8 categóricas + 6 numéricas)</td>
+<td>Que la renta anual supere los 50.000 USD</td>
+<td>23,9 %</td>
+</tr>
+<tr class="even">
+<td><strong>D</strong></td>
+<td>Default of Credit Card Clients (UCI)</td>
+<td>30.000</td>
+<td>23 (numéricas, varias son códigos)</td>
+<td>Que el cliente impague el mes siguiente</td>
+<td>22,1 %</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Opción A — Telco Customer Churn.</strong> Una fila por
+cliente de una operadora de telecomunicaciones, con su antigüedad, su
+cargo mensual, su tipo de contrato y los servicios que tiene
+contratados. Es la tabla sobre la que está hecha la demo del profesor
+del §13, así que es la opción de menor fricción. Licencia CC0. Descarga
+directa:
+<code>https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv</code>
+(también en <a
 href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn"
-class="uri">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a>.</li>
-<li><strong>Métrica objetivo:</strong> <strong>AUC-ROC</strong> sobre
-validación durante la búsqueda; AUC-ROC sobre test una única vez al
-cierre de la sesión A.</li>
-<li><strong>Partición:</strong> exactamente la de este bloque, sin tocar
-una línea. Copiadla literal en vuestro script y decídselo a la IA:</li>
+class="uri">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a>).
+La trampa: <code>TotalCharges</code> llega como texto porque once
+clientes nuevos tienen la celda en blanco, de modo que
+<code>pd.to_numeric(..., errors="coerce")</code> la convierte y deja
+once <code>NaN</code> que hay que imputar o eliminar.</p>
+<p><strong>Opción B — Bank Marketing.</strong> Una fila por llamada de
+una campaña telefónica de un banco portugués, con datos del contactado,
+el historial de la campaña y cinco indicadores macroeconómicos del mes.
+Fichero <code>bank-additional/bank-additional-full.csv</code> dentro de
+<a
+href="https://archive.ics.uci.edu/static/public/222/bank+marketing.zip"
+class="uri">https://archive.ics.uci.edu/static/public/222/bank+marketing.zip</a>
+(zip anidado, y el CSV usa <code>;</code> como separador). Licencia CC
+BY 4.0. La trampa es la mejor de las cuatro: la columna
+<code>duration</code>, la duración de la llamada en segundos, <strong>es
+una fuga de información</strong>. Solo se conoce después de colgar, y si
+dura cero segundos la respuesta es “no” por construcción; la propia
+documentación de UCI dice que hay que descartarla para tener un modelo
+realista. Un grupo que la deje dentro verá un AUC altísimo que no
+significa nada, y explicarlo vale la pregunta 5(c) entera. Trampa
+secundaria: los ausentes no vienen como <code>NaN</code> sino como la
+categoría <code>unknown</code> (8.597 filas solo en
+<code>default</code>), y con un 11 % de positivos es la tabla más
+desequilibrada del cuarteto.</p>
+<p><strong>Opción C — Adult / Census Income.</strong> Una fila por
+persona censada en Estados Unidos en 1994, con edad, nivel educativo,
+ocupación, estado civil y horas trabajadas. Ficheros
+<code>adult.data</code> y <code>adult.test</code> dentro de <a
+href="https://archive.ics.uci.edu/static/public/2/adult.zip"
+class="uri">https://archive.ics.uci.edu/static/public/2/adult.zip</a>;
+vienen sin cabecera, así que los nombres de columna hay que ponerlos a
+mano desde <code>adult.names</code>. Licencia CC BY 4.0. Las trampas son
+tres y con una explicada basta: los ausentes están codificados como
+<code>?</code> en <code>workclass</code> (2.799),
+<code>occupation</code> (2.809) y <code>native-country</code> (857);
+<code>fnlwgt</code> es el peso muestral de la encuesta, no un atributo
+de la persona, y meterlo como predictora no tiene sentido;
+<code>education</code> y <code>education-num</code> son la misma
+variable dos veces, una como texto y otra como número. Además, las
+etiquetas de <code>adult.test</code> traen un punto final
+(<code>&gt;50K.</code>) y su primera línea es basura, de modo que unir
+los dos ficheros sin limpiar produce cuatro clases en lugar de dos.</p>
+<p><strong>Opción D — Default of Credit Card Clients.</strong> Una fila
+por titular de tarjeta de un banco taiwanés en 2005, con su límite de
+crédito, seis meses de estado de pago, seis de facturación y seis de
+importes pagados. Fichero
+<code>default of credit card clients.xls</code> dentro de <a
+href="https://archive.ics.uci.edu/static/public/350/default+of+credit+card+clients.zip"
+class="uri">https://archive.ics.uci.edu/static/public/350/default+of+credit+card+clients.zip</a>.
+Licencia CC BY 4.0. Es un Excel con dos filas de cabecera, así que se
+lee con <code>pd.read_excel(..., header=1)</code>, y la columna
+<code>ID</code> hay que tirarla. La trampa: aquí <strong>todo llega como
+número, pero no todo es numérico</strong>. <code>SEX</code>,
+<code>EDUCATION</code>, <code>MARRIAGE</code> y los seis
+<code>PAY_*</code> son códigos categóricos, y escalarlos como si fueran
+continuos le dice a la red que “casado” está a media distancia entre dos
+cosas que no forman una escala. Encima <code>EDUCATION</code> trae los
+códigos 0, 5 y 6, que la documentación no define, y
+<code>MARRIAGE</code> un 0 igualmente indocumentado: categorías fantasma
+que hay que decidir qué hacer con ellas.</p>
+<p><strong>Partición: la que queráis.</strong> Aquí no hay código que
+copiar. Lo único que se exige es que sea honesta y que sepáis defenderla
+en la pregunta 5(b):</p>
+<ul>
+<li><strong>Tres bloques disjuntos</strong> —entrenamiento, validación y
+test— o, si preferís, validación cruzada sobre el bloque de
+entrenamiento con un test apartado desde el principio. Lo que no vale es
+elegir la configuración mirando el mismo conjunto con el que después
+publicáis el número.</li>
+<li><strong>Estratificada por la clase</strong>, porque las cuatro
+tablas están desequilibradas y una partición ciega puede dejaros un test
+con una proporción de positivos distinta a la del entrenamiento.</li>
+<li><strong>Con semilla explícita</strong>, para que el cuaderno se
+reproduzca:</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, pandas <span class="im">as</span> pd, random, torch</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">20262027</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>random.seed(SEED)<span class="op">;</span> np.random.seed(SEED)<span class="op">;</span> torch.manual_seed(SEED)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">&quot;WA_Fn-UseC_-Telco-Customer-Churn.csv&quot;</span>).drop(columns<span class="op">=</span>[<span class="st">&quot;customerID&quot;</span>])</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;TotalCharges&quot;</span>] <span class="op">=</span> pd.to_numeric(df[<span class="st">&quot;TotalCharges&quot;</span>], errors<span class="op">=</span><span class="st">&quot;coerce&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> (df.pop(<span class="st">&quot;Churn&quot;</span>) <span class="op">==</span> <span class="st">&quot;Yes&quot;</span>).astype(<span class="bu">int</span>).to_numpy()</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> np.arange(<span class="bu">len</span>(df))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>idx_tr, idx_tmp <span class="op">=</span> train_test_split(idx, test_size<span class="op">=</span><span class="fl">0.40</span>, stratify<span class="op">=</span>y, random_state<span class="op">=</span>SEED)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>idx_va, idx_te <span class="op">=</span> train_test_split(idx_tmp, test_size<span class="op">=</span><span class="fl">0.50</span>, stratify<span class="op">=</span>y[idx_tmp], random_state<span class="op">=</span>SEED)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 60 / 20 / 20 estratificado. Estas cuatro últimas líneas son intocables.</span></span></code></pre></div>
-<p>Esta partición deja 4.225 filas de entrenamiento, 1.409 de validación
-y 1.409 de test, con un 26,5 % de bajas en cada una de las tres. Aviso
-sobre los datos, para que no os pille: <code>TotalCharges</code> trae
-once valores en blanco que la conversión anterior deja como
-<code>NaN</code>, y las clases están desequilibradas. Cómo tratéis ambas
-cosas es vuestra decisión, y se pregunta en el examen.</p>
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np, random, torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">20262027</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>random.seed(SEED)<span class="op">;</span> np.random.seed(SEED)<span class="op">;</span> torch.manual_seed(SEED)</span></code></pre></div>
+<ul>
+<li><strong>El test se mira una sola vez</strong>, al cierre de la
+sesión A, con la configuración ya congelada.</li>
+</ul>
+<p>Un 60 / 20 / 20 estratificado es una elección perfectamente razonable
+y es la que usa la demo del profesor. Si preferís 70 / 15 / 15, o
+5-<em>fold</em> sobre un 80 % con el 20 % restante apartado como test,
+adelante: lo que se puntúa en el examen es que sepáis decir por qué
+elegisteis eso y para qué sirve cada parte.</p>
 <h2 id="sesión-a-construcción-hpo-y-entrega-100-min">5. Sesión A —
 Construcción, HPO y entrega (100 min)</h2>
 <p>Con 100 minutos hay margen para hacer las cosas bien y, sobre todo,
@@ -404,11 +533,11 @@ para entenderlas mientras se hacen. El cierre es firme: <strong>pasado
 el minuto 110 no se acepta código</strong>.</p>
 <ul>
 <li><p><strong>5.1 Preprocesado y baseline.</strong> <em>One-hot</em> de
-las categóricas, escalado de las numéricas, imputación de los
-<code>NaN</code>. Un <strong>baseline clásico honesto</strong>:
-regresión logística <strong>y</strong> un <em>gradient boosting</em> con
-hiperparámetros razonables. Reportad su AUC de validación y de
-test.</p></li>
+las categóricas, escalado de las numéricas, y el tratamiento que
+decidáis para los valores ausentes y para la trampa concreta de vuestra
+tabla. Un <strong>baseline clásico honesto</strong>: regresión logística
+<strong>y</strong> un <em>gradient boosting</em> con hiperparámetros
+razonables. Reportad su AUC de validación y de test.</p></li>
 <li><p><strong>5.2 MLP en PyTorch o Keras.</strong> Capas densas,
 activación ReLU o GELU, al menos una técnica de regularización
 (<em>dropout</em>, <em>weight decay</em>, <em>batch/layer norm</em>),
@@ -431,9 +560,10 @@ lanzar una <strong>búsqueda bayesiana</strong> (Optuna,
 §5.8 lo puntúa como bonus. <strong>Mínimo 30 configuraciones
 registradas</strong>, y la elección se hace SIEMPRE con validación.</p>
 <p>Tenéis en <code>casos/demo_hpo/</code> una demo ejecutada del
-profesor con este mismo dataset, estos cuatro hiperparámetros y las dos
-estrategias, con sus figuras y sus CSV. Miradla antes de la sesión
-A.</p></li>
+profesor sobre la opción A (Telco), con estos cuatro hiperparámetros y
+las dos estrategias, con sus figuras y sus CSV. Miradla antes de la
+sesión A: la mecánica es idéntica sobre cualquiera de las cuatro tablas,
+solo cambia el preprocesado.</p></li>
 <li><p><strong>5.4 Log de la búsqueda.</strong> Un CSV,
 <code>busqueda.csv</code>, con una fila por configuración probada:
 <code>trial</code>, una columna por cada uno de vuestros cuatro
@@ -451,22 +581,26 @@ que os explique qué hace cada decisión antes de ejecutarlo, y
 preguntadle al profesor lo que no quede claro. Tened el §8 al lado: las
 cinco preguntas del examen están publicadas y son exactamente la lista
 de lo que hay que sacar de esta sesión.</p></li>
-<li><p><strong>5.7 Cierre y entrega (últimos 10 min).</strong> Congelad
-la mejor configuración según validación, reentrenad si vuestro protocolo
-lo requiere, y <strong>solo entonces</strong> evaluad el test, una única
-vez. Subid a Moodle <code>grupoNN_caso1_codigo.zip</code> con:</p>
+<li><p><strong>5.7 Cierre y visto bueno (últimos 10 min).</strong>
+Congelad la mejor configuración según validación, reentrenad si vuestro
+protocolo lo requiere, y <strong>solo entonces</strong> evaluad el test,
+una única vez. <strong>No hay entrega en Moodle:</strong> el profesor
+pasa por cada grupo en estos diez minutos y mira la pantalla. Tened a la
+vista, en el cuaderno o en la carpeta del grupo:</p>
 <ol type="1">
-<li><strong><code>caso_1.ipynb</code></strong> ejecutado y con outputs
-visibles (o el <code>.py</code> más su log de ejecución). Debe correr de
+<li><strong>El cuaderno ejecutado y con los outputs visibles</strong>
+(<code>.ipynb</code> o el <code>.py</code> más su log). Debe correr de
 principio a fin sin intervención manual, con las semillas fijadas.</li>
 <li><strong><code>busqueda.csv</code></strong>, el log completo del
 §5.4.</li>
-<li><strong><code>resultado.txt</code></strong>: una línea con
-<code>grupo, auc_val_mejor, auc_test,    n_trials</code>, y debajo la
-configuración ganadora completa.</li>
+<li><strong>La configuración ganadora</strong> con su
+<code>auc_val</code>, su <code>auc_test</code> y el número de
+<em>trials</em>, en una celda o en un <code>resultado.txt</code>.</li>
 <li><strong><code>prompts.md</code></strong>: los prompts que usasteis,
 en orden, tal cual.</li>
-</ol></li>
+</ol>
+<p>Guardaos la carpeta: es vuestro material de estudio para la sesión B
+y lo único que tendréis entre las dos clases.</p></li>
 <li><p><strong>5.8 Bonus (opcionales, hasta 1 punto sobre la nota del
 caso).</strong> Se puntúan solo si lo obligatorio está completo y si
 sabéis defenderlos en el examen; un bonus que no sepáis explicar resta
@@ -491,16 +625,19 @@ una red convolucional sobre <code>digits</code> de scikit-learn (1.797
 imágenes de 8×8, sin descarga), MNIST o Fashion-MNIST. Sirven como
 hiperparámetros el número de canales de la primera convolución, la tasa
 de aprendizaje, el <em>dropout</em> de la cabeza densa y el <em>weight
-decay</em>. Es un bloque aparte del entregable tabular, no un sustituto:
-el churn sigue siendo obligatorio. En <code>casos/demo_hpo/</code> hay
-una versión ejecutada de este bonus.</li>
+decay</em>. Es un bloque aparte del trabajo tabular y no un sustituto:
+la tabla que elegisteis en el §4 sigue siendo obligatoria. En
+<code>casos/demo_hpo/</code> hay una versión ejecutada de este
+bonus.</li>
 </ol></li>
 </ul>
 <p>El profesor mantiene un <strong>leaderboard</strong> en la pizarra
-con el AUC de validación de cada grupo, actualizado en vivo. Sirve de
-incentivo y pesa cero en la nota: lo que puntúa es el §10. Lo que esté
-subido al cierre es lo que se corrige y lo que tendréis que defender a
-mano en la sesión B.</p>
+con el AUC de validación de cada grupo, en una columna por dataset,
+actualizado en vivo. Solo se comparan entre sí los grupos que hayan
+elegido la misma tabla: un AUC de 0,79 en Bank Marketing y uno de 0,85
+en Telco no miden lo mismo. Sirve de incentivo y pesa cero en la nota:
+lo que puntúa es el §10. Lo que hayáis construido al cierre es lo que
+tendréis que defender a mano en la sesión B.</p>
 <h2 id="entre-sesiones-qué-hay-que-dominar">6. Entre sesiones — qué hay
 que dominar</h2>
 <p>Estudiad como queráis, con IA incluida: nadie os va a preguntar cómo
@@ -525,11 +662,12 @@ activación, qué salida. Qué habría pasado con una red mucho más grande:
 sobre el ajuste, sobre la generalización y sobre el tiempo de búsqueda.
 Y qué pasa si se queda corta.</li>
 <li><strong>La regularización.</strong> Cuál usasteis, qué le impide
-hacer al modelo, por qué eso ayuda con clientes que no ha visto, y qué
+hacer al modelo, por qué eso ayuda con filas que no ha visto, y qué
 ocurre si se pasa de frenada.</li>
-<li><strong>Los datos.</strong> Qué es una fila, qué columnas hay, qué
-se predice, cómo se partió en tres y para qué sirve cada parte, y qué
-peculiaridad hubo que tratar antes de entrenar.</li>
+<li><strong>Los datos.</strong> Cuál de las cuatro tablas elegisteis y
+por qué, qué es una fila, qué columnas hay, qué se predice, cómo lo
+partisteis y para qué sirve cada parte, y qué trampa de esa tabla hubo
+que tratar antes de entrenar.</li>
 </ul>
 <p>No hace falta memorizar cifras exactas ni líneas de código. Hace
 falta poder explicárselo a alguien que no programa.</p>
@@ -594,18 +732,18 @@ min)</strong></p>
 usasteis?</p>
 <p><strong>(b)</strong> Explicad <strong>qué hace</strong> la que más
 peso tuvo: qué le impide al modelo hacer, y por qué eso ayuda a que
-funcione mejor con clientes que nunca ha visto.</p>
+funcione mejor con datos que nunca ha visto.</p>
 <p><strong>(c)</strong> ¿Qué pasa si se regulariza demasiado?</p>
 <hr />
 <p><strong>Pregunta 5 — El conjunto de datos. (1,5 puntos · ~5
 min)</strong></p>
-<p><strong>(a)</strong> ¿En qué consistía el conjunto de datos? Qué
-representa una fila, qué tipo de columnas hay y qué se está
-prediciendo.</p>
-<p><strong>(b)</strong> ¿Cómo se repartió en entrenamiento, validación y
-test, y para qué sirve cada una de las tres partes?</p>
-<p><strong>(c)</strong> ¿Qué peculiaridad de estos datos hubo que tratar
-antes de entrenar?</p>
+<p><strong>(a)</strong> ¿Cuál de las cuatro tablas elegisteis y en qué
+consistía? Qué representa una fila, qué tipo de columnas hay y qué se
+está prediciendo.</p>
+<p><strong>(b)</strong> ¿Cómo repartisteis los datos y para qué sirve
+cada parte? ¿Por qué no basta con partir en dos?</p>
+<p><strong>(c)</strong> ¿Qué trampa o peculiaridad de esos datos hubo
+que tratar antes de entrenar?</p>
 <hr />
 <p>Quien haya hecho alguno de los bonus del §5.8 tendrá que poder
 defenderlo dentro de estas mismas preguntas: los hiperparámetros extra
@@ -635,9 +773,9 @@ A. No se pregunta en el examen.</p>
 <tbody>
 <tr class="odd">
 <td>Red tabular (MLP)</td>
-<td>Clasificación de baja de cliente</td>
+<td>Clasificación binaria sobre la tabla elegida en el §4</td>
 <td>Features numéricas + categóricas</td>
-<td>Probabilidad de baja</td>
+<td>Probabilidad de la clase positiva</td>
 <td>AUC-ROC</td>
 </tr>
 <tr class="even">
@@ -682,24 +820,20 @@ A. No se pregunta en el examen.</p>
 <tr class="odd">
 <td><strong>Examen de la sesión B</strong> (hoja del §8, sobre 10
 puntos)</td>
-<td>75 %</td>
+<td>85 %</td>
 <td>Las cinco preguntas, con el desglose de abajo.</td>
 </tr>
 <tr class="even">
-<td>Entrega de código de la sesión A</td>
+<td>Visto bueno del §5.7 en el aula</td>
 <td>15 %</td>
-<td>Corre de principio a fin, semillas fijadas, partición intacta, test
-evaluado una sola vez, cuatro hiperparámetros con su rango explícito, ≥
-30 configuraciones en <code>busqueda.csv</code>, curva de sensibilidad
-presente.</td>
+<td>El profesor lo comprueba en pantalla al cierre de la sesión A: el
+cuaderno corre de principio a fin, las semillas están fijadas, el test
+se evaluó una sola vez, los cuatro hiperparámetros tienen su rango
+explícito, <code>busqueda.csv</code> tiene ≥ 30 configuraciones, hay
+curva de sensibilidad y <code>prompts.md</code> está completo y en
+orden.</td>
 </tr>
 <tr class="odd">
-<td>Trazabilidad de IA</td>
-<td>10 %</td>
-<td><code>prompts.md</code> completo y en orden, con qué parte escribió
-cada herramienta.</td>
-</tr>
-<tr class="even">
 <td><strong>Bonus del §5.8</strong></td>
 <td>hasta +1 punto sobre la nota final del caso</td>
 <td>Más de cuatro hiperparámetros (0,25); búsqueda bayesiana comparada
@@ -757,9 +891,10 @@ regulariza de más (0,5).</td>
 <tr class="odd">
 <td>5. El conjunto de datos</td>
 <td>1,5</td>
-<td>Qué es una fila, qué columnas y qué se predice (0,5); la partición
-en tres y para qué sirve cada parte (0,5); la peculiaridad que hubo que
-tratar, desequilibrio, <code>NaN</code> o categóricas (0,5).</td>
+<td>Qué tabla eligió, qué es una fila, qué columnas y qué se predice
+(0,5); cómo la partió y para qué sirve cada parte, con el argumento de
+por qué no bastan dos bloques (0,5); la trampa de esa tabla y cómo la
+trató (0,5).</td>
 </tr>
 </tbody>
 </table>
@@ -769,9 +904,9 @@ su parte; un mecanismo bien contado con el valor olvidado se lleva la
 parte entera.</p>
 <p><strong>Condición de aprobación:</strong> un examen que no sepa decir
 qué hiperparámetros se buscaron y qué controla cada uno (pregunta 1) ni
-describir el conjunto de datos y para qué sirve cada partición (pregunta
-5) suspende el caso, con independencia del <em>leaderboard</em> y del
-AUC de test.</p>
+describir el conjunto de datos y para qué sirve cada parte de la
+partición (pregunta 5) suspende el caso, con independencia del
+<em>leaderboard</em> y del AUC de test.</p>
 <p>Esta rúbrica se desvía de la rúbrica común del curso (que rige en los
 casos II y III y en el proyecto final) porque este caso no tiene memoria
 escrita, ni slides, ni defensa oral: se trabaja en clase y se evalúa con
@@ -782,22 +917,25 @@ herramienta.</strong> Escribid con ella el preprocesado, el MLP, el
 bucle de HPO y el análisis del log, y usadla además para que os explique
 cada decisión que ha tomado. Cuanto más produzca, más habrá que
 entender, que es de lo que va el caso. Requisito único:
-<code>prompts.md</code> completo.</p>
+<code>prompts.md</code> completo y a la vista en el visto bueno del
+§5.7.</p>
 <p><strong>Entre sesiones: IA permitida sin límite</strong> para
 estudiar, repasar y pediros explicaciones de vuestro propio código.</p>
 <p><strong>Sesión B: IA prohibida, ordenadores cerrados y guardados, sin
 apuntes.</strong> Usarla o consultar apuntes supone un cero en el caso
 (regla C de la política de IA del Día 01).</p>
-<p>La <strong>decisión</strong> de qué cuatro hiperparámetros buscar y
-la <strong>comprensión</strong> de qué hace cada uno son vuestras, y se
-responden a mano.</p>
+<p>La <strong>decisión</strong> de qué tabla usar y qué cuatro
+hiperparámetros buscar, y la <strong>comprensión</strong> de qué hace
+cada uno, son vuestras y se responden a mano.</p>
 <h2 id="fechas-y-logística">12. Fechas y logística</h2>
 <ul>
 <li><strong>Sesión A:</strong> semana 5, durante el Tema 3, la clase
-completa. Enunciado, hoja de preguntas y dataset publicados una semana
-antes; traedlo leído, porque los 100 minutos son de trabajo.</li>
-<li><strong>Entrega del código:</strong> al cierre de la sesión A, en
-Moodle.</li>
+completa. Enunciado y hoja de preguntas publicados una semana antes;
+traedlo leído y con el dataset del §4 ya elegido y descargado, porque
+los 100 minutos son de trabajo.</li>
+<li><strong>Entrega:</strong> ninguna. <strong>No se sube nada a
+Moodle.</strong> El trabajo de la sesión A se enseña al profesor en el
+aula (§5.7) y la carpeta se la queda el grupo.</li>
 <li><strong>Sesión B:</strong> primeros 30 minutos de la clase
 inmediatamente siguiente. Después se continúa con el temario.</li>
 <li><strong>Feedback y notas:</strong> una semana tras el examen.</li>
@@ -810,9 +948,13 @@ individual, así que el grupo no reparte nota: los tres tienen que haber
 entendido lo que se construyó.</li>
 <li><strong>Qué traer a la sesión A:</strong> un portátil por grupo como
 mínimo, con Python, PyTorch (o Keras), scikit-learn y pandas ya
-instalados y probados, o bien Colab con sesión iniciada. Diez minutos
-peleando con un <code>pip install</code> son diez minutos menos de
-búsqueda.</li>
+instalados y probados, o bien Colab con sesión iniciada, y el fichero
+del dataset elegido ya descargado en local. Diez minutos peleando con un
+<code>pip install</code> o con un zip anidado son diez minutos menos de
+búsqueda. Si vais a la opción D necesitáis además <code>xlrd</code>
+(<code>pip install xlrd</code>), porque el fichero es un
+<code>.xls</code> del formato antiguo que <code>openpyxl</code> no sabe
+leer.</li>
 <li><strong>Qué traer a la sesión B:</strong> bolígrafo. Nada más.</li>
 </ul>
 <h2 id="ayudas">13. Ayudas</h2>
@@ -826,7 +968,9 @@ de cien <em>trials</em> que no sabéis leer.</p>
 Está publicada con el enunciado y es el mejor punto de partida. El
 corazón es <strong><code>demo_hpo.ipynb</code></strong>, un cuaderno
 Jupyter ejecutado y lleno de figuras que explica la búsqueda de
-hiperparámetros paso a paso sobre este mismo dataset:</p>
+hiperparámetros paso a paso sobre la opción A, Telco. Si vuestro grupo
+eligió otra tabla, todo lo que viene abajo os sirve igual: cambia el
+<code>read_csv</code> y el preprocesado, y el resto es idéntico.</p>
 <ol type="1">
 <li><strong>Qué es una evaluación</strong>: las curvas de entrenamiento
 y validación de una configuración buena y una mala, y dónde para el
