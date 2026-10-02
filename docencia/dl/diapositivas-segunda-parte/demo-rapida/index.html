@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo rápida: RAG, MCP, SFT, LoRA y RLHF · Deep Learning</title>
+<link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+<div class="crumbs"><a href="../../../index.html">Asignaturas</a><span class="sep">/</span><a href="../../index.html">Deep Learning</a><span class="sep">/</span><a href="../index.html">Diapositivas de la segunda parte</a><span class="sep">/</span><span>Demo rápida</span></div>
+<h1>Demo rápida: las cinco cosas que se le hacen a un modelo</h1>
+<p class="sub">Seis cuadernos de Jupyter que cogen un modelo de pesos abiertos y le aplican, en orden, <b>RAG, MCP, SFT, LoRA y RLHF</b>. Todo el código se ejecuta de verdad y todo cabe en un portátil sin GPU. Los números que aparecen en el texto están medidos, no estimados: cuando un cuaderno dice que la ficha exacta pasa del 0 % al 100 %, es porque la celda de al lado lo imprime.</p>
+<hr class="rule">
+
+<div class="bloque">El hilo conductor</div>
+<p class="sub" style="font-size:0.92em">Los seis cuadernos comparten una historia. Trabajamos para <b>Banco Iberia</b>, un banco inventado con su normativa, sus clientes y su buzón de incidencias. Que esté inventado es lo que hace la demo honesta: ningún modelo del mundo ha visto esos documentos durante el preentrenamiento, así que cuando acierta una cifra es porque la ha leído, no porque la recuerde. La pregunta que ordena los cinco bloques es ésta: <b>¿el modelo falla porque no SABE algo, o porque no HACE lo que quieres?</b> Lo primero se arregla con RAG y MCP, sin tocar un peso. Lo segundo exige moverlos: SFT, LoRA y RLHF.</p>
+
+<div class="bloque">Los cuadernos</div>
+<div class="rows">
+
+<div class="row"><div class="rd">00</div><div class="rt"><div class="rtt">Bajarse un modelo libre y mirarlo por dentro</div><div class="rte">Qué hay dentro de un repositorio de Hugging Face y por qué <code>safetensors</code> y no <code>.bin</code> · dónde está el peso de un modelo, capa por capa · el tokenizador y lo que cuesta el español frente al inglés · el chat template, que es el texto que el modelo recibe de verdad · la distribución del siguiente token y el efecto de la temperatura · y la alucinación que motiva el cuaderno 01</div></div><div class="ra"><a class="btn" href="00_el_modelo.html" target="_blank" rel="noopener">Leer con resultados</a><a class="btn ghost" href="00_el_modelo.ipynb" download>Notebook .ipynb</a></div></div>
+
+<div class="row"><div class="rd">01</div><div class="rt"><div class="rtt">RAG: que el modelo responda con tus documentos delante</div><div class="rte">Trocear, vectorizar, indexar, recuperar y generar · el espacio de embeddings proyectado a dos dimensiones · FAISS frente a un producto escalar en numpy · <b>medir la recuperación antes que la generación</b>: el mismo corpus pasa del 17 % al 83 % de acierto@1 sólo con cambiar de encoder · el modo de fallo que de verdad hace daño, que es recuperar bien y redactar mal · y por qué el umbral de similitud que todo el mundo propone aquí no separa nada</div></div><div class="ra"><a class="btn" href="01_rag.html" target="_blank" rel="noopener">Leer con resultados</a><a class="btn ghost" href="01_rag.ipynb" download>Notebook .ipynb</a></div></div>
+
+<div class="row"><div class="rd">02</div><div class="rt"><div class="rtt">MCP: darle herramientas al modelo</div><div class="rte">El protocolo en crudo, línea a línea de JSON-RPC, contra un servidor escrito a mano y sin dependencias · el ciclo de vida de una sesión · el bucle del agente, con el modelo decidiendo qué función llamar y el host ejecutándola · <b>la medida que importa</b>: añadir «responde en dos o tres frases» al prompt de sistema hunde el uso de herramientas, y se ve en la probabilidad del token <code>&lt;tool_call&gt;</code> · seguridad e inyección de prompt · y cómo enchufar el mismo servidor a Claude Desktop</div></div><div class="ra"><a class="btn" href="02_mcp.html" target="_blank" rel="noopener">Leer con resultados</a><a class="btn ghost" href="02_mcp.ipynb" download>Notebook .ipynb</a></div></div>
+
+<div class="row"><div class="rd">03</div><div class="rt"><div class="rtt">SFT: enseñarle una tarea con ejemplos resueltos</div><div class="rte">160 ejemplos, cinco minutos de CPU y la ficha exacta pasa del 0 % al 100 % · la máscara de etiquetas a <code>-100</code>, que es el único concepto nuevo y el error silencioso más caro · el bucle de entrenamiento escrito entero, sin <code>Trainer</code> · <b>y el número honesto</b>: ese 100 % se queda en 67 % con doce incidencias escritas a mano, que es el hueco de generalización · más el olvido catastrófico, medido antes y después</div></div><div class="ra"><a class="btn" href="03_sft.html" target="_blank" rel="noopener">Leer con resultados</a><a class="btn ghost" href="03_sft.ipynb" download>Notebook .ipynb</a></div></div>
+
+<div class="row"><div class="rd">04</div><div class="rt"><div class="rtt">LoRA: el mismo ajuste moviendo el 3,5 % de los pesos</div><div class="rte">Una capa LoRA escrita a mano en veinte líneas, con la comprobación de que con B = 0 el modelo es byte a byte el original · <code>peft</code> y qué módulos elegir · la misma tarea del 03 con el 3,5 % de los parámetros y el mismo resultado · fusionar el adaptador y comprobar que los logits no cambian · <b>18,7 MB frente a 518 MB</b>, que es el modelo de negocio entero del <i>fine-tuning</i> barato · y dónde está el ahorro de verdad, que es el estado de Adam y no el reloj</div></div><div class="ra"><a class="btn" href="04_lora.html" target="_blank" rel="noopener">Leer con resultados</a><a class="btn ghost" href="04_lora.ipynb" download>Notebook .ipynb</a></div></div>
+
+<div class="row"><div class="rd">05</div><div class="rt"><div class="rtt">RLHF: moverlo hacia lo que las personas prefieren</div><div class="rte">Las tres etapas, con la humana en la de en medio · Bradley-Terry y un modelo de recompensa entrenado de verdad, al que luego se le pregunta qué ha aprendido con seis sondas escritas a propósito · best-of-N, que es el RLHF que no entrena nada · DPO desde cero, con la diferencia entre el margen implícito y el crudo explicada en vez de escondida · <b>y el bucle de policy gradient sin freno KL</b>, donde la recompensa sube, la divergencia sube y el texto se convierte en basura: <i>reward hacking</i> en 135 segundos</div></div><div class="ra"><a class="btn" href="05_rlhf.html" target="_blank" rel="noopener">Leer con resultados</a><a class="btn ghost" href="05_rlhf.ipynb" download>Notebook .ipynb</a></div></div>
+
+</div>
+
+<div class="bloque">Para ejecutarlos</div>
+<div class="rows">
+<div class="row"><div class="rd">Zip</div><div class="rt"><div class="rtt">La carpeta completa</div><div class="rte">Los <code>.ipynb</code> sueltos no funcionan solos: importan el paquete <code>comun/</code> y lanzan el servidor de <code>mcp_demo/</code>. Descargad el zip, descomprimid y abrid Jupyter <b>desde dentro de la carpeta</b></div></div><div class="ra"><a class="btn" href="demo_rapida.zip" download>Descargar zip</a></div></div>
+<div class="row"><div class="rd">Instalar</div><div class="rt"><div class="rtt"><code>pip install -r requirements.txt</code></div><div class="rte">torch, transformers, sentence-transformers, peft, faiss-cpu, scikit-learn y matplotlib. Opcionalmente <code>mcp[cli]</code> para la versión del servidor con el SDK oficial</div></div></div>
+<div class="row"><div class="rd">Hardware</div><div class="rt"><div class="rtt">CPU y unos 6 GB de RAM libres</div><div class="rte">Con GPU no hay que cambiar nada, el código detecta el dispositivo solo. Los cuadernos 03, 04 y 05 llegan a picos de 5,3 GB: cerrad el navegador antes de lanzarlos. Los tiempos van comentados en cada celda y están medidos en un portátil con 8 hilos y sin GPU</div></div></div>
+<div class="row"><div class="rd">Modelos</div><div class="rt"><div class="rtt">Tres, todos de pesos abiertos y uso comercial libre</div><div class="rte">Qwen2.5-1.5B-Instruct para conversar (Apache 2.0), SmolLM2-135M-Instruct para entrenar (Apache 2.0) y multilingual-e5-small para vectorizar (MIT). Se descargan solos la primera vez, unos 3,7 GB en total</div></div></div>
+</div>
+
+<div class="bloque">Qué no está aquí</div>
+<p class="sub" style="font-size:0.92em">Lo digo porque la frontera importa y porque son las preguntas que caen en clase. <b>Preentrenamiento</b>: se parte siempre de un modelo ya entrenado, porque entrenar uno desde cero cuesta millones. <b>PPO de verdad</b>: el cuaderno 05 entrena el modelo de recompensa y hace DPO, que son las dos piezas que caben en CPU; el bucle de política se deja montado y corriendo, pero con un presupuesto de juguete. <b>Despliegue</b>: nada de vLLM, cuantización en producción ni monitorización. <b>Evaluación seria</b>: los conjuntos de prueba tienen entre 5 y 40 ejemplos, sirven para ver el efecto y no para tomar una decisión, y cada cuaderno dice en voz alta dónde su número no se sostiene.</p>
+
+<div class="bloque">Relación con el examen</div>
+<p class="sub" style="font-size:0.92em">Esto es material de ampliación. Del examen sigue entrando lo que dicen las diapositivas de los temas A y B: <b>qué es y para qué sirve</b> cada técnica, con respuesta de manual, y como único cálculo la similitud coseno. El mecanismo interno (cómo se enmascaran las etiquetas en un SFT, cómo se descompone una matriz en LoRA, cómo viaja un mensaje de MCP) <b>no se pregunta</b>. Está aquí para quien quiera ver por dentro lo que en clase se cuenta por fuera, y para el proyecto final.</p>
+
+<p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></p>
+</body>
+</html>
