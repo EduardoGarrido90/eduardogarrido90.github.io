@@ -97,5 +97,24 @@
     m.classList.add("on");
   }
 
-  global.DLVault = { verify, open };
+  // Descarga directa de un fichero cifrado, sin previsualizarlo. Se usa para
+  // los adjuntos que el navegador no sabe mostrar, como los CSV. El contenido
+  // se descifra en memoria y se entrega como blob con su nombre original.
+  async function descargar(item, key) {
+    const resp = await fetch(item.file);
+    if (!resp.ok) throw new Error("fetch failed: " + item.file);
+    const plain = await decryptBytes(new Uint8Array(await resp.arrayBuffer()), key);
+    const url = URL.createObjectURL(
+      new Blob([plain], { type: item.mime || "application/octet-stream" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = item.download || "descarga";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // revocar de inmediato aborta la descarga en algunos navegadores
+    setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+  }
+
+  global.DLVault = { verify, open, descargar };
 })(window);
