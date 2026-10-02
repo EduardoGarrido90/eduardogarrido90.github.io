@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema A — Del modelo al agente — slides interactivas</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
+  .slide{display:none;padding:14px 24px 64px 24px;
+    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin-bottom:10px;
+    border:1px solid #eee;border-radius:2px}
+  .txtcol{font-size:0.9em;line-height:1.4}
+  .txtcol p{margin:0 0 9px 0}
+  .txtcol .hd{font-weight:bold}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 12px;margin-bottom:12px}
+  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
+  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
+  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
+    margin-right:6px}
+  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
+  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .ctrlbox select{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:3px 8px;margin-top:4px}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
+    font-size:0.9em;margin:4px 0}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
+  .mut{color:var(--mute)}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
+    font-size:0.84em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
+  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
+    font-weight:bold}
+  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
+    font-variant-numeric:tabular-nums}
+  table.live th:first-child,table.live td:first-child{text-align:left}
+  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 14px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
+    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
+  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
+  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
+  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
+  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
+  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
+    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
+  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
+  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
+  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
+  .eqread b{color:var(--goldDeep)}
+  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
+    font-size:0.93em}
+  .frac .num,.frac .den{display:block;padding:0 4px}
+  .frac .den{border-top:1.1px solid var(--ink)}
+  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:9px 13px;margin:10px 0;font-size:0.88em}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
+  .guide ol{margin:4px 0 4px 18px;padding:0}
+  .guide li{margin:0 0 7px 0;line-height:1.4}
+  .guide .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:6px}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
+    border-left:3px solid var(--gold);line-height:1.4}
+  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
+  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
+    grid-template-columns:30% 70%}
+  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#7a1f1f;
+    color:#fff;font-size:0.85em;padding:6px 14px;z-index:99}
+  /* las dos slides a ancho completo respiran más */
+  #s7, #s8{grid-template-columns:1fr}
+  #s7 .glosgrid{font-size:1.06em;gap:6px 34px}
+  #s7 .glositem{padding:13px 2px}
+  #s8 .pipe{gap:18px}
+  #s8 .pipebox{padding:18px 22px}
+  #s8 .pipebox .pq{font-size:1.03em}
+  #s8 .pipebox .pname{font-size:1.05em}
+  #s8 .pipearrow{font-size:1.5em;margin:-9px 0}
+  .fuente{font-size:0.78em;color:var(--mute);font-style:italic;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ================= SLIDE 0 : precio de una llamada ================= -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <canvas id="cv0a" data-aspect="2.40"></canvas>
+    <canvas id="cv0b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la ecuación de esta slide</div>
+      <div class="eq">C = p<sub>in</sub> &middot; t<sub>in</sub> &nbsp;+&nbsp;
+        p<sub>out</sub> &middot; t<sub>out</sub> <span class="eqn">(Ec. 1)</span></div>
+      <div class="eqread">El coste de <b>una</b> llamada. <b>t<sub>in</sub></b> son los
+        tokens que mandáis (instrucciones + historial + pregunta) y
+        <b>t<sub>out</sub></b> los que el modelo genera. <b>p<sub>in</sub></b> y
+        <b>p<sub>out</sub></b> son los precios por token, que vienen de dividir entre un
+        millón la cifra que publica el proveedor. Generar cuesta unas cinco veces más que
+        leer, así que la segunda mitad de la fórmula pesa mucho más de lo que su tamaño
+        sugiere.</div>
+      <div class="eq">C<sub>mes</sub> = C &middot; N <span class="eqn">(Ec. 2)</span></div>
+      <div class="eqread">El presupuesto mensual multiplica por <b>N</b>, vuestra
+        previsión de consultas al mes. Es el único de los cuatro números que no sale de
+        una tabla de precios: sale de vuestro plan de negocio.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label><b>Modelo</b></label>
+      <select id="mod0"></select>
+      <label>Tokens de <b>entrada</b> por consulta: <span id="lin0" class="deep"></span></label>
+      <input type="range" id="tin0" min="200" max="60000" step="200" value="4000">
+      <label>Tokens de <b>salida</b> por consulta: <span id="lout0" class="deep"></span></label>
+      <input type="range" id="tout0" min="20" max="6000" step="20" value="400">
+      <label>Consultas al mes: <span id="ln0" class="deep"></span></label>
+      <input type="range" id="n0" min="1000" max="500000" step="1000" value="50000">
+    </div>
+    <div class="readout" id="ro0"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Deja 4.000 de entrada y 400 de salida, y cambia el modelo de Haiku a Opus.
+        <span class="obs">La factura se multiplica por cinco sin que cambie una sola
+        línea de vuestro código: elegir modelo es una decisión de presupuesto.</span></li>
+      <li>Vuelve a Sonnet y sube la salida de 400 a 2.000.
+        <span class="obs">La barra dorada (salida) adelanta a la gris (entrada) aunque
+        sigáis mandando diez veces más tokens de los que recibís.</span></li>
+      <li>Sube la entrada a 40.000, como en una sesión agéntica larga.
+        <span class="obs">Ahora manda la entrada. Es el caso del Tema A: el contexto
+        acumulado es lo que os arruina, no la respuesta.</span></li>
+      <li>Pon N en 500.000 consultas y mira el coste anual.
+        <span class="obs">Cifras de cinco o seis dígitos al año a partir de una consulta
+        que parecía costar céntimos.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué la salida es más
+        cara que la entrada?</summary>
+        <div class="ans">Porque leer la entrada se paraleliza: el modelo procesa todos los
+        tokens del prompt a la vez. Generar es secuencial: cada token de salida exige una
+        pasada completa por el modelo, y hay que esperar al anterior para producir el
+        siguiente. Pagáis el coste de cómputo real, y por eso la proporción es
+        aproximadamente de uno a cinco en toda la gama.</div></details></div>
+    <p><span class="hd">Setup.</span> Panel de arriba: las dos partidas de una consulta,
+      a escala. Panel de abajo: el coste mensual de los cuatro modelos con los mismos
+      tokens, para que la comparación sea justa.</p>
+    <p><span class="hd">Juega.</span> Pon los números de vuestra startup. Si vuestro
+      producto resume documentos, la entrada es grande y la salida pequeña; si redacta
+      informes, al revés.</p>
+    <p><span class="hd">Lee así.</span> La barra más larga del panel de arriba os dice
+      dónde está vuestra palanca. Si manda la entrada, atacad el contexto y la caché.
+      Si manda la salida, atacad la longitud de la respuesta.</p>
+    <p><span class="hd">Mensaje.</span> Cuatro números bastan para el presupuesto base:
+      dos precios de tabla, dos estimaciones vuestras.</p>
+    <p class="miniglos"><b>Términos.</b> <b>token</b>: trozo de texto, unas 0,75 palabras
+      en castellano. <b>t<sub>in</sub>/t<sub>out</sub></b>: tokens de entrada y salida.
+      <b>p<sub>in</sub>/p<sub>out</sub></b>: precio por token. <b>N</b>: consultas al mes.
+      <b>MTok</b>: millón de tokens, la unidad en que se publican los precios.</p>
+    <p class="fuente" id="fecha0"></p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 1 : el bucle del agente ================= -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <canvas id="cv1a" data-aspect="2.30"></canvas>
+    <canvas id="cv1b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">t<sub>n</sub> = t<sub>0</sub> + (n &minus; 1) &middot; &Delta;
+        <span class="eqn">(Ec. 3)</span></div>
+      <div class="eqread">Los tokens de entrada del turno <b>n</b>. <b>t<sub>0</sub></b> es
+        el contexto inicial (instrucciones + objetivo) y <b>&Delta;</b> lo que añade cada
+        vuelta: lo que el modelo dijo más lo que devolvió la herramienta. Crece en
+        progresión aritmética porque la API <b>no tiene memoria</b> y el harness reenvía
+        todo el historial en cada llamada.</div>
+      <div class="eq">C<sub>sesión</sub> = &Sigma;<sub>n=1</sub><sup>T</sup>
+        &nbsp;[ p<sub>in</sub> t<sub>n</sub> + p<sub>out</sub> s ]
+        = p<sub>in</sub> &middot; <span class="frac"><span class="num">T(2t<sub>0</sub>
+        + (T&minus;1)&Delta;)</span><span class="den">2</span></span>
+        + p<sub>out</sub> &middot; T &middot; s <span class="eqn">(Ec. 4)</span></div>
+      <div class="eqread">El coste de la sesión entera es la <b>suma</b> de los T turnos,
+        no el coste del último. La suma de una progresión aritmética crece con
+        <b>T&sup2;</b>: doblar la longitud de la sesión <b>cuadruplica</b> aproximadamente
+        la parte de entrada. <b>s</b> son los tokens que el modelo genera por turno.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Turnos del bucle (T): <span id="lT1" class="deep"></span></label>
+      <input type="range" id="T1" min="1" max="30" step="1" value="8">
+      <label>Contexto inicial t<sub>0</sub>: <span id="lt01" class="deep"></span></label>
+      <input type="range" id="t01" min="500" max="20000" step="500" value="4000">
+      <label>Lo que añade cada vuelta &Delta;: <span id="ld1" class="deep"></span></label>
+      <input type="range" id="d1" min="100" max="8000" step="100" value="2500">
+      <label><input type="checkbox" id="pod1"> Podar: mantener sólo las 3 últimas
+        observaciones</label>
+    </div>
+    <div class="readout" id="ro1"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con T = 8, compara el coste total con el coste del último turno solo.
+        <span class="obs">El total es varias veces el del último turno. Esa diferencia es
+        el error de estimación que casi todos los equipos cometen al presupuestar.</span></li>
+      <li>Dobla T de 8 a 16 y mira el coste total.
+        <span class="obs">No se dobla: se multiplica por algo más de tres. La parte de
+        entrada crece con el cuadrado del número de turnos.</span></li>
+      <li>Sube &Delta; de 2.500 a 6.000, como si cada herramienta devolviera un fichero
+        entero. <span class="obs">La curva acumulada se dispara: lo que devuelven las
+        herramientas pesa más que lo que dice el modelo.</span></li>
+      <li>Activa la poda.
+        <span class="obs">La recta de tokens se aplana y el coste total baja mucho. Es el
+        precio a pagar: el agente olvida lo que vio al principio.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: si una sesión de 10 turnos
+        cuesta 1 euro, ¿cuánto cuesta una de 20?</summary>
+        <div class="ans">Alrededor de 3,6 euros, no 2. La parte de salida sí se dobla
+        (son T respuestas), pero la de entrada va como T&sup2;, y en una sesión agéntica
+        la entrada domina. Por eso la primera barandilla que se le pone a un agente es un
+        tope de turnos, y la segunda es podar o compactar el contexto.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, los tokens de entrada que paga cada turno.
+      Abajo, el coste acumulado turno a turno, con la línea de lo que pagaríais si sólo
+      contarais la última llamada.</p>
+    <p><span class="hd">Juega.</span> Un agente que lee código tiene &Delta; grande
+      (ficheros enteros); uno que consulta una base de datos lo tiene pequeño.</p>
+    <p><span class="hd">Lee así.</span> El área bajo las barras es vuestra factura. La
+      línea de puntos es lo que creíais que ibais a pagar.</p>
+    <p><span class="hd">Mensaje.</span> Un agente no cuesta T llamadas: cuesta la suma de
+      T contextos que crecen.</p>
+    <p class="miniglos"><b>Términos.</b> <b>T</b>: turnos del bucle. <b>t<sub>0</sub></b>:
+      contexto inicial. <b>&Delta;</b>: tokens que añade cada vuelta. <b>podar</b>:
+      borrar resultados de herramientas antiguos. <b>compactar</b>: resumirlos.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 2 : la caché ================= -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <canvas id="cv2a" data-aspect="2.40"></canvas>
+    <canvas id="cv2b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">C<sub>cach&eacute;</sub> = p<sub>in</sub>[ (1&minus;f) t<sub>in</sub>
+        + 0,1 &middot; f &middot; t<sub>in</sub> ] + p<sub>out</sub> t<sub>out</sub>
+        <span class="eqn">(Ec. 5)</span></div>
+      <div class="eqread"><b>f</b> es la fracción del prompt que se sirve desde caché.
+        Esa parte se factura al <b>10 %</b> del precio de entrada; el resto, al 100 %.
+        La caché casa por <b>prefijo exacto</b>: lo estable tiene que ir delante y lo que
+        cambia, detrás.</div>
+      <div class="eq">C<sub>1&ordf;</sub> = p<sub>in</sub>[ (1&minus;f) t<sub>in</sub>
+        + 1,25 &middot; f &middot; t<sub>in</sub> ] + p<sub>out</sub> t<sub>out</sub>
+        <span class="eqn">(Ec. 6)</span></div>
+      <div class="eqread">La <b>primera</b> llamada paga un 25 % de más por escribir en
+        caché (con TTL de 5 minutos; el doble si pedís una hora). A partir de la segunda
+        se lee al 10 %. De ahí que haya un número mínimo de llamadas por debajo del cual
+        la caché sale cara.</div>
+      <div class="eq">m* =
+        <span class="frac"><span class="num">0,25 &middot; f</span>
+        <span class="den">0,9 &middot; f</span></span> + 1
+        &nbsp;&asymp;&nbsp; 1,28 <span class="eqn">(Ec. 7)</span></div>
+      <div class="eqread">El punto de equilibrio en número de llamadas: el sobrecoste de
+        escribir (0,25·f) dividido entre el ahorro por llamada (0,9·f), más la propia
+        llamada que escribió. Sale <b>por debajo de dos</b> e <b>independiente de f</b>:
+        con dos llamadas sobre el mismo prefijo, la caché ya compensa.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Fracción cacheable del prompt f: <span id="lf2" class="deep"></span></label>
+      <input type="range" id="f2" min="0" max="100" step="5" value="70">
+      <label>Llamadas sobre el mismo prefijo: <span id="lm2" class="deep"></span></label>
+      <input type="range" id="m2" min="1" max="40" step="1" value="10">
+      <label>Tokens de entrada: <span id="lt2" class="deep"></span></label>
+      <input type="range" id="t2" min="1000" max="40000" step="500" value="8000">
+      <label><input type="checkbox" id="ttl2"> Caché de 1 hora (escribir cuesta 2&times;
+        en vez de 1,25&times;)</label>
+    </div>
+    <div class="readout" id="ro2"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Pon las llamadas en 1 y mira el panel de abajo.
+        <span class="obs">Con una sola llamada la caché <b>pierde</b>: habéis pagado por
+        escribir algo que nadie va a leer.</span></li>
+      <li>Sube a 2 llamadas.
+        <span class="obs">La línea dorada ya cruza por debajo de la gris. El umbral está
+        en 1,28 llamadas: con dos, compensa siempre.</span></li>
+      <li>Mueve f de 70 % a 20 %.
+        <span class="obs">El ahorro final cae mucho, pero el umbral no se mueve: f cambia
+        cuánto ganáis, no a partir de cuándo ganáis.</span></li>
+      <li>Activa el TTL de una hora con pocas llamadas.
+        <span class="obs">Escribir cuesta el doble y hacen falta más llamadas para
+        amortizarlo. El TTL largo es para tráfico con huecos, no para ahorrar.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué meter la fecha de
+        hoy en el system prompt destruye la caché?</summary>
+        <div class="ans">Porque la caché casa por prefijo <b>exacto</b>, byte a byte. Si
+        la primera línea del prompt cambia cada día (o cada petición, si lleva la hora),
+        todo lo que viene detrás deja de casar y se factura al 100 %. El síntoma es que el
+        contador de tokens leídos de caché sale cero llamada tras llamada. La regla es
+        simple: lo estable delante, lo volátil detrás.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, el reparto del prompt entre lo cacheado y lo
+      fresco. Abajo, el coste acumulado con y sin caché según el número de llamadas.</p>
+    <p><span class="hd">Juega.</span> Un asistente con un manual de 20.000 tokens fijos
+      tiene f alto; un clasificador que recibe textos distintos cada vez lo tiene bajo.</p>
+    <p><span class="hd">Lee así.</span> El cruce de las dos líneas es el momento a partir
+      del cual la caché os está devolviendo dinero.</p>
+    <p><span class="hd">Mensaje.</span> La caché es la palanca con mejor relación entre lo
+      que ahorra y lo que cuesta implementarla: reordenar el prompt.</p>
+    <p class="miniglos"><b>Términos.</b> <b>f</b>: fracción cacheable. <b>prefijo</b>: el
+      principio del prompt, que tiene que ser idéntico. <b>TTL</b>: cuánto vive la entrada
+      en caché. <b>m*</b>: llamadas a partir de las cuales compensa.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 3 : el presupuesto de contexto ================= -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <canvas id="cv3a" data-aspect="2.40"></canvas>
+    <canvas id="cv3b" data-aspect="2.70"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la restricción de esta slide</div>
+      <div class="eq">t<sub>sys</sub> + t<sub>skills</sub> + t<sub>rag</sub> +
+        t<sub>hist</sub> &nbsp;&le;&nbsp; B <span class="eqn">(Ec. 8)</span></div>
+      <div class="eqread">Las cuatro capas comparten una única <b>ventana de contexto
+        B</b>. <b>t<sub>sys</sub></b> es fijo; <b>t<sub>skills</sub></b> lo controláis con
+        la carga progresiva; <b>t<sub>rag</sub></b> depende de cuántos fragmentos
+        inyectéis; <b>t<sub>hist</sub></b> es la única que crece sola mientras el agente
+        trabaja. Y todas se pagan <b>en cada turno</b>.</div>
+      <div class="eq">t<sub>skills</sub> = s<sub>&iacute;ndice</sub> &middot; K +
+        s<sub>manual</sub> &middot; a <span class="eqn">(Ec. 9)</span></div>
+      <div class="eqread">Con carga progresiva pagáis un índice corto por cada una de las
+        <b>K</b> skills disponibles, más el manual completo de las <b>a</b> que se activan.
+        Sin carga progresiva pagaríais s<sub>manual</sub>&middot;K siempre, aunque no se
+        use ninguna.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Skills disponibles (K): <span id="lK3" class="deep"></span></label>
+      <input type="range" id="K3" min="0" max="40" step="1" value="20">
+      <label>Skills activadas en esta consulta (a): <span id="la3" class="deep"></span></label>
+      <input type="range" id="a3" min="0" max="5" step="1" value="1">
+      <label>Fragmentos RAG inyectados: <span id="lr3" class="deep"></span></label>
+      <input type="range" id="r3" min="0" max="20" step="1" value="5">
+      <label>Turno de la sesión: <span id="lh3" class="deep"></span></label>
+      <input type="range" id="h3" min="1" max="60" step="1" value="12">
+      <label><input type="checkbox" id="prog3" checked> Carga progresiva de skills</label>
+    </div>
+    <div class="readout" id="ro3"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con 20 skills, apaga la carga progresiva.
+        <span class="obs">La franja de skills pasa de una línea fina a un bloque enorme:
+        18.000 tokens por llamada que estáis pagando para no usarlos.</span></li>
+      <li>Vuelve a encenderla y sube las skills activadas de 1 a 5.
+        <span class="obs">Crece, pero mucho menos: pagáis los manuales que de verdad
+        abrís.</span></li>
+      <li>Mueve el turno de 1 a 60 dejando todo lo demás fijo.
+        <span class="obs">Las tres primeras capas no se mueven; la cuarta se come la
+        ventana ella sola. Es la única que crece sin que vosotros hagáis nada.</span></li>
+      <li>Sube los fragmentos RAG a 20 con el turno alto.
+        <span class="obs">La barra choca con la línea de la ventana de 200k y el aviso se
+        pone en rojo: a partir de ahí el sistema empieza a perder información.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: de las cuatro capas, ¿cuál
+        atacaríais primero si la factura se dispara?</summary>
+        <div class="ans">El historial, porque es la única que crece sola y la que acaba
+        dominando en sesiones largas. Las otras tres son decisiones de diseño que tomáis
+        una vez; el historial es una consecuencia del bucle. Se ataca podando (borrar
+        resultados de herramientas antiguos) o compactando (resumir lo anterior). Las dos
+        pierden información: hay que elegir cuál duele menos en vuestro caso.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Arriba, las cuatro capas apiladas contra las
+      ventanas de 200k y 1M. Abajo, lo que cuesta ese contexto al mes a 50.000
+      consultas.</p>
+    <p><span class="hd">Juega.</span> Un asistente de soporte tiene mucho RAG y poco
+      historial; un agente de programación, al revés.</p>
+    <p><span class="hd">Lee así.</span> El color que más ocupa es donde está vuestro
+      problema. Si es gris claro (historial), el arreglo es de gestión de sesión; si es
+      dorado (RAG), es de recuperación.</p>
+    <p><span class="hd">Mensaje.</span> El contexto es un presupuesto, y se paga entero en
+      cada uno de los turnos.</p>
+    <p class="miniglos"><b>Términos.</b> <b>B</b>: ventana de contexto del modelo.
+      <b>carga progresiva</b>: el agente ve sólo el índice de cada skill y abre el manual
+      cuando hace falta. <b>podar</b>: borrar. <b>compactar</b>: resumir.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 4 : VRAM ================= -->
+<section class="slide" id="s4">
+  <div class="figcol">
+    <canvas id="cv4a" data-aspect="2.40"></canvas>
+    <canvas id="cv4b" data-aspect="2.70"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la ecuación de esta slide</div>
+      <div class="eq">VRAM &asymp; <u>P &middot; b</u> &middot; (1 + &rho;) &nbsp;+&nbsp;
+        <u>k &middot; L &middot; c</u> <span class="eqn">(Ec. 10)</span></div>
+      <div class="eqread">Primer término, los <b>pesos</b>: <b>P</b> parámetros (en miles
+        de millones) por <b>b</b> bytes cada uno — 2 en FP16, 1 en FP8, 0,6 en INT4 — con
+        un <b>&rho;</b> &asymp; 15 % de overhead del runtime. Segundo término, la
+        <b>caché KV</b>: <b>k</b> &asymp; 320 MB por cada mil tokens, por la longitud de
+        contexto <b>L</b> y por las peticiones simultáneas <b>c</b>. El primero es fijo;
+        el segundo crece con vuestro uso real.</div>
+      <div class="eq">G = &lceil; VRAM / V<sub>GPU</sub> &rceil;
+        <span class="eqn">(Ec. 11)</span></div>
+      <div class="eqread">Las GPUs necesarias, redondeando <b>hacia arriba</b>: no se puede
+        comprar media tarjeta. Por eso el coste del servidor sube a saltos, no de forma
+        continua: un token más de contexto puede costaros una tarjeta entera.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Parámetros del modelo (P, miles de millones): <span id="lP4" class="deep"></span></label>
+      <input type="range" id="P4" min="3" max="180" step="1" value="70">
+      <label><b>Cuantización</b></label>
+      <select id="q4">
+        <option value="2.0">FP16 — 2 bytes por parámetro (sin cuantizar)</option>
+        <option value="1.0">FP8 — 1 byte</option>
+        <option value="0.6" selected>INT4 — 0,6 bytes (el punto dulce)</option>
+      </select>
+      <label>Contexto servido L: <span id="lL4" class="deep"></span></label>
+      <input type="range" id="L4" min="2000" max="128000" step="2000" value="8000">
+      <label>Peticiones simultáneas c: <span id="lc4" class="deep"></span></label>
+      <input type="range" id="c4" min="1" max="32" step="1" value="4">
+    </div>
+    <div class="readout" id="ro4"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>70B en INT4, contexto 8k, 4 simultáneas.
+        <span class="obs">Unos 58 GB: entra en una sola A100 de 80 GB. Con este
+        dimensionado el proyecto parece barato.</span></li>
+      <li>Sube el contexto a 128k dejando todo lo demás igual.
+        <span class="obs">La barra dorada (caché KV) adelanta a la gris (pesos) y hacen
+        falta varias tarjetas. El modelo no ha cambiado de tamaño.</span></li>
+      <li>Vuelve a 8k y sube las simultáneas de 4 a 32.
+        <span class="obs">Mismo efecto: la caché KV es proporcional al producto L&middot;c,
+        así que da igual por dónde crezca.</span></li>
+      <li>Pon FP16 con 70B.
+        <span class="obs">140 GB sólo de pesos: dos tarjetas antes de servir a nadie. Por
+        eso todo el mundo cuantiza.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué el gráfico de
+        coste sube a escalones y no en rampa?</summary>
+        <div class="ans">Porque las GPUs se compran enteras. Mientras la VRAM necesaria
+        quepa en las tarjetas que ya tenéis, el coste no se mueve; en cuanto se pasa un
+        byte, hay que añadir otra tarjeta completa y el coste salta. Esto tiene una
+        consecuencia práctica: justo antes de un escalón, recortar un poco el contexto o
+        la concurrencia os ahorra una tarjeta entera al mes.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, las tres partidas de VRAM apiladas con las
+      líneas de 1, 2 y 3 tarjetas de 80 GB. Abajo, el coste mensual del servidor
+      resultante, a precio mediano de mercado.</p>
+    <p><span class="hd">Juega.</span> Dimensionad con el contexto y la concurrencia que
+      vais a tener de verdad en hora punta, no los del día de la demo.</p>
+    <p><span class="hd">Lee así.</span> Si la barra dorada es mayor que la gris, vuestro
+      cuello de botella es el uso, no el modelo: un modelo más pequeño no os va a salvar.</p>
+    <p><span class="hd">Mensaje.</span> Contar sólo los pesos es el error de dimensionado
+      más caro y más frecuente.</p>
+    <p class="miniglos"><b>Términos.</b> <b>VRAM</b>: memoria de la GPU. <b>caché KV</b>:
+      lo que el modelo guarda de los tokens ya procesados. <b>cuantizar</b>: bajar la
+      precisión de los pesos. <b>INT4</b>: 4 bits por parámetro.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 5 : punto de equilibrio ================= -->
+<section class="slide" id="s5">
+  <div class="figcol">
+    <canvas id="cv5a" data-aspect="2.20"></canvas>
+    <canvas id="cv5b" data-aspect="2.80"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la ecuación de esta slide</div>
+      <div class="eq">N* =
+        <span class="frac"><span class="num">C<sub>fijo</sub></span>
+        <span class="den">c<sub>consulta</sub></span></span>
+        <span class="eqn">(Ec. 12)</span></div>
+      <div class="eqread">El <b>punto de equilibrio</b>: el número de consultas al mes que
+        iguala las dos vías. <b>C<sub>fijo</sub></b> es el servidor (GPUs por horas más
+        personal) y <b>c<sub>consulta</sub></b> el coste variable de la API. Por debajo de
+        N* gana la API; por encima, el servidor. Las dos rectas siempre se cortan porque
+        una sale del origen con pendiente positiva y la otra es horizontal.</div>
+      <div class="eq">C<sub>fijo</sub> = P<sub>GPU</sub> &middot; G &middot; h
+        &nbsp;+&nbsp; C<sub>personal</sub> <span class="eqn">(Ec. 13)</span></div>
+      <div class="eqread"><b>h</b> son las horas al mes que el servidor está encendido:
+        730 si es 24/7, unas 260 si sólo en horario de oficina. Es la palanca más barata
+        que tenéis sobre la horizontal. <b>C<sub>personal</sub></b> no depende de las
+        horas y es, casi siempre, la partida mayor.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Coste por consulta vía API: <span id="lc5" class="deep"></span></label>
+      <input type="range" id="c5" min="1" max="500" step="1" value="115">
+      <label>GPUs del servidor: <span id="lg5" class="deep"></span></label>
+      <input type="range" id="g5" min="1" max="8" step="1" value="1">
+      <label>Horas al mes encendido (h): <span id="lh5" class="deep"></span></label>
+      <input type="range" id="h5" min="100" max="730" step="10" value="730">
+      <label><input type="checkbox" id="per5" checked> Incluir el cuarto de jornada de
+        MLOps</label>
+      <label>Vuestro volumen previsto: <span id="lv5" class="deep"></span></label>
+      <input type="range" id="v5" min="5000" max="800000" step="5000" value="50000">
+    </div>
+    <div class="readout" id="ro5"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con los valores de partida, mira dónde cae vuestro volumen.
+        <span class="obs">A 50.000 consultas estáis muy a la izquierda del cruce: la API
+        gana con holgura. Es el caso de casi cualquier arranque.</span></li>
+      <li>Apaga el servidor fuera de horario (h = 260).
+        <span class="obs">La horizontal baja mucho y el umbral se desploma. Apagar por la
+        noche es la optimización más barata que existe.</span></li>
+      <li>Quita el personal.
+        <span class="obs">El umbral vuelve a bajar. Por eso un presupuesto que sólo cuenta
+        GPUs hace parecer rentable un servidor que no lo es.</span></li>
+      <li>Sube el coste por consulta (modelo más caro o contexto más largo).
+        <span class="obs">La recta se inclina y el cruce se mueve a la izquierda: cuanto
+        más cara es vuestra llamada, antes compensa el servidor.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿qué razón no económica
+        puede inclinar la decisión hacia el servidor propio aunque el número diga lo
+        contrario?</summary>
+        <div class="ans">Tres habituales. Primera, <b>residencia del dato</b>: si vuestros
+        datos no pueden salir de la empresa, el cálculo no manda. Segunda, <b>pesos
+        propios</b>: si habéis ajustado un modelo con LoRA sobre datos vuestros, necesitáis
+        poder servirlo. Tercera, <b>dependencia de proveedor</b>: una subida de precios o
+        un cambio de condiciones os deja sin producto. Las tres son argumentos legítimos;
+        lo que no vale es presentarlas como si fueran ahorro.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, las dos curvas y el cruce. Abajo, de qué se
+      compone el coste fijo del servidor.</p>
+    <p><span class="hd">Juega.</span> Poned el coste por consulta que os salió en la
+      primera slide y vuestro volumen esperado.</p>
+    <p><span class="hd">Lee así.</span> Si vuestro punto está a la izquierda del cruce, la
+      respuesta es API y el debate se acabó. Si está cerca, mirad el crecimiento previsto
+      a doce meses antes de decidir.</p>
+    <p><span class="hd">Mensaje.</span> El servidor propio se justifica por volumen
+      sostenido, residencia del dato o pesos propios; casi nunca por precio a volúmenes de
+      arranque.</p>
+    <p class="miniglos"><b>Términos.</b> <b>coste fijo</b>: el que pagáis aunque nadie
+      pregunte. <b>coste variable</b>: el que crece con el uso. <b>N*</b>: punto de
+      equilibrio. <b>h</b>: horas encendido al mes (730 = 24/7).</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 6 : las tres palancas juntas ================= -->
+<section class="slide" id="s6">
+  <div class="figcol">
+    <canvas id="cv6a" data-aspect="2.30"></canvas>
+    <canvas id="cv6b" data-aspect="2.70"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las tres palancas, compuestas</div>
+      <div class="eq">C<sub>final</sub> = C<sub>base</sub> &middot;
+        <span class="gold">r<sub>tier</sub></span> &middot;
+        <span class="deep">r<sub>cach&eacute;</sub></span> &middot;
+        <span class="mut">r<sub>batch</sub></span> <span class="eqn">(Ec. 14)</span></div>
+      <div class="eqread">Las tres palancas son <b>multiplicativas</b> e independientes:
+        cada una reduce un factor distinto de la factura y se pueden aplicar a la vez.
+        <b>r<sub>tier</sub></b> es el cociente de precios entre modelos;
+        <b>r<sub>cach&eacute;</sub></b> vale 1 &minus; 0,9f sobre la parte de entrada; y
+        <b>r<sub>batch</sub></b> es 0,5 si la respuesta puede esperar.</div>
+      <div class="eq">ahorro = 1 &minus; r<sub>tier</sub> r<sub>cach&eacute;</sub>
+        r<sub>batch</sub> <span class="eqn">(Ec. 15)</span></div>
+      <div class="eqread">Como se multiplican, el ahorro conjunto es <b>mayor</b> que la
+        suma de los ahorros por separado, y ninguna de las tres cambia lo que el usuario
+        ve — salvo el batch, que introduce latencia.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label><b>Modelo de partida</b></label>
+      <select id="mA6"></select>
+      <label><b>Modelo al que bajáis</b></label>
+      <select id="mB6"></select>
+      <label>Fracción cacheable f: <span id="lf6" class="deep"></span></label>
+      <input type="range" id="f6" min="0" max="95" step="5" value="75">
+      <label><input type="checkbox" id="b6"> Usar la API de lotes (&minus;50 %, respuesta
+        en menos de una hora)</label>
+    </div>
+    <div class="readout" id="ro6"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>De Opus a Sonnet, sin caché ni batch.
+        <span class="obs">Un 40 % menos con un cambio de una línea. Mirad si vuestra
+        tarea de verdad necesitaba el tier alto.</span></li>
+      <li>Añade f = 75 %.
+        <span class="obs">La barra vuelve a caer. Las dos palancas se componen: no elegís
+        entre una y otra.</span></li>
+      <li>Activa el batch.
+        <span class="obs">La mitad otra vez. Pero ojo: esta sí cambia el producto, porque
+        la respuesta deja de ser inmediata.</span></li>
+      <li>Prueba la combinación extrema: Opus a Haiku, f = 95 %, con batch.
+        <span class="obs">Más del 95 % de ahorro. La pregunta ya no es si podéis
+        permitíroslo, sino si Haiku resuelve la tarea.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿cuál de las tres palancas
+        NO podéis usar en un chat con el usuario delante?</summary>
+        <div class="ans">El batch. Las otras dos son invisibles para quien usa el producto:
+        cambiar de modelo altera la calidad pero no la experiencia, y la caché sólo cambia
+        cómo se factura un prompt idéntico. El batch, en cambio, convierte una respuesta
+        inmediata en una que llega en menos de una hora: sirve para clasificar tickets de
+        noche o para generar informes, pero no para conversar.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, la factura mensual cayendo palanca a palanca.
+      Abajo, el factor de reducción de cada una por separado y el compuesto.</p>
+    <p><span class="hd">Juega.</span> Buscad la combinación que os deja dentro de
+      presupuesto y preguntaos qué habéis sacrificado en cada paso.</p>
+    <p><span class="hd">Lee así.</span> El número grande es el ahorro compuesto. Debajo,
+      cuánto aporta cada palanca: la que más aporte es por donde empezar.</p>
+    <p><span class="hd">Mensaje.</span> Tres decisiones de arquitectura, ninguna de ellas
+      de investigación, recortan la factura más que cualquier optimización de prompt.</p>
+    <p class="miniglos"><b>Términos.</b> <b>tier</b>: gama del modelo. <b>batch</b>: API
+      asíncrona con 50 % de descuento. <b>multiplicativo</b>: los factores se componen en
+      vez de sumarse.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 7 : GLOSARIO ================= -->
+<section class="slide" id="s7">
+  <div class="glosgrid">
+    <div class="glositem"><span class="gsym">token</span><span>Trozo de texto que el
+      modelo procesa como unidad. En castellano, unas 0,75 palabras. La unidad en que se
+      factura todo.</span></div>
+    <div class="glositem"><span class="gsym">t<sub>in</sub>, t<sub>out</sub></span>
+      <span>Tokens de entrada (lo que mandáis) y de salida (lo que genera). Se facturan a
+      precios distintos.</span></div>
+    <div class="glositem"><span class="gsym">p<sub>in</sub>, p<sub>out</sub></span>
+      <span>Precio por token. Se publica por millón (MTok); dividid entre 10<sup>6</sup>
+      antes de usarlo en la fórmula.</span></div>
+    <div class="glositem"><span class="gsym">N</span><span>Consultas al mes. El único
+      número del presupuesto que no sale de una tabla: sale de vuestro plan de
+      negocio.</span></div>
+    <div class="glositem"><span class="gsym">harness</span><span>Todo lo que rodea al
+      modelo: system prompt, bucle, herramientas, permisos, contexto y memoria.</span></div>
+    <div class="glositem"><span class="gsym">T</span><span>Turnos del bucle del agente.
+      El coste de entrada crece con T&sup2;.</span></div>
+    <div class="glositem"><span class="gsym">&Delta;</span><span>Tokens que cada vuelta
+      añade al contexto: lo que dijo el modelo más lo que devolvió la herramienta.</span></div>
+    <div class="glositem"><span class="gsym">f</span><span>Fracción del prompt servida
+      desde caché. Se factura al 10 % del precio de entrada.</span></div>
+    <div class="glositem"><span class="gsym">prefijo</span><span>El principio del prompt.
+      La caché casa por prefijo exacto: un byte distinto la invalida entera.</span></div>
+    <div class="glositem"><span class="gsym">TTL</span><span>Cuánto vive una entrada en
+      caché: 5 minutos (escribir cuesta 1,25&times;) o 1 hora (2&times;).</span></div>
+    <div class="glositem"><span class="gsym">batch</span><span>API asíncrona con 50 % de
+      descuento. Entrega en menos de una hora casi siempre, 24 como máximo.</span></div>
+    <div class="glositem"><span class="gsym">B</span><span>Ventana de contexto: el máximo
+      de tokens que el modelo puede leer de una vez.</span></div>
+    <div class="glositem"><span class="gsym">skill</span><span>Manual de procedimiento que
+      el agente abre sólo cuando la tarea encaja. Con carga progresiva paga el índice,
+      no el manual.</span></div>
+    <div class="glositem"><span class="gsym">podar / compactar</span><span>Borrar
+      resultados antiguos, o resumirlos. Las dos pierden información; elegid cuál duele
+      menos.</span></div>
+    <div class="glositem"><span class="gsym">P, b, &rho;</span><span>Parámetros del modelo
+      (en miles de millones), bytes por parámetro y overhead del runtime.</span></div>
+    <div class="glositem"><span class="gsym">caché KV</span><span>Lo que la GPU guarda de
+      los tokens ya procesados. Crece con el contexto y con la concurrencia.</span></div>
+    <div class="glositem"><span class="gsym">cuantizar</span><span>Bajar la precisión de
+      los pesos. INT4 ocupa un tercio que FP16 y pierde poca calidad.</span></div>
+    <div class="glositem"><span class="gsym">N*</span><span>Punto de equilibrio: consultas
+      al mes a partir de las cuales el servidor propio sale más barato que la API.</span></div>
+    <div class="glositem"><span class="gsym">coste fijo</span><span>Lo que pagáis aunque
+      nadie pregunte: GPUs encendidas y personal.</span></div>
+    <div class="glositem"><span class="gsym">workflow</span><span>Secuencia de pasos que
+      vosotros fijáis. Si conocéis los pasos, sale más barato y más auditable que un
+      agente.</span></div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 8 : SÍNTESIS ================= -->
+<section class="slide" id="s8">
+  <div class="pipe">
+    <div class="pipebox">
+      <div class="pname">1 &middot; Del modelo al agente</div>
+      <div class="pq">«Un agente es el mismo modelo metido en un bucle con herramientas
+        y permisos.»
+        <div class="pmap">Quitadle el bucle, las herramientas, el criterio de parada o los
+        permisos y vuelve a ser un chatbot. El harness decide su calidad más que el
+        modelo.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">2 &middot; El bucle cuesta T&sup2;</div>
+      <div class="pq">«La API no tiene memoria, así que cada vuelta reenvía todo lo
+        anterior.»
+        <div class="pmap">C<sub>sesión</sub> = &Sigma; p<sub>in</sub>t<sub>n</sub> +
+        p<sub>out</sub>s. Doblar los turnos multiplica la entrada por más de tres. Por eso
+        la primera barandilla es un tope de turnos.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">3 &middot; El contexto es un presupuesto</div>
+      <div class="pq">«Cuatro capas comparten la ventana, y sólo una crece sola.»
+        <div class="pmap">t<sub>sys</sub> + t<sub>skills</sub> + t<sub>rag</sub> +
+        t<sub>hist</sub> &le; B. Las tres primeras las diseñáis; el historial es
+        consecuencia del bucle y se ataca podando o compactando.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">4 &middot; Tres palancas multiplicativas</div>
+      <div class="pq">«Tier, caché y batch recortan la factura sin tocar la
+        funcionalidad.»
+        <div class="pmap">C&middot;r<sub>tier</sub>r<sub>caché</sub>r<sub>batch</sub>.
+        Son independientes y se componen. Sólo el batch cambia lo que el usuario
+        experimenta.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">5 &middot; La decisión final es de volumen</div>
+      <div class="pq">«N* = C<sub>fijo</sub> / c<sub>consulta</sub>, y vuestro volumen
+        cae a un lado o a otro.»
+        <div class="pmap">Dimensionad con pesos <b>y</b> caché KV. Contad las GPUs hacia
+        arriba y el personal dentro. El servidor propio se justifica por volumen
+        sostenido, residencia del dato o pesos propios.</div></div>
+    </div>
+  </div>
+</section>
+
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Tema A · Del modelo al agente</div>
+<div id="arrows"><button id="prev">&larr;</button><button id="next">&rarr;</button></div>
+<div id="footer"></div>
+
+<script>
+"use strict";
+window.onerror=function(m,u,l){
+  const b=document.getElementById("errbanner");
+  b.style.display="block";b.textContent="Error: "+m+" ("+l+")";return false;};
+
+const INK="#1A1A1A",GOLD="#B8860B",GOLDD="#8C6508",GOLDP="#F5EBD3",
+      MUTE="#8A8A8A",RULE="#D9C28A";
+
+/* ===================== TABLA DE PRECIOS =====================
+   Copiada de nuevo_material/calculadora_costes/precios.json.
+   Si cambiáis allí, cambiadla aquí: es la misma fuente de verdad. */
+const FECHA_PRECIOS="2026-10-02";
+const MODELOS=[
+  {id:"claude-haiku-4-5", nom:"Claude Haiku 4.5", in:1.00,  out:5.00},
+  {id:"claude-sonnet-5",  nom:"Claude Sonnet 5",  in:3.00,  out:15.00},
+  {id:"claude-opus-5",    nom:"Claude Opus 5",    in:5.00,  out:25.00},
+  {id:"claude-fable-5",   nom:"Claude Fable 5",   in:10.00, out:50.00}
+];
+const GPU={nom:"NVIDIA A100 80GB", vram:80, usdH:2.00};
+const MLOPS_MES=55000*0.25*1.08/12;   // 1/4 de jornada, EUR->USD, al mes
+const F_CACHE_LEE=0.10, F_CACHE_5M=1.25, F_CACHE_1H=2.00, F_BATCH=0.50;
+const KV_MB_POR_1K=320, OVERHEAD=0.15;
+
+function modelo(id){return MODELOS.find(m=>m.id===id)||MODELOS[1];}
+function costeLlamada(m,tin,tout,f,batch){
+  f=f||0; const fb=batch?F_BATCH:1;
+  const pin=m.in/1e6, pout=m.out/1e6;
+  return (pin*tin*(1-f) + pin*tin*f*F_CACHE_LEE + pout*tout)*fb;
+}
+
+/* ===================== FORMATO ESPAÑOL ===================== */
+function mil(x,d){
+  d=(d===undefined)?0:d;
+  const s=Math.abs(x).toFixed(d).split(".");
+  s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  return (x<0?"-":"")+(s.length>1?s[0]+","+s[1]:s[0]);
+}
+function usd(x){
+  if(x>=1000)return mil(x,0)+" $";
+  if(x>=1)return mil(x,2)+" $";
+  if(x>=0.001)return mil(x,4)+" $";
+  return mil(x,6)+" $";
+}
+function pct(x){return mil(x*100,0)+" %";}
+
+/* ===================== NAVEGACIÓN ===================== */
+const SECTIONS=["Precio","El bucle","Caché","Contexto","VRAM","Equilibrio",
+                "Palancas","Glosario","Síntesis"];
+const TITLES=[
+ "El precio de una consulta son cuatro números: dos de la tabla y dos vuestros.",
+ "Un agente no cuesta T llamadas: cuesta la suma de T contextos que crecen.",
+ "La caché amortiza en la segunda llamada, y el umbral no depende de cuánto cachéis.",
+ "Cuatro capas comparten la ventana de contexto, y sólo el historial crece solo.",
+ "Dimensionar un servidor por los pesos es el error más caro que podéis cometer.",
+ "El volumen decide si compensa la API o el servidor propio.",
+ "Tier, caché y batch son multiplicativas: el ahorro conjunto supera la suma.",
+ "Glosario: todos los símbolos del tema, en una página y en cristiano.",
+ "Cada decisión técnica del tema termina en una línea del presupuesto."];
+let cur=0;const N=SECTIONS.length;
+if(N!==TITLES.length||N!==document.querySelectorAll(".slide").length)
+  window.onerror("SECTIONS ("+N+") / TITLES ("+TITLES.length+") / slides ("+
+    document.querySelectorAll(".slide").length+") desalineados","",0);
+const nav=document.getElementById("navstrip");
+SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
+  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
+function go(i){
+  cur=(i+N)%N;
+  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
+  document.getElementById("slidetitle").textContent=TITLES[cur];
+  document.getElementById("footer").textContent=(cur+1)+" / "+N;
+  history.replaceState(null,"","#"+cur);
+  window.scrollTo(0,0);
+  if(updaters[cur])updaters[cur](true);
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.target&&e.target.tagName==="INPUT"&&e.target.type==="text")return;
+  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
+window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
+const updaters={};
+
+/* ===================== DIBUJO ===================== */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const wCss=cv.parentElement.clientWidth;
+  const asp=parseFloat(cv.dataset.aspect)||1.8;
+  const hCss=wCss/asp;
+  cv.style.height=hCss+"px";
+  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,wCss,hCss);
+  return {ctx:ctx,W:wCss,H:hCss};
+}
+function axes(ctx,fr,opt){
+  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
+  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
+  ctx.save();
+  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
+  ctx.font="11px Georgia, serif";
+  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
+  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
+  ctx.textAlign="center";ctx.textBaseline="top";
+  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
+    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
+    ctx.fillText(lb,fr.x0-6,Y(v));});
+  if(opt.xlabel){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(opt.xlabel,fr.x0+fr.w/2,fr.y0+fr.h+30);}
+  if(opt.ylabel){ctx.save();ctx.translate(12,fr.y0+fr.h/2);ctx.rotate(-Math.PI/2);
+    ctx.textAlign="center";ctx.textBaseline="top";ctx.fillText(opt.ylabel,0,0);ctx.restore();}
+  if(opt.title){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0+fr.w/2,fr.y0-6);}
+  ctx.restore();
+  return {X:X,Y:Y};
+}
+function polyline(ctx,pts,color,lw,dash){
+  if(!pts.length)return;
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||2;
+  if(dash)ctx.setLineDash(dash);
+  ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);
+  ctx.stroke();ctx.restore();
+}
+/* barras apiladas horizontales dentro de un marco */
+function stackedBar(ctx,x,y,w,h,partes,total){
+  let acc=0;
+  partes.forEach(p=>{
+    const ww=total>0?(p.v/total)*w:0;
+    ctx.fillStyle=p.c;ctx.fillRect(x+acc,y,ww,h);
+    ctx.strokeStyle="#fff";ctx.lineWidth=1;ctx.strokeRect(x+acc,y,ww,h);
+    acc+=ww;
+  });
+}
+function leyenda(ctx,x,y,items){
+  ctx.save();ctx.font="11px Georgia, serif";ctx.textBaseline="middle";
+  let xx=x;
+  items.forEach(it=>{
+    ctx.fillStyle=it.c;ctx.fillRect(xx,y-5,11,11);
+    ctx.fillStyle=INK;ctx.textAlign="left";ctx.fillText(it.t,xx+15,y);
+    xx+=18+ctx.measureText(it.t).width+16;
+  });
+  ctx.restore();
+}
+function llenaSelect(id,sel){
+  const el=document.getElementById(id);
+  MODELOS.forEach(m=>{const o=document.createElement("option");
+    o.value=m.id;o.textContent=m.nom+"  ("+m.in.toFixed(2)+" / "+m.out.toFixed(2)+" $/MTok)";
+    if(m.id===sel)o.selected=true;el.appendChild(o);});
+  return el;
+}
+
+/* ===================== SLIDE 0 : precio de una llamada ===================== */
+(function(){
+  const sel=llenaSelect("mod0","claude-sonnet-5");
+  const tin=document.getElementById("tin0"),tout=document.getElementById("tout0"),
+        n=document.getElementById("n0"),ro=document.getElementById("ro0");
+  document.getElementById("fecha0").textContent=
+    "Precios de lista a "+FECHA_PRECIOS+". Fuente: platform.claude.com/docs/en/pricing.";
+  function upd(){
+    const m=modelo(sel.value),TI=+tin.value,TO=+tout.value,NN=+n.value;
+    document.getElementById("lin0").textContent=mil(TI);
+    document.getElementById("lout0").textContent=mil(TO);
+    document.getElementById("ln0").textContent=mil(NN);
+    const cin=m.in/1e6*TI, cout=m.out/1e6*TO, c=cin+cout;
+
+    /* panel A: las dos partidas de una consulta */
+    let F=fitCanvas(document.getElementById("cv0a"));
+    let fr={x0:120,y0:30,w:F.W-160,h:F.H-80};
+    F.ctx.save();F.ctx.font="bold 12px Georgia, serif";F.ctx.fillStyle=INK;
+    F.ctx.textAlign="center";F.ctx.fillText("Las dos partidas de UNA consulta",F.W/2,16);
+    F.ctx.restore();
+    const filas=[{t:"Entrada",v:cin,c:MUTE,tk:TI},{t:"Salida",v:cout,c:GOLD,tk:TO}];
+    const mx=Math.max(cin,cout)*1.35||1;
+    filas.forEach((f,i)=>{
+      const y=fr.y0+i*(fr.h/2)+fr.h/8, hh=fr.h/4;
+      F.ctx.fillStyle=f.c;F.ctx.fillRect(fr.x0,y,Math.max(1,f.v/mx*fr.w),hh);
+      F.ctx.fillStyle=INK;F.ctx.font="12px Georgia, serif";
+      F.ctx.textAlign="right";F.ctx.textBaseline="middle";
+      F.ctx.fillText(f.t+" ("+mil(f.tk)+" tok)",fr.x0-8,y+hh/2);
+      F.ctx.textAlign="left";
+      F.ctx.fillText(usd(f.v)+"   ("+pct(f.v/c)+")",fr.x0+f.v/mx*fr.w+8,y+hh/2);
+    });
+
+    /* panel B: coste mensual de los cuatro modelos */
+    F=fitCanvas(document.getElementById("cv0b"));
+    fr={x0:70,y0:28,w:F.W-110,h:F.H-66};
+    const mens=MODELOS.map(mm=>costeLlamada(mm,TI,TO,0,false)*NN);
+    const top=Math.max.apply(null,mens)*1.18||1;
+    const A=axes(F.ctx,fr,{xmin:0,xmax:MODELOS.length,ymin:0,ymax:top,
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      title:"Coste mensual con "+mil(NN)+" consultas"});
+    MODELOS.forEach((mm,i)=>{
+      const bw=fr.w/MODELOS.length*0.56;
+      const x=A.X(i+0.5)-bw/2, y=A.Y(mens[i]);
+      F.ctx.fillStyle=(mm.id===m.id)?GOLD:"#ddd";
+      F.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+      F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="center";
+      F.ctx.textBaseline="bottom";F.ctx.fillText(usd(mens[i]),x+bw/2,y-3);
+      F.ctx.textBaseline="top";
+      F.ctx.fillText(mm.nom.replace("Claude ",""),x+bw/2,fr.y0+fr.h+6);
+    });
+
+    ro.innerHTML="Una consulta cuesta <b class='gold'>"+usd(c)+"</b> &mdash; "+
+      usd(cin)+" de entrada y "+usd(cout)+" de salida.<br>"+
+      "Al mes, con "+mil(NN)+" consultas: <b class='deep'>"+usd(c*NN)+"</b>. "+
+      "Al año: <b>"+usd(c*NN*12)+"</b>.<br>"+
+      "<span class='mut'>La salida es el "+pct(cout/c)+" de la factura con sólo el "+
+      pct(TO/(TI+TO))+" de los tokens.</span>";
+  }
+  [sel,tin,tout,n].forEach(e=>e.oninput=upd);
+  sel.onchange=upd;
+  updaters[0]=upd;upd();
+})();
+
+/* ===================== SLIDE 1 : el bucle ===================== */
+(function(){
+  const T=document.getElementById("T1"),t0=document.getElementById("t01"),
+        d=document.getElementById("d1"),pod=document.getElementById("pod1"),
+        ro=document.getElementById("ro1");
+  const M=modelo("claude-sonnet-5"), SAL=300;
+  function upd(){
+    const TT=+T.value, T0=+t0.value, DD=+d.value, PODA=pod.checked;
+    document.getElementById("lT1").textContent=TT;
+    document.getElementById("lt01").textContent=mil(T0)+" tokens";
+    document.getElementById("ld1").textContent=mil(DD)+" tokens";
+
+    /* tokens de entrada turno a turno; con poda, sólo 3 observaciones vivas */
+    const tok=[],acum=[];let suma=0;
+    for(let n=1;n<=TT;n++){
+      const vueltas=PODA?Math.min(n-1,3):(n-1);
+      const t=T0+vueltas*DD;
+      tok.push(t);
+      suma+=costeLlamada(M,t,SAL,0,false);
+      acum.push(suma);
+    }
+    const ultimo=costeLlamada(M,tok[TT-1],SAL,0,false);
+
+    /* panel A: tokens por turno */
+    let F=fitCanvas(document.getElementById("cv1a"));
+    let fr={x0:66,y0:26,w:F.W-100,h:F.H-62};
+    const mx=Math.max.apply(null,tok)*1.18||1;
+    let A=axes(F.ctx,fr,{xmin:0,xmax:TT,ymin:0,ymax:mx,
+      yticks:[[0,"0"],[mx/2,mil(mx/2)],[mx,mil(mx)]],
+      xlabel:"turno del bucle",title:"Tokens de entrada que paga cada turno"});
+    tok.forEach((t,i)=>{
+      const bw=Math.max(2,fr.w/TT*0.68), x=A.X(i+0.5)-bw/2, y=A.Y(t);
+      F.ctx.fillStyle=GOLD;F.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+    });
+
+    /* panel B: coste acumulado */
+    F=fitCanvas(document.getElementById("cv1b"));
+    fr={x0:76,y0:26,w:F.W-110,h:F.H-66};
+    const top=Math.max(suma,ultimo)*1.2||1;
+    A=axes(F.ctx,fr,{xmin:0,xmax:TT,ymin:0,ymax:top,
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"turno",title:"Coste acumulado de la sesión"});
+    polyline(F.ctx,acum.map((c,i)=>[A.X(i+1),A.Y(c)]),GOLD,2.4);
+    polyline(F.ctx,[[A.X(0),A.Y(ultimo)],[A.X(TT),A.Y(ultimo)]],MUTE,1.6,[5,4]);
+    F.ctx.fillStyle=MUTE;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="left";
+    F.ctx.textBaseline="bottom";
+    F.ctx.fillText("si sólo contarais el último turno",A.X(0.2),A.Y(ultimo)-4);
+
+    const factor=ultimo>0?suma/ultimo:0;
+    ro.innerHTML="Sesión de <b>"+TT+"</b> turnos: <b class='gold'>"+usd(suma)+"</b>.<br>"+
+      "Sólo el último turno: "+usd(ultimo)+" &rarr; os habríais quedado cortos por "+
+      "<b class='deep'>"+mil(factor,1)+"&times;</b>.<br>"+
+      "Tokens de entrada totales: <b>"+mil(tok.reduce((a,b)=>a+b,0))+"</b>; "+
+      "el último turno tenía "+mil(tok[TT-1])+" ("+mil(tok[TT-1]/tok[0],1)+
+      "&times; el primero)."+
+      (PODA?"<br><span class='badge ok'>poda activa</span> <span class='mut'>el agente "+
+        "ya no recuerda las observaciones más antiguas</span>":"");
+  }
+  [T,t0,d].forEach(e=>e.oninput=upd); pod.onchange=upd;
+  updaters[1]=upd;upd();
+})();
+
+/* ===================== SLIDE 2 : caché ===================== */
+(function(){
+  const f=document.getElementById("f2"),m=document.getElementById("m2"),
+        t=document.getElementById("t2"),ttl=document.getElementById("ttl2"),
+        ro=document.getElementById("ro2");
+  const M=modelo("claude-sonnet-5"), SAL=400;
+  function upd(){
+    const FF=+f.value/100, MM=+m.value, TT=+t.value, LARGO=ttl.checked;
+    const fEsc=LARGO?F_CACHE_1H:F_CACHE_5M;
+    document.getElementById("lf2").textContent=pct(FF);
+    document.getElementById("lm2").textContent=MM;
+    document.getElementById("lt2").textContent=mil(TT)+" tokens";
+
+    const pin=M.in/1e6, pout=M.out/1e6;
+    const sinC=pin*TT+pout*SAL;
+    const primera=pin*TT*(1-FF)+pin*TT*FF*fEsc+pout*SAL;
+    const resto  =pin*TT*(1-FF)+pin*TT*FF*F_CACHE_LEE+pout*SAL;
+
+    const accS=[],accC=[];let s=0,c=0;
+    for(let i=1;i<=MM;i++){s+=sinC;c+=(i===1?primera:resto);accS.push(s);accC.push(c);}
+    /* umbral analítico: (fEsc-1)/(1-F_CACHE_LEE) + 1 llamadas */
+    const umbral=(fEsc-1)/(1-F_CACHE_LEE)+1;
+
+    /* panel A: reparto del prompt */
+    let F=fitCanvas(document.getElementById("cv2a"));
+    let fr={x0:30,y0:46,w:F.W-60,h:36};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Reparto del prompt de "+mil(TT)+" tokens",F.W/2,20);
+    stackedBar(F.ctx,fr.x0,fr.y0,fr.w,fr.h,
+      [{v:TT*FF,c:GOLD},{v:TT*(1-FF),c:MUTE}],TT);
+    F.ctx.font="11px Georgia, serif";F.ctx.textAlign="left";F.ctx.textBaseline="top";
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+18,
+      [{c:GOLD,t:"prefijo cacheado ("+mil(TT*FF)+" tok, al 10 %)"},
+       {c:MUTE,t:"fresco ("+mil(TT*(1-FF))+" tok, al 100 %)"}]);
+    F.ctx.fillStyle=INK;F.ctx.textAlign="center";
+    F.ctx.fillText("lo estable va delante  &rarr;  lo que cambia, detrás".replace("&rarr;","→"),
+      F.W/2,fr.y0+fr.h+42);
+
+    /* panel B: acumulado con y sin caché */
+    F=fitCanvas(document.getElementById("cv2b"));
+    fr={x0:76,y0:26,w:F.W-110,h:F.H-66};
+    const top=Math.max(accS[MM-1],accC[MM-1])*1.16||1;
+    const A=axes(F.ctx,fr,{xmin:0,xmax:Math.max(2,MM),ymin:0,ymax:top,
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"llamadas sobre el mismo prefijo",title:"Coste acumulado"});
+    polyline(F.ctx,accS.map((v,i)=>[A.X(i+1),A.Y(v)]),MUTE,2.2);
+    polyline(F.ctx,accC.map((v,i)=>[A.X(i+1),A.Y(v)]),GOLD,2.6);
+    if(umbral<=Math.max(2,MM)){
+      polyline(F.ctx,[[A.X(umbral),A.Y(0)],[A.X(umbral),A.Y(top)]],GOLDD,1.3,[4,4]);
+      F.ctx.fillStyle=GOLDD;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="left";
+      F.ctx.textBaseline="top";
+      F.ctx.fillText("umbral "+mil(umbral,2),A.X(umbral)+4,fr.y0+4);
+    }
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+34,
+      [{c:MUTE,t:"sin caché"},{c:GOLD,t:"con caché"}]);
+
+    const ahorro=1-accC[MM-1]/accS[MM-1];
+    ro.innerHTML="Primera llamada: "+usd(primera)+" <span class='mut'>(paga la escritura, "+
+      (LARGO?"2,00":"1,25")+"&times;)</span><br>"+
+      "Siguientes: <b class='gold'>"+usd(resto)+"</b> frente a "+usd(sinC)+" sin caché.<br>"+
+      "Tras <b>"+MM+"</b> llamadas: "+usd(accC[MM-1])+" frente a "+usd(accS[MM-1])+
+      " &rarr; <b class='deep'>"+(ahorro>=0?"ahorro de "+pct(ahorro):
+        "sobrecoste de "+pct(-ahorro))+"</b><br>"+
+      "<span class='mut'>Umbral teórico: "+mil(umbral,2)+" llamadas"+
+      (LARGO?" (TTL de 1 h)":" (TTL de 5 min)")+". No depende de f.</span>";
+  }
+  [f,m,t].forEach(e=>e.oninput=upd); ttl.onchange=upd;
+  updaters[2]=upd;upd();
+})();
+
+/* ===================== SLIDE 3 : presupuesto de contexto ===================== */
+(function(){
+  const K=document.getElementById("K3"),a=document.getElementById("a3"),
+        r=document.getElementById("r3"),h=document.getElementById("h3"),
+        prog=document.getElementById("prog3"),ro=document.getElementById("ro3");
+  const S_IND=45, S_MAN=900, T_SYS=2000, T_FRAG=600, T_TURNO=1800;
+  const M=modelo("claude-sonnet-5");
+  function upd(){
+    const KK=+K.value,aa=Math.min(+a.value,KK),rr=+r.value,hh=+h.value,
+          PROG=prog.checked;
+    document.getElementById("lK3").textContent=KK;
+    document.getElementById("la3").textContent=aa;
+    document.getElementById("lr3").textContent=rr;
+    document.getElementById("lh3").textContent=hh;
+
+    const tSkills=PROG?(S_IND*KK+S_MAN*aa):(S_MAN*KK);
+    const tRag=T_FRAG*rr;
+    const tHist=T_TURNO*(hh-1);
+    const total=T_SYS+tSkills+tRag+tHist;
+
+    const capas=[{t:"system",v:T_SYS,c:INK},{t:"skills",v:tSkills,c:GOLDD},
+                 {t:"RAG",v:tRag,c:GOLD},{t:"historial",v:tHist,c:RULE}];
+
+    /* panel A: barra apilada contra las ventanas */
+    let F=fitCanvas(document.getElementById("cv3a"));
+    const esc=Math.max(total*1.12,220000);
+    let fr={x0:30,y0:52,w:F.W-60,h:40};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Contexto de UNA llamada en el turno "+hh,F.W/2,20);
+    stackedBar(F.ctx,fr.x0,fr.y0,fr.w*(total/esc),fr.h,capas,total);
+    F.ctx.strokeStyle="#ccc";F.ctx.lineWidth=1;
+    F.ctx.strokeRect(fr.x0,fr.y0,fr.w,fr.h);
+    [[200000,"200k (Haiku)"],[1000000,"1M (Sonnet/Opus)"]].forEach(v=>{
+      const x=fr.x0+fr.w*(v[0]/esc);
+      if(x<=fr.x0+fr.w){
+        polyline(F.ctx,[[x,fr.y0-8],[x,fr.y0+fr.h+8]],GOLDD,1.3,[4,3]);
+        F.ctx.fillStyle=GOLDD;F.ctx.font="10px Georgia, serif";
+        F.ctx.textAlign="center";F.ctx.textBaseline="top";
+        F.ctx.fillText(v[1],x,fr.y0+fr.h+10);
+      }});
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+34,capas.map(c=>({c:c.c,t:c.t})));
+
+    /* panel B: coste mensual por capa */
+    F=fitCanvas(document.getElementById("cv3b"));
+    fr={x0:94,y0:26,w:F.W-130,h:F.H-62};
+    const NN=50000;
+    const costes=capas.map(c=>({t:c.t,c:c.c,v:M.in/1e6*c.v*NN}));
+    const top=Math.max.apply(null,costes.map(c=>c.v))*1.3||1;
+    const A=axes(F.ctx,fr,{xmin:0,xmax:4,ymin:0,ymax:top,
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      title:"Coste mensual de cada capa (50.000 consultas)"});
+    costes.forEach((c,i)=>{
+      const bw=fr.w/4*0.56,x=A.X(i+0.5)-bw/2,y=A.Y(c.v);
+      F.ctx.fillStyle=c.c;F.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+      F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="center";
+      F.ctx.textBaseline="bottom";F.ctx.fillText(usd(c.v),x+bw/2,y-3);
+      F.ctx.textBaseline="top";F.ctx.fillText(c.t,x+bw/2,fr.y0+fr.h+6);
+    });
+
+    const cabe=total<=1000000;
+    ro.innerHTML="Contexto total: <b class='gold'>"+mil(total)+"</b> tokens "+
+      "<span class='mut'>(system "+mil(T_SYS)+" &middot; skills "+mil(tSkills)+
+      " &middot; RAG "+mil(tRag)+" &middot; historial "+mil(tHist)+")</span><br>"+
+      "El historial es el <b>"+pct(tHist/total)+"</b> del contexto en este turno.<br>"+
+      (PROG?"":"<span class='badge bad'>sin carga progresiva</span> "+
+        "<span class='mut'>pagáis "+mil(S_MAN*KK)+" tokens de skills en cada llamada</span><br>")+
+      (cabe?"<span class='badge ok'>cabe en 1M</span>":
+            "<span class='badge bad'>NO cabe ni en 1M</span>")+
+      " &nbsp; Coste de este contexto al mes: <b class='deep'>"+
+      usd(M.in/1e6*total*50000)+"</b>";
+  }
+  [K,a,r,h].forEach(e=>e.oninput=upd); prog.onchange=upd;
+  updaters[3]=upd;upd();
+})();
+
+/* ===================== SLIDE 4 : VRAM ===================== */
+(function(){
+  const P=document.getElementById("P4"),q=document.getElementById("q4"),
+        L=document.getElementById("L4"),c=document.getElementById("c4"),
+        ro=document.getElementById("ro4");
+  function upd(){
+    const PP=+P.value,b=+q.value,LL=+L.value,cc=+c.value;
+    document.getElementById("lP4").textContent=PP+" B";
+    document.getElementById("lL4").textContent=mil(LL)+" tokens";
+    document.getElementById("lc4").textContent=cc;
+
+    const pesos=PP*b, over=pesos*OVERHEAD, kv=KV_MB_POR_1K*(LL/1000)*cc/1024;
+    const total=pesos+over+kv;
+    const G=Math.max(1,Math.ceil(total/GPU.vram));
+    const mesComputo=GPU.usdH*G*730, mes=mesComputo+MLOPS_MES;
+
+    /* panel A: las tres partidas apiladas */
+    let F=fitCanvas(document.getElementById("cv4a"));
+    const esc=Math.max(total*1.15,GPU.vram*3);
+    let fr={x0:30,y0:52,w:F.W-60,h:40};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("VRAM necesaria: "+mil(total,1)+" GB",F.W/2,20);
+    stackedBar(F.ctx,fr.x0,fr.y0,fr.w*(total/esc),fr.h,
+      [{v:pesos,c:INK},{v:over,c:GOLDD},{v:kv,c:GOLD}],total);
+    F.ctx.strokeStyle="#ccc";F.ctx.strokeRect(fr.x0,fr.y0,fr.w,fr.h);
+    for(let g=1;g<=4;g++){
+      const x=fr.x0+fr.w*(GPU.vram*g/esc);
+      if(x<=fr.x0+fr.w){
+        polyline(F.ctx,[[x,fr.y0-8],[x,fr.y0+fr.h+8]],MUTE,1.2,[4,3]);
+        F.ctx.fillStyle=MUTE;F.ctx.font="10px Georgia, serif";
+        F.ctx.textAlign="center";F.ctx.textBaseline="top";
+        F.ctx.fillText(g+"&times;80GB".replace("&times;","×"),x,fr.y0+fr.h+10);
+      }}
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+34,
+      [{c:INK,t:"pesos"},{c:GOLDD,t:"overhead"},{c:GOLD,t:"caché KV"}]);
+
+    /* panel B: coste frente al contexto, en escalones */
+    F=fitCanvas(document.getElementById("cv4b"));
+    fr={x0:80,y0:26,w:F.W-114,h:F.H-66};
+    const pts=[];let top=0;
+    for(let l=2000;l<=128000;l+=2000){
+      const k2=KV_MB_POR_1K*(l/1000)*cc/1024;
+      const g=Math.max(1,Math.ceil((pesos+over+k2)/GPU.vram));
+      const v=GPU.usdH*g*730+MLOPS_MES;
+      pts.push([l,v]);if(v>top)top=v;
+    }
+    top*=1.15;
+    const A=axes(F.ctx,fr,{xmin:2000,xmax:128000,ymin:0,ymax:top,
+      xticks:[[2000,"2k"],[32000,"32k"],[64000,"64k"],[128000,"128k"]],
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"contexto servido",title:"Coste mensual del servidor (sube a escalones)"});
+    polyline(F.ctx,pts.map(p=>[A.X(p[0]),A.Y(p[1])]),GOLD,2.4);
+    F.ctx.fillStyle=GOLDD;F.ctx.beginPath();
+    F.ctx.arc(A.X(LL),A.Y(mes),5,0,6.3);F.ctx.fill();
+
+    ro.innerHTML="Pesos <b>"+mil(pesos,1)+"</b> + overhead "+mil(over,1)+
+      " + caché KV <b class='gold'>"+mil(kv,1)+"</b> = <b class='deep'>"+
+      mil(total,1)+" GB</b><br>"+
+      "Hacen falta <b>"+G+"</b> &times; "+GPU.nom+" &rarr; "+usd(mesComputo)+
+      "/mes de cómputo + "+usd(MLOPS_MES)+" de personal = <b class='gold'>"+
+      usd(mes)+"/mes</b><br>"+
+      (kv>pesos?"<span class='badge bad'>la caché KV pesa más que el modelo</span> "+
+        "<span class='mut'>vuestro cuello de botella es el uso, no el modelo</span>":
+        "<span class='badge ok'>dominan los pesos</span> <span class='mut'>cuantizar "+
+        "sigue siendo vuestra mejor palanca</span>");
+  }
+  [P,L,c].forEach(e=>e.oninput=upd); q.onchange=upd;
+  updaters[4]=upd;upd();
+})();
+
+/* ===================== SLIDE 5 : punto de equilibrio ===================== */
+(function(){
+  const c=document.getElementById("c5"),g=document.getElementById("g5"),
+        h=document.getElementById("h5"),per=document.getElementById("per5"),
+        v=document.getElementById("v5"),ro=document.getElementById("ro5");
+  function upd(){
+    const cc=+c.value/10000, GG=+g.value, hh=+h.value, PER=per.checked, VV=+v.value;
+    document.getElementById("lc5").textContent=usd(cc);
+    document.getElementById("lg5").textContent=GG;
+    document.getElementById("lh5").textContent=mil(hh)+" h"+(hh>=730?" (24/7)":"");
+    document.getElementById("lv5").textContent=mil(VV)+" consultas/mes";
+
+    const computo=GPU.usdH*GG*hh, personal=PER?MLOPS_MES:0;
+    const fijo=computo+personal;
+    const umbral=cc>0?fijo/cc:Infinity;
+
+    /* panel A: las dos curvas */
+    let F=fitCanvas(document.getElementById("cv5a"));
+    let fr={x0:84,y0:26,w:F.W-118,h:F.H-66};
+    const xmax=Math.max(umbral*1.8,VV*1.3,10000);
+    const top=Math.max(fijo*2.1,cc*xmax);
+    const A=axes(F.ctx,fr,{xmin:0,xmax:xmax,ymin:0,ymax:top,
+      xticks:[[0,"0"],[xmax/2,mil(xmax/2)],[xmax,mil(xmax)]],
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"consultas al mes",title:"API (variable) frente a servidor (fijo)"});
+    polyline(F.ctx,[[A.X(0),A.Y(0)],[A.X(xmax),A.Y(cc*xmax)]],GOLD,2.6);
+    polyline(F.ctx,[[A.X(0),A.Y(fijo)],[A.X(xmax),A.Y(fijo)]],INK,2.2,[7,5]);
+    if(isFinite(umbral)&&umbral<=xmax){
+      F.ctx.fillStyle=GOLDD;F.ctx.beginPath();
+      F.ctx.arc(A.X(umbral),A.Y(fijo),5.5,0,6.3);F.ctx.fill();
+    }
+    /* vuestro punto */
+    polyline(F.ctx,[[A.X(VV),A.Y(0)],[A.X(VV),A.Y(top)]],MUTE,1.2,[3,3]);
+    F.ctx.fillStyle=MUTE;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.textBaseline="top";F.ctx.fillText("vosotros",A.X(VV),fr.y0+2);
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+34,
+      [{c:GOLD,t:"API"},{c:INK,t:"servidor propio"}]);
+
+    /* panel B: de qué se compone el fijo */
+    F=fitCanvas(document.getElementById("cv5b"));
+    fr={x0:30,y0:46,w:F.W-60,h:34};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Composición del coste fijo: "+usd(fijo)+"/mes",F.W/2,20);
+    stackedBar(F.ctx,fr.x0,fr.y0,fr.w,fr.h,
+      [{v:computo,c:GOLD},{v:personal,c:INK}],fijo||1);
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+18,
+      [{c:GOLD,t:"cómputo ("+usd(computo)+")"},
+       {c:INK,t:"personal ("+usd(personal)+")"}]);
+
+    const gana=VV>umbral?"el servidor propio":"la API";
+    ro.innerHTML="Coste fijo del servidor: <b>"+usd(fijo)+"/mes</b> "+
+      "<span class='mut'>("+GG+" GPU &times; "+mil(hh)+" h"+
+      (PER?" + personal":"")+")</span><br>"+
+      "Punto de equilibrio: <b class='gold'>"+
+      (isFinite(umbral)?mil(umbral)+" consultas/mes":"no alcanzable")+"</b><br>"+
+      "Vuestro volumen: "+mil(VV)+" &rarr; <b class='deep'>gana "+gana+"</b> "+
+      "<span class='mut'>("+mil(VV/umbral,2)+"&times; el umbral)</span>";
+  }
+  [c,g,h,v].forEach(e=>e.oninput=upd); per.onchange=upd;
+  updaters[5]=upd;upd();
+})();
+
+/* ===================== SLIDE 6 : las tres palancas ===================== */
+(function(){
+  const A=llenaSelect("mA6","claude-opus-5"), B=llenaSelect("mB6","claude-sonnet-5"),
+        f=document.getElementById("f6"), b=document.getElementById("b6"),
+        ro=document.getElementById("ro6");
+  const TI=4000,TO=400,NN=50000;
+  function upd(){
+    const mA=modelo(A.value),mB=modelo(B.value),FF=+f.value/100,BA=b.checked;
+    document.getElementById("lf6").textContent=pct(FF);
+
+    const base   =costeLlamada(mA,TI,TO,0,false)*NN;
+    const pTier  =costeLlamada(mB,TI,TO,0,false)*NN;
+    const pCache =costeLlamada(mB,TI,TO,FF,false)*NN;
+    const pTodo  =costeLlamada(mB,TI,TO,FF,BA)*NN;
+    const pasos=[
+      {t:mA.nom.replace("Claude ",""),v:base,c:INK},
+      {t:"→ "+mB.nom.replace("Claude ",""),v:pTier,c:GOLDD},
+      {t:"→ + caché",v:pCache,c:GOLD},
+      {t:BA?"→ + batch":"(sin batch)",v:pTodo,c:RULE}
+    ];
+
+    /* panel A: la cascada */
+    let F=fitCanvas(document.getElementById("cv6a"));
+    let fr={x0:84,y0:26,w:F.W-118,h:F.H-68};
+    const top=base*1.2||1;
+    const AX=axes(F.ctx,fr,{xmin:0,xmax:4,ymin:0,ymax:top,
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      title:"Factura mensual, palanca a palanca"});
+    pasos.forEach((p,i)=>{
+      const bw=fr.w/4*0.56,x=AX.X(i+0.5)-bw/2,y=AX.Y(p.v);
+      F.ctx.fillStyle=p.c;F.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+      F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="center";
+      F.ctx.textBaseline="bottom";F.ctx.fillText(usd(p.v),x+bw/2,y-3);
+      F.ctx.textBaseline="top";F.ctx.fillText(p.t,x+bw/2,fr.y0+fr.h+6);
+      if(i>0&&p.v<base){
+        F.ctx.fillStyle="#fff";F.ctx.font="bold 12px Georgia, serif";
+        F.ctx.textBaseline="middle";
+        F.ctx.fillText("−"+pct(1-p.v/base),x+bw/2,(y+fr.y0+fr.h)/2);
+      }
+    });
+
+    /* panel B: factores por separado */
+    F=fitCanvas(document.getElementById("cv6b"));
+    fr={x0:150,y0:34,w:F.W-200,h:F.H-70};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Factor de reducción de cada palanca",F.W/2,18);
+    const rT=pTier/base, rC=pCache/pTier, rB=BA?F_BATCH:1, rTot=pTodo/base;
+    const filas=[{t:"tier",v:rT,c:GOLDD},{t:"caché",v:rC,c:GOLD},
+                 {t:"batch",v:rB,c:RULE},{t:"COMPUESTO",v:rTot,c:INK}];
+    filas.forEach((r,i)=>{
+      const y=fr.y0+i*(fr.h/4)+6,hh=fr.h/4-12;
+      F.ctx.fillStyle=r.c;F.ctx.fillRect(fr.x0,y,Math.max(2,r.v*fr.w),hh);
+      F.ctx.fillStyle=INK;F.ctx.font=(i===3?"bold ":"")+"11px Georgia, serif";
+      F.ctx.textAlign="right";F.ctx.textBaseline="middle";
+      F.ctx.fillText(r.t,fr.x0-8,y+hh/2);
+      F.ctx.textAlign="left";
+      F.ctx.fillText("×"+mil(r.v,2)+"  ("+(r.v<1?"−"+pct(1-r.v):"sin efecto")+")",
+        fr.x0+Math.max(2,r.v*fr.w)+8,y+hh/2);
+    });
+
+    ro.innerHTML="De <b>"+usd(base)+"/mes</b> a <b class='gold'>"+usd(pTodo)+
+      "/mes</b> &rarr; <b class='deep'>−"+pct(1-pTodo/base)+"</b><br>"+
+      "<span class='mut'>"+mil(TI)+" tokens de entrada, "+mil(TO)+" de salida, "+
+      mil(NN)+" consultas/mes. Precios a "+FECHA_PRECIOS+".</span><br>"+
+      (BA?"<span class='badge bad'>el batch introduce latencia</span> "+
+        "<span class='mut'>no vale para un chat con el usuario delante</span>":
+        "<span class='badge ok'>sin latencia añadida</span> "+
+        "<span class='mut'>estas palancas son invisibles para el usuario</span>");
+  }
+  [A,B].forEach(e=>e.onchange=upd); f.oninput=upd; b.onchange=upd;
+  updaters[6]=upd;upd();
+})();
+
+/* ===================== ARRANQUE ===================== */
+const h0=parseInt((location.hash||"#0").slice(1),10);
+go(isNaN(h0)?0:h0);
+</script>
+</body>
+</html>

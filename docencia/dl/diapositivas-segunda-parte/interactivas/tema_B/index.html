@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tema B — Sistemas sobre el agente — slides interactivas</title>
+<style>
+  :root{
+    --ink:#1A1A1A; --gold:#B8860B; --goldDeep:#8C6508; --goldPale:#F5EBD3;
+    --mute:#8A8A8A; --rule:#D9C28A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:16px;}
+  #navstrip{display:flex;gap:1.05em;padding:10px 24px 2px 24px;font-size:0.72em;
+    letter-spacing:0.03em;flex-wrap:wrap}
+  #navstrip span{color:var(--mute);cursor:pointer;white-space:nowrap}
+  #navstrip span.cur{color:var(--gold);font-weight:bold}
+  #slidetitle{padding:2px 24px 8px 24px;font-size:1.38em;font-weight:bold;line-height:1.2}
+  #goldrule{border:none;border-top:1.4px solid var(--gold);margin:0 24px}
+  .slide{display:none;padding:14px 24px 64px 24px;
+    grid-template-columns:55% 43%;gap:2%;align-items:start}
+  .slide.active{display:grid}
+  .figcol canvas{width:100%;display:block;margin-bottom:10px;
+    border:1px solid #eee;border-radius:2px}
+  .txtcol{font-size:0.9em;line-height:1.4}
+  .txtcol p{margin:0 0 9px 0}
+  .txtcol .hd{font-weight:bold}
+  .ctrlbox{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:10px 12px;margin-bottom:12px}
+  .ctrlbox label{display:block;font-size:0.86em;margin:7px 0 1px 0}
+  .ctrlbox input[type=range]{width:100%;accent-color:var(--gold)}
+  .ctrlbox input[type=checkbox]{accent-color:var(--gold);transform:scale(1.15);
+    margin-right:6px}
+  .ctrlbox button{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:4px 12px;cursor:pointer;margin-top:7px}
+  .ctrlbox button:hover{background:var(--gold);color:#fff}
+  .ctrlbox select{font-family:inherit;background:#fff;border:1px solid var(--gold);
+    color:var(--goldDeep);border-radius:3px;padding:3px 8px;margin-top:4px;
+    max-width:100%}
+  .readout{font-variant-numeric:tabular-nums;background:#fff;border:1px solid var(--rule);
+    border-radius:3px;padding:7px 10px;margin:9px 0;font-size:0.88em;line-height:1.5}
+  .badge{display:inline-block;border-radius:3px;padding:2px 10px;font-weight:bold;
+    font-size:0.9em;margin:4px 0}
+  .badge.ok{background:#e8efe2;color:#3c5a2a;border:1px solid #9ab07f}
+  .badge.bad{background:#f3e3d3;color:#7a3c00;border:1px solid #c98c3f}
+  .gold{color:var(--gold);font-weight:bold} .deep{color:var(--goldDeep);font-weight:bold}
+  .mut{color:var(--mute)}
+  .miniglos{border-top:1px solid var(--rule);margin-top:10px;padding-top:7px;
+    font-size:0.84em;color:#333}
+  .miniglos b{color:var(--goldDeep)}
+  table.live{border-collapse:collapse;font-size:0.84em;margin:8px 0;width:100%}
+  table.live th{border-bottom:1.2px solid var(--gold);text-align:right;padding:2px 6px;
+    font-weight:bold}
+  table.live td{border-bottom:1px solid #eee;text-align:right;padding:2px 6px;
+    font-variant-numeric:tabular-nums}
+  table.live th:first-child,table.live td:first-child{text-align:left}
+  table.live tr.hit td{background:#f6f0e0}
+  #footer{position:fixed;bottom:8px;right:18px;font-size:0.78em;color:var(--mute);
+    background:#fff;padding:0 4px}
+  #footerL{position:fixed;bottom:8px;left:18px;font-size:0.72em;color:var(--mute);
+    font-style:italic;background:#fff;padding:0 4px}
+  #arrows{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);background:#fff;
+    padding:0 6px}
+  #arrows button{font-family:inherit;font-size:1em;background:#fff;
+    border:1px solid var(--rule);color:var(--goldDeep);border-radius:3px;
+    padding:2px 14px;cursor:pointer;margin:0 4px}
+  #arrows button:hover{background:var(--goldPale)}
+  .pipe{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .pipebox{border:1.4px solid var(--gold);border-radius:5px;padding:11px 16px;
+    background:#fff;display:grid;grid-template-columns:30% 68%;gap:2%}
+  .pipebox .pname{font-weight:bold;color:var(--goldDeep)}
+  .pipebox .pq{font-style:italic;color:var(--ink);font-size:0.93em}
+  .pipebox .pmap{font-size:0.8em;color:var(--mute);margin-top:4px;font-style:normal}
+  .pipearrow{text-align:center;color:var(--gold);font-size:1.25em;margin:-7px 0}
+  .eqpanel{border:1px solid var(--rule);border-radius:4px;background:#fffdf7;
+    padding:8px 14px 6px 14px;margin:2px 0 10px 0}
+  .eqtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.82em;letter-spacing:0.05em;margin-bottom:2px}
+  .eq{text-align:center;margin:8px 0;font-size:1.0em;line-height:1.75}
+  .eq .eqn{color:var(--mute);font-size:0.78em;margin-left:12px}
+  .eqread{font-size:0.8em;color:#444;margin:2px 0 7px 0;line-height:1.35}
+  .eqread b{color:var(--goldDeep)}
+  .frac{display:inline-block;vertical-align:-0.75em;text-align:center;line-height:1.15;
+    font-size:0.93em}
+  .frac .num,.frac .den{display:block;padding:0 4px}
+  .frac .den{border-top:1.1px solid var(--ink)}
+  .guide{background:var(--goldPale);border:1px solid var(--rule);border-radius:4px;
+    padding:9px 13px;margin:10px 0;font-size:0.88em}
+  .gtitle{font-variant:small-caps;color:var(--goldDeep);font-weight:bold;
+    font-size:0.92em;letter-spacing:0.05em;margin-bottom:3px}
+  .guide ol{margin:4px 0 4px 18px;padding:0}
+  .guide li{margin:0 0 7px 0;line-height:1.4}
+  .guide .obs{color:var(--goldDeep);font-style:italic}
+  details.check{margin-top:6px}
+  details.check summary{cursor:pointer;color:var(--goldDeep);font-weight:bold}
+  details.check .ans{margin:6px 0 2px 0;padding:7px 10px;background:#fff;
+    border-left:3px solid var(--gold);line-height:1.4}
+  .glosgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px;font-size:0.86em}
+  .glositem{border-bottom:1px solid #eee;padding:5px 2px;display:grid;
+    grid-template-columns:30% 70%}
+  .glositem .gsym{color:var(--goldDeep);font-weight:bold}
+  #errbanner{display:none;position:fixed;top:0;left:0;right:0;background:#7a1f1f;
+    color:#fff;font-size:0.85em;padding:6px 14px;z-index:99}
+  #s8, #s9{grid-template-columns:1fr}
+  #s8 .glosgrid{font-size:1.06em;gap:6px 34px}
+  #s8 .glositem{padding:13px 2px}
+  #s9 .pipe{gap:18px}
+  #s9 .pipebox{padding:18px 22px}
+  #s9 .pipebox .pq{font-size:1.03em}
+  #s9 .pipebox .pname{font-size:1.05em}
+  #s9 .pipearrow{font-size:1.5em;margin:-9px 0}
+  .fuente{font-size:0.78em;color:var(--mute);font-style:italic;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div id="errbanner"></div>
+<div id="navstrip"></div>
+<div id="slidetitle"></div>
+<hr id="goldrule">
+
+<!-- ================= SLIDE 0 : similitud coseno ================= -->
+<section class="slide" id="s0">
+  <div class="figcol">
+    <canvas id="cv0a" data-aspect="1.70"></canvas>
+    <div class="eqpanel"><div class="eqtitle">la ecuación de esta slide</div>
+      <div class="eq">cos(<span class="gold">q</span>, <span class="deep">d</span>) =
+        <span class="frac"><span class="num"><span class="gold">q</span> &middot;
+        <span class="deep">d</span></span>
+        <span class="den">&#8214;<span class="gold">q</span>&#8214;
+        &#8214;<span class="deep">d</span>&#8214;</span></span>
+        = <span class="frac"><span class="num">&Sigma;<sub>k</sub>
+        q<sub>k</sub> d<sub>k</sub></span>
+        <span class="den">&radic;<span style="text-decoration:overline">&Sigma;q<sub>k</sub>&sup2;</span>
+        &middot; &radic;<span style="text-decoration:overline">&Sigma;d<sub>k</sub>&sup2;</span></span></span>
+        <span class="eqn">(Ec. 1)</span></div>
+      <div class="eqread">El <b>coseno</b> entre el vector de la pregunta
+        <b><span class="gold">q</span></b> y el de un fragmento
+        <b><span class="deep">d</span></b>. El numerador es el <b>producto escalar</b>:
+        se multiplican las componentes una a una y se suman. El denominador divide por
+        las <b>normas</b>, de modo que sólo queda el <b>ángulo</b>. Vale 1 si apuntan
+        igual, 0 si no tienen nada en común.</div>
+      <div class="eq">&#8214;v&#8214; = &radic;<span style="text-decoration:overline">
+        v<sub>1</sub>&sup2; + v<sub>2</sub>&sup2;</span>
+        <span class="eqn">(Ec. 2)</span></div>
+      <div class="eqread">La <b>norma</b> es la longitud del vector. Dividir por ella es
+        lo que hace que un documento largo y uno corto sobre el mismo tema den el mismo
+        parecido: lo que cuenta es hacia dónde apuntan, no cuánto miden.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Pregunta <b class="gold">q</b> &mdash; componente 1:
+        <span id="lq1" class="deep"></span></label>
+      <input type="range" id="q1" min="-10" max="10" step="1" value="3">
+      <label>Pregunta <b class="gold">q</b> &mdash; componente 2:
+        <span id="lq2" class="deep"></span></label>
+      <input type="range" id="q2" min="-10" max="10" step="1" value="4">
+      <label>Fragmento <b class="deep">d</b> &mdash; componente 1:
+        <span id="ld1" class="deep"></span></label>
+      <input type="range" id="d1" min="-10" max="10" step="1" value="6">
+      <label>Fragmento <b class="deep">d</b> &mdash; componente 2:
+        <span id="ld2" class="deep"></span></label>
+      <input type="range" id="d2" min="-10" max="10" step="1" value="8">
+      <button id="btn0">Volver al ejemplo de las slides (3,4) y (6,8)</button>
+    </div>
+    <div class="readout" id="ro0"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con q = (3,4) y d = (6,8), lee el resultado.
+        <span class="obs">Coseno exactamente 1: d es q multiplicado por 2, el mismo
+        contenido a distinta escala. Es el ejemplo a mano del deck.</span></li>
+      <li>Dobla las dos componentes de d otra vez, a (12,16).
+        <span class="obs">El coseno sigue valiendo 1. La longitud no entra en la cuenta:
+        por eso un artículo de tres líneas y uno de tres páginas sobre lo mismo
+        compiten de igual a igual.</span></li>
+      <li>Pon d = (&minus;4, 3).
+        <span class="obs">Coseno 0: perpendiculares. Es lo que pasa cuando la pregunta y
+        el fragmento no comparten ningún término relevante.</span></li>
+      <li>Pon d = (&minus;3, &minus;4).
+        <span class="obs">Coseno &minus;1: dirección opuesta. En un índice TF-IDF esto
+        no ocurre (no hay componentes negativas), pero en embeddings densos sí.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué se usa el coseno
+        y no la distancia euclídea?</summary>
+        <div class="ans">Porque la distancia euclídea mezcla dos cosas: de qué habla el
+        documento y cuánto ocupa. Dos fragmentos sobre vacaciones, uno de 50 palabras y
+        otro de 500, estarían lejos entre sí en distancia aunque hablen de lo mismo. El
+        coseno normaliza por la longitud y deja solo el ángulo, que es lo que codifica el
+        significado. En la práctica los vectores se guardan ya normalizados, y entonces el
+        coseno es simplemente el producto escalar.</div></details></div>
+    <p><span class="hd">Setup.</span> Los dos vectores en el plano. En un sistema real
+      tienen entre 384 y 3.072 componentes; aquí dos, para poder verlos.</p>
+    <p><span class="hd">Juega.</span> Buscad una pareja con coseno alto y normas muy
+      distintas: ese es el caso que la distancia euclídea juzgaría mal.</p>
+    <p><span class="hd">Lee así.</span> El ángulo entre las dos flechas es todo. El arco
+      dorado lo dibuja; el número de abajo lo cuantifica.</p>
+    <p><span class="hd">Mensaje.</span> Recuperar es quedarse con los <i>k</i> vectores de
+      mayor coseno con la pregunta. Todo lo demás del RAG es tubería alrededor.</p>
+    <p class="miniglos"><b>Términos.</b> <b>q</b>: vector de la pregunta. <b>d</b>: vector
+      de un fragmento. <b>producto escalar</b>: suma de productos componente a componente.
+      <b>norma</b>: longitud del vector. <b>coseno</b>: parecido, entre &minus;1 y 1.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 1 : recuperación real ================= -->
+<section class="slide" id="s1">
+  <div class="figcol">
+    <canvas id="cv1a" data-aspect="2.10"></canvas>
+    <div id="tab1"></div>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">tf-idf(t, d) =
+        <span class="frac"><span class="num">n<sub>t,d</sub></span>
+        <span class="den">|d|</span></span>
+        &middot; <span style="font-style:italic">log</span>
+        <span class="frac"><span class="num">1 + N</span>
+        <span class="den">1 + df<sub>t</sub></span></span> + 1
+        <span class="eqn">(Ec. 3)</span></div>
+      <div class="eqread">El peso del término <b>t</b> en el documento <b>d</b>. A la
+        izquierda la <b>frecuencia</b>: cuántas veces aparece, dividido por la longitud del
+        documento. A la derecha la <b>rareza</b>: <b>N</b> documentos en total,
+        <b>df<sub>t</sub></b> los que contienen el término. Un término que sale en todas
+        partes («días») pesa poco; uno que sale en un solo documento («trienio») pesa
+        mucho.</div>
+      <div class="eq">top-<i>k</i> = argmax<sub>d</sub><sup>(k)</sup>
+        &nbsp;cos(q, d) <span class="eqn">(Ec. 4)</span></div>
+      <div class="eqread">La recuperación: ordenar todos los fragmentos por coseno con la
+        pregunta y quedarse con los <b>k</b> primeros. Esos k son los que acaban dentro
+        del prompt, y por tanto los que pagáis.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label><b>Pregunta</b> (como la escribiría un empleado)</label>
+      <select id="pq1"></select>
+      <label>Fragmentos recuperados (k): <span id="lk1" class="deep"></span></label>
+      <input type="range" id="k1" min="1" max="8" step="1" value="3">
+      <label><input type="checkbox" id="exp1"> Expandir la consulta con sinónimos del
+        dominio</label>
+    </div>
+    <div class="readout" id="ro1"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Elige «cuántos días de vacaciones me tocan» con k = 3.
+        <span class="obs">El artículo correcto sale el primero: la pregunta y el documento
+        comparten la palabra «vacaciones», que es rara en el corpus.</span></li>
+      <li>Cambia a «me caso, cuántos días libres me dan».
+        <span class="obs">Falla. El documento correcto habla de «matrimonio», no de
+        «caso»: el empleado y el convenio no usan la misma palabra.</span></li>
+      <li>Con esa pregunta, sube k hasta 8.
+        <span class="obs">Acaba apareciendo, pero en los últimos puestos y después de
+        pagar ocho fragmentos de contexto en vez de tres.</span></li>
+      <li>Vuelve a k = 3 y activa la expansión.
+        <span class="obs">Sale el primero y gratis: expandir la consulta ocurre ANTES de
+        recuperar, así que no añade un solo token al prompt.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué «días» pesa poco
+        aunque aparezca en la pregunta?</summary>
+        <div class="ans">Porque el idf lo penaliza: «días» aparece en casi todos los
+        artículos del convenio, así que df es alto y log((1+N)/(1+df)) se acerca a cero.
+        Coincidir en «días» no distingue un documento de otro. Lo que decide el ranking son
+        los términos raros: «vacaciones», «matrimonio», «trienio». De ahí que una pregunta
+        formada sólo por palabras comunes recupere prácticamente al azar.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, el coseno de los diez fragmentos del corpus
+      con la pregunta; en dorado los que entran en el prompt. Debajo, la tabla con los
+      términos que han decidido cada puntuación.</p>
+    <p><span class="hd">Juega.</span> Comparad una pregunta que use las palabras del
+      documento con otra que use las del usuario. Es la diferencia entre un RAG de demo y
+      uno de producción.</p>
+    <p><span class="hd">Lee así.</span> Si la barra verde (documento correcto) no está
+      entre las doradas, tenéis un fallo de recuperación, y subir k es la solución cara.</p>
+    <p><span class="hd">Mensaje.</span> El fallo más común de un RAG es de vocabulario, y
+      no se arregla con un modelo mejor.</p>
+    <p class="miniglos"><b>Términos.</b> <b>tf</b>: frecuencia del término.
+      <b>idf</b>: rareza del término en el corpus. <b>k</b>: fragmentos recuperados.
+      <b>expansión</b>: añadir sinónimos a la consulta antes de buscar.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 2 : troceado ================= -->
+<section class="slide" id="s2">
+  <div class="figcol">
+    <canvas id="cv2a" data-aspect="2.10"></canvas>
+    <canvas id="cv2b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">n<sub>frag</sub> = &lceil;
+        <span class="frac"><span class="num">|D| &minus; s</span>
+        <span class="den">w &minus; s</span></span> &rceil;
+        <span class="eqn">(Ec. 5)</span></div>
+      <div class="eqread">Fragmentos que salen de un documento de <b>|D|</b> palabras con
+        ventana <b>w</b> y solapamiento <b>s</b>. El paso efectivo es <b>w &minus; s</b>:
+        por eso el solape tiene que ser estrictamente menor que la ventana, o el troceado
+        no avanza nunca.</div>
+      <div class="eq">t<sub>prompt</sub> = t<sub>base</sub> + k &middot; w &middot; &tau;
+        <span class="eqn">(Ec. 6)</span></div>
+      <div class="eqread">Los tokens que acaban en el prompt: una base fija más los
+        <b>k</b> fragmentos de <b>w</b> palabras, convertidas a tokens con
+        <b>&tau;</b> &asymp; 1,3. Trozos grandes y k grande se multiplican, y esa
+        multiplicación es la factura.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Tamaño del fragmento w: <span id="lw2" class="deep"></span></label>
+      <input type="range" id="w2" min="20" max="400" step="10" value="80">
+      <label>Solapamiento s: <span id="ls2" class="deep"></span></label>
+      <input type="range" id="s2c" min="0" max="80" step="5" value="10">
+      <label>Fragmentos recuperados k: <span id="lk2" class="deep"></span></label>
+      <input type="range" id="k2" min="1" max="20" step="1" value="5">
+    </div>
+    <div class="readout" id="ro2"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con w = 80 y s = 10, mira cuántos fragmentos salen del documento.
+        <span class="obs">Trozos manejables y un índice de tamaño razonable.</span></li>
+      <li>Baja w a 20.
+        <span class="obs">Muchísimos fragmentos, cada uno muy preciso pero sin contexto:
+        un «él» suelto ya no se sabe a quién se refiere.</span></li>
+      <li>Sube w a 400 con k = 5.
+        <span class="obs">El prompt se dispara: estáis pagando párrafos enteros de ruido
+        para llegar a la frase que importaba.</span></li>
+      <li>Sube el solape hasta acercarlo a w.
+        <span class="obs">El número de fragmentos explota: estáis indexando el mismo texto
+        muchas veces y pagando el almacenamiento de todas las copias.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿para qué sirve el
+        solapamiento?</summary>
+        <div class="ans">Para que una idea no quede partida justo en la frontera entre dos
+        fragmentos. Si el artículo dice «...con un preaviso mínimo de / quince días
+        naturales» y el corte cae en medio, ningún fragmento responde a la pregunta
+        completa. Un solape del 10 al 15 % resuelve la mayoría de los casos. Pasado ese
+        punto sólo estáis duplicando texto: más índice, más coste y el mismo recall.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Arriba, cómo queda troceado un artículo del convenio
+      con los parámetros actuales; las zonas más oscuras son el solape. Abajo, los tokens
+      que acaban en el prompt y lo que cuestan al mes.</p>
+    <p><span class="hd">Juega.</span> Buscad la combinación que os da fragmentos
+      autocontenidos sin inflar el prompt. Suele estar entre 400 y 800 tokens.</p>
+    <p><span class="hd">Lee así.</span> Si un fragmento no se entiende leído solo, el
+      modelo tampoco lo va a entender.</p>
+    <p><span class="hd">Mensaje.</span> Mejor que afinar el número es trocear por la
+      estructura del documento: por artículo, por apartado, por fila.</p>
+    <p class="miniglos"><b>Términos.</b> <b>w</b>: palabras por fragmento. <b>s</b>:
+      solapamiento. <b>&tau;</b>: tokens por palabra, ~1,3 en castellano.
+      <b>autocontenido</b>: que se entiende sin leer el fragmento anterior.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 3 : recall y fidelidad ================= -->
+<section class="slide" id="s3">
+  <div class="figcol">
+    <canvas id="cv3a" data-aspect="2.10"></canvas>
+    <canvas id="cv3b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las dos métricas de esta slide</div>
+      <div class="eq">Recall@k =
+        <span class="frac"><span class="num">#{ preguntas con alguna fuente correcta
+        entre las k }</span><span class="den">#{ preguntas }</span></span>
+        <span class="eqn">(Ec. 7)</span></div>
+      <div class="eqread">Mide el <b>buscador</b>. Si es bajo, el problema está en el
+        troceado, en el modelo de embedding o en que k es demasiado pequeño. Es
+        <b>monótono creciente en k</b>: recuperar más candidatos no puede perder uno que
+        ya estaba.</div>
+      <div class="eq">Faithfulness =
+        <span class="frac"><span class="num">#{ respuestas apoyadas en una fuente
+        correcta }</span><span class="den">#{ preguntas }</span></span>
+        <span class="eqn">(Ec. 8)</span></div>
+      <div class="eqread">Mide el <b>generador</b>. Si es bajo, el modelo está rellenando
+        huecos o leyendo el fragmento equivocado. <b>No</b> es monótono en k: depende de
+        quién va <i>primero</i>, no de cuántos haya.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label><input type="checkbox" id="exp3"> Expandir la consulta con sinónimos</label>
+      <label>Marcad el k que estáis considerando: <span id="lk3" class="deep"></span></label>
+      <input type="range" id="k3" min="1" max="10" step="1" value="3">
+    </div>
+    <div class="readout" id="ro3"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Sin expansión, recorre k de 1 a 10 con el deslizador.
+        <span class="obs">La curva de recall sube, pero la de fidelidad se queda
+        plana. Estáis pagando más contexto sin mejorar la respuesta.</span></li>
+      <li>Mira el panel de abajo con k = 10.
+        <span class="obs">El coste mensual se ha multiplicado por tres respecto a k = 1,
+        y la fidelidad es exactamente la misma.</span></li>
+      <li>Activa la expansión y vuelve a k = 1.
+        <span class="obs">Las dos curvas saltan a la vez. Es la primera vez que la
+        fidelidad se mueve.</span></li>
+      <li>Compara el coste de «expandir con k = 1» frente a «no expandir con k = 10».
+        <span class="obs">Misma calidad o mejor, a un tercio del precio. La palanca barata
+        no era la obvia.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué subir k no mejora
+        la fidelidad?</summary>
+        <div class="ans">Porque el generador no lee los k fragmentos con el mismo peso:
+        se apoya en los primeros. Si el documento correcto entra en el puesto octavo,
+        cuenta para el recall (está entre los k) pero no para la fidelidad (la respuesta
+        no sale de él). Subir k mete candidatos por la cola, que es justo donde no sirven.
+        Para mover la fidelidad hay que cambiar <i>quién va primero</i>: reordenando, o
+        arreglando la consulta para que el bueno gane desde el principio.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Arriba, las dos métricas sobre el conjunto de
+      evaluación real que lleva este deck. Abajo, el coste mensual de cada k.</p>
+    <p><span class="hd">Juega.</span> El deslizador no cambia el sistema: marca el k que
+      estáis evaluando para que podáis leer las tres columnas a la vez.</p>
+    <p><span class="hd">Lee así.</span> Buscad el k donde el recall deja de subir. A partir
+      de ahí sólo estáis pagando tokens.</p>
+    <p><span class="hd">Mensaje.</span> Dos métricas, dos fallos distintos, dos arreglos
+      distintos. Una sola métrica os deja ciegos ante la mitad de los problemas.</p>
+    <p class="miniglos"><b>Términos.</b> <b>conjunto de evaluación</b>: preguntas reales
+      con su respuesta y su fuente anotadas. <b>monótono</b>: que no puede bajar.
+      <b>reordenar</b>: cambiar el orden de los k ya recuperados.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 4 : el coste del RAG ================= -->
+<section class="slide" id="s4">
+  <div class="figcol">
+    <canvas id="cv4a" data-aspect="2.20"></canvas>
+    <canvas id="cv4b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">C<sub>consulta</sub> = p<sub>in</sub>[ t<sub>base</sub>
+        &middot; 0,1 + k &middot; t<sub>frag</sub> ] + p<sub>out</sub> t<sub>out</sub>
+        <span class="eqn">(Ec. 9)</span></div>
+      <div class="eqread">El prompt base (instrucciones) se <b>cachea</b> y se factura al
+        10 %; los <b>k</b> fragmentos cambian en cada consulta, así que se pagan enteros.
+        Esa asimetría es la que convierte a <b>k</b> en la variable de decisión del
+        sistema.</div>
+      <div class="eq">C<sub>ingesta</sub> = p<sub>emb</sub> &middot; |corpus|
+        &nbsp;&nbsp;(una vez) <span class="eqn">(Ec. 10)</span></div>
+      <div class="eqread">Embeber el corpus se paga <b>una sola vez</b>, o cada vez que
+        los documentos cambien. Es tan barato que nunca es el problema: a céntimos por
+        millón de tokens, indexar una empresa entera cuesta menos que un día de
+        consultas.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label><b>Modelo generador</b></label>
+      <select id="m4"></select>
+      <label>Fragmentos k: <span id="lk4" class="deep"></span></label>
+      <input type="range" id="k4" min="1" max="20" step="1" value="5">
+      <label>Tokens por fragmento: <span id="lt4" class="deep"></span></label>
+      <input type="range" id="t4" min="200" max="1500" step="50" value="600">
+      <label>Consultas al mes: <span id="ln4" class="deep"></span></label>
+      <input type="range" id="n4" min="5000" max="500000" step="5000" value="50000">
+      <label><input type="checkbox" id="c4" checked> Cachear el prompt base</label>
+    </div>
+    <div class="readout" id="ro4"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con k = 5 y 600 tokens por fragmento, mira el reparto del prompt.
+        <span class="obs">Los fragmentos son la mayor parte del contexto: el prompt base
+        casi no cuenta una vez cacheado.</span></li>
+      <li>Sube k de 5 a 20.
+        <span class="obs">El coste mensual se multiplica. Cada fragmento de más se paga en
+        todas y cada una de las consultas del mes.</span></li>
+      <li>Vuelve a k = 5 y apaga la caché del prompt base.
+        <span class="obs">Sube, pero menos de lo que esperabais: con k alto, lo que domina
+        son los fragmentos, no las instrucciones.</span></li>
+      <li>Compara el coste de la ingesta con el de un solo día de consultas.
+        <span class="obs">La ingesta es ruido en el presupuesto. Discutir si indexar
+        4.000 o 40.000 documentos es perder el tiempo.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿por qué reordenar es la
+        mejora con mejor relación calidad/coste de todo el pipeline?</summary>
+        <div class="ans">Porque consigue el efecto de un k grande con un k pequeño. Si
+        reordenáis bien, el fragmento correcto sube al primer puesto y podéis bajar k de 10
+        a 3 sin perder fidelidad: dos tercios menos de tokens en cada consulta del mes. El
+        reordenado en sí cuesta poco (se aplica sólo a los candidatos ya recuperados, no a
+        todo el corpus) y no añade ni un token al prompt que llega al generador.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Arriba, de qué se compone el prompt de una consulta.
+      Abajo, el coste mensual en función de k, con vuestro punto marcado.</p>
+    <p><span class="hd">Juega.</span> Poned los números de vuestro caso y comparad con el
+      recall que necesitáis de la slide anterior.</p>
+    <p><span class="hd">Lee así.</span> La pendiente de la curva es lo que os cuesta cada
+      fragmento adicional, al mes. Decidid k mirando esa pendiente y el recall a la vez.</p>
+    <p><span class="hd">Mensaje.</span> En un RAG, <i>k</i> es simultáneamente la palanca
+      de calidad y la de coste. No se puede elegir mirando sólo una.</p>
+    <p class="miniglos"><b>Términos.</b> <b>ingesta</b>: trocear, embeber e indexar.
+      <b>embedding</b>: el vector de un fragmento. <b>reordenar</b>: re-puntuar los k
+      candidatos con una señal mejor.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 5 : LoRA ================= -->
+<section class="slide" id="s5">
+  <div class="figcol">
+    <canvas id="cv5a" data-aspect="1.95"></canvas>
+    <canvas id="cv5b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">W&prime; = <span class="mut">W</span> +
+        <span class="gold">B</span><span class="gold">A</span>
+        <span class="eqn">(Ec. 11)</span></div>
+      <div class="eqread"><b><span class="mut">W</span></b> es la matriz original, de
+        <b>d &times; k</b>, y se queda <b>congelada</b>. El ajuste se aprende en dos
+        matrices finas: <b><span class="gold">B</span></b> de d&times;r y
+        <b><span class="gold">A</span></b> de r&times;k, con <b>r</b> (el <i>rango</i>)
+        mucho menor que d y k. La intuición: el cambio que necesitáis es mucho más simple
+        que el modelo entero, y cabe en el producto de dos matrices delgadas.</div>
+      <div class="eq">&theta;<sub>entrenables</sub> = r(d + k) &nbsp;&nbsp;frente a&nbsp;&nbsp;
+        d &middot; k <span class="eqn">(Ec. 12)</span></div>
+      <div class="eqread">La cuenta que lo explica todo. Con d = k, los parámetros
+        entrenables crecen de forma <b>lineal</b> en d mientras los originales crecen de
+        forma <b>cuadrática</b>: cuanto mayor es el modelo, mayor es el ahorro
+        relativo.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Dimensión de la matriz d = k: <span id="ld5" class="deep"></span></label>
+      <input type="range" id="d5" min="256" max="8192" step="256" value="4096">
+      <label>Rango r: <span id="lr5" class="deep"></span></label>
+      <input type="range" id="r5" min="1" max="128" step="1" value="8">
+      <label>Capas a las que aplicáis LoRA: <span id="lc5" class="deep"></span></label>
+      <input type="range" id="c5" min="1" max="200" step="1" value="64">
+    </div>
+    <div class="readout" id="ro5"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con d = 4.096 y r = 8, lee el porcentaje.
+        <span class="obs">Un 0,39 % de los parámetros. Es el número del deck, y sale de
+        dividir 8&times;8.192 entre 4.096&sup2;.</span></li>
+      <li>Sube r de 8 a 128.
+        <span class="obs">Crece a 6,25 %, dieciséis veces más. El rango es la palanca
+        entre capacidad de adaptación y coste: más rango aprende más, y cuesta más.</span></li>
+      <li>Vuelve a r = 8 y dobla d de 4.096 a 8.192.
+        <span class="obs">El porcentaje <b>baja</b> a la mitad. Cuanto mayor es el modelo,
+        más rentable es LoRA: el numerador crece lineal y el denominador cuadrático.</span></li>
+      <li>Mira el panel de abajo con 64 capas.
+        <span class="obs">El adaptador pesa megabytes frente a los gigabytes del modelo:
+        por eso podéis tener uno por cliente y cambiarlos en caliente.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: si LoRA es tan barato,
+        ¿por qué no usarlo para meter el conocimiento de vuestra empresa?</summary>
+        <div class="ans">Porque enseña <b>estilo y formato</b>, no <b>hechos</b>. Si
+        entrenáis con vuestra normativa, el modelo aprenderá a sonar como vuestra normativa
+        y seguirá inventando artículos que no existen, sólo que con el tono correcto, que
+        es peor. Para hechos verificables y citables está RAG. La regla del tema:
+        conocimiento nuevo → RAG; estilo y formato → LoRA; criterio → preferencias.</div>
+      </details></div>
+    <p><span class="hd">Setup.</span> Arriba, la matriz congelada y las dos entrenables a
+      escala real. Abajo, parámetros entrenables frente a totales, en escala
+      logarítmica.</p>
+    <p><span class="hd">Juega.</span> Un modelo de 7B tiene d &asymp; 4.096; uno de 70B,
+      d &asymp; 8.192. Mirad cómo cambia el porcentaje.</p>
+    <p><span class="hd">Lee así.</span> El rectángulo dorado al lado del gris es,
+      literalmente, lo que entrenáis.</p>
+    <p><span class="hd">Mensaje.</span> LoRA es lo que pone ajustar un modelo al alcance de
+      una empresa mediana: una GPU, unas horas, un fichero de megabytes.</p>
+    <p class="miniglos"><b>Términos.</b> <b>r</b>: rango, el ancho de las matrices finas.
+      <b>congelar</b>: no actualizar esos pesos. <b>adaptador</b>: el fichero con B y A.
+      <b>SFT</b>: entrenar con ejemplos de entrada y salida correcta.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 6 : multi-agente ================= -->
+<section class="slide" id="s6">
+  <div class="figcol">
+    <canvas id="cv6a" data-aspect="2.20"></canvas>
+    <canvas id="cv6b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">T(m) =
+        <span class="frac"><span class="num">W</span><span class="den">m</span></span>
+        + c <span class="eqn">(Ec. 13)</span></div>
+      <div class="eqread">El <b>tiempo de reloj</b> con <b>m</b> sub-agentes: el trabajo
+        <b>W</b> se reparte, pero la <b>coordinación c</b> (repartir, esperar, juntar) no
+        se paraleliza. Es la ley de Amdahl: por mucho que subáis m, nunca bajáis de c.</div>
+      <div class="eq">&Theta;(m) = t<sub>0</sub> + m(t<sub>0</sub> + t<sub>prop</sub>)
+        <span class="eqn">(Ec. 14)</span></div>
+      <div class="eqread">Los <b>tokens</b> totales: el coordinador paga su contexto
+        <b>t<sub>0</sub></b>, y <b>cada</b> sub-agente vuelve a pagar el suyo más el
+        trabajo propio. Crece de forma <b>lineal y sin techo</b>, justo al revés que el
+        tiempo.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Sub-agentes en paralelo (m): <span id="lm6" class="deep"></span></label>
+      <input type="range" id="m6" min="1" max="16" step="1" value="4">
+      <label>Contexto base por agente t<sub>0</sub>: <span id="lt6" class="deep"></span></label>
+      <input type="range" id="t6" min="1000" max="30000" step="1000" value="8000">
+      <label>Coordinación que no se paraleliza (c): <span id="lc6" class="deep"></span></label>
+      <input type="range" id="c6" min="0" max="30" step="1" value="6">
+    </div>
+    <div class="readout" id="ro6"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Sube m de 1 a 4.
+        <span class="obs">El tiempo cae mucho y el coste sube poco: esta zona es donde
+        multi-agente merece la pena.</span></li>
+      <li>Sigue hasta m = 16.
+        <span class="obs">El tiempo apenas se mueve ya (está pegado a c) pero el coste
+        sigue subiendo en línea recta. Estáis pagando sin comprar nada.</span></li>
+      <li>Sube el contexto base a 30.000 tokens.
+        <span class="obs">La recta de coste se empina: cuanto más contexto necesita cada
+        sub-agente para arrancar, antes deja de compensar.</span></li>
+      <li>Pon la coordinación a 0 y vuelve a subir m.
+        <span class="obs">Sólo con coordinación gratuita el tiempo tiende a cero. En la
+        realidad c nunca es cero: alguien tiene que repartir y juntar.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿cuándo NO usar
+        multi-agente?</summary>
+        <div class="ans">Cuando la tarea es secuencial. Si el paso 2 necesita el resultado
+        del paso 1, no hay nada que paralelizar: tendréis el mismo tiempo que con un solo
+        agente y habréis pagado un contexto base de más por cada sub-agente. La prueba
+        práctica: si no sabéis enumerar las ramas independientes <i>antes</i> de lanzar, no
+        es un caso multi-agente.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, tiempo y coste en el mismo gráfico con dos
+      ejes. Abajo, de dónde salen los tokens: coordinador y sub-agentes.</p>
+    <p><span class="hd">Juega.</span> Buscad el m donde la curva de tiempo se aplana. Ese
+      es vuestro número: más allá sólo hay factura.</p>
+    <p><span class="hd">Lee así.</span> La zona dorada es donde el tiempo que ganáis
+      justifica los tokens que gastáis. A partir de ahí, sólo gastáis.</p>
+    <p><span class="hd">Mensaje.</span> Multi-agente compra tiempo de reloj con tokens, y
+      el cambio deja de ser bueno mucho antes de lo que parece.</p>
+    <p class="miniglos"><b>Términos.</b> <b>m</b>: sub-agentes en paralelo.
+      <b>coordinación</b>: repartir, esperar y juntar. <b>contexto base</b>: lo que cada
+      sub-agente necesita para empezar. <b>abanico</b>: patrón de ramas independientes.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 7 : el presupuesto completo ================= -->
+<section class="slide" id="s7">
+  <div class="figcol">
+    <canvas id="cv7a" data-aspect="2.00"></canvas>
+    <canvas id="cv7b" data-aspect="2.60"></canvas>
+    <div class="eqpanel"><div class="eqtitle">las ecuaciones de esta slide</div>
+      <div class="eq">C<sub>total</sub> = C<sub>infer</sub> + C<sub>emb</sub> +
+        C<sub>vect</sub> + C<sub>srv</sub> + C<sub>obs</sub> + C<sub>pers</sub>
+        <span class="eqn">(Ec. 15)</span></div>
+      <div class="eqread">Las <b>seis</b> partidas. Las dos primeras dependen del uso; las
+        tres siguientes son infraestructura fija; la última son personas. Un presupuesto de
+        IA que sólo cuenta la primera está mal hecho, y es el error más repetido en los
+        proyectos de clase.</div>
+      <div class="eq">C<sub>usuario</sub> =
+        <span class="frac"><span class="num">C<sub>total</sub></span>
+        <span class="den">U</span></span>
+        <span class="eqn">(Ec. 16)</span></div>
+      <div class="eqread">El número que pide el inversor: coste total entre usuarios
+        activos <b>U</b>. Comparadlo con lo que cobráis por usuario y tendréis el margen.
+        Si no sabéis estimar U, el problema no es de IA.</div>
+    </div>
+  </div>
+  <div class="txtcol">
+    <div class="ctrlbox">
+      <label>Consultas al mes: <span id="ln7" class="deep"></span></label>
+      <input type="range" id="n7" min="5000" max="1000000" step="5000" value="50000">
+      <label>Usuarios activos: <span id="lu7" class="deep"></span></label>
+      <input type="range" id="u7" min="100" max="20000" step="100" value="1200">
+      <label>Dedicación de MLOps: <span id="lp7" class="deep"></span></label>
+      <input type="range" id="p7" min="0" max="100" step="5" value="25">
+      <label>Precio que cobráis por usuario y mes (USD):
+        <span id="lv7" class="deep"></span></label>
+      <input type="range" id="v7" min="0" max="60" step="1" value="6">
+    </div>
+    <div class="readout" id="ro7"></div>
+    <div class="guide"><div class="gtitle">guion paso a paso</div><ol>
+      <li>Con los valores de partida, mira qué partida es la mayor.
+        <span class="obs">El personal, con diferencia. La inferencia, que es de lo único
+        que todo el mundo habla, es la segunda.</span></li>
+      <li>Sube las consultas a 500.000 dejando los usuarios igual.
+        <span class="obs">La inferencia adelanta al personal. Hay un volumen a partir del
+        cual el coste de IA sí domina, y conviene saber dónde está el vuestro.</span></li>
+      <li>Baja la dedicación de MLOps a 0.
+        <span class="obs">El total se desploma y el margen se vuelve precioso. Así es como
+        un presupuesto se vuelve mentira.</span></li>
+      <li>Ajusta el precio por usuario hasta que el margen se ponga verde.
+        <span class="obs">Ese es el precio mínimo viable de vuestro producto, y sale de
+        un cálculo, no de mirar a la competencia.</span></li>
+      </ol>
+      <details class="check"><summary>Comprueba que entiendes: ¿qué pasa con vuestro
+        margen si crecéis 10&times;?</summary>
+        <div class="ans">Depende de qué partidas sean fijas. El personal y la
+        infraestructura no se multiplican por diez: una persona puede operar un sistema
+        que atiende a diez veces más usuarios. La inferencia sí crece de forma lineal.
+        Por eso el margen <b>mejora</b> con la escala hasta que la inferencia domina el
+        total, y a partir de ahí se estanca. Localizar ese punto es exactamente lo que el
+        inversor quiere oír que habéis hecho.</div></details></div>
+    <p><span class="hd">Setup.</span> Arriba, las seis partidas ordenadas. Abajo, coste e
+      ingreso por usuario, con el margen.</p>
+    <p><span class="hd">Juega.</span> Poned vuestros números y encontrad el precio mínimo
+      al que vuestro producto es viable.</p>
+    <p><span class="hd">Lee así.</span> Si la barra de ingreso no supera a la de coste,
+      no tenéis un producto: tenéis un gasto.</p>
+    <p><span class="hd">Mensaje.</span> La partida mayor de un presupuesto de IA suele ser
+      una persona, no una API.</p>
+    <p class="miniglos"><b>Términos.</b> <b>U</b>: usuarios activos. <b>margen</b>:
+      ingreso menos coste, por usuario. <b>coste fijo</b>: el que no crece con el uso.
+      <b>TCO</b>: coste total de propiedad.</p>
+    <p class="fuente" id="fecha7"></p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 8 : GLOSARIO ================= -->
+<section class="slide" id="s8">
+  <div class="glosgrid">
+    <div class="glositem"><span class="gsym">RAG</span><span>Recuperar fragmentos propios
+      y pasárselos al modelo para que responda con ellos delante, citando la
+      fuente.</span></div>
+    <div class="glositem"><span class="gsym">fragmento</span><span>Trozo de documento que
+      se indexa y se recupera como unidad. Entre 400 y 800 tokens suele funcionar.</span></div>
+    <div class="glositem"><span class="gsym">w, s</span><span>Tamaño del fragmento y
+      solapamiento, en palabras. El solape tiene que ser menor que w.</span></div>
+    <div class="glositem"><span class="gsym">embedding</span><span>Vector que representa un
+      fragmento. La cercanía entre vectores codifica parecido de significado.</span></div>
+    <div class="glositem"><span class="gsym">cos(q, d)</span><span>Similitud coseno:
+      producto escalar dividido por las normas. Mide el ángulo, no la longitud.</span></div>
+    <div class="glositem"><span class="gsym">tf-idf</span><span>Peso de un término:
+      frecuencia en el documento por rareza en el corpus.</span></div>
+    <div class="glositem"><span class="gsym">k</span><span>Fragmentos que se inyectan en el
+      prompt. Palanca de calidad y de coste a la vez.</span></div>
+    <div class="glositem"><span class="gsym">Recall@k</span><span>Fracción de preguntas
+      cuya fuente correcta está entre los k recuperados. Mide el buscador.</span></div>
+    <div class="glositem"><span class="gsym">Faithfulness</span><span>Fracción de
+      respuestas que de verdad se apoyan en las fuentes. Mide el generador.</span></div>
+    <div class="glositem"><span class="gsym">reordenar</span><span>Re-puntuar los k
+      candidatos con una señal mejor. Sube lo relevante al primer puesto sin añadir
+      tokens.</span></div>
+    <div class="glositem"><span class="gsym">expandir</span><span>Añadir sinónimos del
+      dominio a la consulta antes de buscar. Arregla el desajuste de vocabulario y es
+      gratis en contexto.</span></div>
+    <div class="glositem"><span class="gsym">MCP</span><span>Protocolo estándar entre el
+      agente y vuestros sistemas. Un servidor expone herramientas, recursos y
+      prompts.</span></div>
+    <div class="glositem"><span class="gsym">inyección de prompt</span><span>Texto en un
+      dato de entrada que da órdenes al agente que lo lee. Peligrosa cuando el agente
+      también puede actuar.</span></div>
+    <div class="glositem"><span class="gsym">SFT</span><span>Entrenar con pares
+      «entrada, salida correcta». Cambia estilo y formato, no conocimiento.</span></div>
+    <div class="glositem"><span class="gsym">LoRA</span><span>Congelar el modelo y entrenar
+      dos matrices de rango bajo al lado. Casi todo el efecto por una fracción del
+      coste.</span></div>
+    <div class="glositem"><span class="gsym">r</span><span>Rango de LoRA. Más rango
+      adapta más y cuesta más; entre 4 y 64 es lo habitual.</span></div>
+    <div class="glositem"><span class="gsym">RLHF / DPO</span><span>Aprender de pares
+      «esta respuesta mejor que aquella». Cambia el criterio, no el formato.</span></div>
+    <div class="glositem"><span class="gsym">m</span><span>Sub-agentes en paralelo. El
+      tiempo baja con rendimientos decrecientes; el coste sube sin techo.</span></div>
+    <div class="glositem"><span class="gsym">loop engineering</span><span>El ciclo
+      evaluar, cambiar una cosa, volver a medir, desplegar y observar.</span></div>
+    <div class="glositem"><span class="gsym">conjunto de evaluación</span><span>30-100
+      preguntas reales con respuesta acordada. Sin él, «va mejor» es una opinión.</span></div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 9 : SÍNTESIS ================= -->
+<section class="slide" id="s9">
+  <div class="pipe">
+    <div class="pipebox">
+      <div class="pname">1 &middot; Elegid por lo que falta</div>
+      <div class="pq">«¿Le falta información, acciones, capacidad de trabajo o
+        criterio?»
+        <div class="pmap">Información → RAG. Acciones → MCP. Capacidad →
+        multi-agente. Criterio → preferencias. Probad siempre de izquierda a
+        derecha: el orden es de coste creciente.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">2 &middot; Recuperar es geometría</div>
+      <div class="pq">«Quedarse con los k vectores de mayor coseno con la pregunta.»
+        <div class="pmap">cos(q,d) = q·d / (&#8214;q&#8214;&#8214;d&#8214;). Todo lo demás
+        —trocear, embeber, indexar— es tubería alrededor de esa cuenta.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">3 &middot; Dos métricas, dos fallos</div>
+      <div class="pq">«Recall@k mide el buscador; faithfulness mide el generador.»
+        <div class="pmap">Subir k sube el recall y la factura, y deja la fidelidad igual.
+        La fidelidad depende de quién va primero, y eso se arregla reordenando o
+        expandiendo la consulta.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">4 &middot; Adaptar no es saber</div>
+      <div class="pq">«LoRA entrena el 0,39 % de los parámetros, y aun así no mete
+        hechos nuevos.»
+        <div class="pmap">W&prime; = W + BA, con &theta; = r(d+k) frente a d·k. Cambia
+        estilo y formato; para hechos verificables y citables, RAG.</div></div>
+    </div>
+    <div class="pipearrow">&darr;</div>
+    <div class="pipebox">
+      <div class="pname">5 &middot; Todo acaba en el presupuesto</div>
+      <div class="pq">«Seis partidas, y la mayor suele ser una persona.»
+        <div class="pmap">C<sub>total</sub> = infer + emb + vect + srv + obs + pers;
+        C<sub>usuario</sub> = C<sub>total</sub>/U. Ese cociente es la primera pregunta del
+        inversor y el entregable del proyecto final.</div></div>
+    </div>
+  </div>
+</section>
+
+<div id="footerL">Garrido-Merchán — ecgarrido@comillas.edu — Deep Learning para Business Analytics — Tema B · Sistemas sobre el agente</div>
+<div id="arrows"><button id="prev">&larr;</button><button id="next">&rarr;</button></div>
+<div id="footer"></div>
+
+<script>
+"use strict";
+window.onerror=function(m,u,l){
+  const b=document.getElementById("errbanner");
+  b.style.display="block";b.textContent="Error: "+m+" ("+l+")";return false;};
+
+const INK="#1A1A1A",GOLD="#B8860B",GOLDD="#8C6508",GOLDP="#F5EBD3",
+      MUTE="#8A8A8A",RULE="#D9C28A",VERDE="#4a7a2a";
+
+/* ===================== TABLA DE PRECIOS =====================
+   Copiada de nuevo_material/calculadora_costes/precios.json. */
+const FECHA_PRECIOS="2026-10-02";
+const MODELOS=[
+  {id:"claude-haiku-4-5", nom:"Claude Haiku 4.5", in:1.00,  out:5.00},
+  {id:"claude-sonnet-5",  nom:"Claude Sonnet 5",  in:3.00,  out:15.00},
+  {id:"claude-opus-5",    nom:"Claude Opus 5",    in:5.00,  out:25.00},
+  {id:"claude-fable-5",   nom:"Claude Fable 5",   in:10.00, out:50.00}
+];
+const F_CACHE_LEE=0.10, F_CACHE_5M=1.25, F_CACHE_1H=2.00, F_BATCH=0.50;
+const MLOPS_ANUAL_EUR=55000, EUR_USD=1.08;
+
+function modelo(id){return MODELOS.find(m=>m.id===id)||MODELOS[1];}
+function costeLlamada(m,tin,tout,f,batch){
+  f=f||0; const fb=batch?F_BATCH:1;
+  const pin=m.in/1e6, pout=m.out/1e6;
+  return (pin*tin*(1-f) + pin*tin*f*F_CACHE_LEE + pout*tout)*fb;
+}
+
+/* ===================== FORMATO ESPAÑOL ===================== */
+function mil(x,d){
+  d=(d===undefined)?0:d;
+  const s=Math.abs(x).toFixed(d).split(".");
+  s[0]=s[0].replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  return (x<0?"-":"")+(s.length>1?s[0]+","+s[1]:s[0]);
+}
+function usd(x){
+  if(x>=1000)return mil(x,0)+" $";
+  if(x>=1)return mil(x,2)+" $";
+  if(x>=0.001)return mil(x,4)+" $";
+  return mil(x,6)+" $";
+}
+function pct(x){return mil(x*100,0)+" %";}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+
+/* ===================== CORPUS Y RECUPERADOR =====================
+   Versión reducida del corpus de practica_tema_B.py. La matemática es la
+   misma: tf-idf + coseno, calculado aquí de verdad. */
+const CORPUS=[
+ ["art_14","Articulo 14 Vacaciones anuales. El personal tendra derecho a veintitres dias laborables de vacaciones retribuidas por ano completo trabajado, con un preaviso minimo de quince dias naturales."],
+ ["art_15","Articulo 15 Permiso por traslado de domicilio. Se concedera un dia de permiso retribuido por traslado del domicilio habitual, ampliable a dos dias cuando el traslado sea a otra provincia."],
+ ["art_16","Articulo 16 Permiso por matrimonio. Se concederan quince dias naturales de permiso retribuido por matrimonio o registro de pareja de hecho."],
+ ["art_17","Articulo 17 Permiso por fallecimiento. Dos dias naturales por fallecimiento, accidente o enfermedad grave de parientes hasta segundo grado, ampliables a cuatro dias."],
+ ["art_21","Articulo 21 Excedencia voluntaria. La persona trabajadora con un ano de antiguedad podra solicitar excedencia voluntaria por un plazo no mayor a cinco anos."],
+ ["art_22","Articulo 22 Excedencia por cuidado de hijos. El periodo de excedencia por cuidado de hijo no sera superior a tres anos. Durante el primer ano se reservara el mismo puesto de trabajo."],
+ ["art_30","Articulo 30 Jornada laboral. La jornada ordinaria sera de mil setecientas sesenta horas anuales, distribuidas de lunes a viernes, con jornada intensiva en julio y agosto."],
+ ["art_40","Articulo 40 Complemento de antiguedad. Se devengara un trienio equivalente al tres por ciento del salario base por cada tres anos de servicio efectivo."],
+ ["teletrabajo","Politica de teletrabajo. Se permiten hasta tres dias de trabajo a distancia por semana, previa autorizacion del responsable, con treinta euros mensuales de compensacion."],
+ ["gastos","Politica de gastos de viaje. La dieta nacional con pernocta es de sesenta y seis euros diarios. El uso del vehiculo propio se abona a veintiseis centimos por kilometro."]
+];
+const PREGUNTAS=[
+ ["cuantos dias de vacaciones me tocan al ano","art_14"],
+ ["me caso cuantos dias libres me dan","art_16"],
+ ["cuanto tiempo puedo estar de excedencia voluntaria","art_21"],
+ ["si me voy a cuidar a mi hijo me guardan el puesto","art_22"],
+ ["cuantas horas trabajo al ano","art_30"],
+ ["cuanto me suben el sueldo por llevar tres anos","art_40"],
+ ["cuantos dias puedo trabajar desde casa","teletrabajo"],
+ ["si uso mi coche para ver a un cliente cuanto me pagan","gastos"]
+];
+const SINONIMOS={
+  caso:["matrimonio"], casa:["distancia","teletrabajo","domicilio"],
+  coche:["vehiculo","kilometro"], sueldo:["salario"],
+  guardan:["reservara"], trabajo:["jornada"], libres:["permiso"]
+};
+const VACIAS=new Set(["a","al","ante","con","de","del","el","en","la","las","lo",
+ "los","para","por","que","se","su","sus","un","una","y","o","es","son","como",
+ "mas","si","no","me","mi","yo","cual","cuanto","cuanta","cuantos","cuantas",
+ "donde","cuando","tengo","puedo","hay","ser","esta","este","esto","sea"]);
+
+function norm(s){
+  s=s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const out=[];
+  (s.match(/[a-z0-9]+/g)||[]).forEach(w=>{if(!VACIAS.has(w)&&w.length>1)out.push(w);});
+  return out;
+}
+function expandir(q){
+  const ts=norm(q),ex=[];
+  ts.forEach(t=>{if(SINONIMOS[t])SINONIMOS[t].forEach(s=>ex.push(s));});
+  return ex.length?q+" "+ex.join(" "):q;
+}
+/* índice tf-idf construido una sola vez */
+const IDX=(function(){
+  const N=CORPUS.length, df={};
+  CORPUS.forEach(d=>{const u=new Set(norm(d[1]));u.forEach(t=>{df[t]=(df[t]||0)+1;});});
+  const idf={};Object.keys(df).forEach(t=>{idf[t]=Math.log((1+N)/(1+df[t]))+1;});
+  function vec(txt){
+    const ts=norm(txt);if(!ts.length)return {};
+    const tf={};ts.forEach(t=>{tf[t]=(tf[t]||0)+1;});
+    const v={};let nrm=0;
+    Object.keys(tf).forEach(t=>{
+      const x=(tf[t]/ts.length)*(idf[t]||Math.log(1+N)+1);v[t]=x;nrm+=x*x;});
+    nrm=Math.sqrt(nrm);if(nrm===0)return {};
+    Object.keys(v).forEach(t=>{v[t]/=nrm;});
+    return v;
+  }
+  const vecs=CORPUS.map(d=>vec(d[1]));
+  function cos(a,b){
+    let s=0;const corto=Object.keys(a).length<Object.keys(b).length?a:b;
+    const largo=corto===a?b:a;
+    Object.keys(corto).forEach(t=>{if(largo[t])s+=corto[t]*largo[t];});
+    return s;
+  }
+  function buscar(q,k){
+    const qv=vec(q);
+    const r=CORPUS.map((d,i)=>({id:d[0],txt:d[1],s:cos(qv,vecs[i])}));
+    r.sort((x,y)=>y.s-x.s||(x.id<y.id?-1:1));
+    return r.slice(0,k);
+  }
+  return {buscar:buscar,vec:vec,idf:idf,N:N};
+})();
+
+function metricas(k,expand){
+  let rec=0,fiel=0;
+  PREGUNTAS.forEach(p=>{
+    const q=expand?expandir(p[0]):p[0];
+    const r=IDX.buscar(q,k);
+    if(r.some(x=>x.id===p[1]))rec++;
+    if(r.length&&r[0].id===p[1])fiel++;
+  });
+  return {recall:rec/PREGUNTAS.length, fiel:fiel/PREGUNTAS.length};
+}
+
+/* ===================== NAVEGACIÓN ===================== */
+const SECTIONS=["Coseno","Recuperar","Trocear","Métricas","Coste RAG","LoRA",
+                "Multi-agente","Presupuesto","Glosario","Síntesis"];
+const TITLES=[
+ "Recuperar es quedarse con los vectores que apuntan en la misma dirección que la pregunta.",
+ "El fallo más común de un RAG es de vocabulario, y no lo arregla un modelo mejor.",
+ "El tamaño del fragmento decide a la vez qué puede responder el sistema y cuánto cuesta.",
+ "Subir k mejora el recall, sube la factura y deja la fidelidad donde estaba.",
+ "En un RAG, k es la palanca de calidad y la de coste al mismo tiempo.",
+ "LoRA entrena una fracción mínima de los parámetros y consigue casi todo el efecto.",
+ "Multi-agente compra tiempo de reloj con tokens, y deja de compensar antes de lo que parece.",
+ "La partida más grande de un presupuesto de IA suele ser una persona, no una API.",
+ "Glosario: todos los símbolos del tema, en una página y en cristiano.",
+ "Del coseno al coste por usuario: el tema entero en cinco pasos."];
+let cur=0;const N=SECTIONS.length;
+if(N!==TITLES.length||N!==document.querySelectorAll(".slide").length)
+  window.onerror("SECTIONS ("+N+") / TITLES ("+TITLES.length+") / slides ("+
+    document.querySelectorAll(".slide").length+") desalineados","",0);
+const nav=document.getElementById("navstrip");
+SECTIONS.forEach((s,i)=>{const sp=document.createElement("span");
+  sp.textContent=s;sp.onclick=()=>go(i);nav.appendChild(sp);});
+function go(i){
+  cur=(i+N)%N;
+  document.querySelectorAll(".slide").forEach((s,j)=>s.classList.toggle("active",j===cur));
+  document.querySelectorAll("#navstrip span").forEach((s,j)=>s.classList.toggle("cur",j===cur));
+  document.getElementById("slidetitle").textContent=TITLES[cur];
+  document.getElementById("footer").textContent=(cur+1)+" / "+N;
+  history.replaceState(null,"","#"+cur);
+  window.scrollTo(0,0);
+  if(updaters[cur])updaters[cur](true);
+}
+document.getElementById("prev").onclick=()=>go(cur-1);
+document.getElementById("next").onclick=()=>go(cur+1);
+document.addEventListener("keydown",e=>{
+  if(e.target&&e.target.tagName==="INPUT"&&e.target.type==="text")return;
+  if(e.key==="ArrowRight"||e.key==="PageDown")go(cur+1);
+  if(e.key==="ArrowLeft"||e.key==="PageUp")go(cur-1);});
+window.addEventListener("resize",()=>{if(updaters[cur])updaters[cur](true);});
+const updaters={};
+
+/* ===================== DIBUJO ===================== */
+function fitCanvas(cv){
+  const dpr=window.devicePixelRatio||1;
+  const wCss=cv.parentElement.clientWidth;
+  const asp=parseFloat(cv.dataset.aspect)||1.8;
+  const hCss=wCss/asp;
+  cv.style.height=hCss+"px";
+  cv.width=Math.round(wCss*dpr);cv.height=Math.round(hCss*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,wCss,hCss);
+  return {ctx:ctx,W:wCss,H:hCss};
+}
+function axes(ctx,fr,opt){
+  const X=v=>fr.x0+(v-opt.xmin)/(opt.xmax-opt.xmin)*fr.w;
+  const Y=v=>fr.y0+fr.h-(v-opt.ymin)/(opt.ymax-opt.ymin)*fr.h;
+  ctx.save();
+  ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.fillStyle=INK;
+  ctx.font="11px Georgia, serif";
+  ctx.beginPath();ctx.moveTo(fr.x0,fr.y0);ctx.lineTo(fr.x0,fr.y0+fr.h);
+  ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);ctx.stroke();
+  ctx.textAlign="center";ctx.textBaseline="top";
+  (opt.xticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(X(v),fr.y0+fr.h);ctx.lineTo(X(v),fr.y0+fr.h+4);ctx.stroke();
+    ctx.fillText(lb,X(v),fr.y0+fr.h+6);});
+  ctx.textAlign="right";ctx.textBaseline="middle";
+  (opt.yticks||[]).forEach(t=>{const v=Array.isArray(t)?t[0]:t,
+    lb=Array.isArray(t)?t[1]:String(t);
+    ctx.beginPath();ctx.moveTo(fr.x0,Y(v));ctx.lineTo(fr.x0-4,Y(v));ctx.stroke();
+    ctx.fillText(lb,fr.x0-6,Y(v));});
+  if(opt.xlabel){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.fillText(opt.xlabel,fr.x0+fr.w/2,fr.y0+fr.h+30);}
+  if(opt.title){ctx.textAlign="center";ctx.textBaseline="bottom";
+    ctx.font="bold 12px Georgia, serif";ctx.fillText(opt.title,fr.x0+fr.w/2,fr.y0-6);}
+  ctx.restore();
+  return {X:X,Y:Y};
+}
+function polyline(ctx,pts,color,lw,dash){
+  if(!pts.length)return;
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||2;
+  if(dash)ctx.setLineDash(dash);
+  ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0],pts[i][1]);
+  ctx.stroke();ctx.restore();
+}
+function stackedBar(ctx,x,y,w,h,partes,total){
+  let acc=0;
+  partes.forEach(p=>{
+    const ww=total>0?(p.v/total)*w:0;
+    ctx.fillStyle=p.c;ctx.fillRect(x+acc,y,ww,h);
+    ctx.strokeStyle="#fff";ctx.lineWidth=1;ctx.strokeRect(x+acc,y,ww,h);
+    acc+=ww;
+  });
+}
+function leyenda(ctx,x,y,items){
+  ctx.save();ctx.font="11px Georgia, serif";ctx.textBaseline="middle";
+  let xx=x;
+  items.forEach(it=>{
+    ctx.fillStyle=it.c;ctx.fillRect(xx,y-5,11,11);
+    ctx.fillStyle=INK;ctx.textAlign="left";ctx.fillText(it.t,xx+15,y);
+    xx+=18+ctx.measureText(it.t).width+16;
+  });
+  ctx.restore();
+}
+function llenaSelect(id,sel){
+  const el=document.getElementById(id);
+  MODELOS.forEach(m=>{const o=document.createElement("option");
+    o.value=m.id;o.textContent=m.nom+"  ("+m.in.toFixed(2)+" / "+m.out.toFixed(2)+" $/MTok)";
+    if(m.id===sel)o.selected=true;el.appendChild(o);});
+  return el;
+}
+
+/* ===================== SLIDE 0 : coseno ===================== */
+(function(){
+  const q1=document.getElementById("q1"),q2=document.getElementById("q2"),
+        d1=document.getElementById("d1"),d2=document.getElementById("d2"),
+        ro=document.getElementById("ro0");
+  function upd(){
+    const Q=[+q1.value,+q2.value], D=[+d1.value,+d2.value];
+    document.getElementById("lq1").textContent=Q[0];
+    document.getElementById("lq2").textContent=Q[1];
+    document.getElementById("ld1").textContent=D[0];
+    document.getElementById("ld2").textContent=D[1];
+
+    const dot=Q[0]*D[0]+Q[1]*D[1];
+    const nq=Math.sqrt(Q[0]*Q[0]+Q[1]*Q[1]), nd=Math.sqrt(D[0]*D[0]+D[1]*D[1]);
+    const cos=(nq>0&&nd>0)?dot/(nq*nd):0;
+    const ang=(nq>0&&nd>0)?Math.acos(Math.max(-1,Math.min(1,cos)))*180/Math.PI:NaN;
+
+    const F=fitCanvas(document.getElementById("cv0a"));
+    const cx=F.W/2, cy=F.H/2, R=Math.min(F.W,F.H)/2-26, E=R/11;
+    /* ejes */
+    F.ctx.strokeStyle="#ddd";F.ctx.lineWidth=1;
+    F.ctx.beginPath();F.ctx.moveTo(cx-R,cy);F.ctx.lineTo(cx+R,cy);
+    F.ctx.moveTo(cx,cy-R);F.ctx.lineTo(cx,cy+R);F.ctx.stroke();
+    for(let g=-10;g<=10;g+=2){
+      if(g===0)continue;
+      F.ctx.strokeStyle="#f2f2f2";
+      F.ctx.beginPath();F.ctx.moveTo(cx+g*E,cy-R);F.ctx.lineTo(cx+g*E,cy+R);
+      F.ctx.moveTo(cx-R,cy+g*E);F.ctx.lineTo(cx+R,cy+g*E);F.ctx.stroke();
+    }
+    function flecha(v,color,lab){
+      if(v[0]===0&&v[1]===0)return;
+      const x=cx+v[0]*E, y=cy-v[1]*E;
+      F.ctx.strokeStyle=color;F.ctx.fillStyle=color;F.ctx.lineWidth=2.6;
+      F.ctx.beginPath();F.ctx.moveTo(cx,cy);F.ctx.lineTo(x,y);F.ctx.stroke();
+      const a=Math.atan2(y-cy,x-cx);
+      F.ctx.beginPath();F.ctx.moveTo(x,y);
+      F.ctx.lineTo(x-10*Math.cos(a-0.4),y-10*Math.sin(a-0.4));
+      F.ctx.lineTo(x-10*Math.cos(a+0.4),y-10*Math.sin(a+0.4));
+      F.ctx.closePath();F.ctx.fill();
+      F.ctx.font="bold 13px Georgia, serif";F.ctx.textAlign="left";
+      F.ctx.textBaseline="middle";
+      F.ctx.fillText(lab+" ("+v[0]+", "+v[1]+")",x+8,y);
+    }
+    /* arco del ángulo */
+    if(nq>0&&nd>0){
+      const aq=Math.atan2(-Q[1],Q[0]), ad=Math.atan2(-D[1],D[0]);
+      F.ctx.strokeStyle=GOLDD;F.ctx.lineWidth=1.6;
+      F.ctx.beginPath();F.ctx.arc(cx,cy,R*0.30,Math.min(aq,ad),Math.max(aq,ad));
+      F.ctx.stroke();
+    }
+    flecha(Q,GOLD,"q"); flecha(D,GOLDD,"d");
+    F.ctx.fillStyle=INK;F.ctx.font="bold 13px Georgia, serif";
+    F.ctx.textAlign="center";F.ctx.textBaseline="top";
+    F.ctx.fillText("cos(q, d) = "+mil(cos,3)+
+      (isNaN(ang)?"":"      ángulo = "+mil(ang,1)+"°"),cx,8);
+
+    let veredicto;
+    if(cos>0.97)veredicto="<span class='badge ok'>casi idénticos</span> misma dirección: "+
+      "el mismo contenido, quizá a distinta escala";
+    else if(cos>0.5)veredicto="<span class='badge ok'>parecidos</span> comparten gran "+
+      "parte del significado";
+    else if(cos>0.15)veredicto="<span class='mut'>poco relacionados</span>";
+    else if(cos>-0.15)veredicto="<span class='badge bad'>sin relación</span> "+
+      "perpendiculares: no comparten nada";
+    else veredicto="<span class='badge bad'>opuestos</span>";
+
+    ro.innerHTML="Producto escalar q&middot;d = "+mil(dot,2)+"<br>"+
+      "Normas: &#8214;q&#8214; = "+mil(nq,3)+" &nbsp; &#8214;d&#8214; = "+mil(nd,3)+"<br>"+
+      "Coseno = "+mil(dot,2)+" / ("+mil(nq,3)+" &times; "+mil(nd,3)+") = "+
+      "<b class='gold'>"+mil(cos,4)+"</b><br>"+veredicto;
+  }
+  [q1,q2,d1,d2].forEach(e=>e.oninput=upd);
+  document.getElementById("btn0").onclick=()=>{
+    q1.value=3;q2.value=4;d1.value=6;d2.value=8;upd();};
+  updaters[0]=upd;upd();
+})();
+
+/* ===================== SLIDE 1 : recuperación real ===================== */
+(function(){
+  const sel=document.getElementById("pq1"),k=document.getElementById("k1"),
+        exp=document.getElementById("exp1"),ro=document.getElementById("ro1"),
+        tab=document.getElementById("tab1");
+  PREGUNTAS.forEach((p,i)=>{const o=document.createElement("option");
+    o.value=i;o.textContent=p[0];sel.appendChild(o);});
+  function upd(){
+    const p=PREGUNTAS[+sel.value],kk=+k.value,EX=exp.checked;
+    document.getElementById("lk1").textContent=kk;
+    const q=EX?expandir(p[0]):p[0];
+    const todos=IDX.buscar(q,CORPUS.length), top=todos.slice(0,kk);
+    const dentro=top.some(x=>x.id===p[1]);
+    const primero=top.length&&top[0].id===p[1];
+
+    /* panel: coseno de los 10 documentos */
+    const F=fitCanvas(document.getElementById("cv1a"));
+    const fr={x0:92,y0:24,w:F.W-120,h:F.H-50};
+    const mx=Math.max(0.01,todos[0].s)*1.15;
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Coseno con la pregunta (dorado = entra en el prompt)",F.W/2,14);
+    todos.forEach((r,i)=>{
+      const hh=fr.h/todos.length*0.74, y=fr.y0+i*(fr.h/todos.length);
+      const esCorr=r.id===p[1];
+      F.ctx.fillStyle=(i<kk)?(esCorr?VERDE:GOLD):(esCorr?"#b9d3a3":"#ddd");
+      F.ctx.fillRect(fr.x0,y,Math.max(1,r.s/mx*fr.w),hh);
+      F.ctx.fillStyle=esCorr?VERDE:INK;
+      F.ctx.font=(esCorr?"bold ":"")+"11px Georgia, serif";
+      F.ctx.textAlign="right";F.ctx.textBaseline="middle";
+      F.ctx.fillText(r.id+(esCorr?" ✓":""),fr.x0-7,y+hh/2);
+      F.ctx.textAlign="left";F.ctx.fillStyle=MUTE;
+      F.ctx.fillText(mil(r.s,3),fr.x0+Math.max(1,r.s/mx*fr.w)+6,y+hh/2);
+    });
+
+    /* tabla de términos que deciden */
+    const qv=IDX.vec(q);
+    const terms=Object.keys(qv).sort((a,b)=>qv[b]-qv[a]).slice(0,6);
+    let html="<table class='live'><tr><th>término de la consulta</th><th>idf</th>"+
+      "<th>peso en q</th></tr>";
+    terms.forEach(t=>{
+      html+="<tr><td>"+esc(t)+"</td><td>"+mil(IDX.idf[t]||0,2)+"</td><td>"+
+        mil(qv[t],3)+"</td></tr>";});
+    html+="</table>";
+    tab.innerHTML=html;
+
+    ro.innerHTML="Fuente correcta: <b class='deep'>"+p[1]+"</b><br>"+
+      (dentro?"<span class='badge ok'>recuperada</span> está en el puesto "+
+        (todos.findIndex(x=>x.id===p[1])+1)+" de "+CORPUS.length:
+        "<span class='badge bad'>NO recuperada</span> queda fuera de los "+kk)+
+      "<br>"+(primero?"<span class='badge ok'>va primera</span> el generador la leerá":
+        "<span class='badge bad'>no va primera</span> el generador leerá «"+
+        (top.length?top[0].id:"nada")+"»")+
+      (EX?"<br><span class='mut'>Consulta expandida: «"+esc(q)+"»</span>":"");
+  }
+  [sel,k].forEach(e=>e.oninput=upd); sel.onchange=upd; exp.onchange=upd;
+  updaters[1]=upd;upd();
+})();
+
+/* ===================== SLIDE 2 : troceado ===================== */
+(function(){
+  const w=document.getElementById("w2"),s=document.getElementById("s2c"),
+        k=document.getElementById("k2"),ro=document.getElementById("ro2");
+  const DOC=420;              // palabras de un artículo tipo
+  const TAU=1.3;              // tokens por palabra en castellano
+  const M=modelo("claude-sonnet-5"), T_BASE=1200, T_OUT=400, NN=50000;
+  function upd(){
+    let W=+w.value, S=+s.value;
+    if(S>=W){S=Math.max(0,W-5);s.value=S;}   // guarda: el troceado debe avanzar
+    const K=+k.value;
+    document.getElementById("lw2").textContent=W+" palabras";
+    document.getElementById("ls2").textContent=S+" palabras ("+pct(S/W)+")";
+    document.getElementById("lk2").textContent=K;
+
+    const paso=W-S;
+    const nfrag=Math.max(1,Math.ceil((DOC-S)/paso));
+
+    /* panel A: el documento troceado */
+    const F=fitCanvas(document.getElementById("cv2a"));
+    const fr={x0:24,y0:52,w:F.W-48,h:F.H-96};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Un documento de "+DOC+" palabras, troceado en "+nfrag+
+      " fragmento"+(nfrag>1?"s":""),F.W/2,18);
+    F.ctx.strokeStyle="#ccc";F.ctx.strokeRect(fr.x0,fr.y0,fr.w,fr.h);
+    const px=v=>fr.x0+Math.min(1,v/DOC)*fr.w;
+    for(let i=0;i<nfrag;i++){
+      const ini=i*paso, fin=Math.min(DOC,ini+W);
+      const y=fr.y0+4+(i%4)*(fr.h-8)/4, hh=(fr.h-8)/4-3;
+      F.ctx.fillStyle=(i%2===0)?GOLD:GOLDD;F.ctx.globalAlpha=0.55;
+      F.ctx.fillRect(px(ini),y,Math.max(2,px(fin)-px(ini)),hh);
+      F.ctx.globalAlpha=1;
+      F.ctx.strokeStyle="#fff";F.ctx.lineWidth=1;
+      F.ctx.strokeRect(px(ini),y,Math.max(2,px(fin)-px(ini)),hh);
+    }
+    F.ctx.fillStyle=MUTE;F.ctx.font="11px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.textBaseline="top";
+    F.ctx.fillText("paso efectivo w − s = "+paso+" palabras",F.W/2,fr.y0+fr.h+8);
+
+    /* panel B: tokens y coste */
+    const tFrag=Math.round(W*TAU);
+    const tPrompt=T_BASE+K*tFrag;
+    const F2=fitCanvas(document.getElementById("cv2b"));
+    const fr2={x0:84,y0:26,w:F2.W-118,h:F2.H-66};
+    const pts=[],pts2=[];let top=0;
+    for(let kk=1;kk<=20;kk++){
+      const tp=T_BASE+kk*tFrag;
+      const c=costeLlamada(M,tp,T_OUT,T_BASE/tp,false)*NN;
+      pts.push([kk,c]);if(c>top)top=c;
+    }
+    top*=1.15;
+    const A=axes(F2.ctx,fr2,{xmin:1,xmax:20,ymin:0,ymax:top,
+      xticks:[[1,"1"],[5,"5"],[10,"10"],[15,"15"],[20,"20"]],
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"fragmentos recuperados (k)",
+      title:"Coste mensual con fragmentos de "+W+" palabras"});
+    polyline(F2.ctx,pts.map(p=>[A.X(p[0]),A.Y(p[1])]),GOLD,2.4);
+    const actual=costeLlamada(M,tPrompt,T_OUT,T_BASE/tPrompt,false)*NN;
+    F2.ctx.fillStyle=GOLDD;F2.ctx.beginPath();
+    F2.ctx.arc(A.X(K),A.Y(actual),5,0,6.3);F2.ctx.fill();
+
+    const aviso=W<40?"<span class='badge bad'>fragmentos sin contexto</span> "+
+        "<span class='mut'>demasiado cortos para entenderse solos</span>":
+      (W>250?"<span class='badge bad'>mucho ruido por fragmento</span> "+
+        "<span class='mut'>pagáis párrafos que no hacían falta</span>":
+        "<span class='badge ok'>tamaño razonable</span>");
+    ro.innerHTML="Fragmentos del documento: <b>"+nfrag+"</b> "+
+      "<span class='mut'>(paso "+paso+" palabras)</span><br>"+
+      "Cada fragmento son unos <b>"+mil(tFrag)+"</b> tokens &rarr; prompt de "+
+      "<b class='gold'>"+mil(tPrompt)+"</b> tokens con k = "+K+"<br>"+
+      "Coste mensual a "+mil(NN)+" consultas: <b class='deep'>"+usd(actual)+"</b><br>"+
+      aviso;
+  }
+  [w,s,k].forEach(e=>e.oninput=upd);
+  updaters[2]=upd;upd();
+})();
+
+/* ===================== SLIDE 3 : recall y fidelidad ===================== */
+(function(){
+  const exp=document.getElementById("exp3"),k=document.getElementById("k3"),
+        ro=document.getElementById("ro3");
+  const M=modelo("claude-sonnet-5"),T_BASE=1200,T_FRAG=600,T_OUT=400,NN=50000;
+  function coste(kk){
+    const tp=T_BASE+kk*T_FRAG;
+    return costeLlamada(M,tp,T_OUT,T_BASE/tp,false)*NN;
+  }
+  function upd(){
+    const EX=exp.checked, KK=+k.value;
+    document.getElementById("lk3").textContent=KK;
+    const ks=[1,2,3,4,5,6,7,8,9,10];
+    const R=ks.map(kk=>metricas(kk,EX));
+
+    /* panel A: las dos curvas */
+    let F=fitCanvas(document.getElementById("cv3a"));
+    let fr={x0:60,y0:26,w:F.W-94,h:F.H-66};
+    const A=axes(F.ctx,fr,{xmin:1,xmax:10,ymin:0,ymax:1.05,
+      xticks:[[1,"1"],[3,"3"],[5,"5"],[8,"8"],[10,"10"]],
+      yticks:[[0,"0 %"],[0.5,"50 %"],[1,"100 %"]],
+      xlabel:"fragmentos recuperados (k)",
+      title:"Recall@k y fidelidad"+(EX?" (consulta expandida)":"")});
+    polyline(F.ctx,ks.map((kk,i)=>[A.X(kk),A.Y(R[i].recall)]),GOLD,2.6);
+    polyline(F.ctx,ks.map((kk,i)=>[A.X(kk),A.Y(R[i].fiel)]),INK,2.4,[6,4]);
+    ks.forEach((kk,i)=>{
+      F.ctx.fillStyle=GOLD;F.ctx.beginPath();
+      F.ctx.arc(A.X(kk),A.Y(R[i].recall),3.2,0,6.3);F.ctx.fill();
+      F.ctx.fillStyle=INK;F.ctx.beginPath();
+      F.ctx.arc(A.X(kk),A.Y(R[i].fiel),3.2,0,6.3);F.ctx.fill();
+    });
+    polyline(F.ctx,[[A.X(KK),A.Y(0)],[A.X(KK),A.Y(1.05)]],MUTE,1.2,[3,3]);
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+34,
+      [{c:GOLD,t:"Recall@k (el buscador)"},{c:INK,t:"Faithfulness (el generador)"}]);
+
+    /* panel B: coste de cada k */
+    F=fitCanvas(document.getElementById("cv3b"));
+    fr={x0:84,y0:26,w:F.W-118,h:F.H-66};
+    const cs=ks.map(coste), top=Math.max.apply(null,cs)*1.18;
+    const A2=axes(F.ctx,fr,{xmin:0,xmax:10,ymin:0,ymax:top,
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"k",title:"Coste mensual de cada k (50.000 consultas)"});
+    ks.forEach((kk,i)=>{
+      const bw=fr.w/10*0.6,x=A2.X(kk-0.5)-bw/2,y=A2.Y(cs[i]);
+      F.ctx.fillStyle=(kk===KK)?GOLD:"#ddd";
+      F.ctx.fillRect(x,y,bw,fr.y0+fr.h-y);
+      if(kk===KK){F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";
+        F.ctx.textAlign="center";F.ctx.textBaseline="bottom";
+        F.ctx.fillText(usd(cs[i]),x+bw/2,y-3);}
+    });
+
+    const act=R[KK-1], base=metricas(KK,false);
+    ro.innerHTML="Con k = <b>"+KK+"</b>"+(EX?" y consulta expandida":"")+":<br>"+
+      "Recall@"+KK+" = <b class='gold'>"+pct(act.recall)+"</b> &nbsp;&middot;&nbsp; "+
+      "Faithfulness = <b class='deep'>"+pct(act.fiel)+"</b><br>"+
+      "Coste: <b>"+usd(coste(KK))+"/mes</b> "+
+      "<span class='mut'>(k = 1 costaría "+usd(coste(1))+")</span><br>"+
+      (EX?"<span class='badge ok'>expansión activa</span> <span class='mut'>sin "+
+        "expandir, la fidelidad sería "+pct(base.fiel)+"</span>":
+        "<span class='mut'>La fidelidad lleva plana desde k = 1: subir k no la "+
+        "mueve.</span>");
+  }
+  k.oninput=upd; exp.onchange=upd;
+  updaters[3]=upd;upd();
+})();
+
+/* ===================== SLIDE 4 : coste del RAG ===================== */
+(function(){
+  const sel=llenaSelect("m4","claude-sonnet-5"),
+        k=document.getElementById("k4"),t=document.getElementById("t4"),
+        n=document.getElementById("n4"),c=document.getElementById("c4"),
+        ro=document.getElementById("ro4");
+  const T_BASE=1200,T_OUT=400,P_EMB=0.02;   // USD por millón de tokens embebidos
+  function upd(){
+    const M=modelo(sel.value),K=+k.value,TF=+t.value,NN=+n.value,CA=c.checked;
+    document.getElementById("lk4").textContent=K;
+    document.getElementById("lt4").textContent=mil(TF)+" tokens";
+    document.getElementById("ln4").textContent=mil(NN);
+    const tPrompt=T_BASE+K*TF;
+    const f=CA?T_BASE/tPrompt:0;
+    const cc=costeLlamada(M,tPrompt,T_OUT,f,false);
+    const mes=cc*NN;
+    const ingesta=P_EMB*(4000*1500/1e6);   // 4.000 documentos de ~1.500 tokens
+
+    /* panel A: reparto del prompt */
+    let F=fitCanvas(document.getElementById("cv4a"));
+    let fr={x0:30,y0:50,w:F.W-60,h:36};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Prompt de una consulta: "+mil(tPrompt)+" tokens",F.W/2,20);
+    stackedBar(F.ctx,fr.x0,fr.y0,fr.w,fr.h,
+      [{v:T_BASE,c:CA?RULE:MUTE},{v:K*TF,c:GOLD}],tPrompt);
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+20,
+      [{c:CA?RULE:MUTE,t:"base ("+mil(T_BASE)+" tok"+(CA?", cacheada al 10 %":"")+")"},
+       {c:GOLD,t:K+" fragmentos ("+mil(K*TF)+" tok, al 100 %)"}]);
+
+    /* panel B: coste frente a k */
+    F=fitCanvas(document.getElementById("cv4b"));
+    fr={x0:84,y0:26,w:F.W-118,h:F.H-66};
+    const pts=[];let top=0;
+    for(let kk=1;kk<=20;kk++){
+      const tp=T_BASE+kk*TF;
+      const v=costeLlamada(M,tp,T_OUT,CA?T_BASE/tp:0,false)*NN;
+      pts.push([kk,v]);if(v>top)top=v;
+    }
+    top*=1.15;
+    const A=axes(F.ctx,fr,{xmin:1,xmax:20,ymin:0,ymax:top,
+      xticks:[[1,"1"],[5,"5"],[10,"10"],[15,"15"],[20,"20"]],
+      yticks:[[0,"0"],[top/2,usd(top/2)],[top,usd(top)]],
+      xlabel:"fragmentos recuperados (k)",title:"Coste mensual"});
+    polyline(F.ctx,pts.map(p=>[A.X(p[0]),A.Y(p[1])]),GOLD,2.5);
+    F.ctx.fillStyle=GOLDD;F.ctx.beginPath();
+    F.ctx.arc(A.X(K),A.Y(mes),5.5,0,6.3);F.ctx.fill();
+
+    const porFrag=(costeLlamada(M,tPrompt+TF,T_OUT,CA?T_BASE/(tPrompt+TF):0,false)
+                   -cc)*NN;
+    ro.innerHTML="Coste por consulta: <b class='gold'>"+usd(cc)+"</b> &rarr; "+
+      "<b class='deep'>"+usd(mes)+"/mes</b><br>"+
+      "Cada fragmento adicional cuesta <b>"+usd(porFrag)+"/mes</b>.<br>"+
+      "Ingesta de 4.000 documentos: <b>"+usd(ingesta)+"</b> "+
+      "<span class='mut'>una sola vez &mdash; el "+
+      pct(ingesta/Math.max(mes,1e-9))+" de un mes de consultas</span><br>"+
+      (CA?"<span class='badge ok'>base cacheada</span>":
+        "<span class='badge bad'>sin caché</span>")+
+      " <span class='mut'>la base es el "+pct(T_BASE/tPrompt)+" del prompt</span>";
+  }
+  [k,t,n].forEach(e=>e.oninput=upd); sel.onchange=upd; c.onchange=upd;
+  updaters[4]=upd;upd();
+})();
+
+/* ===================== SLIDE 5 : LoRA ===================== */
+(function(){
+  const d=document.getElementById("d5"),r=document.getElementById("r5"),
+        c=document.getElementById("c5"),ro=document.getElementById("ro5");
+  function upd(){
+    const D=+d.value,R=+r.value,C=+c.value;
+    document.getElementById("ld5").textContent=mil(D);
+    document.getElementById("lr5").textContent=R;
+    document.getElementById("lc5").textContent=C;
+    const total=D*D, entren=R*(D+D), frac=entren/total;
+
+    /* panel A: las matrices a escala */
+    let F=fitCanvas(document.getElementById("cv5a"));
+    const lado=Math.min(F.H-70,F.W*0.34);
+    const x0=F.W*0.09, y0=46;
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("W congelada (d×d) + B(d×r) · A(r×d) entrenables",F.W/2,20);
+    /* W */
+    F.ctx.fillStyle="#ddd";F.ctx.fillRect(x0,y0,lado,lado);
+    F.ctx.strokeStyle=MUTE;F.ctx.lineWidth=1.4;F.ctx.strokeRect(x0,y0,lado,lado);
+    F.ctx.fillStyle=INK;F.ctx.font="italic 20px Georgia, serif";
+    F.ctx.textAlign="center";F.ctx.textBaseline="middle";
+    F.ctx.fillText("W",x0+lado/2,y0+lado/2);
+    F.ctx.font="11px Georgia, serif";F.ctx.textBaseline="top";
+    F.ctx.fillText(mil(D)+" × "+mil(D),x0+lado/2,y0+lado+6);
+    /* + */
+    F.ctx.font="20px Georgia, serif";F.ctx.textBaseline="middle";
+    F.ctx.fillText("+",x0+lado+F.W*0.045,y0+lado/2);
+    /* B */
+    const anchoB=Math.max(2,lado*R/D), xB=x0+lado+F.W*0.09;
+    F.ctx.fillStyle=GOLD;F.ctx.fillRect(xB,y0,anchoB,lado);
+    F.ctx.strokeStyle=GOLDD;F.ctx.strokeRect(xB,y0,anchoB,lado);
+    F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";F.ctx.textBaseline="top";
+    F.ctx.fillText("B: "+mil(D)+"×"+R,xB+anchoB/2,y0+lado+6);
+    /* A */
+    const altoA=Math.max(2,lado*R/D), xA=xB+anchoB+F.W*0.05;
+    F.ctx.fillStyle=GOLD;F.ctx.fillRect(xA,y0,lado,altoA);
+    F.ctx.strokeStyle=GOLDD;F.ctx.strokeRect(xA,y0,lado,altoA);
+    F.ctx.fillStyle=INK;F.ctx.textBaseline="top";
+    F.ctx.fillText("A: "+R+"×"+mil(D),xA+lado/2,y0+altoA+6);
+
+    /* panel B: entrenables frente a totales (log) */
+    F=fitCanvas(document.getElementById("cv5b"));
+    const fr={x0:150,y0:36,w:F.W-200,h:F.H-74};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Parámetros en "+C+" capas (escala logarítmica)",F.W/2,20);
+    const vals=[{t:"modelo completo",v:total*C,c:MUTE},
+                {t:"adaptador LoRA",v:entren*C,c:GOLD}];
+    const lmax=Math.log10(Math.max(vals[0].v,10));
+    vals.forEach((v,i)=>{
+      const y=fr.y0+i*(fr.h/2)+10,hh=fr.h/2-24;
+      const ww=Math.max(2,Math.log10(Math.max(v.v,10))/lmax*fr.w);
+      F.ctx.fillStyle=v.c;F.ctx.fillRect(fr.x0,y,ww,hh);
+      F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";
+      F.ctx.textAlign="right";F.ctx.textBaseline="middle";
+      F.ctx.fillText(v.t,fr.x0-8,y+hh/2);
+      F.ctx.textAlign="left";
+      const mb=v.v*2/1048576;   // 2 bytes por parámetro
+      F.ctx.fillText(mil(v.v/1e6,1)+" M par.  (~"+
+        (mb>1024?mil(mb/1024,1)+" GB":mil(mb,0)+" MB")+")",fr.x0+ww+8,y+hh/2);
+    });
+
+    ro.innerHTML="Matriz original: <b>"+mil(total/1e6,1)+" M</b> parámetros "+
+      "<span class='mut'>("+mil(D)+"&sup2;)</span><br>"+
+      "Entrenables: "+R+" &times; ("+mil(D)+" + "+mil(D)+") = <b class='gold'>"+
+      mil(entren/1e3,0)+" K</b><br>"+
+      "Fracción entrenada: <b class='deep'>"+mil(frac*100,2)+" %</b> del original<br>"+
+      "<span class='mut'>En "+C+" capas: adaptador de ~"+
+      mil(entren*C*2/1048576,0)+" MB frente a "+
+      mil(total*C*2/1073741824,1)+" GB del modelo.</span>";
+  }
+  [d,r,c].forEach(e=>e.oninput=upd);
+  updaters[5]=upd;upd();
+})();
+
+/* ===================== SLIDE 6 : multi-agente ===================== */
+(function(){
+  const m=document.getElementById("m6"),t=document.getElementById("t6"),
+        c=document.getElementById("c6"),ro=document.getElementById("ro6");
+  const W=40, T_PROP=12000, M=modelo("claude-sonnet-5"), T_OUT=2000;
+  function upd(){
+    const MM=+m.value,T0=+t.value,C=+c.value;
+    document.getElementById("lm6").textContent=MM;
+    document.getElementById("lt6").textContent=mil(T0)+" tokens";
+    document.getElementById("lc6").textContent=C+" min";
+
+    const tiempo=mm=>W/mm+C;
+    const tokens=mm=>T0+mm*(T0+T_PROP);
+    const coste =mm=>costeLlamada(M,tokens(mm),T_OUT*(1+mm),0,false);
+
+    /* panel A: tiempo y coste, dos ejes */
+    let F=fitCanvas(document.getElementById("cv6a"));
+    let fr={x0:60,y0:26,w:F.W-120,h:F.H-66};
+    const ms=[];for(let i=1;i<=16;i++)ms.push(i);
+    const tmax=Math.max.apply(null,ms.map(tiempo))*1.1;
+    const cmax=Math.max.apply(null,ms.map(coste))*1.1;
+    const A=axes(F.ctx,fr,{xmin:1,xmax:16,ymin:0,ymax:tmax,
+      xticks:[[1,"1"],[4,"4"],[8,"8"],[12,"12"],[16,"16"]],
+      yticks:[[0,"0"],[tmax/2,mil(tmax/2,0)+"′"],[tmax,mil(tmax,0)+"′"]],
+      xlabel:"sub-agentes en paralelo (m)",
+      title:"Tiempo (dorado, izq.) y coste (negro, der.)"});
+    polyline(F.ctx,ms.map(mm=>[A.X(mm),A.Y(tiempo(mm))]),GOLD,2.6);
+    polyline(F.ctx,ms.map(mm=>[A.X(mm),
+      fr.y0+fr.h-coste(mm)/cmax*fr.h]),INK,2.4,[6,4]);
+    /* eje derecho */
+    F.ctx.strokeStyle=INK;F.ctx.lineWidth=1;
+    F.ctx.beginPath();F.ctx.moveTo(fr.x0+fr.w,fr.y0);
+    F.ctx.lineTo(fr.x0+fr.w,fr.y0+fr.h);F.ctx.stroke();
+    F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";
+    F.ctx.textAlign="left";F.ctx.textBaseline="middle";
+    F.ctx.fillText(usd(cmax),fr.x0+fr.w+6,fr.y0);
+    F.ctx.fillText("0",fr.x0+fr.w+6,fr.y0+fr.h);
+    /* zona buena: donde el tiempo aún baja apreciablemente */
+    let mBueno=1;
+    for(let i=1;i<16;i++){if(tiempo(i)-tiempo(i+1)>0.6)mBueno=i+1;}
+    F.ctx.fillStyle=GOLD;F.ctx.globalAlpha=0.10;
+    F.ctx.fillRect(A.X(1),fr.y0,A.X(mBueno)-A.X(1),fr.h);
+    F.ctx.globalAlpha=1;
+    polyline(F.ctx,[[A.X(MM),fr.y0],[A.X(MM),fr.y0+fr.h]],MUTE,1.2,[3,3]);
+
+    /* panel B: de dónde salen los tokens */
+    F=fitCanvas(document.getElementById("cv6b"));
+    fr={x0:30,y0:50,w:F.W-60,h:36};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Tokens de entrada con "+MM+" sub-agente"+(MM>1?"s":"")+
+      ": "+mil(tokens(MM)),F.W/2,20);
+    stackedBar(F.ctx,fr.x0,fr.y0,fr.w,fr.h,
+      [{v:T0,c:INK},{v:MM*T0,c:GOLDD},{v:MM*T_PROP,c:GOLD}],tokens(MM));
+    leyenda(F.ctx,fr.x0,fr.y0+fr.h+20,
+      [{c:INK,t:"coordinador"},{c:GOLDD,t:"contextos base repetidos"},
+       {c:GOLD,t:"trabajo propio"}]);
+
+    const base=coste(1);
+    ro.innerHTML="Con <b>"+MM+"</b> sub-agentes: <b class='gold'>"+
+      mil(tiempo(MM),1)+" min</b> y <b class='deep'>"+usd(coste(MM))+"</b> por tarea.<br>"+
+      "Frente a uno solo: "+pct(1-tiempo(MM)/tiempo(1))+" menos tiempo, "+
+      mil(coste(MM)/base,1)+"&times; el coste.<br>"+
+      "Contextos base repetidos: <b>"+mil(MM*T0)+"</b> tokens "+
+      "<span class='mut'>("+pct(MM*T0/tokens(MM))+" del total, gastados sólo en "+
+      "arrancar)</span><br>"+
+      (MM<=mBueno?"<span class='badge ok'>zona rentable</span> el tiempo todavía baja":
+        "<span class='badge bad'>pasado el punto útil</span> el tiempo ya casi no "+
+        "mejora y el coste sigue subiendo");
+  }
+  [m,t,c].forEach(e=>e.oninput=upd);
+  updaters[6]=upd;upd();
+})();
+
+/* ===================== SLIDE 7 : presupuesto completo ===================== */
+(function(){
+  const n=document.getElementById("n7"),u=document.getElementById("u7"),
+        p=document.getElementById("p7"),v=document.getElementById("v7"),
+        ro=document.getElementById("ro7");
+  const M=modelo("claude-sonnet-5"),T_IN=4000,T_OUT=400,F_CACHE=0.6;
+  document.getElementById("fecha7").textContent=
+    "Precios a "+FECHA_PRECIOS+". Coste de personal: estimación docente, ajustadla a "+
+    "vuestro caso.";
+  function upd(){
+    const NN=+n.value,U=+u.value,PD=+p.value/100,PRECIO=+v.value;
+    document.getElementById("ln7").textContent=mil(NN);
+    document.getElementById("lu7").textContent=mil(U);
+    document.getElementById("lp7").textContent=pct(PD);
+    document.getElementById("lv7").textContent=usd(PRECIO);
+
+    const infer=costeLlamada(M,T_IN,T_OUT,F_CACHE,false)*NN;
+    const emb=0.02*(NN/5000);            // reindexado proporcional al volumen
+    const vect=120, srv=90, obs=60;
+    const pers=MLOPS_ANUAL_EUR*PD*EUR_USD/12;
+    const partidas=[
+      {t:"Personal (MLOps)",v:pers,c:INK},
+      {t:"Inferencia del LLM",v:infer,c:GOLD},
+      {t:"Base vectorial",v:vect,c:GOLDD},
+      {t:"Servidor de la app",v:srv,c:RULE},
+      {t:"Observabilidad",v:obs,c:MUTE},
+      {t:"Embeddings",v:emb,c:"#c9b98a"}
+    ].sort((a,b)=>b.v-a.v);
+    const total=partidas.reduce((s,x)=>s+x.v,0);
+
+    /* panel A: las seis partidas */
+    let F=fitCanvas(document.getElementById("cv7a"));
+    let fr={x0:132,y0:30,w:F.W-180,h:F.H-54};
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Coste total: "+usd(total)+"/mes",F.W/2,18);
+    const mx=partidas[0].v*1.35||1;
+    partidas.forEach((pa,i)=>{
+      const hh=fr.h/6*0.68, y=fr.y0+i*(fr.h/6);
+      F.ctx.fillStyle=pa.c;F.ctx.fillRect(fr.x0,y,Math.max(1,pa.v/mx*fr.w),hh);
+      F.ctx.fillStyle=INK;F.ctx.font="11px Georgia, serif";
+      F.ctx.textAlign="right";F.ctx.textBaseline="middle";
+      F.ctx.fillText(pa.t,fr.x0-7,y+hh/2);
+      F.ctx.textAlign="left";
+      F.ctx.fillText(usd(pa.v)+"  ("+pct(pa.v/total)+")",
+        fr.x0+Math.max(1,pa.v/mx*fr.w)+7,y+hh/2);
+    });
+
+    /* panel B: coste e ingreso por usuario */
+    F=fitCanvas(document.getElementById("cv7b"));
+    fr={x0:132,y0:36,w:F.W-180,h:F.H-72};
+    const cu=total/U, margen=PRECIO-cu;
+    F.ctx.fillStyle=INK;F.ctx.font="bold 12px Georgia, serif";F.ctx.textAlign="center";
+    F.ctx.fillText("Por usuario y mes",F.W/2,20);
+    const mx2=Math.max(cu,PRECIO)*1.35||1;
+    [{t:"coste",v:cu,c:GOLD},{t:"ingreso",v:PRECIO,c:margen>=0?VERDE:"#a33"}]
+      .forEach((b,i)=>{
+      const hh=fr.h/2*0.52, y=fr.y0+i*(fr.h/2)+fr.h/8;
+      F.ctx.fillStyle=b.c;F.ctx.fillRect(fr.x0,y,Math.max(1,b.v/mx2*fr.w),hh);
+      F.ctx.fillStyle=INK;F.ctx.font="12px Georgia, serif";
+      F.ctx.textAlign="right";F.ctx.textBaseline="middle";
+      F.ctx.fillText(b.t,fr.x0-7,y+hh/2);
+      F.ctx.textAlign="left";
+      F.ctx.fillText(usd(b.v),fr.x0+Math.max(1,b.v/mx2*fr.w)+7,y+hh/2);
+    });
+
+    ro.innerHTML="Coste total: <b class='gold'>"+usd(total)+"/mes</b><br>"+
+      "Partida mayor: <b>"+partidas[0].t+"</b> ("+pct(partidas[0].v/total)+")<br>"+
+      "Coste por usuario: <b class='deep'>"+usd(cu)+"</b> &nbsp;&middot;&nbsp; "+
+      "ingreso: "+usd(PRECIO)+"<br>"+
+      (margen>=0?"<span class='badge ok'>margen de "+usd(margen)+
+        " por usuario ("+pct(margen/Math.max(PRECIO,1e-9))+")</span>":
+        "<span class='badge bad'>pérdida de "+usd(-margen)+" por usuario</span>");
+  }
+  [n,u,p,v].forEach(e=>e.oninput=upd);
+  updaters[7]=upd;upd();
+})();
+
+/* ===================== ARRANQUE ===================== */
+const h0=parseInt((location.hash||"#0").slice(1),10);
+go(isNaN(h0)?0:h0);
+</script>
+</body>
+</html>
