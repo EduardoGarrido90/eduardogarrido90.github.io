@@ -8,14 +8,26 @@ Formato exigido por docencia/assets/vault.js:
 El salt y el número de iteraciones se leen del CFG incrustado en index.html,
 de modo que este script no puede desincronizarse de la página.
 
+Hay dos secciones con soluciones cifradas y este script cubre las dos:
+
+    ejercicios/sol/            dia_NN.enc           ejercicio del día de la sesión
+    ejercicios_ampliacion/sol/ dia_NN_del_dia.enc   ejercicios del día de los
+                               días 07, 09 y 10, que pasaron a ampliación
+
+Ambas usan la misma contraseña de clase, pero cada una lee su propio CFG: si
+alguna vez se separan las contraseñas, el script sigue siendo correcto sin
+tocar nada. El número de día se extrae del nombre con una expresión regular,
+no cortando el prefijo, precisamente para que el sufijo `_del_dia` no rompa la
+búsqueda del PDF de origen.
+
 La contraseña se pide por getpass: no se pasa por argv (quedaría en el
 historial del shell), no se imprime y no se escribe en disco. Antes de cifrar
-nada se verifica contra el token `check` de index.html, así que una contraseña
-equivocada aborta sin tocar un solo fichero.
+nada se verifica contra el token `check` de cada index.html, así que una
+contraseña equivocada aborta sin tocar un solo fichero.
 
 Uso:
     python3 reencrypt_soluciones.py            # regenera los que estén obsoletos
-    python3 reencrypt_soluciones.py --todos    # regenera los 12
+    python3 reencrypt_soluciones.py --todos    # regenera todos
 """
 from __future__ import annotations
 
@@ -37,9 +49,14 @@ except ImportError:
 import base64
 
 AQUI = Path(__file__).resolve().parent
-INDEX = AQUI / "index.html"
-SOL_DIR = AQUI / "sol"
+AMPLIACION = AQUI.parent / "ejercicios_ampliacion"
 MATERIALES = Path("/home/eduardo/docencia/DL_26_27/materiales")
+
+# (nombre para los mensajes, index.html del que sale el CFG, carpeta de .enc)
+SECCIONES = [
+    ("ejercicios", AQUI / "index.html", AQUI / "sol"),
+    ("ampliación", AMPLIACION / "index.html", AMPLIACION / "sol"),
+]
 
 
 def leer_cfg(index: Path) -> tuple[bytes, bytes, int]:
@@ -97,35 +114,55 @@ def main() -> int:
                     help="regenera todos, no solo los obsoletos")
     args = ap.parse_args()
 
-    salt, check, iters = leer_cfg(INDEX)
-    print(f"CFG leído de index.html: iters={iters}, salt={len(salt)} bytes")
+    # Se recorre todo y se decide qué hay que hacer antes de pedir la
+    # contraseña: así un error de rutas se ve de inmediato y no después de
+    # teclearla.
+    trabajo = []  # (seccion, num, src, dst, salt, check, iters)
+    for nombre, index, sol_dir in SECCIONES:
+        if not sol_dir.is_dir():
+            raise SystemExit(f"No existe la carpeta de soluciones {sol_dir}")
+        salt, check, iters = leer_cfg(index)
+        print(f"CFG de {nombre}: iters={iters}, salt={len(salt)} bytes")
 
-    destinos = sorted(SOL_DIR.glob("dia_*.enc"))
-    if not destinos:
-        raise SystemExit(f"No hay ficheros .enc en {SOL_DIR}")
+        destinos = sorted(sol_dir.glob("dia_*.enc"))
+        if not destinos:
+            raise SystemExit(f"No hay ficheros .enc en {sol_dir}")
 
-    trabajo = []
-    for dst in destinos:
-        num = dst.stem.replace("dia_", "")
-        src = origen_soluciones(num)
-        if src is None:
-            print(f"  aviso: sin PDF fuente para el día {num}, se deja como está")
-            continue
-        if args.todos or src.stat().st_mtime > dst.stat().st_mtime:
-            trabajo.append((num, src, dst))
+        for dst in destinos:
+            m = re.match(r"dia_(\d{2})", dst.stem)
+            if m is None:
+                raise SystemExit(
+                    f"No sé de qué día es {dst}: el nombre tiene que empezar "
+                    f"por dia_NN")
+            num = m.group(1)
+            src = origen_soluciones(num)
+            if src is None:
+                print(f"  aviso: sin PDF fuente para el día {num} "
+                      f"({nombre}), se deja como está")
+                continue
+            if args.todos or src.stat().st_mtime > dst.stat().st_mtime:
+                trabajo.append((nombre, num, src, dst, salt, check, iters))
 
     if not trabajo:
         print("Todo al día: no hay nada que recifrar.")
         return 0
 
     print(f"\nSe recifrarán {len(trabajo)} ficheros: "
-          f"{', '.join(n for n, _, _ in trabajo)}")
+          f"{', '.join(f'{n} ({s})' for s, n, _, _, _, _, _ in trabajo)}")
     password = getpass.getpass("Contraseña de clase: ")
-    clave = derivar_clave(password, salt, iters)
-    verificar(clave, check)
-    print("Contraseña verificada contra el token de control.\n")
 
-    for num, src, dst in trabajo:
+    # Una clave por sección, verificada contra el token de esa sección antes de
+    # escribir nada.
+    claves: dict[bytes, bytes] = {}
+    for _, _, _, _, salt, check, iters in trabajo:
+        if salt not in claves:
+            clave = derivar_clave(password, salt, iters)
+            verificar(clave, check)
+            claves[salt] = clave
+    print(f"Contraseña verificada contra {len(claves)} token(s) de control.\n")
+
+    for nombre, num, src, dst, salt, _, _ in trabajo:
+        clave = claves[salt]
         datos = src.read_bytes()
         blob = cifrar(datos, clave)
         # comprobación de ida y vuelta antes de escribir: nunca dejamos un .enc
@@ -133,7 +170,7 @@ def main() -> int:
         iv, ct = blob[:12], blob[12:]
         assert AESGCM(clave).decrypt(iv, ct, None) == datos, f"round-trip falló en {num}"
         dst.write_bytes(blob)
-        print(f"  día {num}: {src.name} -> {dst.name} "
+        print(f"  día {num} ({nombre}): {src.name} -> {dst.name} "
               f"({len(datos)} -> {len(blob)} bytes, round-trip OK)")
 
     print(f"\nListo: {len(trabajo)} ficheros recifrados y verificados.")
