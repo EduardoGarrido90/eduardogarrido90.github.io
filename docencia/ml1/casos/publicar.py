@@ -231,7 +231,7 @@ def construir_index(casos: list[dict], cfg_alumno: str, cfg_docente: str) -> str
 <body>
 <div class="crumbs"><a href="../../index.html">Asignaturas</a><span class="sep">/</span><a href="../index.html">Machine Learning I</a><span class="sep">/</span><span>Casos de práctica</span></div>
 <h1>Casos de práctica</h1>
-<p class="sub">{len(casos)} conjuntos de datos con su dossier. Cada dossier es un informe descriptivo de una organización, en apariencia real: presenta el diccionario de campos, los estadísticos y las gráficas, sin decir qué tipo tiene cada variable ni qué habría que predecir. Esa propuesta es vuestra.</p>
+<p class="sub">{len(casos)} conjuntos de datos con su dossier. Cada dossier es un informe descriptivo de una organización, en apariencia real: sitúa el problema de negocio con un texto interno de la propia entidad y presenta después el diccionario de campos, los estadísticos y las gráficas, sin decir qué tipo tiene cada variable ni qué habría que predecir. Esa propuesta es vuestra.</p>
 
 <div class="gate">
   <label for="pw1">Contraseña de clase</label>
@@ -240,7 +240,7 @@ def construir_index(casos: list[dict], cfg_alumno: str, cfg_docente: str) -> str
   <div class="msg" id="msg1"></div>
 </div>
 
-<div class="nota"><b>Cómo se trabaja un caso.</b> Leed primero el dossier y decidid qué variable tiene sentido predecir con las demás, y si el problema es de regresión o de clasificación. Descargad después el fichero de datos. Viene deliberadamente sucio: hay importes y fechas guardados como texto, categorías escritas de forma inconsistente, ausencias codificadas con centinelas y alguna columna redundante. Varias columnas no aportan nada y debéis detectarlo por vosotros mismos.</div>
+<div class="nota"><b>Cómo se trabaja un caso.</b> Leed primero el dossier. Abre con el contexto del encargo, un documento interno de la organización que explica a qué se dedica, qué problema tiene y qué decisiones tiene pendientes; os sitúa el caso, pero no os dice qué hay que predecir. Con eso y el diccionario de campos, decidid qué variable tiene sentido predecir con las demás y si el problema es de regresión o de clasificación. Descargad después el fichero de datos. Viene deliberadamente sucio en tres planos. De formato: importes y fechas guardados como texto, categorías escritas de forma inconsistente, ausencias codificadas con centinelas como −99 o «N/D» y alguna columna redundante. De contenido: unas pocas filas traen valores imposibles por error de grabación, del tipo del piso de ochenta metros en Madrid que figura a quinientos euros porque alguien se comió el separador de millares; localizarlos y decidir qué hacer con ellos es parte del trabajo, y un recorte ciego por percentiles no sirve porque se llevaría por delante observaciones legítimas. Y de completitud: alrededor del dos por ciento de las filas tiene alguna celda literalmente vacía, que es una codificación de ausencia distinta de los centinelas anteriores y hay que tratarla aparte. Varias columnas no aportan nada y debéis detectarlo por vosotros mismos.</div>
 <hr class="rule">
 {"".join(bloques)}
 
