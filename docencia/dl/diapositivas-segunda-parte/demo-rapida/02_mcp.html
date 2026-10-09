@@ -7510,7 +7510,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f1537fe4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-000">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7530,7 +7530,7 @@ estándar de un proceso. Lo vamos a ver byte a byte.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a1100505">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-001">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7541,7 +7541,7 @@ estándar de un proceso. Lo vamos a ver byte a byte.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9f9290b0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-002">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7583,7 +7583,24 @@ desde Claude Desktop o desde un IDE, sin tocar una línea.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=916e0341">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-003">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Antes-de-nada:-preparar-el-ordenador">Antes de nada: preparar el ordenador<a class="anchor-link" href="#Antes-de-nada:-preparar-el-ordenador">¶</a></h2><p>Ejecuta la celda de abajo antes que ninguna otra. Mira qué sistema operativo
+tienes y qué hay ya instalado, y descarga <strong>solo lo que falte</strong>: funciona igual
+en Windows, en macOS y en Linux, y no hace falta que instales nada a mano.</p>
+<p>La primera vez tarda unos minutos, porque se baja PyTorch. Las siguientes
+termina en un segundo. Se puede ejecutar tantas veces como quieras.</p>
+<p>Si algo falla, cambia <code>instalar()</code> por <code>instalar(verboso=True)</code>, vuelve a
+ejecutarla y enseña lo que imprima.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-004">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7591,11 +7608,54 @@ desde Claude Desktop o desde un IDE, sin tocar una línea.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"mcp_demo"</span><span class="p">)</span>
+<div class="highlight hl-python"><pre><span></span><span class="c1"># Prepara el entorno: comprueba lo que ya tienes e instala únicamente lo que</span>
+<span class="c1"># falte. Si ya está todo, no descarga nada.</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">comun.config</span> <span class="kn">import</span> <span class="n">MODELO_CHARLA</span><span class="p">,</span> <span class="n">DTYPE_CHARLA</span><span class="p">,</span> <span class="n">fijar_semilla</span><span class="p">,</span> <span class="n">cronometro</span><span class="p">,</span> <span class="n">resumen_entorno</span>
+<span class="n">_aqui</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+<span class="n">_candidatas</span> <span class="o">=</span> <span class="p">[</span><span class="n">_aqui</span><span class="p">,</span> <span class="o">*</span><span class="n">_aqui</span><span class="o">.</span><span class="n">parents</span><span class="p">,</span>                       <span class="c1"># lo normal</span>
+               <span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_aqui</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*/comun/entorno.py"</span><span class="p">)),</span>
+               <span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_aqui</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*/*/comun/entorno.py"</span><span class="p">))]</span>
+<span class="n">_raiz</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">_candidatas</span>
+              <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="s2">"comun"</span> <span class="o">/</span> <span class="s2">"entorno.py"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()),</span> <span class="kc">None</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">_raiz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="s2">"No encuentro la carpeta 'comun'. Descomprime el zip entero y abre "</span>
+        <span class="s2">"este cuaderno desde dentro de la carpeta demo_rapida."</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_raiz</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">comun.entorno</span> <span class="kn">import</span> <span class="n">instalar</span><span class="p">,</span> <span class="n">preparar</span>
+
+<span class="n">instalar</span><span class="p">()</span>                 <span class="c1"># ¿algo ha fallado? -&gt; instalar(verboso=True)</span>
+<span class="n">_carpeta</span> <span class="o">=</span> <span class="n">preparar</span><span class="p">()</span>      <span class="c1"># deja las rutas del cuaderno listas</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Entorno listo, no hay nada que instalar.  (Linux 6.8.0-138-generic · Python 3.10.12)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-005">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">comun.config</span> <span class="kn">import</span> <span class="n">MODELO_CHARLA</span><span class="p">,</span> <span class="n">DTYPE_CHARLA</span><span class="p">,</span> <span class="n">fijar_semilla</span><span class="p">,</span> <span class="n">cronometro</span><span class="p">,</span> <span class="n">resumen_entorno</span>
 
 <span class="n">resumen_entorno</span><span class="p">()</span>
 <span class="n">fijar_semilla</span><span class="p">()</span>
@@ -7611,7 +7671,9 @@ desde Claude Desktop o desde un IDE, sin tocar una línea.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>PyTorch        : 2.9.1+cpu
+<pre>Sistema        : Linux 6.8.0-138-generic (x86_64)
+Python         : 3.10.12
+PyTorch        : 2.14.1+cpu
 Dispositivo    : cpu
 Hilos de CPU   : 8
 Sin GPU: todo funciona igual, solo que más despacio.
@@ -7622,7 +7684,7 @@ Semilla        : 0
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=75a9b96a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-006">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7633,19 +7695,28 @@ línea de JSON por su entrada estándar.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1313943f">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-007">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">comun.entorno</span> <span class="kn">import</span> <span class="n">comando_servidor</span><span class="p">,</span> <span class="n">entorno_hijo</span>
+
+<span class="c1"># `comando_servidor()` devuelve el argv que arranca el servidor en este</span>
+<span class="c1"># ordenador: el mismo intérprete que mueve el cuaderno y la ruta absoluta del</span>
+<span class="c1"># fichero. El tubo va en UTF-8 por los dos lados, que es lo que lleva dentro</span>
+<span class="c1"># `entorno_hijo()`.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Arranco:"</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">comando_servidor</span><span class="p">()))</span>
 
 <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"mcp_demo/servidor_mcp.py"</span><span class="p">],</span>
+    <span class="n">comando_servidor</span><span class="p">(),</span> <span class="n">env</span><span class="o">=</span><span class="n">entorno_hijo</span><span class="p">(),</span>
     <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
     <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span>
 <span class="p">)</span>
@@ -7682,7 +7753,8 @@ línea de JSON por su entrada estándar.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>-&gt; {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "cuaderno-02", "version": "1.0"}}}
+<pre>Arranco: /tmp/venv_demo/bin/python -X utf8 /home/eduardo/docencia/DL_26_27/materiales/demo_rapida/mcp_demo/servidor_mcp.py
+-&gt; {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "cuaderno-02", "version": "1.0"}}}
 &lt;- {"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2024-11-05", "capabilities": {"tools": {"listChanged": false}}, "serverInfo": {"name": "banco-iberia", "version": "1.0.0"}}}
 
 -&gt; {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}}
@@ -7693,12 +7765,12 @@ línea de JSON por su entrada estándar.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9f06f5b7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-008">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># 3. ¿Qué sabes hacer?</span>
@@ -7748,7 +7820,7 @@ Catálogo completo, que es lo ÚNICO que el modelo verá de este servidor:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b904e405">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-009">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7762,12 +7834,12 @@ una comisión, un plazo o un límite") produce uno que sí.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1c416b38">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-010">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># 4. Ejecuta esto.</span>
@@ -7813,7 +7885,7 @@ del estándar y es la que hace que los agentes se recuperen solos.
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>0</pre>
 </div>
@@ -7821,7 +7893,7 @@ del estándar y es la que hace que los agentes se recuperen solos.
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=98393266">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-011">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7837,7 +7909,7 @@ servidores remotos, pero el núcleo es lo que acabas de ver.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c207a74e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-012">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7848,17 +7920,17 @@ que nada quede escondido.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=194dc2af">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-013">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">cliente_mcp</span> <span class="kn">import</span> <span class="n">ClienteMCP</span>
+<div class="highlight hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">mcp_demo.cliente_mcp</span> <span class="kn">import</span> <span class="n">ClienteMCP</span>
 
-<span class="n">cliente</span> <span class="o">=</span> <span class="n">ClienteMCP</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"mcp_demo/servidor_mcp.py"</span><span class="p">],</span> <span class="n">traza</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cliente</span> <span class="o">=</span> <span class="n">ClienteMCP</span><span class="p">(</span><span class="n">comando_servidor</span><span class="p">(),</span> <span class="n">traza</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">info</span> <span class="o">=</span> <span class="n">cliente</span><span class="o">.</span><span class="n">abrir</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Conectado a: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'serverInfo'</span><span class="p">][</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2"> v</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'serverInfo'</span><span class="p">][</span><span class="s1">'version'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Versión del protocolo: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">'protocolVersion'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -7887,12 +7959,12 @@ Capacidades: {'tools': {'listChanged': False}}
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0e6ce984">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-014">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="n">cliente</span><span class="o">.</span><span class="n">traza</span> <span class="o">=</span> <span class="kc">False</span>      <span class="c1"># a partir de aquí, sin ruido</span>
@@ -7921,7 +7993,7 @@ Plazo de reclamación: 13 meses desde el cargo. Abono provisional en 10 días h�
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=206cf131">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-015">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7936,12 +8008,12 @@ forma uniforme.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=11040cb4">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-016">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="n">tools</span> <span class="o">=</span> <span class="n">cliente</span><span class="o">.</span><span class="n">herramientas_formato_openai</span><span class="p">()</span>
@@ -7992,12 +8064,12 @@ forma uniforme.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ac9161cd">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-017">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -8031,7 +8103,7 @@ forma uniforme.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/home/eduardo/.local/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+<pre>/tmp/venv_demo/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
   from .autonotebook import tqdm as notebook_tqdm
 </pre>
 </div>
@@ -8039,7 +8111,7 @@ forma uniforme.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[cargar Qwen2.5-1.5B] 2.6 s
+<pre>[cargar Qwen2.5-1.5B] 1.6 s
 --- PRINCIPIO DEL PROMPT ---
 &lt;|im_start|&gt;system
 Eres el asistente de Banco Iberia.
@@ -8072,7 +8144,7 @@ For each function call, return a json object with function name and arguments wi
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2a492b9f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-018">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8083,7 +8155,7 @@ For each function call, return a json object with function name and arguments wi
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d65f5c8a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-019">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8103,12 +8175,12 @@ host lo intercepta, lo valida y decide. Toda la seguridad de un agente vive en e
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1cc4b5c3">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=02_mcp-020">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
@@ -8170,12 +8242,12 @@ host lo intercepta, lo valida y decide. Toda la seguridad de un agente vive en e
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0ca3e1fe">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-021">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Ojo al reloj: en CPU, cada turno del agente son dos generaciones de Qwen y</span>
@@ -8231,7 +8303,7 @@ P: El cliente IB-1002 quiere una hipoteca de 150000 euros a 25 anios al 3,10 %. 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[turno completo] 53.8 s
+<pre>[turno completo] 58.8 s
 R: La cuota mensual para este préstamo hipotecario sería de aproximadamente 719.14€. Los intereses totales pagados durante la vida del préstamo serían de cerca de 65.742.98€, mientras que el total devuelto al banco sería de 215.742.98€.
 
 ======================================================================================
@@ -8250,8 +8322,8 @@ P: Que perfil MiFID tiene la clienta IB-1003?
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[turno completo] 51.5 s
-R: La clienta IB-1003 tiene un perfil MiFID dinámico. Su saldo actual es de 128,340,10 € y su nómina mensual es de 5.100 €. Tiene una tarjeta Premium.
+<pre>[turno completo] 55.0 s
+R: La clienta IB-1003 tiene un perfil MiFID dinámico. Su saldo actual es de 128.340,10 € y su nómina mensual es de 5.100,00 €. Tiene una tarjeta Premium.
 
 ======================================================================================
 P: Cuanto cuesta al anio la tarjeta Premium?
@@ -8269,7 +8341,7 @@ P: Cuanto cuesta al anio la tarjeta Premium?
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[turno completo] 50.4 s
+<pre>[turno completo] 53.4 s
 R: La tarjeta Clásica tiene un costo anual de 36€, mientras que la Tarjeta Premium cuesta 180€ anuales incluyendo un seguro de viaje de hasta 500.000€.
 
 ======================================================================================
@@ -8288,8 +8360,8 @@ P: Un cliente reclama un cargo de hace 10 meses. Esta a tiempo?
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[turno completo] 53.2 s
-R: El plazo para reclamar este cargo es de 13 meses desde el momento en que ocurrió. Para abonarlo provisionalmente, debes presentar tu reclamo dentro de los próximos 10 días hábiles. Los importes superiores a 3.000 € tendrán que realizarse como parte de una investigación financiera si se producen antes de cumplir el plazo legal.
+<pre>[turno completo] 56.6 s
+R: El plazo para reclamar este cargo es de 13 meses desde el momento en que ocurrió. Para abonarlo provisionalmente, necesitarás pagar dentro de 10 días hábiles. Los importes superiores a 3.000 € tendrán que realizarse como parte de una investigación financiera, lo cual puede llevar menos de 4 horas.
 
 </pre>
 </div>
@@ -8297,7 +8369,7 @@ R: El plazo para reclamar este cargo es de 13 meses desde el momento en que ocur
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=05f3bcfc">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-022">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8317,17 +8389,15 @@ Una pasada hacia delante por pregunta, determinista y en dos segundos.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5669ebc4">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-023">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">servidor_mcp</span>
-
-<span class="n">TOKEN_LLAMADA</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span><span class="s2">"&lt;tool_call&gt;"</span><span class="p">)</span>
+<div class="highlight hl-python"><pre><span></span><span class="n">TOKEN_LLAMADA</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">convert_tokens_to_ids</span><span class="p">(</span><span class="s2">"&lt;tool_call&gt;"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"En el vocabulario de Qwen, '&lt;tool_call&gt;' es el token </span><span class="si">{</span><span class="n">TOKEN_LLAMADA</span><span class="si">}</span><span class="s2">: uno solo."</span><span class="p">)</span>
 
 
@@ -8370,12 +8440,12 @@ Una pasada hacia delante por pregunta, determinista y en dos segundos.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=948cf7ef">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-024">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Unos 10 segundos por fila en CPU.</span>
@@ -8414,42 +8484,42 @@ Una pasada hacia delante por pregunta, determinista y en dos segundos.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Cuanto cuesta al anio la tarjeta Premium?                    0.913     0.621        0.125
+<pre>Cuanto cuesta al anio la tarjeta Premium?                    0.906     0.621        0.077
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Cual es el plazo para reclamar un cargo que no reconoz       0.089     0.014        0.000
+<pre>Cual es el plazo para reclamar un cargo que no reconoz       0.098     0.014        0.000
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>El cliente IB-1002 quiere una hipoteca de 150000 euros       0.963     0.855        0.935
+<pre>El cliente IB-1002 quiere una hipoteca de 150000 euros       0.962     0.845        0.936
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Que perfil MiFID tiene la clienta IB-1003?                   0.988     0.944        0.962
+<pre>Que perfil MiFID tiene la clienta IB-1003?                   0.989     0.951        0.962
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Un cliente reclama un cargo de hace 10 meses. Esta a t       0.551     0.059        0.069
+<pre>Un cliente reclama un cargo de hace 10 meses. Esta a t       0.522     0.053        0.081
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=661789dd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-025">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8483,7 +8553,7 @@ las medidas son gordas:</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=622556ef">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-026">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8511,12 +8581,12 @@ código de terceros con tus credenciales. Es <code>npm install</code>, con las m
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5733e860">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02_mcp-027">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Validación en el servidor, no en el prompt. El esquema ya lleva un enum,</span>
@@ -8555,7 +8625,7 @@ validación deja de ser higiene y pasa a ser lo único que te protege.
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a3bcb3d1">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-028">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8577,7 +8647,7 @@ partir de los <em>type hints</em> y los docstrings:</p>
 
 <span class="n">mcp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transport</span><span class="o">=</span><span class="s2">"stdio"</span><span class="p">)</span>
 </pre></div>
-<p><strong>Claude Desktop</strong>: en <code>claude_desktop_config.json</code>,</p>
+<p><strong>Claude Desktop</strong>: en <code>claude_desktop_config.json</code>. En macOS y Linux,</p>
 <div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">"banco-iberia"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -8587,7 +8657,19 @@ partir de los <em>type hints</em> y los docstrings:</p>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-<p><strong>Claude Code</strong>, desde la terminal:</p>
+<p>En Windows no existe el ejecutable <code>python3</code>, y dentro del JSON las barras invertidas van dobladas:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"banco-iberia"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"python"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"C:\\Users\\tu_usuario\\demo_rapida\\mcp_demo\\servidor_fastmcp.py"</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>La ruta exacta de tu intérprete la tienes arriba, en la línea que ha impreso <code>comando_servidor()</code>.
+Si tienes varios Python instalados, esa es la respuesta buena y no la que diga el PATH.</p>
+<p><strong>Claude Code</strong>, desde la terminal (<code>python</code> en Windows):</p>
 <div class="highlight"><pre><span></span>claude<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>banco-iberia<span class="w"> </span>--<span class="w"> </span>python3<span class="w"> </span>/ruta/absoluta/.../servidor_fastmcp.py
 </pre></div>
 <p>A partir de ahí puedes escribirle "¿cuánto le quedaría de cuota a IB-1003 por 200.000 € a 20
@@ -8597,7 +8679,7 @@ modelo de 1,5 B: la diferencia que notes es exactamente la fiabilidad de uso de 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=599d4456">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=02_mcp-029">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

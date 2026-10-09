@@ -7510,7 +7510,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0bf7c00b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-000">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7533,7 +7533,7 @@ describirla; te bastan dos matrices flacas.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d68903ab">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-001">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7553,7 +7553,24 @@ aprendizaje. Lo habitual es $\alpha = 2r$.</li>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ac37cfff">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-002">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Antes-de-nada:-preparar-el-ordenador">Antes de nada: preparar el ordenador<a class="anchor-link" href="#Antes-de-nada:-preparar-el-ordenador">¶</a></h2><p>Ejecuta la celda de abajo antes que ninguna otra. Mira qué sistema operativo
+tienes y qué hay ya instalado, y descarga <strong>solo lo que falte</strong>: funciona igual
+en Windows, en macOS y en Linux, y no hace falta que instales nada a mano.</p>
+<p>La primera vez tarda unos minutos, porque se baja PyTorch. Las siguientes
+termina en un segundo. Se puede ejecutar tantas veces como quieras.</p>
+<p>Si algo falla, cambia <code>instalar()</code> por <code>instalar(verboso=True)</code>, vuelve a
+ejecutarla y enseña lo que imprima.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-003">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7561,10 +7578,54 @@ aprendizaje. Lo habitual es $\alpha = 2r$.</li>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>
+<div class="highlight hl-python"><pre><span></span><span class="c1"># Prepara el entorno: comprueba lo que ya tienes e instala únicamente lo que</span>
+<span class="c1"># falte. Si ya está todo, no descarga nada.</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">import</span> <span class="nn">random</span>
+<span class="n">_aqui</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+<span class="n">_candidatas</span> <span class="o">=</span> <span class="p">[</span><span class="n">_aqui</span><span class="p">,</span> <span class="o">*</span><span class="n">_aqui</span><span class="o">.</span><span class="n">parents</span><span class="p">,</span>                       <span class="c1"># lo normal</span>
+               <span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_aqui</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*/comun/entorno.py"</span><span class="p">)),</span>
+               <span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_aqui</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*/*/comun/entorno.py"</span><span class="p">))]</span>
+<span class="n">_raiz</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">_candidatas</span>
+              <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="s2">"comun"</span> <span class="o">/</span> <span class="s2">"entorno.py"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()),</span> <span class="kc">None</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">_raiz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="s2">"No encuentro la carpeta 'comun'. Descomprime el zip entero y abre "</span>
+        <span class="s2">"este cuaderno desde dentro de la carpeta demo_rapida."</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_raiz</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">comun.entorno</span> <span class="kn">import</span> <span class="n">instalar</span><span class="p">,</span> <span class="n">preparar</span>
+
+<span class="n">instalar</span><span class="p">()</span>                 <span class="c1"># ¿algo ha fallado? -&gt; instalar(verboso=True)</span>
+<span class="n">_carpeta</span> <span class="o">=</span> <span class="n">preparar</span><span class="p">()</span>      <span class="c1"># deja las rutas del cuaderno listas</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Entorno listo, no hay nada que instalar.  (Linux 6.8.0-138-generic · Python 3.10.12)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-004">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
@@ -7589,7 +7650,9 @@ aprendizaje. Lo habitual es $\alpha = 2r$.</li>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>PyTorch        : 2.9.1+cpu
+<pre>Sistema        : Linux 6.8.0-138-generic (x86_64)
+Python         : 3.10.12
+PyTorch        : 2.14.1+cpu
 Dispositivo    : cpu
 Hilos de CPU   : 8
 Sin GPU: todo funciona igual, solo que más despacio.
@@ -7600,7 +7663,7 @@ Semilla        : 0
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cb388bad">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-005">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7610,12 +7673,12 @@ Semilla        : 0
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=811f25b3">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-006">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="k">class</span> <span class="nc">LinealLoRA</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -7700,7 +7763,7 @@ El ahorro es r(d+k) frente a dk, así que crece con el tamaño de la matriz:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0678a714">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-007">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7711,12 +7774,12 @@ que le digas. Lo que hay que decidir es <strong>cuáles</strong>.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cc549f7e">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-008">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">peft</span> <span class="kn">import</span> <span class="n">LoraConfig</span><span class="p">,</span> <span class="n">get_peft_model</span>
@@ -7745,7 +7808,7 @@ que le digas. Lo que hay que decidir es <strong>cuáles</strong>.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/home/eduardo/.local/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+<pre>/tmp/venv_demo/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
   from .autonotebook import tqdm as notebook_tqdm
 </pre>
 </div>
@@ -7767,12 +7830,12 @@ que le digas. Lo que hay que decidir es <strong>cuáles</strong>.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5b42f818">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-009">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="n">ATENCION</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"q_proj"</span><span class="p">,</span> <span class="s2">"k_proj"</span><span class="p">,</span> <span class="s2">"v_proj"</span><span class="p">,</span> <span class="s2">"o_proj"</span><span class="p">]</span>
@@ -7812,13 +7875,6 @@ que le digas. Lo que hay que decidir es <strong>cuáles</strong>.</p>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>The 8-bit optimizer is not available on your device, only available on CUDA for now.
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>trainable params: 4,884,480 || all params: 139,399,488 || trainable%: 3.5039
 
@@ -7834,7 +7890,7 @@ Memoria del estado de Adam (2 números float32 por peso entrenable):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=dfc43f7b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-010">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7853,7 +7909,7 @@ dentro de un momento.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d78ef51e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-011">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7865,12 +7921,12 @@ solo recibe los parámetros entrenables, y la tasa de aprendizaje sube un orden 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=acc81073">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-012">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">triaje</span><span class="p">(</span><span class="n">n_train</span><span class="o">=</span><span class="mi">160</span><span class="p">,</span> <span class="n">n_test</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
@@ -7891,7 +7947,7 @@ solo recibe los parámetros entrenables, y la tasa de aprendizaje sube un orden 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[evaluar antes] 15.1 s
+<pre>[evaluar antes] 15.0 s
 
 ANTES: formato   0.0%   categoría   0.0%   ficha exacta   0.0%   (n=40)
 </pre>
@@ -7899,12 +7955,12 @@ ANTES: formato   0.0%   categoría   0.0%   ficha exacta   0.0%   (n=40)
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6619fd04">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-013">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="n">BATCH</span><span class="p">,</span> <span class="n">EPOCAS</span><span class="p">,</span> <span class="n">LR</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">5e-4</span>
@@ -7942,32 +7998,32 @@ ANTES: formato   0.0%   categoría   0.0%   ficha exacta   0.0%   (n=40)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>época 1/3   pérdida media 0.2761   [107 s]
+<pre>época 1/3   pérdida media 0.2761   [110 s]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>época 2/3   pérdida media 0.0330   [214 s]
+<pre>época 2/3   pérdida media 0.0330   [218 s]
 </pre>
 </div>
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>época 3/3   pérdida media 0.0071   [317 s]
+<pre>época 3/3   pérdida media 0.0071   [328 s]
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5c34f6e2">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-014">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="k">with</span> <span class="n">cronometro</span><span class="p">(</span><span class="s2">"evaluar después"</span><span class="p">):</span>
@@ -7988,7 +8044,7 @@ ANTES: formato   0.0%   categoría   0.0%   ficha exacta   0.0%   (n=40)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[evaluar después] 21.1 s
+<pre>[evaluar después] 20.8 s
 
 test de plantilla : formato 100.0%   categoría 100.0%   ficha exacta 100.0%   (n=40)
 escrito a mano    : formato 100.0%   categoría  75.0%   ficha exacta  75.0%   (n=12)
@@ -7998,7 +8054,7 @@ escrito a mano    : formato 100.0%   categoría  75.0%   ficha exacta  75.0%   (
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b1c784c2">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-015">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8061,7 +8117,7 @@ Está en los ejercicios medirlo con muestra suficiente.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1d11ad91">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-016">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8073,12 +8129,12 @@ ningún rastro de que se entrenó con LoRA.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=11b1dada">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-017">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Antes de fusionar, nos quedamos con una salida de referencia.</span>
@@ -8125,12 +8181,12 @@ Ya no hay capas LoRA: es un LlamaForCausalLM normal y corriente.
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=de3d98fe">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=04_lora-018">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Y lo que de verdad cambia la operación: lo que ocupa cada cosa en disco.</span>
@@ -8188,7 +8244,7 @@ por cliente, intercambiable en milisegundos.
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=075dc512">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-019">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8206,7 +8262,7 @@ con dos líneas más.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=19bc32c3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04_lora-020">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>

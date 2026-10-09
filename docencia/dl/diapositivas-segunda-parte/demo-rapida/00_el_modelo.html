@@ -7510,7 +7510,7 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c3fb70e0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-000">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7568,7 +7568,7 @@ hemos descargado.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9d564808">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-001">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7585,7 +7585,7 @@ o saltándose tu procedimiento, entonces sí hay que mover pesos: SFT, LoRA, RLH
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c0fdf8e5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-002">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7596,21 +7596,21 @@ o saltándose tu procedimiento, entonces sí hay que mover pesos: SFT, LoRA, RLH
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4a18d83d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-003">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1.-Qu%C3%A9-necesitas-instalado">1. Qué necesitas instalado<a class="anchor-link" href="#1.-Qu%C3%A9-necesitas-instalado">¶</a></h2><p>En Google Colab, ejecuta la celda de abajo. En tu máquina, probablemente ya tengas casi todo.</p>
-<p><strong>Requisitos de hardware</strong>: todo está preparado para funcionar en CPU con unos <strong>6 GB de RAM
-libres</strong>. Con GPU va mucho más rápido y no hay que cambiar nada: el código detecta el dispositivo
-solo. Los tiempos que aparecen comentados en los cuadernos están medidos en un portátil sin GPU,
-con 8 hilos.</p>
+<h2 id="1.-Qu%C3%A9-necesitas">1. Qué necesitas<a class="anchor-link" href="#1.-Qu%C3%A9-necesitas">¶</a></h2><p><strong>Nada instalado de antemano.</strong> La celda siguiente se encarga: comprueba qué tienes y baja lo que
+falte, sea cual sea tu sistema operativo. Lo mismo vale en Google Colab.</p>
+<p><strong>Hardware</strong>: todo está preparado para funcionar en CPU con unos <strong>6 GB de RAM libres</strong>. Con GPU va
+mucho más rápido y no hay que cambiar nada, porque el código detecta el dispositivo solo. Los
+tiempos que aparecen comentados en los cuadernos están medidos en un portátil sin GPU, con 8 hilos.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c7a56578">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-004">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7618,14 +7618,46 @@ con 8 hilos.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># En Colab, descomenta. En local, solo si te falta algo.</span>
-<span class="c1"># !pip install -q transformers sentence-transformers peft accelerate faiss-cpu</span>
+<div class="highlight hl-python"><pre><span></span><span class="c1"># Prepara el entorno: comprueba lo que ya tienes e instala únicamente lo que</span>
+<span class="c1"># falte. Si ya está todo, no descarga nada.</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">_aqui</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+<span class="n">_candidatas</span> <span class="o">=</span> <span class="p">[</span><span class="n">_aqui</span><span class="p">,</span> <span class="o">*</span><span class="n">_aqui</span><span class="o">.</span><span class="n">parents</span><span class="p">,</span>                       <span class="c1"># lo normal</span>
+               <span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_aqui</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*/comun/entorno.py"</span><span class="p">)),</span>
+               <span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_aqui</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*/*/comun/entorno.py"</span><span class="p">))]</span>
+<span class="n">_raiz</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">_candidatas</span>
+              <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="s2">"comun"</span> <span class="o">/</span> <span class="s2">"entorno.py"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()),</span> <span class="kc">None</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">_raiz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+        <span class="s2">"No encuentro la carpeta 'comun'. Descomprime el zip entero y abre "</span>
+        <span class="s2">"este cuaderno desde dentro de la carpeta demo_rapida."</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_raiz</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">comun.entorno</span> <span class="kn">import</span> <span class="n">instalar</span><span class="p">,</span> <span class="n">preparar</span>
+
+<span class="n">instalar</span><span class="p">()</span>                 <span class="c1"># ¿algo ha fallado? -&gt; instalar(verboso=True)</span>
+<span class="n">_carpeta</span> <span class="o">=</span> <span class="n">preparar</span><span class="p">()</span>      <span class="c1"># deja las rutas del cuaderno listas</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=dceae5ae">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Entorno listo, no hay nada que instalar.  (Linux 6.8.0-138-generic · Python 3.10.12)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-005">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7633,10 +7665,7 @@ con 8 hilos.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"."</span><span class="p">)</span>          <span class="c1"># para poder importar el paquete `comun`</span>
-
-<span class="kn">from</span> <span class="nn">comun.config</span> <span class="kn">import</span> <span class="p">(</span><span class="n">MODELO_CHARLA</span><span class="p">,</span> <span class="n">MODELO_PEQUE</span><span class="p">,</span> <span class="n">MODELO_EMBED</span><span class="p">,</span> <span class="n">DEVICE</span><span class="p">,</span>
+<div class="highlight hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">comun.config</span> <span class="kn">import</span> <span class="p">(</span><span class="n">MODELO_CHARLA</span><span class="p">,</span> <span class="n">MODELO_PEQUE</span><span class="p">,</span> <span class="n">MODELO_EMBED</span><span class="p">,</span> <span class="n">DEVICE</span><span class="p">,</span>
                           <span class="n">DTYPE_CHARLA</span><span class="p">,</span> <span class="n">DTYPE_ENTRENO</span><span class="p">,</span> <span class="n">fijar_semilla</span><span class="p">,</span> <span class="n">mil</span><span class="p">,</span>
                           <span class="n">resumen_entorno</span><span class="p">,</span> <span class="n">tam_mb</span><span class="p">,</span> <span class="n">cronometro</span><span class="p">)</span>
 
@@ -7654,7 +7683,9 @@ con 8 hilos.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>PyTorch        : 2.9.1+cpu
+<pre>Sistema        : Linux 6.8.0-138-generic (x86_64)
+Python         : 3.10.12
+PyTorch        : 2.14.1+cpu
 Dispositivo    : cpu
 Hilos de CPU   : 8
 Sin GPU: todo funciona igual, solo que más despacio.
@@ -7665,7 +7696,7 @@ Semilla        : 0
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6fa40c46">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-006">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7715,7 +7746,7 @@ Antes de meter un modelo en un producto, el fichero que hay que leer es la licen
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bb5c03d5">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-007">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7772,7 +7803,7 @@ Antes de meter un modelo en un producto, el fichero que hay que leer es la licen
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/home/eduardo/.local/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+<pre>/tmp/venv_demo/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
   from .autonotebook import tqdm as notebook_tqdm
 </pre>
 </div>
@@ -7782,7 +7813,7 @@ Antes de meter un modelo en un producto, el fichero que hay que leer es la licen
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Repositorio: HuggingFaceTB/SmolLM2-135M-Instruct
 Licencia   : apache-2.0
-Descargas el último mes: 1.874.854
+Descargas el último mes: 1.668.726
 
 fichero                                    tamaño   para qué sirve
 --------------------------------------------------------------------------------------
@@ -7809,7 +7840,7 @@ generation_config.json                       0.0 MB   valores por defecto al gen
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9fdad877">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-008">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7824,7 +7855,7 @@ puros que no puede ejecutar nada. Si te descargas pesos de un repositorio que no
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c3933b99">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-009">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7863,7 +7894,7 @@ puros que no puede ejecutar nada. Si te descargas pesos de un repositorio que no
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[cargar SmolLM2-135M] 2.3 s
+<pre>[cargar SmolLM2-135M] 1.2 s
 
 Parámetros            : 134.515.008
 Capas (bloques)       : 30
@@ -7877,7 +7908,7 @@ Ocupa en RAM          : 513 MB en torch.float32
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5044e6f3">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-010">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7937,7 +7968,7 @@ Los nombres de los módulos de UN bloque (los que tocaremos con LoRA):
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1bc77f68">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-011">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7950,7 +7981,7 @@ factura de una API sube cuando escribes en catalán.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=fa1aadfa">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-012">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7989,7 +8020,7 @@ B | anco |  Iber | ia |  conced | e |  hip | ot | ec | as |  de |  hast | a |  e
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=482be505">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-013">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8029,7 +8060,7 @@ euskera     27 tokens para  62 caracteres (2.30 car/token)
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=68b9d65e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-014">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8043,7 +8074,7 @@ equivocarte en una marca degrada el modelo sin dar ningún error.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f7398b56">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-015">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8091,7 +8122,7 @@ modelo que es su turno. Sin eso, el modelo sigue escribiendo tu mensaje.
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9ea72195">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-016">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8109,7 +8140,7 @@ parece al greedy; con <code>T</code> alta se vuelve creativo y luego incoherente
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8c12f4d3">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-017">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8160,7 +8191,7 @@ parece al greedy; con <code>T</code> alta se vuelve creativo y luego incoherente
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4dbe9ef9">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-018">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8191,7 +8222,7 @@ parece al greedy; con <code>T</code> alta se vuelve creativo y luego incoherente
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[cargar Qwen2.5-1.5B] 0.9 s
+<pre>[cargar Qwen2.5-1.5B] 1.3 s
 
 Parámetros : 1.543.714.304
 Ocupa      : 2944 MB en torch.bfloat16
@@ -8201,7 +8232,7 @@ Ocupa      : 2944 MB en torch.bfloat16
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a89a7d54">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-019">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8247,13 +8278,13 @@ Ocupa      : 2944 MB en torch.bfloat16
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Una hipoteca a tipo variable, también conocida como hipoteca flexible o hipoteca con tipos dinámicos, es un tipo de préstamo financiero que permite al cliente elegir entre diferentes tipos de interés durante la duración del contrato. Esto puede incluir tipos de interés fijos,浮动利率, y otros tipos de interés variables. La flexibilidad en los tipos de interés se presenta como ventaja para aquellos que buscan minimizar
-[generar] 7.5 s
+[generar] 8.6 s
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=074266e0">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-020">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8289,7 +8320,7 @@ Ocupa      : 2944 MB en torch.bfloat16
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>   "Un paso más hacia tu futuro financiero: Nueva Cuenta Nómina de Banco Iberia".
+<pre>   "Un paso más hacia tu economía sostenible con Banco Iberia".
 
 [T = 0.7]
 </pre>
@@ -8307,14 +8338,14 @@ Ocupa      : 2944 MB en torch.bfloat16
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>   "Trabaja, financiástage una vida más rica".  "Estar seguro es ganar seguro. Nueva cuentaxón de Iberia".
+<pre>   "Trabaja, financiástage una vida más cómoda".
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3e1be162">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-021">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8325,7 +8356,7 @@ visto durante el preentrenamiento. Preguntémosle de todas formas.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b45e268c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00_el_modelo-022">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8348,16 +8379,14 @@ visto durante el preentrenamiento. Preguntémosle de todas formas.</p>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>La comisión por retirar dinero en un cajero automático (CA) de otro banco español se basa en las políticas y regulaciones específicas del banco que proporciona el CA, ya que cada entidad puede establecer sus propias tarifas. Sin embargo, generalmente, los bancos españoles ofrecen una tarifa mínima o gratuita para este tipo de operaciones.
-
-Por favor consulta directamente con tu banco para obtener información precisa sobre las tarifas aplicables a tus servicios financieros.
+<pre>Lo siento, pero no tengo acceso a información específica sobre las comisiones bancarias o regulaciones específicas de cada entidad financiera como Banco Iberia. Para obtener esta información precisa y actualizada, te recomendaría que consultes directamente con el banco o busques en su página web oficial los detalles más recientes.
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=683ceb7a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-023">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8376,7 +8405,7 @@ por operación</strong>. Vamos a hacer que el modelo la lea en vez de inventarla
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=de7a87e7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=00_el_modelo-024">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
