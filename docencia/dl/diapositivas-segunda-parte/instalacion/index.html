@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de instalación · Deep Learning</title>
+<link rel="stylesheet" href="../../../assets/style.css">
+<style>
+pre{background:#faf6ea; border:1px solid var(--rule); border-radius:6px;
+    padding:11px 14px; overflow:auto; font-size:.84em; line-height:1.5;
+    font-family:"DejaVu Sans Mono",Menlo,Consolas,monospace; margin:8px 0 14px}
+code{background:var(--goldPale); padding:1px 5px; border-radius:4px; font-size:.9em;
+     font-family:"DejaVu Sans Mono",Menlo,Consolas,monospace}
+pre code{background:none; padding:0; font-size:1em}
+table{border-collapse:collapse; margin:10px 0 18px; font-size:.92em}
+th,td{border:1px solid var(--rule); padding:6px 11px; text-align:left}
+th{background:var(--goldPale); color:var(--goldDeep); font-variant:small-caps;
+   letter-spacing:.04em}
+.aviso{border-left:3px solid var(--gold); background:var(--goldPale);
+       padding:10px 14px; margin:14px 0; border-radius:0 6px 6px 0}
+.fuente{font-size:.84em; color:var(--mute); font-style:italic; margin:-6px 0 4px}
+h2{border-bottom:1px solid var(--rule); padding-bottom:4px}
+.cuerpo{max-width:62em}
+</style>
+</head>
+<body>
+<div class="crumbs"><a href="../../../index.html">Asignaturas</a><span class="sep">/</span><a href="../../index.html">Deep Learning</a><span class="sep">/</span><a href="../index.html">Diapositivas de la segunda parte</a><span class="sep">/</span><span>Guía de instalación</span></div>
+<h1>Guía de instalación</h1>
+<p class="sub">Las cuatro piezas del Tema A en vuestro portátil: Claude Code, el Claude de escritorio (Cowork), opencode y Ollama con un modelo Qwen3 que cabe en un portátil normal. En Windows, macOS y Ubuntu. Todos los comandos están copiados de la documentación oficial el 15 de octubre de 2026; cada bloque lleva debajo la URL de donde salen.</p>
+<hr class="rule">
+
+<div class="cuerpo">
+
+<div class="bloque">Antes de empezar: qué toca esto en vuestro portátil</div>
+<p>Nada de lo que hay aquí abajo toca el firmware (BIOS/UEFI), ni la tabla de particiones, ni el arranque. Los cuatro programas escriben en vuestra carpeta de usuario y añaden un comando al PATH.</p>
+
+<table>
+<tr><th>Capa</th><th>Qué le pasa</th></tr>
+<tr><td>Carpeta de usuario (<code>~/.local</code>, <code>~/.ollama</code>, <code>%USERPROFILE%</code>)</td><td>Aquí aterriza todo: los programas y los pesos del modelo</td></tr>
+<tr><td>Sistema operativo (<code>/usr/bin</code>, Program Files)</td><td>Sólo lo toca <code>apt</code> en Ubuntu, y pide la contraseña antes</td></tr>
+<tr><td>Particiones y disco</td><td>No se tocan</td></tr>
+<tr><td>Firmware · BIOS / UEFI</td><td>No se toca. Ningún paso de esta guía entra ahí</td></tr>
+</table>
+
+<p><b>Administrador.</b> No hace falta en Windows ni en macOS. En Ubuntu lo pide <code>apt</code>, igual que para cualquier otro programa.</p>
+<p><b>Espacio.</b> Unos 4 GB para los programas, y entre 2,5 y 5,2 GB más por cada modelo de Ollama que os bajéis.</p>
+<p><b>Desinstalar.</b> Borrar una carpeta. Las órdenes exactas están al final.</p>
+
+<div class="aviso"><b>La única excepción, y se esquiva.</b> La pestaña Cowork del Claude de escritorio, <i>en Ubuntu</i>, levanta una máquina virtual y necesita virtualización por hardware activada en el firmware. Si os sale ese aviso, no entréis en la BIOS: usad Claude Code en la terminal, que ejecuta el mismo motor. En Windows y macOS el aviso no aparece.</div>
+
+<h2>1. Claude Code — el agente en la terminal</h2>
+<p>Es el que usamos en clase.</p>
+<p><b>Windows (PowerShell).</b> El prompt pone <code>PS C:\&gt;</code>.</p>
+<pre><code>irm https://claude.ai/install.ps1 | iex</code></pre>
+<p><b>Windows (CMD).</b> El prompt pone <code>C:\&gt;</code>, sin el <code>PS</code>.</p>
+<pre><code>curl -fsSL https://claude.ai/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</code></pre>
+<p><b>macOS, Ubuntu y WSL.</b></p>
+<pre><code>curl -fsSL https://claude.ai/install.sh | bash</code></pre>
+<p><b>Comprobar.</b> Abrid una terminal <i>nueva</i> (las ya abiertas no ven el PATH actualizado):</p>
+<pre><code>claude --version      # imprime algo como 2.1.211 (Claude Code)
+claude doctor         # diagnóstico de la instalación, sin abrir sesión</code></pre>
+<p><b>Arrancar</b>, dentro de la carpeta del proyecto:</p>
+<pre><code>cd ~/ventas
+claude</code></pre>
+<p><b>Requisitos.</b> macOS 13+, Windows 10 1809+, Ubuntu 20.04+ o Debian 10+; 4 GB de RAM; procesador x64 o ARM64.</p>
+<p><b>Cuenta.</b> Pide plan Pro, Max, Team, Enterprise o una cuenta de Console con crédito. El plan gratuito de claude.ai <b>no</b> incluye Claude Code.</p>
+<p><b>Alternativas</b>, si el script falla:</p>
+<pre><code>winget install Anthropic.ClaudeCode        # Windows
+brew install --cask claude-code            # macOS
+npm install -g @anthropic-ai/claude-code   # cualquiera, con Node.js 22+</code></pre>
+<p>Nunca con <code>sudo npm install -g</code>: la documentación lo desaconseja expresamente por los problemas de permisos que genera después.</p>
+<p><b>Errores habituales.</b></p>
+<table>
+<tr><th>Qué dice</th><th>Qué pasa</th></tr>
+<tr><td><code>claude: command not found</code></td><td>Cerrad la terminal y abrid otra</td></tr>
+<tr><td><code>The token '&amp;&amp;' is not a valid statement separator</code></td><td>Estáis en PowerShell y habéis pegado el comando de CMD</td></tr>
+<tr><td><code>'irm' is not recognized…</code></td><td>Estáis en CMD y habéis pegado el de PowerShell</td></tr>
+</table>
+<p class="fuente">Fuente: <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">code.claude.com/docs/en/setup</a></p>
+
+<h2>2. Claude de escritorio — Chat, Cowork y Code en la misma app</h2>
+<p>Una sola aplicación con tres pestañas: <i>Chat</i> para conversar, <i>Cowork</i> para encargos largos sobre carpetas, y <i>Code</i> para repositorios. Es la puerta por la que entrará la mayoría de vuestros compañeros de empresa.</p>
+<p><b>Windows y macOS.</b> Descarga directa desde <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>: <code>.exe</code> en Windows, <code>.dmg</code> en macOS. Instalar, abrir, iniciar sesión. Descargad sólo desde ahí; las webs de «descarga gratuita» de terceros son una fuente habitual de instaladores con añadidos.</p>
+<p><b>Ubuntu 22.04+ / Debian 12+ (beta).</b> Cuatro pasos.</p>
+<pre><code># 1. curl y gpg, si no los tenéis
+sudo apt install curl gnupg
+
+# 2. la clave de firma de Anthropic
+sudo curl -fsSLo /usr/share/keyrings/claude-desktop-archive-keyring.asc \
+  https://downloads.claude.ai/claude-desktop/key.asc
+
+#    comprobad que la huella es la de Anthropic:
+#    31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE
+gpg --show-keys /usr/share/keyrings/claude-desktop-archive-keyring.asc
+
+# 3. el repositorio
+echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/claude-desktop-archive-keyring.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main" | sudo tee /etc/apt/sources.list.d/claude-desktop.list
+
+# 4. instalar
+sudo apt update &amp;&amp; sudo apt install claude-desktop</code></pre>
+<p>Después, <code>claude-desktop</code> desde la terminal o <b>Claude</b> desde el lanzador de aplicaciones.</p>
+<p><b>Cuenta.</b> Se entra con la suscripción de claude.ai o con el SSO de la universidad. Cowork necesita plan de pago; la pestaña Chat, no.</p>
+<p>Si <code>apt</code> dice <code>Unable to locate package claude-desktop</code>, falta el <code>sudo apt update</code> del paso 4. Si dice <code>NO_PUBKEY BAA929FF1A7ECACE</code>, la clave del paso 2 no se descargó bien.</p>
+<p>Si la pestaña Cowork avisa de que necesita KVM, dejadla. No vamos a tocar el firmware por una pestaña: Claude Code en la terminal hace lo mismo.</p>
+<p class="fuente">Fuentes: <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a> · <a href="https://code.claude.com/docs/en/desktop-linux" target="_blank" rel="noopener">code.claude.com/docs/en/desktop-linux</a></p>
+
+<h2>3. Ollama + Qwen3 — el modelo que corre dentro del portátil</h2>
+<p><b>Instalar Ollama.</b></p>
+<pre><code># macOS y Ubuntu
+curl -fsSL https://ollama.com/install.sh | sh</code></pre>
+<pre><code># Windows: no necesita Administrador, instala en vuestra carpeta de usuario
+winget install Ollama.Ollama</code></pre>
+<p>En macOS también vale bajar <code>ollama.dmg</code> de <a href="https://ollama.com/download" target="_blank" rel="noopener">ollama.com/download</a> y arrastrarlo a Aplicaciones. En Windows, <code>OllamaSetup.exe</code> de la misma página.</p>
+<p><b>Bajar el modelo.</b> Se baja una sola vez y luego funciona sin conexión:</p>
+<pre><code>ollama pull qwen3:8b     # 5,2 GB
+ollama run qwen3:8b      # a probarlo; Ctrl-D para salir</code></pre>
+<p><b>Qué talla elegir.</b> Regla práctica, no especificación:</p>
+<table>
+<tr><th>Modelo</th><th>Descarga</th><th>RAM del portátil</th></tr>
+<tr><td><code>qwen3:8b</code></td><td>5,2 GB</td><td>16 GB o más</td></tr>
+<tr><td><code>qwen3:4b</code></td><td>2,5 GB</td><td>8 GB (y trae ventana de 256k)</td></tr>
+<tr><td><code>qwen3:1.7b</code></td><td>1,4 GB</td><td>si el portátil va muy justo</td></tr>
+</table>
+<p>Si el portátil empieza a tirar de disco y cada respuesta tarda minutos, el modelo no cabe en RAM: bajad de talla. <b>Sin GPU también funciona</b>; en CPU va más lento, no deja de funcionar.</p>
+<p><b>Dónde caen los pesos.</b> <code>~/.ollama</code> en macOS y Ubuntu, <code>%HOMEPATH%\.ollama</code> en Windows. Para ver lo que tenéis y recuperar disco:</p>
+<pre><code>ollama list
+ollama rm qwen3:8b</code></pre>
+<p class="fuente">Fuentes: <a href="https://docs.ollama.com/windows" target="_blank" rel="noopener">docs.ollama.com/windows</a> · <a href="https://ollama.com/library/qwen3" target="_blank" rel="noopener">ollama.com/library/qwen3</a></p>
+
+<h2>4. opencode — el agente libre, enchufado a Ollama</h2>
+<p><b>Instalar.</b></p>
+<pre><code># macOS y Ubuntu
+curl -fsSL https://opencode.ai/install | bash</code></pre>
+<pre><code># Windows (o, mejor, el comando de arriba dentro de WSL)
+npm install -g opencode-ai</code></pre>
+<p><b>Decirle dónde está Ollama.</b> Un fichero <code>opencode.json</code> en la raíz del proyecto:</p>
+<pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen3:8b": { "name": "Qwen3 8B" }
+      }
+    }
+  }
+}</code></pre>
+<p>Eso declara un proveedor llamado <code>ollama</code>, le dice que se habla con él con el protocolo de OpenAI, y que escucha en el puerto 11434 de vuestra propia máquina. Nada sale del portátil.</p>
+<p><b>Usarlo.</b></p>
+<pre><code>opencode                                 # y dentro: /models
+opencode --model ollama/qwen3:8b         # o eligiéndolo desde fuera
+opencode models                          # qué modelos ve</code></pre>
+<p>Cambiando esas cinco líneas, el mismo opencode habla con Anthropic, con OpenAI o con el servidor de vuestra empresa. El agente no se entera.</p>
+<p class="fuente">Fuentes: <a href="https://opencode.ai/docs/" target="_blank" rel="noopener">opencode.ai/docs</a> · <a href="https://opencode.ai/docs/providers/" target="_blank" rel="noopener">opencode.ai/docs/providers</a> · <a href="https://opencode.ai/docs/cli/" target="_blank" rel="noopener">opencode.ai/docs/cli</a></p>
+
+<h2>Desinstalar</h2>
+<pre><code># Claude Code (instalación nativa), macOS / Ubuntu / WSL
+rm -f ~/.local/bin/claude &amp;&amp; rm -rf ~/.local/share/claude
+
+# Claude Code en Windows (PowerShell)
+Remove-Item "$env:USERPROFILE\.local\bin\claude.exe" -Force
+Remove-Item "$env:USERPROFILE\.local\share\claude" -Recurse -Force
+
+# Claude de escritorio en Ubuntu
+sudo apt remove claude-desktop
+
+# los pesos de Ollama
+ollama rm qwen3:8b</code></pre>
+<p>Y, si queréis borrar también la configuración, <code>~/.claude</code> y <code>~/.ollama</code>.</p>
+
+<h2>Comprobación final</h2>
+<p>Las tres líneas que deben responder antes de la clase:</p>
+<pre><code>claude --version
+opencode --version
+ollama --version</code></pre>
+<p>Si alguna no responde, traedla sin resolver y la miramos en clase: el fallo de instalación de otro es la mejor demo que hay.</p>
+
+</div>
+
+<p class="pie">Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></p>
+</body>
+</html>
