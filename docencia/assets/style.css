@@ -4,6 +4,20 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
+
+/* conmutador de idioma: se muestra sólo el idioma activo */
+html[data-lang="es"] .en{display:none}
+html[data-lang="en"] .es{display:none}
+.lang-toggle{display:inline-flex; margin-left:auto; flex:0 0 auto;
+  border:1px solid var(--rule); border-radius:5px; overflow:hidden}
+.lang-toggle button{font-family:inherit; cursor:pointer; background:var(--paper);
+  color:var(--mute); border:none; padding:3px 11px; font-size:.72em;
+  letter-spacing:.1em; text-transform:uppercase; font-weight:bold; line-height:1.6}
+.lang-toggle button+button{border-left:1px solid var(--rule)}
+.lang-toggle button:hover{color:var(--goldDeep)}
+.lang-toggle button[aria-pressed="true"]{background:var(--gold); color:#fff}
+.topbar{display:flex; align-items:center; gap:0; margin:0 0 16px}
+.topbar .crumbs{margin:0}
 body{
   padding:34px 7vw 70px; background:#fff; color:var(--ink);
   font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;

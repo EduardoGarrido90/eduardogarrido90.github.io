@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mochilas Llenas · Material escolar que vuelve a clase</title>
+<meta name="description" content="Proyecto social de recuperación y reparto de material escolar en Puente de Vallecas. Ejemplo docente del Caso II de Deep Learning para Business Analytics (Comillas ICADE).">
+<style>
+:root{
+  --ink:#1A1A1A; --gold:#B8860B; --gold-deep:#8C6508;
+  --gold-pale:#F5EBD3; --mute:#8A8A8A; --rule:#D9C28A; --paper:#FFFFFF;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif;
+  font-size:18px; line-height:1.62;
+}
+.wrap{max-width:820px; margin:0 auto; padding:0 24px}
+
+/* ---- aviso de material docente ---------------------------------- */
+.aviso{
+  background:var(--gold-pale); border-bottom:1px solid var(--rule);
+  color:var(--gold-deep); font-size:.78rem; letter-spacing:.02em;
+}
+.aviso .wrap{padding-top:9px; padding-bottom:9px}
+.aviso strong{color:var(--ink)}
+
+/* ---- navegación pegajosa ---------------------------------------- */
+nav{
+  position:sticky; top:0; z-index:10; background:var(--paper);
+  border-bottom:1px solid var(--rule);
+}
+nav .wrap{display:flex; flex-wrap:wrap; gap:0 22px; padding-top:11px; padding-bottom:11px}
+nav a{
+  color:var(--mute); text-decoration:none; font-size:.80rem;
+  letter-spacing:.03em; text-transform:uppercase; white-space:nowrap;
+}
+nav a:hover,nav a:focus{color:var(--gold)}
+nav a.activo{color:var(--gold); font-weight:700}
+
+/* ---- cabecera ---------------------------------------------------- */
+header{padding:52px 0 30px}
+header h1{
+  margin:0 0 6px; font-size:2.6rem; line-height:1.14; font-weight:700;
+  letter-spacing:-.01em;
+}
+header .lema{margin:0 0 20px; font-style:italic; font-size:1.18rem; color:var(--ink)}
+header .regla{border:0; border-top:1px solid var(--gold); width:7em; margin:0 0 20px}
+header .meta{margin:0; color:var(--mute); font-size:.92rem}
+
+.cifras{
+  display:flex; flex-wrap:wrap; gap:14px; margin:28px 0 0; padding:0; list-style:none;
+}
+.cifras li{
+  flex:1 1 150px; border:1px solid var(--rule); border-radius:3px;
+  background:var(--gold-pale); padding:14px 16px;
+}
+.cifras .n{display:block; font-size:1.8rem; font-weight:700; color:var(--gold-deep); line-height:1.1}
+.cifras .q{display:block; font-size:.80rem; color:var(--ink); margin-top:4px}
+
+/* ---- secciones ---------------------------------------------------- */
+main section{padding:34px 0 8px; scroll-margin-top:62px}
+h2{
+  font-size:1.42rem; margin:0 0 4px; padding-bottom:7px;
+  border-bottom:1px solid var(--gold);
+}
+h3{font-size:1.06rem; margin:26px 0 2px; color:var(--gold-deep)}
+p{margin:14px 0}
+a{color:var(--gold)}
+a:hover,a:focus{color:var(--gold-deep)}
+
+.dos{display:flex; flex-wrap:wrap; gap:0 34px}
+.dos>div{flex:1 1 300px}
+
+figure{margin:26px 0; text-align:center}
+figure svg{max-width:100%; height:auto}
+figcaption{font-size:.80rem; color:var(--mute); margin-top:9px; text-align:left}
+figcaption b{color:var(--ink); font-variant:small-caps; font-weight:600}
+
+table{border-collapse:collapse; width:100%; margin:20px 0; font-size:.88rem}
+caption{caption-side:bottom; font-size:.78rem; color:var(--mute); text-align:left; padding-top:8px}
+th{
+  text-align:left; padding:8px 10px; background:var(--paper); color:var(--ink);
+  border-bottom:1.5px solid var(--gold); font-variant:small-caps; letter-spacing:.02em;
+}
+td{padding:8px 10px; border-bottom:1px solid #EFE7D4; vertical-align:top}
+tbody tr:nth-child(odd){background:var(--gold-pale)}
+td.num,th.num{text-align:right; font-variant-numeric:tabular-nums}
+code{
+  font-family:"DejaVu Sans Mono",Consolas,Menlo,monospace; font-size:.84em;
+  background:var(--gold-pale); padding:1px 4px; border-radius:2px;
+}
+
+.nota{
+  border-left:2px solid var(--gold); background:var(--gold-pale);
+  padding:12px 16px; margin:22px 0; font-size:.90rem;
+}
+.nota b{color:var(--gold-deep)}
+
+footer{
+  margin-top:48px; border-top:1px solid var(--rule); padding:22px 0 44px;
+  color:var(--mute); font-size:.84rem;
+}
+footer a{color:var(--mute)}
+
+@media (max-width:700px){
+  body{font-size:17px}
+  .wrap{padding:0 17px}
+  header{padding:34px 0 22px}
+  header h1{font-size:1.95rem}
+  .dos{gap:0}
+  nav .wrap{gap:0 15px}
+  nav a{font-size:.72rem}
+  table{font-size:.82rem}
+  th,td{padding:6px 7px}
+}
+</style>
+</head>
+<body>
+
+<div class="aviso"><div class="wrap">
+<strong>Ejemplo docente.</strong> Esta página es la demo del profesor para el Caso&nbsp;II de
+Deep Learning para Business Analytics (Comillas ICADE). «Mochilas Llenas» es un proyecto
+<strong>ficticio</strong>; todas sus cifras son ilustrativas y no describen a ninguna entidad real.
+Lo que sí es real, y medido, es la ficha de trazabilidad del final.
+</div></div>
+
+<nav><div class="wrap">
+  <a href="#problema" class="activo">Problema</a>
+  <a href="#quien">A quién sirve</a>
+  <a href="#que-hace">Qué hace</a>
+  <a href="#cuesta">Qué cuesta</a>
+  <a href="#ficha">Cómo se hizo</a>
+  <a href="#firma">Quién lo firma</a>
+</div></nav>
+
+<header><div class="wrap">
+  <h1>Mochilas Llenas</h1>
+  <p class="lema">El material escolar que sobra en una casa es el que falta en la de al lado.</p>
+  <hr class="regla">
+  <p class="meta">Proyecto social de recuperación y reparto de material escolar ·
+  Puente de Vallecas, Madrid · curso 2026–2027</p>
+
+  <ul class="cifras">
+    <li><span class="n">612</span><span class="q">mochilas entregadas en el curso anterior</span></li>
+    <li><span class="n">4,80 €</span><span class="q">coste medio por mochila completa</span></li>
+    <li><span class="n">9</span><span class="q">centros escolares en la red</span></li>
+    <li><span class="n">41</span><span class="q">personas voluntarias activas</span></li>
+  </ul>
+</div></header>
+
+<main>
+
+<section id="problema"><div class="wrap">
+  <h2>El problema</h2>
+  <p>Cada septiembre, las familias de nueve colegios públicos de Puente de Vallecas reciben
+  una lista de material que cuesta entre 70 y 120 euros por niño. Para una parte de esas
+  familias, esa lista llega el mismo mes que el recibo del alquiler. El resultado habitual
+  es que el niño empieza el curso con media lista, y que la otra media nunca se compra.</p>
+
+  <p>Al mismo tiempo, en los armarios de esos mismos barrios se acumula material escolar en
+  buen estado que ya nadie usa: cuadernos a medio empezar, estuches completos, calculadoras
+  de un hermano que terminó bachillerato, mochilas de dos cursos atrás. Ese material no se
+  tira porque da pena tirarlo, y no se dona porque nadie sabe a quién.</p>
+
+  <p>Mochilas Llenas cierra ese circuito. Recoge lo que sobra, lo revisa, lo completa con
+  compra directa donde falte, y lo entrega a través de los propios centros, que son quienes
+  saben qué familias lo necesitan sin tener que preguntarlo en voz alta.</p>
+
+  <figure>
+    <svg viewBox="0 0 700 200" role="img" aria-label="Diagrama del circuito: recogida, revisión, completado y entrega a través de los centros escolares.">
+      <defs>
+        <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#B8860B"></path>
+        </marker>
+      </defs>
+      <g font-family="Georgia, serif" font-size="13" fill="#1A1A1A" text-anchor="middle">
+        <rect x="8"   y="62" width="138" height="56" rx="4" fill="#F5EBD3" stroke="#B8860B"></rect>
+        <text x="77"  y="85">Puntos de recogida</text><text x="77"  y="103" fill="#8A8A8A">9 centros + 3 locales</text>
+        <rect x="190" y="62" width="128" height="56" rx="4" fill="#F5EBD3" stroke="#B8860B"></rect>
+        <text x="254" y="85">Revisión</text><text x="254" y="103" fill="#8A8A8A">se descarta el 18 %</text>
+        <rect x="362" y="62" width="128" height="56" rx="4" fill="#F5EBD3" stroke="#B8860B"></rect>
+        <text x="426" y="85">Completado</text><text x="426" y="103" fill="#8A8A8A">compra de lo que falta</text>
+        <rect x="534" y="62" width="158" height="56" rx="4" fill="#F5EBD3" stroke="#B8860B"></rect>
+        <text x="613" y="85">Entrega por el centro</text><text x="613" y="103" fill="#8A8A8A">sin lista pública</text>
+        <line x1="150" y1="90" x2="184" y2="90" stroke="#B8860B" stroke-width="1.4" marker-end="url(#fl)"></line>
+        <line x1="322" y1="90" x2="356" y2="90" stroke="#B8860B" stroke-width="1.4" marker-end="url(#fl)"></line>
+        <line x1="494" y1="90" x2="528" y2="90" stroke="#B8860B" stroke-width="1.4" marker-end="url(#fl)"></line>
+        <text x="350" y="168" fill="#8A8A8A" font-size="12" font-style="italic">
+          Del armario de una casa al pupitre de la de al lado, en cuatro pasos y sin que nadie tenga que pedirlo delante de nadie.
+        </text>
+      </g>
+    </svg>
+    <figcaption><b>Visual.</b> El circuito completo, de la recogida a la entrega.
+    <b>Cuantitativo.</b> De cada cien artículos recogidos se descartan dieciocho por estado;
+    el resto se entrega o se guarda para el curso siguiente.
+    <b>Idea.</b> El centro escolar es quien reparte, porque es quien conoce a las familias
+    y quien puede hacerlo sin señalar a nadie.</figcaption>
+  </figure>
+</div></section>
+
+<section id="quien"><div class="wrap">
+  <h2>A quién sirve</h2>
+  <div class="dos">
+    <div>
+      <h3>Las familias</h3>
+      <p>Reciben el material completo de la lista oficial antes del primer día de clase.
+      No hay solicitud, ni baremo, ni cola: la selección la hacen los equipos de orientación
+      de cada centro con la información que ya tienen.</p>
+      <h3>Los centros</h3>
+      <p>Dejan de gestionar donaciones sueltas de forma improvisada y pasan a tener un
+      interlocutor único, un calendario y un inventario que pueden consultar.</p>
+    </div>
+    <div>
+      <h3>Quien dona</h3>
+      <p>Tiene un sitio donde llevar lo que ya no usa, a diez minutos andando, y la
+      certeza de que se queda en el barrio.</p>
+      <h3>El barrio</h3>
+      <p>Los cuatro mil artículos que pasan por la clasificación de julio pesan cerca de dos
+      toneladas que no acaban en un contenedor. La pata ambiental es un efecto secundario del
+      proyecto, y se mide igual que lo demás.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="que-hace"><div class="wrap">
+  <h2>Qué hace, mes a mes</h2>
+  <table>
+    <caption>Calendario del curso. Cifras ilustrativas del proyecto de ejemplo.</caption>
+    <thead>
+      <tr><th>Periodo</th><th>Actividad</th><th class="num">Volumen</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Mayo – junio</td><td>Campaña de recogida en centros y locales cedidos</td><td class="num">~4.100 artículos</td></tr>
+      <tr><td>Julio</td><td>Revisión, clasificación y descarte</td><td class="num">18 % descartado</td></tr>
+      <tr><td>Agosto</td><td>Compra de lo que falta y montaje de lotes</td><td class="num">612 lotes</td></tr>
+      <tr><td>1.ª semana de septiembre</td><td>Entrega a través de los centros</td><td class="num">9 centros</td></tr>
+      <tr><td>Octubre – abril</td><td>Reposición puntual y seguimiento</td><td class="num">~70 incidencias</td></tr>
+    </tbody>
+  </table>
+
+  <p>El trabajo lo sostienen cuarenta y una personas voluntarias y una coordinadora a
+  media jornada. La parte que más horas consume no es la recogida: es la clasificación de
+  julio, que es manual y se hace en un local cedido por la junta de distrito.</p>
+</div></section>
+
+<section id="cuesta"><div class="wrap">
+  <h2>Qué cuesta</h2>
+  <table>
+    <caption>Presupuesto anual del proyecto de ejemplo. Cifras ilustrativas.</caption>
+    <thead>
+      <tr><th>Partida</th><th class="num">Importe anual</th><th class="num">Por mochila</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Compra de material que falta</td><td class="num">1.840 €</td><td class="num">3,01 €</td></tr>
+      <tr><td>Transporte y almacenaje</td><td class="num">480 €</td><td class="num">0,78 €</td></tr>
+      <tr><td>Seguro de voluntariado</td><td class="num">390 €</td><td class="num">0,64 €</td></tr>
+      <tr><td>Material de clasificación y etiquetado</td><td class="num">228 €</td><td class="num">0,37 €</td></tr>
+      <tr><td><b>Total</b></td><td class="num"><b>2.938 €</b></td><td class="num"><b>4,80 €</b></td></tr>
+    </tbody>
+  </table>
+
+  <p>La coordinadora a media jornada está financiada por una subvención de distrito que no
+  entra en esta tabla. Si hubiera que pagarla con fondos propios, el coste por mochila
+  subiría a unos 23 euros, y esa es la cifra honesta que hay que poner delante de cualquiera
+  que pregunte si el modelo se sostiene solo. No se sostiene solo: se sostiene con trabajo
+  voluntario y con un local cedido.</p>
+
+  <div class="nota">
+    <b>Comparación.</b> La lista oficial de material de un centro de la red cuesta entre 70 y
+    120 euros por niño. Cada euro que entra en Mochilas Llenas sustituye, de media, a unos
+    diecinueve euros de compra en una familia.
+  </div>
+</div></section>
+
+<section id="ficha"><div class="wrap">
+  <h2>Cómo se hizo esta página</h2>
+  <p>Esta sección es la que convierte la página en la demo del Caso II. Es la
+  <b>ficha de trazabilidad agéntica</b> en su versión corta: la página y las slides de este
+  proyecto las construyó un agente, y aquí está qué agente, con qué contexto, con qué
+  permisos y por cuánto dinero. Las cifras de esta tabla, a diferencia de las del proyecto,
+  <b>son reales y están medidas</b>, no estimadas.</p>
+
+  <table>
+    <caption>Ficha resumen (§5.8 del enunciado). Medida con <code>medir_sesion.py</code> sobre el
+    registro de la sesión; la ficha completa, bloque a bloque, está en <code>ficha_agentica.md</code>.</caption>
+    <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+    <tbody>
+      <tr><td>Proyecto</td><td>Mochilas Llenas (ficticio, docente)</td></tr>
+      <tr><td>Harness</td><td>Claude Code 2.1.233, en terminal</td></tr>
+      <tr><td>Modelo</td><td>Claude Opus 5, ventana de 1.000.000 tokens</td></tr>
+      <tr><td>Abierto o cerrado</td><td><b>Cerrado</b> (API de pago), de modo que lo que se presupuesta son tokens</td></tr>
+      <tr><td>Arquitectura del trabajo</td><td>Agente autónomo en modo interactivo, con una fase previa en modo plan</td></tr>
+      <tr><td>Esfuerzo de razonamiento</td><td><code>xhigh</code> durante toda la sesión</td></tr>
+      <tr><td>Vueltas del bucle</td><td>83</td></tr>
+      <tr><td>Herramientas invocadas</td><td>95 llamadas: <code>Bash</code> 48, <code>Edit</code> 24, <code>Read</code> 12, <code>Write</code> 9, <code>Skill</code> 1, <code>AskUserQuestion</code> 1</td></tr>
+      <tr><td>Confirmaciones denegadas</td><td>1</td></tr>
+      <tr><td>Tokens de entrada facturados</td><td>16,0 millones (el contexto creció 6,7×)</td></tr>
+      <tr><td>Tokens de salida</td><td>115.777</td></tr>
+      <tr><td>Fracción de entrada servida desde caché</td><td>98,4 %</td></tr>
+      <tr><td><b>Coste total de la sesión</b></td><td><b>12,37 USD</b></td></tr>
+      <tr><td>El mismo trabajo sin caché</td><td>82,89 USD</td></tr>
+    </tbody>
+  </table>
+
+  <div class="nota">
+    <b>Lo que hay que llevarse.</b> La caché de prompt se llevó el <b>85 %</b> de lo que esta
+    sesión habría costado, y nadie tomó ninguna decisión para conseguirlo: salió de que el
+    prefijo del contexto se mantuvo estable entre llamadas. Las otras dos palancas del Tema A,
+    bajar de tier y el modo <i>batch</i>, seguían sin tocar. Esa es la cuenta que el Caso II
+    pide hacer, y la que casi nadie hace.
+  </div>
+</div></section>
+
+<section id="firma"><div class="wrap">
+  <h2>Quién lo firma</h2>
+  <p>Mochilas Llenas es un proyecto de ejemplo construido para la asignatura
+  <b>Deep Learning para Business Analytics</b> del grado de Business Analytics de la
+  Universidad Pontificia Comillas (ICADE). No corresponde a ninguna asociación real y
+  sus datos no deben citarse como si lo fuera.</p>
+  <p>Para dudas sobre el caso, el enunciado o esta demo:
+  <a href="mailto:ecgarrido@comillas.edu">ecgarrido@comillas.edu</a>.</p>
+</div></section>
+
+</main>
+
+<footer><div class="wrap">
+  Eduardo C. Garrido-Merchán · <a href="mailto:ecgarrido@comillas.edu">ecgarrido@comillas.edu</a> ·
+  Universidad Pontificia Comillas (ICADE) · Deep Learning para Business Analytics 2026–2027 ·
+  Demo del Caso práctico II.
+</div></footer>
+
+<script>
+// Resalta en la barra la sección que se está leyendo. Sin dependencias.
+(function () {
+  var enlaces = Array.prototype.slice.call(document.querySelectorAll('nav a'));
+  var secciones = enlaces
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+  if (!secciones.length || !('IntersectionObserver' in window)) return;
+
+  var visibles = new Set();
+  var obs = new IntersectionObserver(function (entradas) {
+    entradas.forEach(function (e) {
+      if (e.isIntersecting) { visibles.add(e.target.id); } else { visibles.delete(e.target.id); }
+    });
+    for (var i = 0; i < secciones.length; i++) {
+      if (visibles.has(secciones[i].id)) {
+        enlaces.forEach(function (a, j) { a.classList.toggle('activo', i === j); });
+        break;
+      }
+    }
+  }, { rootMargin: '-60px 0px -70% 0px' });
+  secciones.forEach(function (s) { obs.observe(s); });
+})();
+</script>
+</body>
+</html>

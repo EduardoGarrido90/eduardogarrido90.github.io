@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Caso práctico II — Simulacro del test (20 preguntas, con soluciones)</title>
+  <style>
+    html {
+      font-size: 11pt;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  
+  
+  
+  
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Caso práctico II — Simulacro del test (20 preguntas,
+con soluciones)</h1>
+<p class="subtitle">Deep Learning para Business Analytics · Comillas
+(ICADE) · 2026–2027</p>
+</header>
+<h1 id="para-qué-sirve-esta-hoja">Para qué sirve esta hoja</h1>
+<p>Veinte preguntas con el <strong>formato exacto</strong> del test del
+Caso II: cuatro opciones, una correcta, acierto
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">+0{,}5</annotation></semantics></math>,
+error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>0</mn><mo>,</mo><mn>125</mn></mrow><annotation encoding="application/x-tex">-0{,}125</annotation></semantics></math>,
+en blanco
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.
+Las soluciones, con su porqué, están al final.</p>
+<p><strong>Ninguna de estas veinte preguntas aparece en el test
+real.</strong> Lo que se repite es el temario: la teoría del
+<strong>Tema A</strong>, que es la que habéis aplicado al construir la
+web y las slides. En el test real, además, cuatro preguntas se refieren
+a <strong>vuestra propia ficha de trazabilidad</strong>; esas no se
+pueden ensayar aquí, se contestan habiéndola rellenado.</p>
+<p>Los precios que aparecen en los cálculos son los de
+<code>calculadora_costes/precios.json</code> con fecha
+<strong>2026-10-02</strong>: Sonnet 5 a 3,00 USD por millón de tokens de
+entrada y 15,00 de salida; A100 de 80 GB a 2,00 USD por hora. En el test
+real se os darán los que hagan falta en el propio enunciado, igual que
+aquí.</p>
+<h1 id="las-veinte-preguntas">Las veinte preguntas</h1>
+<p><strong>1.</strong> De las cuatro piezas que distinguen a un agente
+de un chatbot, ¿cuál es la que convierte la secuencia en un bucle?</p>
+<ol type="a">
+<li>Que tenga herramientas disponibles.</li>
+<li>Que vuelva a mirar el resultado de cada acción y decida otra
+vez.</li>
+<li>Que alguien le haya dado permisos de antemano.</li>
+<li>Que el modelo sea de tier alto.</li>
+</ol>
+<p><strong>2.</strong> Claude Code, Claude Cowork y opencode se
+diferencian en la puerta de entrada y en quién paga la llamada. ¿Qué
+hacen los tres exactamente igual?</p>
+<ol type="a">
+<li>Montar el contexto, llamar al modelo, ejecutar herramientas y
+repetir.</li>
+<li>Entrenar el modelo con vuestros datos.</li>
+<li>Garantizar que el modelo no se equivoque.</li>
+<li>Ejecutarse en los servidores del proveedor.</li>
+</ol>
+<p><strong>3.</strong> Una sesión de cuatro vueltas arranca con 4.000
+tokens de entrada y cada vuelta añade 2.500. ¿Cuántos tokens de
+<strong>entrada</strong> se facturan en total?</p>
+<ol type="a">
+<li>4.000</li>
+<li>11.500</li>
+<li>31.000</li>
+<li>16.000</li>
+</ol>
+<p><strong>4.</strong> ¿Por qué ocurre lo de la pregunta anterior?</p>
+<ol type="a">
+<li>Porque el proveedor cobra una tarifa plana por sesión.</li>
+<li>Porque la API no tiene memoria y el harness reenvía el historial
+completo en cada vuelta.</li>
+<li>Porque el modelo reentrena sus pesos con la conversación.</li>
+<li>Porque los tokens de salida se recuentan como entrada al
+facturar.</li>
+</ol>
+<p><strong>5.</strong> De las seis piezas del harness, ¿en cuál vive el
+riesgo operativo?</p>
+<ol type="a">
+<li>El <em>system prompt</em>.</li>
+<li>La memoria.</li>
+<li>Los permisos.</li>
+<li>El bucle.</li>
+</ol>
+<p><strong>6.</strong> ¿Cuál de estos <strong>no</strong> es uno de los
+cinco bloques del fichero de instrucciones?</p>
+<ol type="a">
+<li>Rol.</li>
+<li>Convenciones.</li>
+<li>Restricciones.</li>
+<li>Histórico de versiones del modelo.</li>
+</ol>
+<p><strong>7.</strong> Una empresa tiene 20 skills de 900 tokens cada
+una. ¿Cuál es el ahorro por llamada de la carga progresiva frente a
+meterlas todas en el <em>system prompt</em>, suponiendo que en cada
+llamada se abre una sola?</p>
+<ol type="a">
+<li>No hay ahorro: al final se cargan todas igual.</li>
+<li>Unos 16.200 tokens por llamada.</li>
+<li>Unos 900 tokens por llamada.</li>
+<li>Unos 18.000 tokens por llamada.</li>
+</ol>
+<p><strong>8.</strong> Según la regla de reversibilidad, ¿qué nivel de
+permiso corresponde a una herramienta que envía un correo a un
+cliente?</p>
+<ol type="a">
+<li>Permitir siempre: es sólo texto.</li>
+<li>Preguntar o denegar: sale de la organización y no se deshace.</li>
+<li>Permitir siempre si el modelo es de tier alto.</li>
+<li>Depende de la longitud del correo.</li>
+</ol>
+<p><strong>9.</strong> Tenéis cinco tipos de incidencia conocidos de
+antemano y queréis que las fáciles las resuelva un modelo barato y sólo
+las difíciles lleguen al caro. ¿Qué arquitectura es?</p>
+<ol type="a">
+<li>Cadena fija.</li>
+<li>Router.</li>
+<li>Orquestador con trabajadores.</li>
+<li>Agente autónomo.</li>
+</ol>
+<p><strong>10.</strong> ¿Cuál es la señal de alarma de que habéis pagado
+por un agente lo que era un workflow?</p>
+<ol type="a">
+<li>Que el agente pida confirmación muchas veces.</li>
+<li>Que la factura crezca con el número de usuarios.</li>
+<li>Que siempre llame a las mismas herramientas en el mismo orden.</li>
+<li>Que use un modelo abierto.</li>
+</ol>
+<p><strong>11.</strong> De los cuatro modos de trabajo, ¿cuál es el que
+«convierte un juguete en infraestructura» y también el que dispara la
+factura sin que nadie mire?</p>
+<ol type="a">
+<li>Interactivo.</li>
+<li>Plan.</li>
+<li>No interactivo (<code>-p</code>).</li>
+<li>Programado (bajo <code>cron</code>).</li>
+</ol>
+<p><strong>12.</strong> El esfuerzo de razonamiento aparece en un tema
+de costes porque…</p>
+<ol type="a">
+<li>obliga a contratar un tier superior.</li>
+<li>el razonamiento interno son tokens de <strong>salida</strong>, los
+caros.</li>
+<li>consume más ventana de contexto de entrada.</li>
+<li>multiplica el número de llamadas a herramientas.</li>
+</ol>
+<p><strong>13.</strong> De las cuatro capas que compiten por la ventana
+de contexto, ¿cuál es la única que crece sola mientras el agente
+trabaja?</p>
+<ol type="a">
+<li>El <em>system prompt</em>.</li>
+<li>Las skills cargadas.</li>
+<li>Los documentos recuperados por consulta.</li>
+<li>El historial de la sesión.</li>
+</ol>
+<p><strong>14.</strong> ¿Cuál es la diferencia entre podar y
+compactar?</p>
+<ol type="a">
+<li>Podar borra resultados antiguos de herramientas; compactar resume lo
+anterior.</li>
+<li>Podar es automático; compactar lo hace el usuario.</li>
+<li>Podar conserva toda la información; compactar también.</li>
+<li>Son dos nombres para la misma operación.</li>
+</ol>
+<p><strong>15.</strong> Tenéis un CSV de 50.000 filas que el agente
+necesita para responder. ¿Qué hacéis?</p>
+<ol type="a">
+<li>Pegarlo entero en el prompt: para eso están las ventanas de un
+millón.</li>
+<li>Darle una herramienta que lo consulte y filtre antes de llegar al
+modelo.</li>
+<li>Convertirlo a PDF, que ocupa menos tokens.</li>
+<li>Subir el esfuerzo de razonamiento para que lo procese mejor.</li>
+</ol>
+<p><strong>16.</strong> ¿Por qué un token de salida cuesta más que uno
+de entrada?</p>
+<ol type="a">
+<li>Porque la salida se almacena en los servidores del proveedor.</li>
+<li>Porque generar exige una pasada del modelo por token, mientras que
+leer la entrada se paraleliza.</li>
+<li>Porque la salida consume ventana de contexto y la entrada no.</li>
+<li>Es una convención comercial sin base técnica.</li>
+</ol>
+<p><strong>17.</strong> Una consulta típica gasta 8.000 tokens de
+entrada y 1.000 de salida con Sonnet 5 (3,00 y 15,00 USD por millón).
+¿Cuánto cuesta esa consulta?</p>
+<ol type="a">
+<li>0,015 USD</li>
+<li>0,024 USD</li>
+<li>0,039 USD</li>
+<li>0,144 USD</li>
+</ol>
+<p><strong>18.</strong> De las tres palancas de coste, ¿cuál es la única
+que <strong>cambia lo que el usuario percibe</strong>?</p>
+<ol type="a">
+<li>Bajar de tier.</li>
+<li>La caché de prompt.</li>
+<li>La API de lotes (<em>batch</em>).</li>
+<li>Ninguna de las tres: por eso se usan.</li>
+</ol>
+<p><strong>19.</strong> Vuestro contador de tokens leídos de caché sale
+a cero llamada tras llamada, aunque el <em>system prompt</em> es el
+mismo. ¿Cuál de estas es la causa más probable?</p>
+<ol type="a">
+<li>Habéis metido la fecha y la hora al principio del <em>system
+prompt</em>.</li>
+<li>Estáis usando un modelo de tier bajo, que no admite caché.</li>
+<li>La caché sólo funciona con la API de lotes.</li>
+<li>El historial de la sesión es demasiado corto.</li>
+</ol>
+<p><strong>20.</strong> Servir un modelo propio os cuesta 1.440 USD al
+mes de GPU y cada consulta por API os costaría 0,039 USD. ¿A partir de
+cuántas consultas al mes empieza a compensar el servidor, mirando sólo
+esas dos cifras?</p>
+<ol type="a">
+<li>Unas 3.700</li>
+<li>Unas 36.900</li>
+<li>Unas 369.000</li>
+<li>Nunca compensa: la API siempre es más barata.</li>
+</ol>
+<h1 id="soluciones">Soluciones</h1>
+<p><strong>1 — (b).</strong> El bucle es volver a decidir a la vista del
+resultado. Las otras tres piezas (herramientas, criterio de parada,
+permisos) son necesarias, pero el «otra vez» es lo que lo hace agente.
+Quitadle cualquiera de las cuatro y vuelve a ser un chatbot con buena
+prensa.</p>
+<p><strong>2 — (a).</strong> Los tres harnesses hacen lo mismo: montar
+el contexto, llamar al modelo, ejecutar herramientas y repetir. Ninguno
+entrena nada (b), ninguno garantiza la corrección (c), y Claude Code y
+opencode corren en vuestra máquina (d).</p>
+<p><strong>3 — (c).</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4.000</mn><mo>+</mo><mn>6.500</mn><mo>+</mo><mn>9.000</mn><mo>+</mo><mn>11.500</mn><mo>=</mo><mn>31.000</mn></mrow><annotation encoding="application/x-tex">4.000 + 6.500 + 9.000 + 11.500 = 31.000</annotation></semantics></math>.
+La opción (b) es lo que pagaríais si sólo contarais la última llamada,
+que es el error clásico; (d) es la suma de los incrementos.</p>
+<p><strong>4 — (b).</strong> Cada llamada a la API es independiente.
+Para que el modelo «recuerde» la vuelta anterior, el harness le reenvía
+toda la conversación, de modo que una sesión de
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+vueltas cuesta la suma de
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+contextos que crecen. De ahí que la factura crezca de forma cuadrática
+con la longitud de la sesión si no se gestiona el contexto.</p>
+<p><strong>5 — (c).</strong> Los permisos deciden qué se ejecuta sin
+preguntar. Un <em>system prompt</em> malo da respuestas malas; un
+permiso mal puesto borra una carpeta o manda un correo.</p>
+<p><strong>6 — (d).</strong> Los cinco son rol, convenciones,
+restricciones, contexto del proyecto y política de IA. El fichero se
+versiona con el repositorio, así que el histórico lo lleva
+<code>git</code>, no el propio fichero.</p>
+<p><strong>7 — (b).</strong> Cargarlas todas cuesta
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mo>×</mo><mn>900</mn><mo>=</mo><mn>18.000</mn></mrow><annotation encoding="application/x-tex">20 \times 900 = 18.000</annotation></semantics></math>
+tokens por llamada. Con carga progresiva se pagan 900 de índice más los
+900 del manual que toque, es decir 1.800: el ahorro es de <strong>16.200
+tokens por llamada</strong>. La opción (d) confunde el coste total con
+el ahorro.</p>
+<p><strong>8 — (b).</strong> La regla es por la consecuencia de la
+acción, no por la apariencia de la herramienta: lo que se deshace con un
+<code>git revert</code> puede ir solo; lo que sale de la empresa pide
+confirmación humana.</p>
+<p><strong>9 — (b).</strong> Router: un modelo barato clasifica y sólo
+lo difícil llega al modelo caro. Es ahorro grande con cambio pequeño, y
+se aplica cuando las ramas son conocidas. El orquestador (c) es para
+partir una tarea en trozos independientes; el autónomo (d), para cuando
+ni vosotros sabéis los pasos.</p>
+<p><strong>10 — (c).</strong> Si siempre llama a las mismas tres
+herramientas en el mismo orden, los pasos se conocían de antemano y se
+podían escribir. El coste de un workflow se calcula; el de un agente
+sólo se acota.</p>
+<p><strong>11 — (d).</strong> El modo programado bajo <code>cron</code>
+es el que deja de necesitar a una persona delante, y por eso mismo es el
+que puede estar gastando todas las noches sin que nadie lo mire.</p>
+<p><strong>12 — (b).</strong> El razonamiento previo a la respuesta son
+tokens de salida, que se facturan unas cinco veces más caros que los de
+entrada. Es la partida que no se ve en la respuesta y sí en la
+factura.</p>
+<p><strong>13 — (d).</strong> Las otras tres las controláis vosotros: el
+<em>system prompt</em> es fijo, las skills se cargan bajo demanda y los
+documentos entran por consulta. El historial crece solo mientras el
+agente trabaja.</p>
+<p><strong>14 — (a).</strong> Las dos pierden información, y hay que
+elegir cuál duele menos. Compactar conserva el hilo y pierde el detalle;
+podar conserva el detalle reciente y pierde lo antiguo entero.</p>
+<p><strong>15 — (b).</strong> La regla: entra en el contexto lo que el
+modelo necesita <strong>leer entero</strong> para razonar; se toca con
+una herramienta lo que necesita <strong>consultar</strong>. 50.000 filas
+son unos 2 millones de tokens, y cada token que no mandáis es un token
+que no pagáis.</p>
+<p><strong>16 — (b).</strong> Leer la entrada se paraleliza; escribir la
+salida es secuencial, una pasada del modelo por cada token generado.</p>
+<p><strong>17 — (c).</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><mn>3</mn><mo>,</mo><mn>00</mn><mo>⋅</mo><mfrac><mn>8.000</mn><msup><mn>10</mn><mn>6</mn></msup></mfrac><mo>+</mo><mn>15</mn><mo>,</mo><mn>00</mn><mo>⋅</mo><mfrac><mn>1.000</mn><msup><mn>10</mn><mn>6</mn></msup></mfrac><mo>=</mo><mn>0</mn><mo>,</mo><mn>024</mn><mo>+</mo><mn>0</mn><mo>,</mo><mn>015</mn><mo>=</mo><mn>0</mn><mo>,</mo><mn>039</mn></mrow><annotation encoding="application/x-tex">C = 3{,}00 \cdot \frac{8.000}{10^6} + 15{,}00 \cdot
+\frac{1.000}{10^6} = 0{,}024 + 0{,}015 = 0{,}039</annotation></semantics></math>
+USD. Las opciones (a) y (b) son cada sumando por separado, que es el
+despiste habitual.</p>
+<p><strong>18 — (c).</strong> El <em>batch</em> introduce latencia: la
+respuesta puede tardar hasta 24 horas, de modo que no sirve para nada
+conversacional. Bajar de tier y la caché no cambian lo que el usuario
+ve, y las tres son compatibles entre sí.</p>
+<p><strong>19 — (a).</strong> La caché casa por <strong>prefijo
+exacto</strong>: un solo byte distinto al principio invalida todo lo que
+viene detrás. Los tres asesinos silenciosos son la fecha y hora en el
+<em>system prompt</em>, un identificador aleatorio por petición y un
+diccionario serializado sin ordenar las claves. Lo estable va delante;
+lo que cambia, detrás.</p>
+<p><strong>20 — (b).</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>N</mi><mo>⋆</mo></msup><mo>=</mo><msub><mi>C</mi><mtext mathvariant="normal">servidor</mtext></msub><mi>/</mi><msub><mi>c</mi><mtext mathvariant="normal">consulta</mtext></msub><mo>=</mo><mn>1.440</mn><mi>/</mi><mn>0</mn><mo>,</mo><mn>039</mn><mo>≈</mo><mn>36.900</mn></mrow><annotation encoding="application/x-tex">N^\star = C_{\text{servidor}} / c_{\text{consulta}} = 1.440 /
+0{,}039 \approx 36.900</annotation></semantics></math> consultas al mes.
+Aviso para el caso real: esa cifra es sólo la GPU. Sumando personal,
+redundancia, actualización y la ocupación que de verdad tengáis, el
+umbral sube bastante, y por eso la comparación honesta es coste total de
+propiedad contra coste total de propiedad.</p>
+</body>
+</html>
