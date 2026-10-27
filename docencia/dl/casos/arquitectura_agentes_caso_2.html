@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Una arquitectura de agentes para el Caso II</title>
+<meta name="description" content="Arquitectura y flujo de trabajo de siete agentes para construir el dashboard y las slides del Caso práctico II de Deep Learning para Business Analytics (Comillas ICADE): orquestador, extractor, data scientist, backend, frontend y dos auditores de contexto limpio.">
+<style>
+:root{
+  --ink:#1A1A1A; --gold:#B8860B; --gold-deep:#8C6508;
+  --gold-pale:#F5EBD3; --mute:#8A8A8A; --rule:#D9C28A; --paper:#FFFFFF;
+  --panel:#FCFAF5;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Linux Libertine O","Libertinus Serif","Linux Libertine",Georgia,"Times New Roman",serif;
+  font-size:17px; line-height:1.62;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 26px}
+
+.aviso{background:var(--gold-pale); border-bottom:1px solid var(--rule);
+  color:var(--gold-deep); font-size:.78rem; letter-spacing:.02em}
+.aviso .wrap{padding:9px 26px}
+.aviso strong{color:var(--ink)}
+.aviso a{color:var(--gold-deep)}
+
+nav{position:sticky; top:0; z-index:40; background:rgba(255,255,255,.97);
+  border-bottom:1px solid var(--rule)}
+nav .wrap{display:flex; flex-wrap:wrap; gap:0 20px; padding:10px 26px; align-items:baseline}
+nav .marca{font-weight:700; letter-spacing:.04em; margin-right:8px}
+nav a{color:var(--mute); text-decoration:none; font-size:.76rem;
+  letter-spacing:.05em; text-transform:uppercase; white-space:nowrap}
+nav a:hover,nav a:focus,nav a.activo{color:var(--gold)}
+
+header{padding:46px 0 10px}
+header h1{margin:0 0 4px; font-size:2.4rem; line-height:1.14; font-weight:700; letter-spacing:-.01em}
+header .lema{margin:0 0 18px; font-style:italic; font-size:1.12rem}
+header .regla{border:0; border-top:1px solid var(--gold); width:7em; margin:0 0 18px}
+header .meta{margin:0; color:var(--mute); font-size:.9rem}
+
+main section{padding:38px 0 6px; scroll-margin-top:58px}
+h2{font-size:1.4rem; margin:0 0 3px; padding-bottom:6px; border-bottom:1px solid var(--gold)}
+h3{font-size:1rem; margin:26px 0 6px; color:var(--gold-deep);
+  font-variant:small-caps; letter-spacing:.03em}
+.entradilla{margin:12px 0 18px; max-width:64em}
+a{color:var(--gold)}
+a:hover{color:var(--gold-deep)}
+p{margin:14px 0}
+
+figure{margin:22px 0 14px}
+figure svg{width:100%; height:auto; display:block}
+figcaption{font-size:.79rem; color:var(--mute); margin-top:8px; max-width:62em}
+figcaption b{color:var(--ink); font-variant:small-caps; font-weight:600}
+
+.dos{display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:0 30px; align-items:start}
+
+table{border-collapse:collapse; width:100%; font-size:.82rem; margin:10px 0 16px}
+th,td{text-align:left; padding:7px 9px; border-bottom:1px solid #EDE6D6; vertical-align:top}
+thead th{color:var(--mute); font-weight:400; font-size:.7rem;
+  text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--rule)}
+td.ag{font-weight:700; white-space:nowrap}
+td code,p code,li code{font-size:.86em; background:var(--gold-pale); padding:1px 4px; border-radius:2px}
+
+.clave{border-left:3px solid var(--gold); background:var(--gold-pale);
+  padding:12px 15px; margin:16px 0; font-size:.95rem}
+.clave b{font-variant:small-caps; letter-spacing:.03em}
+.aviso-rojo{border-left:3px solid var(--mute); background:#F6F6F6;
+  padding:12px 15px; margin:16px 0; font-size:.92rem}
+.aviso-rojo b{font-variant:small-caps}
+
+details{border:1px solid var(--rule); border-radius:3px; margin:9px 0; background:var(--panel)}
+summary{cursor:pointer; padding:9px 14px; font-weight:700; font-size:.92rem; list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ "; color:var(--gold)}
+details[open] summary::before{content:"▾ "}
+details[open] summary{border-bottom:1px solid var(--rule)}
+details .cuerpo{padding:2px 14px 12px}
+pre{background:#FFFFFF; border:1px solid var(--rule); border-radius:3px; padding:12px 14px;
+  overflow-x:auto; font-size:.78rem; line-height:1.5; margin:10px 0;
+  font-family:"DejaVu Sans Mono",Menlo,Consolas,monospace}
+
+ol.pasos{counter-reset:paso; list-style:none; padding:0; margin:14px 0}
+ol.pasos li{counter-increment:paso; position:relative; padding:0 0 14px 44px; font-size:.95rem}
+ol.pasos li::before{content:counter(paso); position:absolute; left:0; top:1px;
+  width:28px; height:28px; border-radius:50%; background:var(--gold-pale);
+  border:1px solid var(--rule); color:var(--gold-deep); font-weight:700;
+  display:flex; align-items:center; justify-content:center; font-size:.85rem}
+ol.pasos li b{font-variant:small-caps; letter-spacing:.02em}
+
+.pie{margin:46px 0 30px; padding-top:14px; border-top:1px solid var(--rule);
+  color:var(--mute); font-size:.82rem}
+
+@media (max-width:860px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .dos{grid-template-columns:1fr}
+  header h1{font-size:1.85rem}
+  table{font-size:.76rem; display:block; overflow-x:auto; white-space:nowrap}
+  table td,table th{white-space:normal; min-width:8em}
+  th,td{padding:5px 5px}
+  pre{font-size:.70rem}
+}
+@media print{ nav{display:none} details{border:0} details .cuerpo{display:block} }
+</style>
+</head>
+<body>
+
+<div class="aviso"><div class="wrap">
+<strong>Material docente.</strong> Caso práctico II · Deep Learning para Business Analytics ·
+Comillas (ICADE). Orientación, no obligación: el enunciado no pide esta arquitectura ni ninguna
+otra. Pide un dashboard que funcione y unas slides que lo vendan.
+</div></div>
+
+<nav><div class="wrap">
+<span class="marca">ARQUITECTURA</span>
+<a href="#arquitectura">Arquitectura</a>
+<a href="#piezas">Las piezas</a>
+<a href="#flujo">El flujo</a>
+<a href="#ciegos">A ciegas</a>
+<a href="#ordenes">Órdenes</a>
+<a href="#coste">Coste</a>
+<a href="#fallos">Fallos</a>
+</div></nav>
+
+<div class="wrap">
+
+<header>
+  <h1>Una arquitectura de agentes para el Caso&nbsp;II</h1>
+  <p class="lema">Siete papeles, dos de ellos ciegos a propósito, y un orquestador que le rinde
+  cuentas al alumno.</p>
+  <hr class="regla">
+  <p class="meta">Cómo repartir el trabajo del Caso práctico II entre varios agentes en vez de
+  pedírselo todo a uno · acompaña al
+  <a href="ejemplo_dashboard_caso_2.html">dashboard de referencia</a> ·
+  Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu</p>
+</header>
+
+<main>
+
+<!-- =========================== ARQUITECTURA ========================== -->
+<section id="arquitectura">
+  <h2>La arquitectura</h2>
+  <p class="entradilla">El Caso II cabe en una sola conversación con un agente, y mucha gente lo
+  resolverá así. Esta página describe la alternativa: repartir el encargo entre varios papeles con
+  contextos distintos. Lo que se gana es que cada agente ve poco y lo ve bien, y que dos de ellos
+  juzgan el resultado sin haberlo escrito. Lo que se paga es coordinación, y se paga en tokens.</p>
+
+  <figure>
+<svg viewBox="0 0 1100 730" role="img" aria-labelledby="t-arq d-arq">
+<title id="t-arq">Arquitectura de siete agentes</title>
+<desc id="d-arq">El alumno habla con un orquestador. El orquestador dirige a un extractor de
+datos y a un trío de especialistas que comparten contexto: data scientist, backend y frontend.
+Por separado dirige a dos auditores que arrancan con el contexto en blanco: un tester y un
+crítico de diseño. Los informes de los auditores vuelven al orquestador, y el orquestador
+informa al alumno.</desc>
+<defs>
+  <marker id="f" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 z" fill="#1A1A1A"/></marker>
+  <marker id="fi" markerWidth="9" markerHeight="9" refX="1" refY="4.5" orient="auto">
+    <path d="M9,0 L0,4.5 L9,9 z" fill="#1A1A1A"/></marker>
+  <marker id="fg" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 z" fill="#B8860B"/></marker>
+  <marker id="fgi" markerWidth="9" markerHeight="9" refX="1" refY="4.5" orient="auto">
+    <path d="M9,0 L0,4.5 L9,9 z" fill="#B8860B"/></marker>
+</defs>
+
+<!-- alumno -->
+<rect x="410" y="26" width="280" height="84" rx="3" fill="#F5EBD3" stroke="#D9C28A"/>
+<text x="550" y="56" text-anchor="middle" font-size="15" font-weight="700" fill="#1A1A1A">ALUMNO</text>
+<text x="550" y="76" text-anchor="middle" font-size="11.5" fill="#1A1A1A">Elige el caso, fija el alcance, aprueba</text>
+<text x="550" y="94" text-anchor="middle" font-size="11.5" fill="#1A1A1A">y responde de lo que se entrega</text>
+
+<!-- alumno <-> orquestador -->
+<line x1="500" y1="110" x2="500" y2="286" stroke="#B8860B" stroke-width="1.6" marker-end="url(#fg)"/>
+<line x1="600" y1="286" x2="600" y2="110" stroke="#B8860B" stroke-width="1.6" marker-end="url(#fg)"/>
+<text x="492" y="176" text-anchor="end" font-size="10.5" fill="#8C6508">el encargo,</text>
+<text x="492" y="190" text-anchor="end" font-size="10.5" fill="#8C6508">las decisiones</text>
+<text x="608" y="176" font-size="10.5" fill="#8C6508">el parte de avance</text>
+<text x="608" y="190" font-size="10.5" fill="#8C6508">y lo que hay que decidir</text>
+
+<!-- orquestador -->
+<rect x="400" y="290" width="300" height="104" rx="3" fill="#B8860B" stroke="#8C6508"/>
+<text x="550" y="322" text-anchor="middle" font-size="15.5" font-weight="700" fill="#FFFFFF">ORQUESTADOR</text>
+<text x="550" y="343" text-anchor="middle" font-size="11.5" fill="#FFFFFF">Trocea el encargo, reparte, sincroniza,</text>
+<text x="550" y="360" text-anchor="middle" font-size="11.5" fill="#FFFFFF">decide cuándo una fase está cerrada</text>
+<text x="550" y="380" text-anchor="middle" font-size="11" fill="#F5EBD3" font-style="italic">no escribe código de producto</text>
+
+<!-- extractor -->
+<rect x="48" y="150" width="250" height="96" rx="3" fill="#FFFFFF" stroke="#1A1A1A"/>
+<text x="173" y="180" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1A1A">EXTRACTOR</text>
+<text x="173" y="200" text-anchor="middle" font-size="11" fill="#1A1A1A">Descarga el dossier y el CSV, verifica</text>
+<text x="173" y="216" text-anchor="middle" font-size="11" fill="#1A1A1A">forma y tipos, documenta las trampas</text>
+<text x="173" y="234" text-anchor="middle" font-size="10.5" fill="#8A8A8A">devuelve: datos verificados + diario</text>
+<line x1="298" y1="210" x2="396" y2="300" stroke="#1A1A1A" stroke-width="1.3"
+      marker-end="url(#f)" marker-start="url(#fi)"/>
+
+<!-- cluster compartido -->
+<rect x="28" y="452" width="664" height="244" rx="5" fill="#FCFAF5" stroke="#B8860B"
+      stroke-width="1.3" stroke-dasharray="7 5"/>
+<text x="44" y="474" font-size="11" font-weight="700" fill="#8C6508" letter-spacing="0.5">CONTEXTO COMPARTIDO</text>
+<text x="212" y="474" font-size="10.5" fill="#8C6508">· el mismo dossier, el mismo esquema de datos, el mismo contrato de JSON</text>
+
+<rect x="54" y="498" width="186" height="86" rx="3" fill="#FFFFFF" stroke="#1A1A1A"/>
+<text x="147" y="524" text-anchor="middle" font-size="13" font-weight="700" fill="#1A1A1A">DATA SCIENTIST</text>
+<text x="147" y="543" text-anchor="middle" font-size="10.5" fill="#1A1A1A">Qué análisis tiene sentido,</text>
+<text x="147" y="558" text-anchor="middle" font-size="10.5" fill="#1A1A1A">qué dice cada salida</text>
+<text x="147" y="575" text-anchor="middle" font-size="10" fill="#8A8A8A">decide la rejilla y la lee</text>
+
+<rect x="256" y="498" width="186" height="86" rx="3" fill="#FFFFFF" stroke="#1A1A1A"/>
+<text x="349" y="524" text-anchor="middle" font-size="13" font-weight="700" fill="#1A1A1A">BACKEND</text>
+<text x="349" y="543" text-anchor="middle" font-size="10.5" fill="#1A1A1A">Limpia, calcula la rejilla</text>
+<text x="349" y="558" text-anchor="middle" font-size="10.5" fill="#1A1A1A">entera y la vuelca a JSON</text>
+<text x="349" y="575" text-anchor="middle" font-size="10" fill="#8A8A8A">dueño de panel.py</text>
+
+<rect x="458" y="498" width="186" height="86" rx="3" fill="#FFFFFF" stroke="#1A1A1A"/>
+<text x="551" y="524" text-anchor="middle" font-size="13" font-weight="700" fill="#1A1A1A">FRONTEND</text>
+<text x="551" y="543" text-anchor="middle" font-size="10.5" fill="#1A1A1A">Controles, gráficos, marca,</text>
+<text x="551" y="558" text-anchor="middle" font-size="10.5" fill="#1A1A1A">lectura en móvil</text>
+<text x="551" y="575" text-anchor="middle" font-size="10" fill="#8A8A8A">dueño de index.html</text>
+
+<line x1="240" y1="534" x2="256" y2="534" stroke="#1A1A1A" stroke-width="1.3"
+      marker-end="url(#f)" marker-start="url(#fi)"/>
+<line x1="442" y1="534" x2="458" y2="534" stroke="#1A1A1A" stroke-width="1.3"
+      marker-end="url(#f)" marker-start="url(#fi)"/>
+<path d="M147,584 C147,648 551,648 551,584" fill="none" stroke="#8A8A8A" stroke-width="1.2"
+      stroke-dasharray="4 3" marker-end="url(#f)" marker-start="url(#fi)"/>
+<text x="349" y="668" text-anchor="middle" font-size="10.5" fill="#8A8A8A">una frase de negocio junto a cada gráfico: la escribe el data scientist, la coloca el frontend</text>
+
+<line x1="173" y1="246" x2="173" y2="494" stroke="#1A1A1A" stroke-width="1.3" marker-end="url(#f)"/>
+<text x="182" y="400" font-size="10.5" fill="#8A8A8A">datos.csv verificado</text>
+<text x="182" y="414" font-size="10.5" fill="#8A8A8A">y su diario de trampas</text>
+<line x1="470" y1="394" x2="470" y2="448" stroke="#B8860B" stroke-width="1.6"
+      marker-end="url(#fg)" marker-start="url(#fgi)"/>
+
+<!-- auditores -->
+<rect x="776" y="150" width="304" height="196" rx="5" fill="#FFFFFF" stroke="#8A8A8A"
+      stroke-width="1.3" stroke-dasharray="7 5"/>
+<text x="792" y="172" font-size="11" font-weight="700" fill="#8A8A8A" letter-spacing="0.5">CONTEXTO LIMPIO</text>
+<rect x="798" y="186" width="260" height="140" rx="3" fill="#FFFFFF" stroke="#1A1A1A"/>
+<text x="928" y="214" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1A1A">TESTER</text>
+<text x="928" y="234" text-anchor="middle" font-size="10.5" fill="#1A1A1A">Recibe el enunciado y el artefacto,</text>
+<text x="928" y="249" text-anchor="middle" font-size="10.5" fill="#1A1A1A">y nada más. Abre la página, mueve</text>
+<text x="928" y="264" text-anchor="middle" font-size="10.5" fill="#1A1A1A">cada control, rehace una cifra desde</text>
+<text x="928" y="279" text-anchor="middle" font-size="10.5" fill="#1A1A1A">el CSV y busca el requisito que falta</text>
+<text x="928" y="302" text-anchor="middle" font-size="10.5" fill="#8A8A8A">devuelve: requisitos incumplidos,</text>
+<text x="928" y="316" text-anchor="middle" font-size="10.5" fill="#8A8A8A">uno por uno, con cómo reproducirlos</text>
+
+<rect x="776" y="452" width="304" height="196" rx="5" fill="#FFFFFF" stroke="#8A8A8A"
+      stroke-width="1.3" stroke-dasharray="7 5"/>
+<text x="792" y="474" font-size="11" font-weight="700" fill="#8A8A8A" letter-spacing="0.5">CONTEXTO LIMPIO</text>
+<rect x="798" y="488" width="260" height="140" rx="3" fill="#FFFFFF" stroke="#1A1A1A"/>
+<text x="928" y="516" text-anchor="middle" font-size="14" font-weight="700" fill="#1A1A1A">CRÍTICO DE DISEÑO</text>
+<text x="928" y="536" text-anchor="middle" font-size="10.5" fill="#1A1A1A">Recibe sólo capturas de la página</text>
+<text x="928" y="551" text-anchor="middle" font-size="10.5" fill="#1A1A1A">renderizada. No ve el código ni sabe</text>
+<text x="928" y="566" text-anchor="middle" font-size="10.5" fill="#1A1A1A">lo que costó. Juzga jerarquía, paleta,</text>
+<text x="928" y="581" text-anchor="middle" font-size="10.5" fill="#1A1A1A">tipografía, aire y si esto se entrega</text>
+<text x="928" y="604" text-anchor="middle" font-size="10.5" fill="#8A8A8A">devuelve: defectos de acabado</text>
+<text x="928" y="618" text-anchor="middle" font-size="10.5" fill="#8A8A8A">ordenados por lo que se nota</text>
+
+<line x1="704" y1="322" x2="772" y2="258" stroke="#1A1A1A" stroke-width="1.3"
+      marker-end="url(#f)" marker-start="url(#fi)"/>
+<line x1="704" y1="366" x2="772" y2="536" stroke="#1A1A1A" stroke-width="1.3"
+      marker-end="url(#f)" marker-start="url(#fi)"/>
+<text x="738" y="310" text-anchor="middle" font-size="10" fill="#8A8A8A">el artefacto</text>
+<text x="738" y="323" text-anchor="middle" font-size="10" fill="#8A8A8A">terminado</text>
+<text x="742" y="470" text-anchor="middle" font-size="10" fill="#8A8A8A">las capturas,</text>
+<text x="742" y="483" text-anchor="middle" font-size="10" fill="#8A8A8A">nada más</text>
+</svg>
+    <figcaption><b>La arquitectura.</b> Las flechas doradas son conversación con el alumno y
+    órdenes del orquestador. Las negras son traspaso de trabajo. Las dos cajas de puntos marcan
+    los dos regímenes de contexto: el trío de construcción comparte todo lo que sabe, y los dos
+    auditores arrancan en blanco y reciben el artefacto terminado, nunca el historial de cómo se
+    hizo. <b>Por qué.</b> Un agente que ha escrito el código es el peor juez de ese código: ya
+    sabe lo que quiso decir y lo lee en lugar de lo que puso.</figcaption>
+  </figure>
+
+  <div class="clave"><b>La regla que sostiene el reparto.</b> Un agente sólo puede escribir en los
+  ficheros de los que es dueño. El backend es dueño de <code>panel.py</code>, el frontend de
+  <code>index.html</code>, el extractor de <code>datos/</code>. Los dos auditores no escriben
+  nada: devuelven listas. Sin esa regla, dos agentes editan el mismo fichero y el segundo pisa al
+  primero sin que nadie se entere.</div>
+</section>
+
+<!-- ============================= PIEZAS ============================== -->
+<section id="piezas">
+  <h2>Las siete piezas, una por una</h2>
+  <p class="entradilla">Lo que define a un agente no es su nombre, es lo que entra en su contexto,
+  qué herramientas se le dejan tocar y cuándo se da por terminado. Eso es lo que hay que escribir
+  antes de arrancar, y es lo que pregunta el Tema A.</p>
+
+  <table>
+    <thead><tr><th>Agente</th><th>Qué entra en su contexto</th><th>Herramientas y permisos</th>
+      <th>Qué devuelve</th><th>Cuándo ha terminado</th></tr></thead>
+    <tbody>
+      <tr><td class="ag">Orquestador</td>
+        <td>El enunciado, el dossier de negocio, el plan y los partes de los demás. Nunca el
+          código línea a línea.</td>
+        <td>Lectura de todo; escritura sólo del plan. Lanza a los demás.</td>
+        <td>Un parte al alumno por fase: qué está hecho, qué falta, qué hay que decidir.</td>
+        <td>Cuando el tester y el crítico vuelven sin hallazgos bloqueantes.</td></tr>
+
+      <tr><td class="ag">Extractor</td>
+        <td>La URL del repositorio, la contraseña y el nombre del caso.</td>
+        <td>Red y escritura en <code>datos/</code>. Nada más.</td>
+        <td>El CSV, su forma, sus tipos y un diario de lo que viene sucio.</td>
+        <td>Cuando el fichero abre, la forma coincide con lo anunciado y las trampas están
+          escritas.</td></tr>
+
+      <tr><td class="ag">Data scientist</td>
+        <td>El dossier, el diario del extractor y las preguntas de negocio.</td>
+        <td>Python de exploración. No toca los entregables.</td>
+        <td>La rejilla que hay que precalcular y la frase de negocio de cada celda.</td>
+        <td>Cuando cada bloque del §2 tiene decidido qué se calcula y qué se dice de ello.</td></tr>
+
+      <tr><td class="ag">Backend</td>
+        <td>El diario del extractor y la rejilla del data scientist.</td>
+        <td>Escritura de <code>panel.py</code>; ejecución.</td>
+        <td><code>panel.json</code> y el script que lo reproduce con semilla fija.</td>
+        <td>Cuando dos ejecuciones dan el mismo fichero y ninguna celda sale vacía.</td></tr>
+
+      <tr><td class="ag">Frontend</td>
+        <td>El esquema de <code>panel.json</code> y la identidad visual. No el cálculo.</td>
+        <td>Escritura de <code>index.html</code>; navegador para mirar.</td>
+        <td>La página autocontenida con sus controles.</td>
+        <td>Cuando todos los controles pintan algo y la página abre sin red.</td></tr>
+
+      <tr><td class="ag">Tester</td>
+        <td><strong>Contexto limpio.</strong> El enunciado y el artefacto. Nunca la conversación
+          que lo produjo.</td>
+        <td>Navegador y Python para rehacer cifras. Sin permiso de escritura.</td>
+        <td>Lista de requisitos incumplidos con los pasos exactos para verlos.</td>
+        <td>Cuando ha recorrido el §2, el §3 y el §5 del enunciado punto por punto.</td></tr>
+
+      <tr><td class="ag">Crítico de diseño</td>
+        <td><strong>Contexto limpio.</strong> Capturas de la página. Ni el código ni el
+          esfuerzo.</td>
+        <td>Sólo mirar. Sin permiso de escritura.</td>
+        <td>Defectos de acabado ordenados por cuánto se notan.</td>
+        <td>Cuando ha mirado la vista general, los cuatro bloques y el móvil.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================== FLUJO ============================== -->
+<section id="flujo">
+  <h2>El flujo de trabajo</h2>
+  <p class="entradilla">Ocho fases. Las tres primeras son en serie porque nadie puede avanzar sin
+  los datos y sin el contrato; de la cuarta a la sexta el trío trabaja en paralelo sobre piezas
+  distintas, y las dos últimas son auditoría, que casi siempre devuelve trabajo hacia atrás.</p>
+
+  <figure>
+<svg viewBox="0 0 1060 534" role="img" aria-labelledby="t-flu d-flu">
+<title id="t-flu">Flujo de trabajo en ocho fases</title>
+<desc id="d-flu">Diagrama de carriles. Siete filas, una por agente, y ocho columnas, una por fase:
+encuadre, datos, contrato, rejilla, página, lecturas, pruebas y acabado. Las barras marcan en qué
+fase está activo cada agente. Dos flechas de vuelta indican que el tester devuelve trabajo a las
+fases de rejilla y página, y el crítico a las de página y lecturas.</desc>
+
+<!-- cabecera de fases -->
+<g font-size="10.5" fill="#8A8A8A">
+<text x="206" y="26" text-anchor="middle">1 · ENCUADRE</text>
+<text x="318" y="26" text-anchor="middle">2 · DATOS</text>
+<text x="430" y="26" text-anchor="middle">3 · CONTRATO</text>
+<text x="542" y="26" text-anchor="middle">4 · REJILLA</text>
+<text x="654" y="26" text-anchor="middle">5 · PÁGINA</text>
+<text x="766" y="26" text-anchor="middle">6 · LECTURAS</text>
+<text x="878" y="26" text-anchor="middle">7 · PRUEBAS</text>
+<text x="990" y="26" text-anchor="middle">8 · ACABADO</text>
+</g>
+<line x1="150" y1="36" x2="1046" y2="36" stroke="#B8860B" stroke-width="1"/>
+<g stroke="#EDE6D6" stroke-width="1">
+<line x1="262" y1="36" x2="262" y2="430"/><line x1="374" y1="36" x2="374" y2="430"/>
+<line x1="486" y1="36" x2="486" y2="430"/><line x1="598" y1="36" x2="598" y2="430"/>
+<line x1="710" y1="36" x2="710" y2="430"/><line x1="822" y1="36" x2="822" y2="430"/>
+<line x1="934" y1="36" x2="934" y2="430"/>
+</g>
+
+<!-- carriles -->
+<g font-size="11.5" fill="#1A1A1A" text-anchor="end">
+<text x="140" y="68">Orquestador</text>
+<text x="140" y="120">Extractor</text>
+<text x="140" y="172">Data scientist</text>
+<text x="140" y="224">Backend</text>
+<text x="140" y="276">Frontend</text>
+<text x="140" y="328">Tester</text>
+<text x="140" y="380">Crítico de diseño</text>
+</g>
+
+<!-- orquestador: presente en todas -->
+<rect x="154" y="52" width="888" height="22" rx="2" fill="#B8860B" fill-opacity=".9"/>
+<text x="598" y="68" text-anchor="middle" font-size="10.5" fill="#FFFFFF">sincroniza, decide y le pasa el parte al alumno en cada frontera de fase</text>
+
+<!-- extractor -->
+<rect x="266" y="104" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".82"/>
+<text x="318" y="120" text-anchor="middle" font-size="10" fill="#FFFFFF">descarga y verifica</text>
+
+<!-- data scientist -->
+<rect x="378" y="156" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".82"/>
+<text x="430" y="172" text-anchor="middle" font-size="10" fill="#FFFFFF">define la rejilla</text>
+<rect x="490" y="156" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".45"/>
+<text x="542" y="172" text-anchor="middle" font-size="10" fill="#FFFFFF">revisa</text>
+<rect x="714" y="156" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".82"/>
+<text x="766" y="172" text-anchor="middle" font-size="10" fill="#FFFFFF">escribe las lecturas</text>
+
+<!-- backend -->
+<rect x="378" y="208" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".45"/>
+<text x="430" y="224" text-anchor="middle" font-size="10" fill="#FFFFFF">pacta el JSON</text>
+<rect x="490" y="208" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".82"/>
+<text x="542" y="224" text-anchor="middle" font-size="10" fill="#FFFFFF">calcula y vuelca</text>
+
+<!-- frontend -->
+<rect x="378" y="260" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".45"/>
+<text x="430" y="276" text-anchor="middle" font-size="10" fill="#FFFFFF">pacta el JSON</text>
+<rect x="602" y="260" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".82"/>
+<text x="654" y="276" text-anchor="middle" font-size="10" fill="#FFFFFF">controles y gráficos</text>
+<rect x="714" y="260" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".45"/>
+<text x="766" y="276" text-anchor="middle" font-size="10" fill="#FFFFFF">las coloca</text>
+<rect x="938" y="260" width="104" height="22" rx="2" fill="#1A1A1A" fill-opacity=".45"/>
+<text x="990" y="276" text-anchor="middle" font-size="10" fill="#FFFFFF">arregla</text>
+
+<!-- tester -->
+<rect x="826" y="312" width="104" height="22" rx="2" fill="#8C6508"/>
+<text x="878" y="328" text-anchor="middle" font-size="10" fill="#FFFFFF">audita el §2 y el §3</text>
+
+<!-- crítico -->
+<rect x="938" y="364" width="104" height="22" rx="2" fill="#8C6508"/>
+<text x="990" y="380" text-anchor="middle" font-size="10" fill="#FFFFFF">audita el acabado</text>
+
+<!-- vueltas atrás -->
+<defs><marker id="fv" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+  <path d="M0,0 L9,4.5 L0,9 z" fill="#8C6508"/></marker></defs>
+<path d="M826,334 C700,334 660,250 548,236" fill="none" stroke="#8C6508" stroke-width="1.3"
+      stroke-dasharray="5 4" marker-end="url(#fv)"/>
+<path d="M938,392 C820,430 730,330 660,290" fill="none" stroke="#8C6508" stroke-width="1.3"
+      stroke-dasharray="5 4" marker-end="url(#fv)"/>
+
+<line x1="150" y1="452" x2="1046" y2="452" stroke="#D9C28A" stroke-width="1"/>
+<rect x="152" y="470" width="22" height="11" rx="2" fill="#1A1A1A" fill-opacity=".82"/>
+<text x="182" y="480" font-size="10.5" fill="#8A8A8A">el agente lleva la fase</text>
+<rect x="330" y="470" width="22" height="11" rx="2" fill="#1A1A1A" fill-opacity=".45"/>
+<text x="360" y="480" font-size="10.5" fill="#8A8A8A">participa, pero no es su turno</text>
+<rect x="562" y="470" width="22" height="11" rx="2" fill="#8C6508"/>
+<text x="592" y="480" font-size="10.5" fill="#8A8A8A">auditoría con el contexto en blanco</text>
+<line x1="830" y1="476" x2="856" y2="476" stroke="#8C6508" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="864" y="480" font-size="10.5" fill="#8A8A8A">trabajo que vuelve atrás</text>
+<text x="152" y="500" font-size="10.5" fill="#8A8A8A">Lo que el tester tumba vuelve a la rejilla o a la página; lo que el crítico tumba vuelve al frontend, nunca al cálculo.</text>
+<text x="152" y="516" font-size="10.5" fill="#8A8A8A">El orquestador no desaparece en ningún momento, y en cada frontera de fase el alumno recibe un parte y decide si se sigue.</text>
+</svg>
+    <figcaption><b>El flujo.</b> Las dos flechas de puntos son la parte que de verdad cuesta
+    dinero: una auditoría que encuentra algo manda trabajo hacia atrás y vuelve a pagar las fases
+    que tumba. <b>Take-away.</b> Por eso el contrato del JSON se pacta en la fase 3 entre los
+    tres, y no lo decide el backend por su cuenta en la 4: un cambio de esquema en la fase 5 es
+    el error más caro de este reparto.</figcaption>
+  </figure>
+
+  <ol class="pasos">
+    <li><b>Encuadre.</b> El alumno elige el caso y dice qué quiere vender. El orquestador
+      convierte eso en un plan con los cuatro bloques del §2 y lo devuelve para que el alumno lo
+      apruebe antes de gastar un token en construir.</li>
+    <li><b>Datos.</b> El extractor descarga, comprueba que la forma es la anunciada y escribe el
+      diario de lo que viene sucio. Nadie más toca la red a partir de aquí.</li>
+    <li><b>Contrato.</b> Los tres acuerdan el esquema de <code>panel.json</code>: qué claves, qué
+      tipos, qué celdas. Es la fase más corta y la que evita la reescritura más cara.</li>
+    <li><b>Rejilla.</b> El backend implementa; el data scientist revisa que lo que sale es lo que
+      pidió y que ninguna combinación de los selectores se queda sin celda.</li>
+    <li><b>Página.</b> El frontend construye los controles y los gráficos contra el esquema, no
+      contra el fichero: mientras el contrato se respete, los dos pueden ir a la vez.</li>
+    <li><b>Lecturas.</b> El data scientist escribe la frase de negocio de cada bloque y el
+      frontend la coloca al lado de su gráfico. Sin esto, la rúbrica se lleva la mitad de la
+      nota de cada bloque.</li>
+    <li><b>Pruebas.</b> El tester arranca en blanco, recorre el enunciado punto por punto y
+      devuelve lo que falta. El orquestador reparte esos hallazgos a quien corresponda.</li>
+    <li><b>Acabado.</b> El crítico mira capturas y dice qué se ve mal. Sólo el frontend responde
+      a esto; si un hallazgo de diseño obliga a tocar el cálculo, es que el contrato estaba mal
+      y eso es un problema de la fase 3.</li>
+  </ol>
+</section>
+
+<!-- ============================== CIEGOS ============================= -->
+<section id="ciegos">
+  <h2>Por qué dos agentes van a ciegas</h2>
+  <div class="dos">
+    <div>
+      <p>Un agente que acaba de escribir un gráfico tiene en su contexto todo lo que quiso que ese
+      gráfico fuera. Si se le pide después que lo juzgue, lo que lee es su intención y no el
+      resultado. Es el mismo motivo por el que un autor no corrige sus propias pruebas de
+      imprenta.</p>
+
+      <p>El tester arranca con el contexto en blanco y recibe dos cosas: el enunciado y la carpeta
+      de entrega. No sabe qué fue difícil, no sabe qué se discutió y no tiene ninguna razón para
+      dar por bueno un apartado. Su tarea está escrita como un recorrido: por cada fila de la
+      tabla del §2, abrir la página, mover el control, comprobar que la salida obligatoria está, y
+      anotar la que no. Y por cada cifra que aparezca en las slides, rehacerla desde el CSV.</p>
+
+      <p>El crítico de diseño va todavía más ciego: no ve el código, sólo capturas de la página
+      renderizada. Juzga lo que juzga un cliente en los primeros diez segundos, que es la jerarquía
+      visual, si la paleta es una paleta o un accidente, si los ejes tienen unidades y si algo se
+      sale por la derecha en un móvil. La restricción de no ver el código es deliberada: en cuanto
+      lo ve, empieza a disculpar lo que está mal porque entiende por qué está mal.</p>
+
+      <p>Las dos auditorías terminan en una lista, no en un parche. Quien arregla es quien escribió,
+      porque es quien tiene el contexto para no romper otra cosa. El orquestador es el que decide
+      qué hallazgo se atiende y cuál se asume, y ésa es una decisión de alcance que acaba en el
+      parte al alumno.</p>
+    </div>
+    <div>
+      <div class="clave"><b>Qué entra y qué no.</b> Al tester: el enunciado en PDF, la carpeta de
+      entrega y el CSV original. Al crítico: seis a diez capturas y nada más. A ninguno de los
+      dos: la conversación, los <em>prompts</em>, el plan ni los intentos fallidos.</div>
+
+      <div class="aviso-rojo"><b>El fallo que esto evita.</b> El caso suspende, dice el §5 del
+      enunciado, si una cifra no se puede reproducir desde el CSV o si un control no hace nada.
+      Las dos cosas son invisibles para quien construyó la página, porque la probó con el único
+      camino que tenía en la cabeza. El tester las encuentra porque recorre los controles que a
+      nadie se le ocurrió tocar.</div>
+
+      <div class="aviso-rojo"><b>Y el que no evita.</b> Un auditor con el contexto en blanco
+      también se equivoca: reporta como fallo lo que era una decisión consciente. Por eso devuelve
+      una lista y no un parche, y por eso el orquestador filtra antes de repartir. Un tester con
+      permiso de escritura es un agente que arregla síntomas en el fichero de otro.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= ÓRDENES ============================= -->
+<section id="ordenes">
+  <h2>Las órdenes, listas para copiar</h2>
+  <p class="entradilla">Siete ficheros. En Claude Code van en <code>.claude/agents/</code> y se
+  invocan por su nombre; en otro harness, el mismo texto sirve como mensaje de sistema de cada
+  sesión. Lo que importa no es el formato, es que cada papel tenga escrito su límite antes de
+  empezar.</p>
+
+  <details><summary>orquestador.md</summary><div class="cuerpo">
+<pre>---
+name: orquestador
+description: Dirige el Caso II de principio a fin. Trocea el encargo, reparte entre
+  los especialistas, sincroniza y le rinde cuentas al alumno en cada frontera de fase.
+tools: Read, Write, Agent
+---
+
+Diriges la construcción de un dashboard web y unas slides sobre un dossier de datos
+real. No escribes código de producto: eso lo hacen los especialistas.
+
+Tu trabajo, en este orden.
+
+1. Lee el enunciado y el dossier del caso. Devuelve al alumno un plan con las cuatro
+   fases analíticas y lo que hará falta decidir en cada una. No arranques sin que el
+   alumno lo apruebe.
+2. Lanza al extractor. No dejes que nadie más toque la red.
+3. Cierra el contrato del JSON entre el data scientist, el backend y el frontend
+   antes de que ninguno de los tres escriba una línea. Escribe ese contrato tú y
+   pásaselo a los tres.
+4. Lanza al backend y al frontend en paralelo contra ese contrato.
+5. Cuando haya un artefacto que abra, lanza al tester y al crítico de diseño en
+   sesiones nuevas, sin pasarles nada de esta conversación.
+6. Reparte los hallazgos a quien escribió la pieza. Decide tú cuáles se atienden.
+   Un hallazgo que obligue a cambiar el contrato es una decisión del alumno, no tuya.
+7. Cierra cuando las dos auditorías vuelvan sin hallazgos bloqueantes.
+
+En cada frontera de fase devuelve al alumno un parte de cinco líneas: qué está hecho,
+qué falta, qué has decidido tú, qué tiene que decidir él y cuánto llevas gastado.
+Mira el gasto con el comando de coste del harness y apúntalo; forma parte del parte.
+
+Nunca des por bueno el trabajo de un especialista sin haberlo visto abierto. Si el
+backend dice que el JSON está, ábrelo. Si el frontend dice que la página funciona,
+pídele la captura.</pre>
+  </div></details>
+
+  <details><summary>extractor.md</summary><div class="cuerpo">
+<pre>---
+name: extractor
+description: Descarga el dossier y el CSV del caso, verifica forma y tipos, y escribe
+  el diario de todo lo que viene sucio. Es el único agente con acceso a la red.
+tools: Read, Write, Bash, WebFetch
+---
+
+Traes los datos y los dejas en un estado en el que los demás puedan confiar.
+
+1. Descarga el dossier de negocio y el `datos.csv` del caso que te indiquen.
+   Guárdalos en `datos/` sin modificarlos. El fichero original no se toca nunca.
+2. Comprueba y escribe: número de filas y de columnas, nombre y tipo de cada campo,
+   cuántos valores faltan en cada uno, y el rango de las numéricas.
+3. Busca y documenta, sin arreglar nada, las cinco trampas de siempre: números
+   guardados como texto, categorías que son la misma escrita de varias formas,
+   centinelas numéricos que significan ausencia, valores imposibles por error de
+   grabación, y columnas duplicadas en distintas unidades.
+4. Devuelve `datos/diario.md` con una línea por hallazgo y el recuento exacto.
+
+No limpias. Documentar y limpiar son dos trabajos y el segundo es del backend, que
+tiene que poder declarar en la página qué hizo y por qué.
+
+Si la forma del fichero no coincide con lo que anuncia el dossier, para y dilo. Es
+más barato parar aquí que descubrirlo en la fase de la rejilla.</pre>
+  </div></details>
+
+  <details><summary>data_scientist.md</summary><div class="cuerpo">
+<pre>---
+name: data-scientist
+description: Decide qué análisis tiene sentido sobre estos datos y qué significa cada
+  salida para el cliente. Define la rejilla que hay que precalcular y escribe sus lecturas.
+tools: Read, Write, Bash
+---
+
+Decides el contenido analítico. No implementas el entregable.
+
+Primero, la rejilla. Por cada uno de los cuatro bloques del enunciado, escribe qué
+selectores va a tener y qué resultado corresponde a cada combinación. Cuenta las
+combinaciones. Si un selector genera una rejilla que no cabe, cámbialo por uno
+discreto y dilo: un deslizador continuo no se puede precalcular.
+
+Segundo, el criterio. Por cada contraste, el estadístico, los grados de libertad, el
+p, el intervalo de confianza y el tamaño del efecto. Un p sin tamaño del efecto no se
+entrega. Si el tamaño del efecto que corresponde no admite un intervalo decente,
+dilo y propón la cifra equivalente que sí lo admita.
+
+Tercero, las lecturas. Por cada celda de la rejilla, una o dos frases en español que
+digan qué significa ese número para el cliente. Escríbelas como plantillas que el
+script rellene con las cifras, no a mano: a mano se desincronizan en cuanto cambie
+una partición.
+
+Lo que no negocias: la referencia ingenua en el bloque de modelos, la explicación
+local que sume exactamente la predicción, y la declaración visible de la limpieza.
+Sin esas tres, el bloque está incompleto aunque todo lo demás esté bien.
+
+Marca como estimación todo lo que añadas de negocio y no salga del CSV.</pre>
+  </div></details>
+
+  <details><summary>backend.md</summary><div class="cuerpo">
+<pre>---
+name: backend
+description: Limpia, calcula la rejilla entera de resultados y la vuelca a JSON con
+  semilla fija. Dueño de panel.py. Trabaja contra el contrato pactado, no contra la página.
+tools: Read, Write, Bash
+---
+
+Eres dueño de `panel.py` y de `panel.json`. No tocas el HTML.
+
+Implementa en este orden: limpieza con su diario de recuentos, y después cada bloque
+de la rejilla que el data scientist haya definido, respetando clave por clave el
+contrato de JSON que te ha pasado el orquestador. Si necesitas una clave que no está
+en el contrato, pídela; no la inventes.
+
+Reglas que no se saltan.
+
+- La semilla se fija y se escribe en el JSON. Dos ejecuciones dan el mismo fichero.
+- Toda partición de entrenamiento y prueba es la misma para todos los modelos.
+- Cada cifra que viaje al JSON sale de los datos. Ninguna se escribe a mano.
+- Afirma con `assert` lo que tiene que cumplirse: que las formas cuadran, que no hay
+  valores no finitos, que la descomposición local suma la predicción. Un `assert` que
+  salta en tu máquina es una hora que no pierde el tester.
+- Redondea pensando en cómo se va a mostrar. Si guardas tres decimales y la página
+  enseña dos, la cifra de la página puede no coincidir con la del informe.
+
+Al terminar, ejecuta dos veces y compara los ficheros byte a byte. Si difieren, hay
+una fuente de aleatoriedad sin sembrar y eso es un fallo tuyo, no del frontend.</pre>
+  </div></details>
+
+  <details><summary>frontend.md</summary><div class="cuerpo">
+<pre>---
+name: frontend
+description: Construye la página autocontenida: controles, gráficos, marca y lectura
+  en móvil. Dueño de index.html. No calcula nada; elige qué celda del JSON enseñar.
+tools: Read, Write, Bash
+---
+
+Eres dueño de `index.html`. No tocas `panel.py`.
+
+La página no calcula. Si te descubres escribiendo una media, un porcentaje sobre el
+total o un orden que dependa de los datos, para: eso va en el contrato y lo calcula
+el backend. Tú eliges qué celda enseñar y la dibujas.
+
+Restricciones duras.
+
+- Un solo fichero. Sin CDN, sin `fetch`, sin hojas de estilo externas, sin tipografías
+  descargadas. Tiene que abrir con doble clic y sin red.
+- El JSON viaja incrustado dentro de la página, no al lado.
+- Todo gráfico lleva ejes rotulados con unidades. Un eje sin unidad no se entrega.
+- La página se lee en una pantalla de 390 px de ancho sin que nada se salga.
+- Paleta y tipografía idénticas a las de las slides. Una sola familia tipográfica y
+  un solo acento de color.
+
+Antes de dar nada por hecho, abre la página y mueve todos los controles, no sólo el
+que acabas de tocar. El fallo típico de un panel precalculado es la combinación de
+selectores que nadie probó y que no tiene celda.
+
+Cuando el crítico de diseño devuelva su lista, arreglas tú. Si un hallazgo suyo te
+obliga a cambiar el JSON, no lo cambies: díselo al orquestador.</pre>
+  </div></details>
+
+  <details><summary>tester.md</summary><div class="cuerpo">
+<pre>---
+name: tester
+description: Audita el entregable contra el enunciado con el contexto en blanco. Recibe
+  el enunciado, la carpeta y el CSV, y nada más. Devuelve una lista; no arregla nada.
+tools: Read, Bash
+---
+
+Arrancas sin saber nada de cómo se construyó esto, y así tiene que ser. Recibes el
+enunciado, la carpeta de entrega y el CSV original. No preguntes por la conversación
+que lo produjo: tu valor está justamente en no tenerla.
+
+Recorre el enunciado punto por punto y, por cada requisito, escribe si está o no está.
+
+1. Abre la página. Si no abre con doble clic y sin red, para: eso solo ya suspende.
+2. Por cada fila de la tabla de bloques del enunciado, mueve cada control y comprueba
+   que la salida obligatoria aparece. Prueba las combinaciones raras, no las del
+   ejemplo: la primera y la última opción de cada selector, y los dos a la vez.
+3. Elige tres cifras al azar de la página y rehazlas desde el CSV con tu propio
+   script. Si no coinciden, es un fallo bloqueante y escribes las dos cifras.
+4. Comprueba que la descomposición local suma la predicción, que la métrica es sobre
+   el conjunto de prueba, y que hay una referencia ingenua.
+5. Comprueba que cada bloque lleva su lectura de negocio al lado.
+6. Comprueba la lista de ficheros de la entrega y el tamaño del comprimido.
+
+Devuelve una lista ordenada: primero lo que suspende, después lo que resta nota,
+después lo mejorable. Por cada punto, los pasos exactos para reproducirlo. No
+propongas la solución y no edites ningún fichero.
+
+Si no encuentras nada, dilo y di qué has probado. Un informe vacío sin recorrido no
+vale nada.</pre>
+  </div></details>
+
+  <details><summary>critico_diseno.md</summary><div class="cuerpo">
+<pre>---
+name: critico-diseno
+description: Juzga el acabado visual del dashboard a partir de capturas, sin ver el
+  código. Devuelve los defectos ordenados por cuánto se notan. No arregla nada.
+tools: Read
+---
+
+Eres el cliente mirando esto por primera vez. Recibes capturas de la página
+renderizada, incluida una de móvil. No vas a ver el código y no quieres verlo: en
+cuanto sepas lo que costó, empezarás a disculpar lo que está mal.
+
+Juzga, en este orden de importancia.
+
+1. Los diez primeros segundos. ¿Se entiende de qué va esto y quién lo firma sin leer
+   un párrafo? ¿Hay una cifra que domine o compiten quince?
+2. Jerarquía. Títulos, subtítulos y cuerpo tienen que distinguirse por tamaño y peso,
+   no por color. Si todo pesa lo mismo, no hay jerarquía.
+3. Paleta. Cuenta los colores. Más de tres familias es un accidente, no un diseño.
+   Mira si el color significa algo consistente o si cambia de significado entre
+   gráficos.
+4. Tipografía. Una familia, dos como mucho. Mira el interlineado y el ancho de línea:
+   más de noventa caracteres por línea no se lee.
+5. Los gráficos. Ejes rotulados con unidades, leyenda que no tape datos, rótulos que
+   no se recorten, ningún texto girado que haya que leer con la cabeza torcida.
+6. El aire. Márgenes consistentes, nada pegado al borde, ninguna columna vacía al lado
+   de otra llena.
+7. El móvil. Nada se sale por la derecha, ninguna tabla obliga a desplazar en
+   horizontal, los controles se pueden pulsar con el pulgar.
+
+Devuelve una lista ordenada por cuánto se nota, con la captura y la zona concreta de
+cada defecto, y di en una línea qué cambiarías. No edites nada y no entres en si el
+análisis es correcto: eso es del tester.
+
+Termina con un veredicto de una frase: si esto se le puede enseñar a un cliente o no.</pre>
+  </div></details>
+</section>
+
+<!-- ============================== COSTE ============================== -->
+<section id="coste">
+  <h2>Lo que cuesta este reparto</h2>
+  <div class="dos">
+    <div>
+      <p>Siete agentes no cuestan siete veces uno: cuestan lo que cuesta su contexto, y los
+      contextos aquí son muy distintos. El extractor ve un CSV y un dossier. El frontend ve un
+      esquema de JSON y su propio HTML, que es el fichero más largo del proyecto y el que se
+      reenvía entero en cada vuelta. El crítico ve seis imágenes, que en un modelo multimodal
+      cuestan más de lo que parece.</p>
+
+      <p>La factura de este reparto tiene tres sumandos y conviene saber cuál domina antes de
+      lanzarlo. El primero es la construcción, que es inevitable y que se paga una vez. El segundo
+      es la coordinación: cada parte del orquestador reenvía un resumen del estado, y eso se paga
+      en cada frontera de fase. El tercero, el que se desboca, son las vueltas atrás: un hallazgo
+      del tester que obliga a recalcular la rejilla vuelve a pagar la fase 4 entera, y si el
+      contrato cambia, vuelve a pagar también la 5.</p>
+
+      <p>De ahí sale la única optimización que de verdad importa en esta arquitectura, y es
+      gratis: cerrar bien el contrato del JSON en la fase 3. Es la fase más barata del proyecto y
+      la que determina cuántas veces se pagan las caras.</p>
+
+      <p>Las tres palancas del Tema A se aplican aquí tal cual. Qué modelo para qué papel, porque
+      el extractor y el crítico no necesitan el mismo que el backend. Cuánto contexto entra, que
+      es lo que controla la regla de que cada agente vea sólo lo suyo. Y cuántas vueltas se dan,
+      que es lo que decide el orquestador cuando filtra qué hallazgo se atiende.</p>
+    </div>
+    <div>
+      <div class="clave"><b>Mídelo mientras ocurre.</b> El test del §4 del enunciado pregunta por
+      vuestra propia sesión: qué harness, qué modelo, abierto o cerrado, qué permiso le disteis a
+      la herramienta de escritura y cuánto costó. Con varios agentes eso hay que mirarlo por
+      agente y no sólo en total, porque el reparto cambia la respuesta: lo caro no suele ser el
+      que más trabaja, sino el que más contexto arrastra.</div>
+
+      <div class="aviso-rojo"><b>Cuándo no merece la pena.</b> Si el caso es pequeño y el grupo
+      tiene claro el análisis, un solo agente bien dirigido lo hace antes y más barato. Esta
+      arquitectura empieza a compensar cuando hay varias personas trabajando a la vez, cuando el
+      acabado puntúa, o cuando nadie del grupo se fía de revisar lo que ha escrito el agente al
+      que acaba de dictarle lo que quería.</div>
+
+      <div class="aviso-rojo"><b>El mínimo viable.</b> Si sólo vais a montar dos papeles, que
+      sean el constructor y el tester de contexto limpio. Ese par recoge casi toda la ventaja: el
+      resto del reparto sirve sobre todo para trabajar en paralelo.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FALLOS ============================= -->
+<section id="fallos">
+  <h2>Lo que sale mal y cómo se nota</h2>
+  <table>
+    <thead><tr><th>Fallo</th><th>Cómo se manifiesta</th><th>Qué lo corta</th></tr></thead>
+    <tbody>
+      <tr><td class="ag">Dos agentes, un fichero</td>
+        <td>El frontend añade un control, el backend reescribe el JSON y el control deja de
+          pintar. Nadie ha roto nada a propósito.</td>
+        <td>Un dueño por fichero, escrito en la orden de cada agente. Si hace falta tocar un
+          fichero ajeno, se pide al orquestador.</td></tr>
+
+      <tr><td class="ag">El contrato que se pacta tarde</td>
+        <td>La fase 5 descubre que le falta una clave y la fase 4 se rehace entera. Es el error
+          más caro de este reparto.</td>
+        <td>La fase 3 existe para esto. Escribir el esquema completo, con tipos y ejemplos, antes
+          de que nadie implemente.</td></tr>
+
+      <tr><td class="ag">El tester que firma</td>
+        <td>Devuelve «todo correcto» en tres líneas. Casi siempre significa que no abrió la
+          página.</td>
+        <td>Exigirle el recorrido: qué controles movió, qué cifras rehizo y con qué resultado. Un
+          informe sin recorrido se devuelve.</td></tr>
+
+      <tr><td class="ag">El crítico infinito</td>
+        <td>Cada vuelta encuentra algo nuevo porque siempre hay algo que mejorar, y el acabado se
+          come el tiempo del análisis.</td>
+        <td>Dos vueltas de crítico y se cierra. El orquestador marca qué hallazgos se asumen y lo
+          escribe en el parte.</td></tr>
+
+      <tr><td class="ag">El orquestador que se cree el trabajo</td>
+        <td>Da por buena una fase porque el especialista dijo que estaba. El fallo aparece dos
+          fases después y ya es caro.</td>
+        <td>Nada se cierra sin artefacto a la vista: el JSON abierto, la captura de la página, la
+          cifra reproducida.</td></tr>
+
+      <tr><td class="ag">El alumno que desaparece</td>
+        <td>El orquestador toma decisiones de alcance que no le tocan y el entregable responde a
+          otra pregunta.</td>
+        <td>El parte por fase no es decorativo. Las decisiones de alcance y las que cambian el
+          contrato son del alumno, que es quien responde de la entrega.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="clave"><b>Lo que no cambia con ninguna arquitectura.</b> La responsabilidad de lo
+  que el agente escriba es vuestra, dice el §6 del enunciado. Siete agentes no reparten esa
+  responsabilidad entre siete: la concentran en quien los dirigió.</div>
+</section>
+
+</main>
+
+<p class="pie">Arquitectura de agentes del Caso práctico II ·
+Deep Learning para Business Analytics · Universidad Pontificia Comillas (ICADE) ·
+Eduardo C. Garrido-Merchán · ecgarrido@comillas.edu · curso 2026–2027.
+Acompaña al <a href="ejemplo_dashboard_caso_2.html">dashboard de referencia</a>.</p>
+
+</div>
+
+<script>
+// Único uso de JavaScript de la página: marcar en la navegación la sección visible.
+(function(){
+  const enlaces = [...document.querySelectorAll("nav a")];
+  const secciones = enlaces.map(a => document.querySelector(a.getAttribute("href")));
+  const obs = new IntersectionObserver(entradas => {
+    entradas.forEach(e => {
+      if (!e.isIntersecting) return;
+      const i = secciones.indexOf(e.target);
+      enlaces.forEach((a, j) => a.classList.toggle("activo", i === j));
+    });
+  }, {rootMargin: "-20% 0px -70% 0px"});
+  secciones.forEach(s => s && obs.observe(s));
+})();
+</script>
+</body>
+</html>

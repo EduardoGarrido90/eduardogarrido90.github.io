@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -7,6 +7,7 @@
   <title>Caso práctico II — Construcción de material multimedia mediante IA agéntica</title>
   <style>
     html {
+      font-size: 10pt;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -166,6 +167,10 @@
       vertical-align: middle;
     }
   </style>
+  
+  
+  
+  
 </head>
 <body>
 <header id="title-block-header">
@@ -180,100 +185,154 @@ multimedia mediante IA agéntica</h1>
 Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 · <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
 2026–2027. <strong>Bloque:</strong> II — IA Agéntica (Temas A y B,
-semanas 8–13). <strong>Modalidad:</strong> <strong>entrega en grupo +
-test individual</strong>. Los artefactos los construye el grupo (los
-mismos del proyecto final). El test se responde a solas, en clase, sin
-ordenador y sin IA.</p>
-<hr />
-<h2 id="contexto">1. Contexto</h2>
-<p>Cada grupo elige un sector que le interese: retail, hotelero,
-seguros, telecomunicaciones, logística de última milla, sanidad,
-movilidad urbana, educación, energía, medio ambiente. Y trabaja con
-datos de verdad de ese sector, los del repositorio de dossieres de la
-asignatura (§3): sesenta y seis casos, cada uno con su dossier de
-negocio y su fichero de datos.</p>
-<p>Sobre ese dataset construís lo que una consultora entrega a un
-cliente: un <strong>dashboard web interactivo</strong> que explora los
-datos y vende el servicio, y unas <strong>slides</strong> que explican y
-promocionan el producto. Las dos cosas las construye un agente bajo
-vuestra dirección, en una tarde.</p>
-<p>Lo que separa a quien encarga esa tarde de quien sabe venderla es la
-factura. Qué modelo contestó, cuántas vueltas dio el bucle, qué
-herramientas tocaron el disco, cuánto costó en dólares, cuánto habría
-costado lo mismo con un modelo abierto en un servidor propio y qué
-habría pasado bajando un escalón de tier. Esa es la diferencia entre
-alguien que usa una IA y alguien a quien una empresa paga por decidir
-sobre ella.</p>
-<p>Se evalúan tres cosas: los artefactos del §4, la minimemoria de
-trazabilidad del §5 y el test individual del §7.</p>
-<h2 id="objetivo">2. Objetivo</h2>
-<p>Construir, <strong>dirigiendo a un agente</strong>, el material
-comercial de un producto de datos:</p>
-<ol type="1">
-<li>Un <strong>dashboard web interactivo</strong> sobre el dataset
-elegido, que al mismo tiempo promocione el servicio que vendéis sobre
-esos datos.</li>
-<li>Unas <strong>slides</strong> que expliquen el producto y lo
-defiendan en ocho minutos.</li>
-</ol>
-<p>Tres exigencias sobre los dos artefactos:</p>
-<ul>
-<li><strong>Basados en el dataset.</strong> Cada cifra, cada gráfico y
-cada afirmación de negocio se calcula sobre el CSV del dossier. Nada de
-datos de adorno.</li>
-<li><strong>Mismo estilo en los dos.</strong> La web y las slides
-pertenecen al mismo producto: misma paleta, misma tipografía, mismo
-nombre de marca, mismo logotipo, mismos gráficos. Un cliente que vea las
-slides y luego abra la web tiene que reconocer que son de la misma
-casa.</li>
-<li><strong>Vistosos.</strong> Gráficos de verdad, imágenes,
-iconografía, interacción. Un dashboard con filtros que funcionan y una
-web que se lee bien en un móvil. El acabado visual se puntúa aquí, al
-contrario que en el Caso I.</li>
-</ul>
-<p>Y documentar la construcción con la precisión con la que se documenta
-un experimento: qué harness, qué modelo, abierto o cerrado, qué contexto
-se le metió, qué herramientas se le permitieron, con qué arquitectura,
-con cuánto esfuerzo de razonamiento y por cuánto dinero.</p>
-<h2 id="el-dataset-de-dónde-sale">3. El dataset: de dónde sale</h2>
-<p>Los datos son los dossieres de casos de la asignatura, publicados
-en:</p>
+semanas 8–13). <strong>Modalidad: entrega en grupo + test
+individual.</strong></p>
+<h2 id="qué-se-construye">1. Qué se construye</h2>
+<p>Cada grupo elige <strong>uno</strong> de los 66 casos del repositorio
+de dossieres de la asignatura, con su dossier de negocio y su
+<code>datos.csv</code> de un sector real:</p>
 <blockquote>
 <p><a
 href="https://eduardogarrido90.github.io/docencia/ml1/casos/index.html"
-class="uri">https://eduardogarrido90.github.io/docencia/ml1/casos/index.html</a></p>
-<p><strong>Contraseña de clase:</strong> <code>DataICADE</code></p>
+class="uri">https://eduardogarrido90.github.io/docencia/ml1/casos/index.html</a>
+· contraseña <code>DataICADE</code></p>
 </blockquote>
-<p>Hay <strong>66 casos</strong> repartidos en seis familias: Empresa
-(20), Gestión urbana (10), Salud (10), Medio ambiente (10), Educación
-(8) y Social (8). Cada uno trae dos ficheros: el
-<strong>dossier</strong>, con el contexto de negocio, la descripción de
-las variables y la pregunta que el cliente se hace; y
-<strong><code>datos.csv</code></strong>, con los datos.</p>
-<p>Cada grupo elige <strong>un</strong> caso, el del sector que le
-interese. El dossier es la fuente del relato (quién es el cliente, qué
-decide, qué le cuesta equivocarse) y el CSV es la fuente de las
-cifras.</p>
-<p>Dos reglas duras:</p>
-<ul>
-<li><strong>Toda cifra del dashboard y de las slides sale del
-CSV.</strong> Si añadís una cifra de negocio que no está en los datos
-(un precio, un margen, un ROI, un tamaño de mercado),
-<strong>etiquetadla como estimación</strong> y decid de dónde la sacáis.
-Inventar está permitido; disfrazar lo inventado de medido, no.</li>
-<li><strong>Licencia y marca.</strong> El material de la asignatura se
-usa dentro de la asignatura. Si incrustáis el logotipo o la marca de una
-organización real, declarad explícitamente que es un ejercicio académico
-sin vínculo con ella.</li>
-</ul>
-<h2 id="qué-se-entrega">4. Qué se entrega</h2>
-<p>Una carpeta comprimida <code>grupoNN_caso_2.zip</code> con
-exactamente esto:</p>
+<p>Sobre él construye, <strong>dirigiendo a un agente</strong>, lo que
+una consultora entrega a un cliente: un <strong>dashboard web
+interactivo</strong> con el análisis de esos datos y unas
+<strong>slides</strong> de ocho minutos que venden el producto. Las dos
+cosas, en una tarde.</p>
+<p>Tres exigencias. Toda cifra sale del CSV; lo que añadáis de negocio
+(un precio, un margen, un ROI) va etiquetado como estimación, porque
+inventar está permitido y disfrazar lo inventado de medido no. La web y
+las slides comparten paleta, tipografía, marca y gráficos. Y el acabado
+visual puntúa, al contrario que en el Caso I. No hay memoria escrita que
+entregar, pero sí hay que mirar la sesión mientras ocurre: qué harness,
+qué modelo, abierto o cerrado, qué herramientas, cuánto contexto y
+cuánto dinero. De eso pregunta el test del §4, y lo que separa a quien
+encarga esa tarde de quien sabe venderla es la factura.</p>
+<h2 id="los-cuatro-bloques-analíticos-del-dashboard">2. Los cuatro
+bloques analíticos del dashboard</h2>
+<p>Dentro del dashboard va el análisis entero que sabéis hacer, con sus
+controles. El agente escribe el código; vosotros decidís qué análisis
+tiene sentido sobre estos datos y leéis cada salida.</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 29%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Bloque</th>
+<th style="text-align: left;">Controles</th>
+<th style="text-align: left;">Salida obligatoria</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Limpieza</strong></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Recuadro visible: categorías colapsadas,
+centinelas traducidos a ausencia, imposibles retirados, filas y valores
+perdidos finales.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>1. Descriptivo
+univariante</strong></td>
+<td style="text-align: left;">Selector de variable, interruptor
+crudo/limpio, escala lineal o logarítmica</td>
+<td style="text-align: left;">Numérica: histograma, diagrama de caja, y
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>,
+media, mediana, desviación, CV, cuartiles, asimetría y atípicos por
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mn>5</mn><mo>⋅</mo></mrow><annotation encoding="application/x-tex">1{,}5\cdot</annotation></semantics></math>RIQ.
+Categórica: barras y frecuencias.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>2. Descriptivo
+bivariante</strong></td>
+<td style="text-align: left;">Selectores de
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>,
+de
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+y de variable de color</td>
+<td style="text-align: left;">Num-num: nube, recta,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
+de Pearson y
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>
+de Spearman. Cat-num: cajas por grupo y medias. Cat-cat: contingencia,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>χ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math>
+y
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+de Cramér. Más la matriz de correlaciones.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>3. Inferencia</strong></td>
+<td style="text-align: left;">Selector de contraste (Welch, ANOVA,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>χ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math>,
+correlación nula), de variables y de
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>α</mi><annotation encoding="application/x-tex">\alpha</annotation></semantics></math>;
+casillas de regresores</td>
+<td style="text-align: left;">Estadístico, grados de libertad,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+<strong>intervalo de confianza</strong> y <strong>tamaño del
+efecto</strong>, con la conclusión en español. Regresión: coeficientes
+con error típico,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+e IC95,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>R</mi><mn>2</mn></msup><annotation encoding="application/x-tex">R^2</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>,
+<strong>VIF</strong> y residuos.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>4. ML explicable</strong></td>
+<td style="text-align: left;">Selector de modelo (<strong>tres</strong>
+más una referencia ingenua, misma partición y semilla escrita) y de
+métrica</td>
+<td style="text-align: left;">Métrica <strong>sobre el conjunto de
+prueba</strong>. Global: importancia por permutación y media de
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>ϕ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">|</mo></mrow><annotation encoding="application/x-tex">|\phi_i|</annotation></semantics></math>
+de Shapley. Local: descomposición de Shapley de una predicción, que sume
+a la predicción.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>La regla del cero servidor.</strong> Una página autocontenida
+no ejecuta <code>pandas</code> ni <code>scikit-learn</code>. Todo lo
+seleccionable se calcula <strong>antes</strong>, en Python, y viaja
+dentro del HTML como JSON: <code>panel.py</code> limpia, calcula la
+rejilla entera de opciones y vuelca <code>panel.json</code>;
+<code>index.html</code> elige qué enseñar. Decidir de antemano esa
+rejilla es la conversación que vais a tener con el agente.</p>
+<p><strong>El panel de referencia:
+<code>casos/ejemplo_panel/</code>.</strong> Los cuatro bloques resueltos
+sobre el caso <code>delivery</code>, 9 200 pedidos de una plataforma de
+reparto: cinco filas entraron multiplicadas por mil y retirarlas baja la
+desviación típica del importe de 513,78 € a 15,55 €; y la tesis de la
+casa de que el suscriptor gasta más por pedido se cae en el contraste de
+Welch (0,28 € de diferencia, IC95 de -0,43 € a 0,99 €,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>433</mn></mrow><annotation encoding="application/x-tex">p = 0{,}433</annotation></semantics></math>)
+y en la regresión
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>33</mn></mrow><annotation encoding="application/x-tex">+0{,}33</annotation></semantics></math>
+€,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>14</mn></mrow><annotation encoding="application/x-tex">p = 0{,}14</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>0</mn><mo>,</mo><mn>616</mn></mrow><annotation encoding="application/x-tex">R^2 = 0{,}616</annotation></semantics></math>);
+el <em>gradient boosting</em> predice con RMSE 9,03 € frente a los 15,23
+€ de la media, y la explicación local de un pedido parte de 31,63 € y le
+suma 20,73 € por sus cinco comensales. Su <code>README.md</code> lo
+cuenta bloque a bloque, y <strong>el dashboard entero montado sobre esa
+rejilla está publicado en la web de la asignatura</strong>: ahí se ve
+qué se espera, controles incluidos. Si elegís <code>delivery</code>, el
+listón es ir más allá.</p>
+<h2 id="qué-se-entrega">3. Qué se entrega</h2>
+<p>Una carpeta comprimida <code>grupoNN_caso_2.zip</code>, por debajo de
+20 MB, con exactamente esto.</p>
 <table>
 <colgroup>
 <col style="width: 3%" />
-<col style="width: 20%" />
-<col style="width: 76%" />
+<col style="width: 25%" />
+<col style="width: 71%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -286,213 +345,120 @@ exactamente esto:</p>
 <tr class="odd">
 <td style="text-align: left;">1</td>
 <td style="text-align: left;"><code>capturas/</code></td>
-<td style="text-align: left;"><strong>De 6 a 10 capturas de pantalla del
-dashboard</strong>, en PNG y legibles: la vista general, cada gráfico,
-al menos dos estados de interacción (un filtro antes y después) y la
-vista en móvil. Numeradas y con un <code>README.md</code> de una línea
-por captura.</td>
+<td style="text-align: left;">6 a 10 capturas del dashboard en PNG
+legible: vista general, los cuatro bloques del §2 y dos estados de
+interacción. Numeradas, con un <code>README.md</code> de una línea cada
+una.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2</td>
-<td style="text-align: left;"><code>slides/slides.pdf</code></td>
-<td style="text-align: left;">8–10 diapositivas del mismo producto. El
-fuente al lado (<code>.tex</code>, <code>.md</code>, <code>.html</code>
-o lo que hayáis usado).</td>
+<td style="text-align: left;"><code>panel/</code></td>
+<td style="text-align: left;">El script de cálculo y el JSON de
+resultados. Es lo que hace comprobable que toda cifra sale del CSV.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">3</td>
-<td style="text-align: left;"><code>memoria_agentica.md</code></td>
-<td style="text-align: left;"><strong>La minimemoria de trazabilidad del
-§5.</strong> Tres páginas como máximo.</td>
+<td style="text-align: left;"><code>slides/slides.pdf</code></td>
+<td style="text-align: left;">8–10 diapositivas del mismo producto, con
+el fuente al lado.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Los prompts no se entregan.</strong> Lo que se corrige es el
-resultado y la memoria.</p>
-<p><strong>Sobre el dashboard.</strong> Se entregan capturas, pero el
-dashboard tiene que existir y funcionar: en clase se os puede pedir que
-lo abráis. Una sola página autocontenida (sin CDN, sin framework, sin
-conexión), con cinco bloques: el problema del sector, los datos y de
-dónde salen, tres o cuatro gráficos interactivos, el servicio que
-vendéis y quién lo firma.</p>
-<p><strong>Sobre el peso.</strong> El zip entero por debajo de 20 MB. Si
-vuestras capturas no caben, exportadlas mejor.</p>
-<h2 id="la-minimemoria-de-trazabilidad-agéntica">5. La minimemoria de
-trazabilidad agéntica</h2>
-<p>Un documento de <strong>tres páginas como máximo</strong> que cubre
-el Tema A entero en corto. Se rellena <strong>mientras</strong>
-construís: la mitad de los campos no se pueden reconstruir desde la
-memoria al día siguiente. Tiene tres partes y sólo tres.</p>
-<h3 id="la-tabla-de-la-sesión">5.1 La tabla de la sesión</h3>
+<p>Tres cosas y nada más: ni prompts, ni memoria, ni informe. El
+dashboard tiene que existir y funcionar: una sola página autocontenida,
+sin CDN ni conexión, y en clase se os puede pedir que la abráis y mováis
+un control.</p>
+<h2 id="el-test-individual">4. El test individual</h2>
+<p>Los primeros 25 minutos de la clase siguiente a la entrega, a solas,
+ordenadores cerrados, sin apuntes y sin IA. <strong>20 preguntas tipo
+test</strong>, cuatro opciones, una correcta: acierto
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">+0{,}5</annotation></semantics></math>,
+error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>0</mn><mo>,</mo><mn>125</mn></mrow><annotation encoding="application/x-tex">-0{,}125</annotation></semantics></math>,
+en blanco
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>,
+sobre 10 puntos. Va de la <strong>teoría del Tema A</strong> entera, que
+es lo que acabáis de aplicar: del bucle y las piezas que distinguen un
+agente de un chatbot al punto de equilibrio de un modelo abierto,
+pasando por el harness, las skills, las barandillas, las arquitecturas,
+los modos, el contexto y la fórmula del coste. Cuatro de las veinte
+preguntan por <strong>vuestra propia sesión</strong>: qué harness
+usasteis, si el modelo era abierto o cerrado, qué permiso le disteis a
+la herramienta de escritura y cuánto os costó. No hay que entregar nada
+de eso, pero sí haberlo mirado con <code>/cost</code> y
+<code>/context</code> mientras construíais: como no hay memoria que
+contrastar, esas cuatro se corrigen contra lo que conteste la mayoría de
+vuestro grupo, y quien no tocó el caso se delata solo. Se estudia con el
+deck del Tema A y el simulacro con soluciones que se publica con este
+enunciado; ninguna de sus preguntas sale en el test real.</p>
+<h2 id="rúbrica">5. Rúbrica</h2>
 <table>
 <colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
+<col style="width: 29%" />
+<col style="width: 6%" />
+<col style="width: 63%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Campo</th>
-<th>Valor</th>
+<th style="text-align: left;">Componente</th>
+<th style="text-align: left;">Peso</th>
+<th style="text-align: left;">Qué se valora</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Harness y versión</td>
-<td>Claude Code, Claude de escritorio, opencode, otro.</td>
+<td style="text-align: left;">Los cuatro bloques del §2</td>
+<td style="text-align: left;">35 %</td>
+<td style="text-align: left;">Limpieza declarada (5), univariante (6),
+bivariante (7), inferencia con IC y tamaño del efecto (9), ML con
+explicación global y local (8).</td>
 </tr>
 <tr class="even">
-<td>Modelo, versión y ventana de contexto</td>
-<td>…</td>
+<td style="text-align: left;">Acabado e interacción</td>
+<td style="text-align: left;">15 %</td>
+<td style="text-align: left;">Controles que funcionan, gráficos con ejes
+y unidades, identidad visual propia, lectura en móvil, página
+autocontenida.</td>
 </tr>
 <tr class="odd">
-<td>¿Abierto o cerrado?</td>
-<td>Y quién tiene los pesos.</td>
+<td style="text-align: left;">Slides</td>
+<td style="text-align: left;">10 %</td>
+<td style="text-align: left;">Ocho minutos defendibles: problema,
+hallazgo, producto y precio, con la marca de la web.</td>
 </tr>
 <tr class="even">
-<td>Esfuerzo de razonamiento</td>
-<td><code>low</code>, <code>medium</code>, <code>high</code>,
-<code>xhigh</code>, automático. ¿Lo cambiasteis en algún paso?</td>
-</tr>
-<tr class="odd">
-<td>Arquitectura</td>
-<td>Cadena fija, router, orquestador o autónomo.</td>
-</tr>
-<tr class="even">
-<td>Modo de trabajo</td>
-<td>Interactivo, plan, no interactivo (<code>-p</code>) o
-programado.</td>
-</tr>
-<tr class="odd">
-<td>Herramientas que llegó a invocar</td>
-<td>La lista entera.</td>
-</tr>
-<tr class="even">
-<td>Nivel de permiso de la herramienta de escritura</td>
-<td>Y por qué ése, con la regla de reversibilidad.</td>
-</tr>
-<tr class="odd">
-<td>Confirmaciones pedidas / denegadas</td>
-<td>Dos números. El segundo mide si las barandillas estaban en el
-sitio.</td>
-</tr>
-<tr class="even">
-<td>Vueltas del bucle de la sesión más larga</td>
-<td>Y si paró él o lo parasteis vosotros.</td>
-</tr>
-<tr class="odd">
-<td>Contexto al inicio / al final</td>
-<td>En tokens, medido con <code>/context</code> o el equivalente.</td>
-</tr>
-<tr class="even">
-<td>¿Podasteis o compactasteis?</td>
-<td>Y qué se perdió al hacerlo.</td>
-</tr>
-<tr class="odd">
-<td>Tokens de entrada y de salida del caso</td>
-<td>Medidos con <code>/cost</code> o estimados. Decid cuál de las
-dos.</td>
-</tr>
-<tr class="even">
-<td>Coste total (USD) o VRAM necesaria (GB)</td>
-<td>Según el modelo sea cerrado o abierto.</td>
+<td style="text-align: left;">Test individual del §4</td>
+<td style="text-align: left;">40 %</td>
+<td style="text-align: left;">La nota sobre 10 del test, tal cual.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="la-cuenta">5.2 La cuenta</h3>
-<p>Media página con la cuenta <strong>escrita</strong>, no sólo el
-resultado.</p>
-<ul>
-<li><strong>Si el modelo es cerrado:</strong>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mo>=</mo><msub><mi>p</mi><mtext mathvariant="normal">in</mtext></msub><msub><mi>t</mi><mtext mathvariant="normal">in</mtext></msub><mo>+</mo><msub><mi>p</mi><mtext mathvariant="normal">out</mtext></msub><msub><mi>t</mi><mtext mathvariant="normal">out</mtext></msub></mrow><annotation encoding="application/x-tex">C = p_{\text{in}} t_{\text{in}} + p_{\text{out}}
-t_{\text{out}}</annotation></semantics></math>, con los precios de
-<code>calculadora_costes/precios.json</code> y su fecha; el coste
-mensual
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mtext mathvariant="normal">mes</mtext></msub><mo>=</mo><mi>C</mi><mo>⋅</mo><mi>N</mi></mrow><annotation encoding="application/x-tex">C_{\text{mes}} = C \cdot N</annotation></semantics></math>
-si esto fuera un servicio, con vuestra
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
-justificada; y <strong>las tres palancas</strong> (bajar de tier, caché
-de prompt, batch) en porcentaje y en USD. Decid cuál de las tres no
-podríais usar y por qué cambiaría el producto.</li>
-<li><strong>Si el modelo es abierto:</strong> la cuenta de la memoria
-término a término,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">VRAM</mtext><mo>≈</mo><mi>P</mi><mo>⋅</mo><mi>b</mi><mo>⋅</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>+</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>k</mi><mo>⋅</mo><mi>L</mi><mo>⋅</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">\text{VRAM} \approx P \cdot b \cdot (1+\rho) + k \cdot L \cdot c</annotation></semantics></math>,
-con la cuantización que usasteis y el contexto y la concurrencia reales;
-y el <strong>punto de equilibrio</strong>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>N</mi><mo>⋆</mo></msup><mo>=</mo><msub><mi>C</mi><mtext mathvariant="normal">servidor</mtext></msub><mi>/</mi><msub><mi>c</mi><mtext mathvariant="normal">consulta</mtext></msub></mrow><annotation encoding="application/x-tex">N^\star = C_{\text{servidor}} / c_{\text{consulta}}</annotation></semantics></math>
-frente a la API equivalente.</li>
-</ul>
-<h3 id="cinco-preguntas-tres-líneas-cada-una">5.3 Cinco preguntas, tres
-líneas cada una</h3>
-<ol type="1">
-<li><strong>El fichero de instrucciones.</strong> ¿Cambió el
-comportamiento del agente al editarlo? Un ejemplo concreto de antes y
-después.</li>
-<li><strong>La herramienta que no le disteis.</strong> Cuál y por qué, y
-qué habría pasado si se la hubierais dado.</li>
-<li><strong>¿Workflow o agente?</strong> Aplicad el criterio del tema:
-si podíais escribir de antemano la lista de pasos, era un workflow.
-Reconocer que montasteis un workflow y lo llamasteis agente puntúa más
-que fingir lo contrario.</li>
-<li><strong>La vuelta en la que se equivocó.</strong> Qué hizo mal, qué
-observó y cómo se corrigió, o cómo tuvisteis que corregirlo
-vosotros.</li>
-<li><strong>La decisión.</strong> Para <strong>este</strong> producto,
-¿API de pago o modelo abierto en servidor propio? Con el número
-delante.</li>
-</ol>
-<p>Hay un ejemplo relleno, con cifras reales medidas, en
-<code>casos/demo_caso_2/ficha_agentica.md</code>. Es más largo que lo
-que se os pide: copiad sus números y sus cuentas, no su extensión.</p>
-<h2 id="las-tareas-una-a-una">6. Las tareas, una a una</h2>
-<ul>
-<li><strong>6.1 — Construir (técnica).</strong> El dashboard y las
-slides, con el agente, con el fichero de instrucciones escrito por
-vosotros antes de empezar.</li>
-<li><strong>6.2 — Instrumentar (técnica).</strong> La minimemoria del
-§5, rellenada sobre la marcha.</li>
-<li><strong>6.3 — Presupuestar (negocio).</strong> La proyección mensual
-y las tres palancas, o la VRAM y el punto de equilibrio. Si este
-producto tuviera usuarios, ¿cuánto costaría al mes y cuánto por
-usuario?</li>
-<li><strong>6.4 — Decidir (negocio).</strong> La recomendación de la
-pregunta 5 del §5.3, con el número que la sostiene.</li>
-</ul>
-<h2 id="el-test-individual">7. El test individual</h2>
-<p><strong>Cuándo.</strong> Los primeros 25 minutos de la clase
-siguiente a la entrega. <strong>Cómo.</strong> A solas, ordenadores
-cerrados y guardados, sin apuntes y sin IA. <strong>Qué.</strong>
-<strong>20 preguntas tipo test</strong>, cuatro opciones, una correcta.
-<strong>Corrección.</strong> Acierto
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">+0{,}5</annotation></semantics></math>;
-error
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>0</mn><mo>,</mo><mn>125</mn></mrow><annotation encoding="application/x-tex">-0{,}125</annotation></semantics></math>;
-en blanco,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.
-Sobre 10 puntos. Penalizar el fallo evita que marcar al azar salga a
-cuenta; dejar en blanco lo que no sabéis es una respuesta legítima y no
-resta.</p>
-<p><strong>De qué va.</strong> De la <strong>teoría del Tema A</strong>,
-que es exactamente lo que acabáis de aplicar: el bucle y las cuatro
-piezas que distinguen un agente de un chatbot; las seis piezas del
-harness y los cinco bloques del fichero de instrucciones; las skills y
-la carga progresiva; las barandillas y la regla de reversibilidad; las
-cuatro arquitecturas y el criterio workflow contra agente; los cuatro
-modos; el esfuerzo de razonamiento; las cuatro capas del contexto y la
-diferencia entre podar y compactar; qué entra en el contexto y qué se
-toca con una herramienta; tokens de entrada y de salida y por qué la
-salida es más cara; la fórmula del coste; las tres palancas y cómo se
-rompe la caché; modelos abiertos, cuantización, la fórmula de la VRAM y
-el punto de equilibrio; y las cuatro partidas que se olvidan al comparar
-servidor contra API.</p>
-<p>Cuatro de las veinte preguntas se refieren a <strong>vuestra propia
-minimemoria</strong>: qué harness usasteis, si vuestro modelo era
-abierto o cerrado, qué nivel de permiso le disteis a la herramienta de
-escritura y cuánto os costó. Quien haya rellenado la memoria las
-contesta sin pensar. Quien la haya copiado de otro grupo, no.</p>
-<p><strong>El material de estudio</strong> es el deck del Tema A, la
-minimemoria que habéis rellenado y el simulacro de veinte preguntas con
-sus soluciones que se publica con este enunciado
-(<code>caso_2_simulacro_test.md</code>). Ninguna pregunta del simulacro
-aparece en el test real.</p>
+<p><strong>Calcular no es analizar.</strong> Cada bloque lleva al lado
+una o dos frases que digan qué significa ese número para el cliente: una
+salida correcta que nadie lee se lleva la mitad de su parte y una
+lectura correcta con el gráfico feo se lleva la parte entera.
+<strong>Suspende el caso</strong>, con independencia del acabado visual,
+que una cifra no se pueda reproducir desde el CSV con el script
+entregado o que el dashboard no abra o sus controles no hagan nada.</p>
+<p><strong>Bonus, hasta +1 punto</strong>, sólo si lo obligatorio está
+completo: un simulador «qué pasaría si» sobre la rejilla precomputada
+(+0,5); intervalos por bootstrap con el número de remuestreos declarado
+(+0,25); comportamiento del modelo por subgrupos, que es por donde entra
+el Caso III (+0,25).</p>
+<h2 id="fechas-política-de-ia-y-ayudas">6. Fechas, política de IA y
+ayudas</h2>
+<p>Publicación en la semana 11 y entrega en Moodle al final de la 13,
+antes del Bloque III; el test, en la clase inmediatamente siguiente;
+notas una semana después. Los grupos son los del proyecto final, y como
+el test es individual el grupo no reparte esa nota. La IA está permitida
+y fomentada sin restricción para construir, que es de lo que va el caso,
+y prohibida en el test (regla C del Día 01): la responsabilidad de lo
+que el agente escriba es vuestra. Para dudas, el foro primero y el
+profesor después; <code>casos/ejemplo_panel/</code> resuelve las del §2
+y <code>casos/demo_caso_2/</code> enseña cómo se mide una sesión, que es
+lo que pregunta el test. Y si en vez de dictárselo todo a un agente
+preferís repartir el encargo, en la web hay <strong>una arquitectura
+posible de siete agentes</strong> con su flujo y sus órdenes listas para
+copiar: orientación, no obligación.</p>
 </body>
 </html>
