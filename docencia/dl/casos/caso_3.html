@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Caso práctico III — Auditoría de riesgo, sesgo y cumplimiento (AI Act)</title>
+  <title>Caso práctico III — El asistente que contesta con los documentos de vuestro sector</title>
   <style>
     html {
+      font-size: 10pt;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -166,272 +167,280 @@
       vertical-align: middle;
     }
   </style>
-  <style>
-    :root{--ink:#1A1A1A;--gold:#B8860B;--goldDeep:#8C6508;--goldPale:#F5EBD3;--mute:#8A8A8A;--rule:#D9C28A}
-    body{max-width:820px;margin:0 auto;padding:38px 26px 90px;
-      font-family:"Linux Libertine","Libertinus Serif","Palatino Linotype",Palatino,Georgia,serif;
-      color:var(--ink);line-height:1.55;font-size:17px}
-    h1{border-bottom:1.5px solid var(--gold);padding-bottom:8px;font-size:1.7em}
-    h2{color:var(--goldDeep);margin-top:1.6em}
-    h3{color:var(--ink)}
-    a{color:var(--goldDeep)}
-    code{background:var(--goldPale);padding:1px 5px;border-radius:4px;font-size:.92em}
-    pre{background:#faf6ea;border:1px solid var(--rule);border-radius:6px;padding:13px 15px;overflow:auto}
-    pre code{background:none;padding:0}
-    table{border-collapse:collapse;margin:1.2em 0}
-    th,td{border:1px solid var(--rule);padding:6px 11px}
-    th{background:var(--goldPale)}
-    blockquote{border-left:3px solid var(--gold);margin:1em 0;padding:.2em 1em;color:#444}
-    img{max-width:100%;height:auto}
-  </style>
+  
+  
+  
+  
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Caso práctico III — Auditoría de riesgo, sesgo y
-cumplimiento (AI Act)</h1>
+<h1 class="title">Caso práctico III — El asistente que contesta con los
+documentos de vuestro sector</h1>
 </header>
 <h1
-id="caso-práctico-iii-bloque-iii--regulación--auditoría-de-riesgo-sesgo-y-cumplimiento-ai-act-del-sistema-del-grupo">Caso
-práctico III (Bloque III — Regulación) — Auditoría de riesgo, sesgo y
-cumplimiento (AI Act) del sistema del grupo</h1>
+id="caso-práctico-iii-bloque-iii-rag-el-asistente-que-contesta-con-los-documentos-de-vuestro-sector">Caso
+práctico III (Bloque III — RAG) — El asistente que contesta con los
+documentos de vuestro sector</h1>
 <p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
 Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 · <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
-2026–2027. <strong>Bloque:</strong> III — Regulación y ética (Tema 7,
-semana 14). <strong>Modalidad:</strong> en grupo (los mismos grupos del
-proyecto final). <strong>Peso:</strong> caso práctico evaluado con la
-rúbrica común del curso (ver §8). <strong>Particularidad:</strong> este
-caso <strong>se entrega y se defiende junto al pitch del proyecto
-final</strong> (ver §11 y
-<code>proyecto_final_startup_ai_first.md</code>).</p>
-<hr />
-<h2 id="1-contexto-de-negocio">1. Contexto de negocio</h2>
-<p>Habéis construido (o vais a desplegar) un sistema de IA: un modelo
-del Bloque I, un asistente agéntico del Bloque II, o el sistema de
-vuestra startup. Antes de que toque a un cliente o a un empleado real,
-alguien tiene que responder a la pregunta que ya hace todo consejo de
-administración europeo: <strong>¿es esto legal y es esto
-responsable?</strong> El Reglamento (UE) 2024/1689 (AI Act) ya está en
-vigor y clasifica los sistemas por riesgo, con obligaciones duras para
-los de alto riesgo (crédito, empleo, educación, salud, justicia). Un
-sistema que en producción discrimine por género, edad u origen no es
-solo un problema ético: es una sanción regulatoria y un riesgo
-reputacional.</p>
-<p>La dirección os pide actuar como el <strong>equipo de cumplimiento y
-riesgo</strong> de vuestra propia startup: clasificar el sistema,
-documentar las obligaciones que le aplican, auditar el sesgo con datos,
-y proponer mitigaciones realistas, con sus costes. Este caso convierte
-el checklist del Día 18 en una auditoría completa y defendible frente a
-un regulador.</p>
-<h2 id="2-objetivo">2. Objetivo</h2>
-<p>Producir una <strong>auditoría de cumplimiento y ética</strong> del
-sistema del grupo que (i) lo clasifique correctamente bajo el AI Act con
-justificación por artículos, (ii) documente las obligaciones técnicas
-que le aplican, (iii) <strong>mida el sesgo empíricamente</strong> sobre
-datos, no en abstracto, y (iv) proponga mitigaciones con su coste
-(incluido el coste en rendimiento: ninguna técnica elimina el sesgo
-gratis).</p>
-<h2 id="3-alcance-mínimo">3. Alcance mínimo</h2>
-<ul>
-<li><strong>Clasificación de riesgo.</strong> Encuadrar el sistema en
-una de las cuatro categorías (prohibido / alto riesgo / riesgo limitado
-/ riesgo mínimo) y justificarlo. Si es de propósito general (GPAI),
-discutir el umbral de riesgo sistémico.</li>
-<li><strong>Mapa de obligaciones.</strong> Para la categoría que
-aplique, listar las obligaciones concretas con su base legal. Para alto
-riesgo, al menos cinco artículos relevantes (p. ej. gestión de riesgos
-Art. 9, gobernanza de datos Art. 10, transparencia/información Art. 13,
-supervisión humana Art. 14, exactitud y robustez Art. 15; transparencia
-de riesgo limitado Art. 50; prácticas prohibidas Art. 5).
-<strong>Verificad los artículos en la fuente</strong>, no de
-memoria.</li>
-<li><strong>Auditoría de sesgo con datos.</strong> Elegir al menos un
-atributo protegido (género, edad, origen), medir una métrica de equidad
-de grupo (paridad demográfica, igualdad de oportunidades / TPR por
-grupo, o calibración por grupo) sobre el modelo, e interpretar el
-resultado en el contexto del negocio.</li>
-<li><strong>Mitigaciones con coste.</strong> Proponer al menos dos
-mitigaciones (de datos, de entrenamiento o de post-proceso) y, para una
-de ellas, <strong>medir el trade-off</strong>: cuánto baja la disparidad
-y cuánto cuesta en métrica de negocio.</li>
-</ul>
-<h2 id="4-datos-y-herramientas-sugeridos">4. Datos y herramientas
-sugeridos</h2>
-<ul>
-<li><strong>Texto del Reglamento:</strong> EUR-Lex, Reglamento
-2024/1689. <a
-href="https://eur-lex.europa.eu">https://eur-lex.europa.eu</a> (fuente
-de verdad para los artículos).</li>
-<li><strong>Datos para la auditoría de sesgo</strong> (del repositorio
-validado): <strong>Telco Customer Churn</strong>, <strong>IBM HR
-Analytics Attrition</strong> (fairness por género/edad),
-<strong>LendingClub</strong> (scoring de crédito, el caso canónico de
-sesgo del Día 18). <a
-href="https://www.kaggle.com/datasets/blastchar/telco-customer-churn">https://www.kaggle.com/datasets/blastchar/telco-customer-churn</a>
-· <a
-href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset">https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset</a>
-· <a
-href="https://www.kaggle.com/datasets/wordsforthewise/lending-club">https://www.kaggle.com/datasets/wordsforthewise/lending-club</a></li>
-<li><strong>Librerías de equidad</strong> (opcional pero recomendado):
-<code>fairlearn</code> o <code>aif360</code> para las métricas y las
-mitigaciones.</li>
-</ul>
-<p>Si vuestro sistema no toca datos personales, auditad el riesgo que sí
-tenga (p. ej. veracidad, trazabilidad, dependencia de un proveedor) y
-razonad por qué el sesgo de grupo no aplica.</p>
-<h2 id="5-qué-se-entrega">5. Qué se entrega</h2>
-<p>Una carpeta comprimida <code>grupoNN_caso_3.zip</code> con:</p>
-<ol type="1">
-<li><strong>Informe de auditoría</strong>
-(<code>auditoria_caso_3.pdf</code>, máx. 6 páginas): clasificación de
-riesgo razonada, mapa de obligaciones con artículos, resultados de la
-auditoría de sesgo (con la métrica y su gráfico), tabla de riesgos y
-mitigaciones, y el trade-off medido. Incluye la tabla del §7.</li>
-<li><strong>Notebook de la auditoría de sesgo</strong>
-(<code>caso_3.ipynb</code> ejecutado): cómputo de la métrica de equidad
-y de la mitigación, reproducible y con semillas.</li>
-<li><strong>Una diapositiva de cumplimiento</strong> integrada en el
-pitch final (ver §11): "este es nuestro riesgo, esta es nuestra
-clasificación, así lo mitigamos".</li>
-<li><strong>Declaración de IA</strong>
-(<code>DECLARACION_IA.md</code>).</li>
-</ol>
-<h2 id="6-tareas">6. Tareas</h2>
-<ul>
-<li><strong>6.1 — Clasificación (negocio + regulación).</strong>
-Encuadre y justificación por artículos. Verificados en EUR-Lex.</li>
-<li><strong>6.2 — Mapa de obligaciones (regulación).</strong> Cinco
-artículos con qué exige cada uno y cómo lo cumple (o no aún) vuestro
-sistema.</li>
-<li><strong>6.3 — Auditoría de sesgo (técnica).</strong> Métrica de
-equidad de grupo sobre un atributo protegido, con su
-interpretación.</li>
-<li><strong>6.4 — Mitigación y trade-off (técnica + negocio).</strong>
-Dos mitigaciones; para una, el coste medido en disparidad vs. métrica de
-negocio.</li>
-<li><strong>6.5 — Defensa SIN IA ante el "regulador" (condición de
-aprobación).</strong> §9.</li>
-</ul>
-<h2 id="7-tabla-concepto--aplicación--entradas--salidas--kpi">7. Tabla
-Concepto → Aplicación → Entradas → Salidas → KPI</h2>
+2026–2027. <strong>Bloque:</strong> III — Sistemas sobre el agente (Tema
+B, semanas 13–14). <strong>Modalidad: entrega en grupo, defensa junto al
+pitch final.</strong></p>
+<h2 id="qué-se-construye">1. Qué se construye</h2>
+<p>Un asistente que responde preguntas de un empleado o de un cliente
+<strong>leyendo los documentos de vuestro sector</strong>, con la cita
+del fragmento del que sale cada cifra. El corpus lo montáis vosotros con
+documentos públicos y reales: normativa, memorias anuales, pliegos,
+manuales de producto, tarifas, condiciones generales. Este RAG es el que
+entra en el prototipo del proyecto final, así que montadlo sobre el
+sector que vais a defender en el pitch.</p>
+<p>La práctica del Tema B era un RAG de juguete: convenio ficticio,
+TF-IDF y vectores que cabían en pantalla. Aquí el corpus es real, el
+recuperador es denso y el sistema tiene que sobrevivir a preguntas que
+nadie redactó pensando en él.</p>
+<p>Tres exigencias. Toda respuesta <strong>cita</strong> el fragmento
+que la sostiene, con su documento y su fecha. El sistema <strong>sabe
+callarse</strong>: ante una pregunta cuya respuesta no está en el
+corpus, contesta que no está, y eso se mide. Y toda mejora que afirméis
+va con <strong>su número antes y después</strong>, sobre el mismo
+conjunto de evaluación. Nada de esto pide clave de API ni GPU.</p>
+<h2 id="el-corpus-y-el-conjunto-de-evaluación">2. El corpus y el
+conjunto de evaluación</h2>
+<p>Construir el conjunto de evaluación es la mitad del trabajo y la
+mitad de la nota: un RAG sin preguntas anotadas no se puede medir, y lo
+que no se mide no se vende.</p>
 <table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 19%" />
+<col style="width: 58%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th>Concepto</th>
-<th>Aplicación</th>
-<th>Entradas</th>
-<th>Salidas</th>
-<th>KPI</th>
+<th style="text-align: left;">Pieza</th>
+<th style="text-align: left;">Mínimo</th>
+<th style="text-align: left;">Qué se comprueba</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Clasificación AI Act</td>
-<td>Encuadre legal del sistema</td>
-<td>Descripción del sistema + Reglamento</td>
-<td>Categoría + artículos</td>
-<td>Nº de obligaciones cubiertas / aplicables</td>
+<td style="text-align: left;"><strong>Corpus</strong></td>
+<td style="text-align: left;">20 documentos, 150 fragmentos tras el
+troceado</td>
+<td style="text-align: left;"><code>manifiesto.csv</code> con título,
+URL, fecha de descarga y licencia de cada documento. Sin datos
+personales reales.</td>
 </tr>
 <tr class="even">
-<td>Auditoría de sesgo</td>
-<td>Riesgo de discriminación</td>
-<td>Predicciones + atributo protegido</td>
-<td>Métrica de equidad por grupo</td>
-<td>Disparidad (p. ej. Δ TPR entre grupos)</td>
+<td style="text-align: left;"><strong>Preguntas
+respondibles</strong></td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">Redactadas como las escribiría un usuario,
+no como las escribiría el documento. Cada una con su <strong>fragmento
+de oro</strong> anotado.</td>
 </tr>
 <tr class="odd">
-<td>Mitigación</td>
-<td>Reducción del riesgo</td>
-<td>Modelo + técnica de equidad</td>
-<td>Modelo mitigado</td>
-<td>Δ disparidad vs. Δ métrica de negocio</td>
+<td style="text-align: left;"><strong>De esas, difíciles</strong></td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Coloquiales, con sinónimo del término del
+documento, o que necesitan <strong>dos</strong> fragmentos.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Preguntas sin
+respuesta</strong></td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Verosímiles y del mismo dominio, pero su
+respuesta no está en el corpus. El sistema debe rechazarlas.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="8-rúbrica-común-del-curso-10-pts--escala-010">8. Rúbrica común
-del curso (10 pts → escala 0–10)</h2>
+<h2 id="qué-se-mide">3. Qué se mide</h2>
+<p>Cuatro números, los cuatro sobre el mismo conjunto y con la semilla
+escrita.
+<strong>Acierto@<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math></strong>
+para
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>3</mn><mo>,</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">k \in \{1,3,5,10\}</annotation></semantics></math>:
+con qué frecuencia el fragmento de oro está entre los
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+recuperados. <strong>Fidelidad</strong>: de las respuestas en las que el
+fragmento de oro <em>sí</em> se recuperó, cuántas lo usan de verdad en
+lugar de inventar o de coger la cifra del fragmento de al lado.
+<strong>Tasa de abstención</strong> sobre las cinco preguntas sin
+respuesta. Y el <strong>coste</strong>, separado en lo que se paga una
+vez al indexar y lo que se paga en cada consulta.</p>
+<p>Cada fallo se clasifica en uno de los cuatro sitios donde un RAG se
+rompe: <strong>no indexado</strong> (el troceado partió el dato),
+<strong>no recuperado</strong> (el encoder no lo ve), <strong>recuperado
+pero enterrado</strong> (estaba en el puesto siete y
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+era tres) o <strong>recuperado y mal respondido</strong> (el generador
+lo tuvo delante y contestó otra cosa). Cada uno se arregla en un sitio
+distinto, y confundirlos es gastar dinero donde no está el problema.</p>
+<h2 id="el-sistema-de-referencia-demo_rapida01_rag.ipynb">4. El sistema
+de referencia: <code>demo_rapida/01_rag.ipynb</code></h2>
+<p>El cuaderno de clase, sobre la normativa inventada del Banco Iberia
+(6 documentos, 16 fragmentos), tiene los cuatro números medidos y sirve
+de listón. Con <code>intfloat/multilingual-e5-small</code> da acierto@1
+del 83 % y acierto@3 del 100 %; cambiando a
+<code>paraphrase-multilingual-MiniLM-L12-v2</code>, de igual tamaño de
+vector y velocidad, el acierto@1 cae al 17 % y el <span class="citation"
+data-cites="3">@3</span> se queda en el 100 %: <strong>cambiar de
+encoder es la optimización más barata de un RAG</strong>. Sin contexto,
+el modelo se inventa una comisión de 0,50 € por sacar dinero en un
+cajero ajeno; con los fragmentos delante lee los 1,95 € del catálogo. La
+pregunta por los fondos indexados recupera bien el fragmento bueno y
+contesta con los 350 € de la tasación de otro documento, que es el fallo
+de fidelidad en estado puro. Y el umbral de similitud, la defensa que
+todo el mundo propone primero contra las preguntas sin respuesta,
+<strong>no separa</strong>: las respondibles puntúan entre 0,834 y 0,893
+y una de las que no se puede contestar puntúa 0,880. Tendréis que
+abstener con otra cosa y explicar con cuál.</p>
+<h2 id="qué-se-entrega">5. Qué se entrega</h2>
+<p>Una carpeta comprimida <code>grupoNN_caso_3.zip</code>, por debajo de
+20 MB, con exactamente esto. El corpus va dentro si cabe; si no cabe, va
+el manifiesto y el script que lo descarga.</p>
 <table>
+<colgroup>
+<col style="width: 3%" />
+<col style="width: 25%" />
+<col style="width: 71%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th>Dimensión</th>
-<th>Peso</th>
-<th>Qué se valora</th>
+<th style="text-align: left;">#</th>
+<th style="text-align: left;">Fichero</th>
+<th style="text-align: left;">Qué es</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Calidad técnica</td>
-<td>30 %</td>
-<td>Métrica de equidad correcta, mitigación medida, código reproducible,
-artículos verificados.</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;"><code>rag/</code></td>
+<td style="text-align: left;">El sistema entero reproducible: troceado,
+índice, recuperación, generación con cita y la regla de abstención.
+Semilla fijada y un <code>README.md</code> de arranque de cinco
+líneas.</td>
 </tr>
 <tr class="even">
-<td>Relevancia de negocio</td>
-<td>25 %</td>
-<td>Clasificación de riesgo bien razonada, trade-off entendido como
-decisión de negocio.</td>
+<td style="text-align: left;">2</td>
+<td
+style="text-align: left;"><code>evaluacion/preguntas.json</code></td>
+<td style="text-align: left;">Las 25 preguntas del §2 con su fragmento
+de oro anotado y la marca de cuáles no tienen respuesta.</td>
 </tr>
 <tr class="odd">
-<td>Comunicación</td>
-<td>20 %</td>
-<td>Informe claro, gráfico de equidad legible, narrativa de riesgo,
-tiempo respetado.</td>
-</tr>
-<tr class="even">
-<td>Defensa oral</td>
-<td>15 %</td>
-<td>Respuestas correctas ante el "regulador", dominio de la
-auditoría.</td>
-</tr>
-<tr class="odd">
-<td>Trazabilidad de IA</td>
-<td>10 %</td>
-<td>Herramientas declaradas, prompts conservados cuando proceda.</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><code>evaluacion/resultados.md</code></td>
+<td style="text-align: left;">Dos páginas: la tabla de
+acierto@<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+fidelidad, abstención y coste; la clasificación de <strong>cada</strong>
+fallo en uno de los cuatro sitios; y los <strong>dos arreglos</strong>
+que probasteis, con el antes y el después de cada uno y la comprobación
+de que no rompieron nada que ya iba bien.</td>
 </tr>
 </tbody>
 </table>
-<p>Esta rúbrica es idéntica en los tres casos y en el proyecto
-final.</p>
-<h2 id="9-sección-sin-ia-obligatoria-condición-de-aprobación">9. Sección
-sin IA (obligatoria, condición de aprobación)</h2>
-<p>El <strong>§6.5</strong> es una <strong>defensa oral en clase, sin
-IA</strong>, en la que el profesor ejerce de regulador y el grupo
-responde, con una página de notas de autoría propia, a:</p>
-<ol type="1">
-<li><strong>Clasificad vuestro sistema en voz alta y
-justificadlo.</strong> ¿Por qué esa categoría y no la superior? Citad el
-artículo.</li>
-<li><strong>El sesgo que medisteis.</strong> Explicad qué significa la
-disparidad encontrada para una persona real afectada por una decisión
-del sistema.</li>
-<li><strong>El coste de la equidad.</strong> "Ninguna técnica elimina el
-sesgo sin coste." ¿Qué coste aceptasteis y por qué es defendible ante un
-cliente y ante un regulador?</li>
-</ol>
-<p>Texto generado por IA o incapacidad de defenderlo sin IA = cero en el
-caso (regla C, Día 01).</p>
-<h2 id="10-política-de-ia">10. Política de IA</h2>
-<p>Permitida y fomentada para el código de la auditoría y la redacción
-del informe, <strong>con declaración de trazabilidad</strong> y
-<strong>con los artículos del Reglamento verificados en EUR-Lex, no en
-el LLM</strong> (los LLMs alucinan números de artículo). Prohibida en la
-defensa §9.</p>
-<h2 id="11-fechas-y-articulación-con-el-proyecto-final">11. Fechas y
-articulación con el proyecto final</h2>
-<ul>
-<li><strong>Publicación:</strong> semana 13.</li>
-<li><strong>Entrega del informe:</strong> semana 14, junto a la entrega
-del proyecto final.</li>
-<li><strong>Defensa:</strong> <strong>el mismo día del pitch del
-proyecto</strong> (hito "Caso III + pitch" del calendario del Día 01).
-La diapositiva de cumplimiento (§5.3) va dentro del pitch; la defensa
-sin IA (§9) es la ronda de preguntas del "regulador".</li>
-<li><strong>Feedback:</strong> con la nota del proyecto final.</li>
-</ul>
-<h2 id="12-ayudas">12. Ayudas</h2>
-<p>Foro primero, profesor después. El Día 18 (checklist AI Act,
-formalización del sesgo, caso de scoring de crédito) es el andamiaje
-directo. Las 4 horas de mentorización del proyecto cubren también este
-caso.</p>
+<p>No hay memoria, ni informe, ni prompts que entregar. Lo que sí hay es
+un sistema que tiene que arrancar: en la defensa se os puede pedir que
+lo abráis y le hagáis una pregunta nueva.</p>
+<h2 id="rúbrica">6. Rúbrica</h2>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 6%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Componente</th>
+<th style="text-align: left;">Peso</th>
+<th style="text-align: left;">Qué se valora</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Corpus y conjunto de evaluación</td>
+<td style="text-align: left;">25 %</td>
+<td style="text-align: left;">Documentos reales con manifiesto completo;
+20 preguntas con oro anotado; las 5 difíciles, difíciles de verdad; las
+5 sin respuesta, verosímiles.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Medida</td>
+<td style="text-align: left;">25 %</td>
+<td style="text-align: left;">Los cuatro números, bien calculados y
+sobre el conjunto de prueba. Barrido en
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+con la tabla completa.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Diagnóstico</td>
+<td style="text-align: left;">20 %</td>
+<td style="text-align: left;">Cada fallo en su casilla de las cuatro,
+justificado mirando lo que el sistema sí recuperó.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Arreglo medido</td>
+<td style="text-align: left;">20 %</td>
+<td style="text-align: left;">Dos intervenciones con antes y después y
+comprobación de regresión.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Abstención y cita</td>
+<td style="text-align: left;">10 %</td>
+<td style="text-align: left;">Toda respuesta citada; regla de abstención
+que funcione y que no sea un umbral de similitud a secas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Medir no es arreglar, y afirmar no es medir.</strong> Decir
+que algo «mejora» sin número cuesta
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">-1</annotation></semantics></math>
+por caso. <strong>Suspende el caso</strong> que una cifra de
+<code>resultados.md</code> no se pueda reproducir con el código
+entregado, que el sistema conteste sin citar, o que un arreglo se
+reporte sin comprobar si rompió alguna de las preguntas que antes
+acertaba.</p>
+<p><strong>Bonus, hasta
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">+1</annotation></semantics></math>
+punto</strong>, sólo si lo obligatorio está completo: comparar dos
+encoders sobre vuestro corpus con la tabla de los dos
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">+0{,}5</annotation></semantics></math>);
+un reordenador y la medida de si mueve algo o no
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">+0{,}25</annotation></semantics></math>);
+troceado por secciones del documento en vez de por ventana fija, con el
+acierto@1 de los dos
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">+0{,}25</annotation></semantics></math>).</p>
+<h2 id="la-defensa-sin-ia">7. La defensa sin IA</h2>
+<p>En la ronda de preguntas del pitch, ordenadores cerrados y sin
+asistente, con una página de notas de autoría propia. Cualquier miembro
+del grupo responde a: <strong>(i)</strong> enseñad una pregunta que
+falla y decid en cuál de los cuatro sitios falla y por qué;
+<strong>(ii)</strong> justificad el
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+que elegisteis con vuestra propia tabla, y decid qué ganáis y qué pagáis
+al subirlo; <strong>(iii)</strong> explicad qué hace vuestro sistema
+cuando la respuesta no está en el corpus, y por qué un umbral de
+similitud no bastaba. Incapacidad de defenderlo sin IA = cero en el caso
+(regla C, Día 01).</p>
+<h2 id="fechas-política-de-ia-y-ayudas">8. Fechas, política de IA y
+ayudas</h2>
+<p>Publicación en la semana 13 y entrega en Moodle en la semana 14,
+<strong>antes del pitch</strong>; la defensa es la ronda de preguntas
+del pitch, el mismo día; notas con las del proyecto final. Los grupos
+son los del proyecto final, y el RAG que entreguéis aquí es el que se
+espera ver en el prototipo del §2 de la memoria. La IA está permitida y
+fomentada para construirlo y prohibida en la defensa del §7: la
+responsabilidad de lo que el agente escriba es vuestra, y las cifras de
+<code>resultados.md</code> las firmáis vosotros. Para dudas, el foro
+primero y el profesor después. El andamiaje está entero en
+<code>demo_rapida/01_rag.ipynb</code>, que trae el troceado, el encoder,
+el índice y la abstención resueltos sobre el Banco Iberia, y en
+<code>nuevo_material/tema_B_sistemas/practica/</code>, que trae el
+barrido en
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+y la clasificación de los cuatro fallos. Copiadlos y cambiadles el
+corpus.</p>
 </body>
 </html>
