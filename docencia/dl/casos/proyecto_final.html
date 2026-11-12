@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Práctica final — Plan de negocio de una startup AI-first</title>
+  <title>Práctica final — Una web app con agentes y su plan de negocio</title>
   <style>
     html {
       font-size: 10pt;
@@ -174,180 +174,150 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Práctica final — Plan de negocio de una startup
-AI-first</h1>
+<h1 class="title">Práctica final — Una web app con agentes y su plan de
+negocio</h1>
 </header>
-<h1 id="práctica-final-plan-de-negocio-de-una-startup-ai-first">Práctica
-final — Plan de negocio de una startup AI-first</h1>
+<h1
+id="práctica-final-una-web-app-con-agentes-y-su-plan-de-negocio">Práctica
+final — Una web app con agentes y su plan de negocio</h1>
 <p><strong>Asignatura:</strong> Deep Learning para Business Analytics —
 Comillas (ICADE). <strong>Profesor:</strong> Eduardo C. Garrido-Merchán
 · <code>ecgarrido@comillas.edu</code>. <strong>Curso:</strong>
 2026–2027. <strong>Modalidad: en grupo.</strong>
 <strong>Obligatoria:</strong> sin ella aprobada con un 5, la asignatura
-no se supera (§7).</p>
+no se supera (§6).</p>
 <h2 id="qué-se-entrega">1. Qué se entrega</h2>
-<p>Un <strong>plan de negocio</strong> de una startup cuyo producto
-necesita IA en el núcleo, con un <strong>prototipo que arranca</strong>
-y un <strong>pitch de 15 minutos</strong> ante inversores. El plan se
-escribe para alguien que va a poner dinero: cuánto cuesta servir a un
-usuario, a qué precio se le vende, a partir de cuántos usuarios la
-cuenta sale, y qué pasa el día que el proveedor del modelo suba la
-tarifa. Los tres casos del curso son los tres ensayos de esto: el Caso I
-compara un modelo contra un baseline honesto, el Caso II dirige un
-agente y mide la factura, y el Caso III monta el RAG del prototipo.</p>
+<p>Una <strong>web app con agentes detrás</strong> que arranca y
+funciona, su <strong>plan de negocio</strong> y un <strong>pitch de 15
+minutos</strong> ante inversores. La app resuelve el problema de alguien
+concreto y el agente es la pieza que hace ese trabajo. El plan se
+escribe para quien va a poner dinero: cuántos tokens gasta un usuario al
+mes, a qué precio se le vende, cuánto cuesta el modelo y el servidor que
+lo sirve, y en cuántos meses se recupera lo invertido.</p>
 <p>Las cifras técnicas van <strong>medidas sobre vuestro propio
-sistema</strong>: el coste por consulta sale de la calculadora del
-bloque con los tokens que el prototipo gasta de verdad, y el acierto del
-recuperador, de vuestro conjunto de evaluación. Lo que inventéis de
-negocio (un precio, una conversión, un tamaño de mercado) va
+sistema</strong>, con los tokens que gasta de verdad. Lo que inventéis
+de negocio (un precio, una conversión, un tamaño de mercado) va
 <strong>etiquetado como estimación</strong>, con su supuesto al
 lado.</p>
-<h2 id="las-tres-piezas-técnicas-del-prototipo">2. Las tres piezas
-técnicas del prototipo</h2>
+<h2 id="lo-obligatorio">2. Lo obligatorio</h2>
 <table>
 <colgroup>
-<col style="width: 14%" />
+<col style="width: 17%" />
 <col style="width: 48%" />
-<col style="width: 36%" />
+<col style="width: 34%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Pieza</th>
 <th style="text-align: left;">Qué tiene que existir y funcionar</th>
-<th style="text-align: left;">Qué se mide y se reporta</th>
+<th style="text-align: left;">Qué se documenta</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>RAG</strong></td>
-<td style="text-align: left;">El sistema del Caso III sobre el corpus de
-vuestro sector, con cita y con abstención.</td>
-<td
-style="text-align: left;">Acierto@<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
-fidelidad, abstención y coste por consulta, con el
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-elegido justificado.</td>
+<td style="text-align: left;"><strong>La app</strong></td>
+<td style="text-align: left;">Una web app que arranca en el portátil del
+profesor, con su <code>README.md</code>, y en la que un agente decide y
+actúa sobre el problema del usuario.</td>
+<td style="text-align: left;">Qué hace el agente que no haría un
+formulario.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Conectores (MCP)</strong></td>
-<td style="text-align: left;"><strong>Un servidor MCP con dos
-herramientas</strong> que el agente llame de verdad: una que lee de un
-sistema vuestro y otra que escribe o ejecuta, con barandilla contra
-inyección de prompt.</td>
+<td style="text-align: left;"><strong>MCP a tres
+plataformas</strong></td>
+<td style="text-align: left;"><strong>Al menos tres</strong> plataformas
+conectadas por MCP que el agente llame de verdad, con lectura y
+escritura, y con barandilla contra inyección de prompt.</td>
 <td style="text-align: left;">La traza de una sesión: qué herramienta,
-con qué permiso, cuántos tokens costó la ida y la vuelta, y qué pasa si
-la herramienta falla.</td>
+con qué permiso, cuántos tokens costó la ida y la vuelta y qué pasa
+cuando una falla.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>SFT</strong></td>
-<td style="text-align: left;">La <strong>decisión</strong>, resuelta con
-el árbol prompt/RAG/SFT del Tema B: qué falla el prompt, por qué RAG no
-lo arregla y si compensa pagar un fine-tune.</td>
-<td style="text-align: left;">El coste del fine-tune (datos, cómputo,
-mantenimiento), qué tendría que ser cierto para que saliera a cuenta y
-con qué medida se comprueba.</td>
-</tr>
-</tbody>
-</table>
-<p>De SFT se evalúa la decisión y su aritmética; <strong>entrenar de
-verdad es bonus</strong> (§6), y <code>demo_rapida/03_sft.ipynb</code>
-lo hace con 160 ejemplos en seis minutos de CPU. El andamiaje de los
-conectores está en <code>demo_rapida/mcp_demo/</code>, con un servidor
-MCP de 200 líneas sin dependencias.</p>
-<h2 id="qué-lleva-el-plan-de-negocio">3. Qué lleva el plan de
-negocio</h2>
-<p>La memoria (<code>memoria.pdf</code>, 8–12 páginas) es el plan, en
-este orden: el <strong>problema</strong> y de quién es; la
-<strong>propuesta de valor</strong>, con el antes y el después del
-cliente cuantificado; el <strong>mercado y la competencia</strong>,
-incluido qué pasa si el modelo generalista hace esto gratis dentro de un
-año; la <strong>arquitectura</strong>, con el diagrama de las tres
-piezas del §2; el <strong>modelo de ingresos</strong> y el precio; los
-<strong>costes</strong>, con las seis partidas del Tema B, el coste por
-usuario y el margen; el <strong>punto de equilibrio</strong> en usuarios
-y en meses; los <strong>riesgos</strong> técnicos y regulatorios —la
-clasificación AI Act con su artículo, un riesgo medido sobre datos y la
-mitigación con su coste—; y el <strong>roadmap</strong> con hitos
-medibles.</p>
-<h2 id="las-diez-preguntas-sobre-el-modelo">4. Las diez preguntas sobre
-el modelo</h2>
-<p>La <strong>ficha del modelo</strong>, una página de la memoria,
-responde a estas diez, que son también las de la defensa sin IA del §7.
-La 5 y la 6 piden números propios; la 7, un segundo modelo probado.</p>
-<ol type="1">
-<li><strong>Cuál.</strong> Nombre y versión exactos del modelo que lleva
-dentro el producto. Si hay más de uno, cuál hace qué.</li>
-<li><strong>Abierto o cerrado</strong>, con qué licencia, y qué os
-permite y qué os prohíbe hacer con vuestro producto.</li>
-<li><strong>Cuántos parámetros</strong> tiene y <strong>en qué
-precisión</strong> corre; si está cuantizado, a cuántos bits y qué
-perdéis.</li>
-<li><strong>Qué ventana de contexto</strong> tiene y cuánta gastáis de
-media, repartida entre instrucciones, fragmentos del RAG e
-historial.</li>
-<li><strong>Cuánto cuesta una consulta</strong>: tokens de entrada, de
-salida, fracción cacheada y el total en euros.</li>
-<li><strong>Cuánto costaría servirlo vosotros</strong>: VRAM, GPU, coste
-mensual y <strong>a partir de cuántas consultas al mes</strong> compensa
-frente a la API.</li>
-<li><strong>Qué modelo probasteis y descartasteis</strong>, y con qué
-medida sobre qué conjunto lo descartasteis.</li>
-<li><strong>Qué pasa si mañana</strong> sube el precio un 50 % o retiran
-el modelo: cuánto tardáis en cambiarlo y qué se rompe.</li>
-<li><strong>Qué hace el sistema cuando el modelo no sabe</strong>: cuál
-es la regla de abstención y qué ve el usuario.</li>
-<li><strong>Qué dato del cliente ve el modelo</strong>, adónde viaja,
-quién lo guarda y durante cuánto tiempo.</li>
-</ol>
-<h2 id="qué-se-entrega-y-cuándo">5. Qué se entrega y cuándo</h2>
-<table>
-<colgroup>
-<col style="width: 3%" />
-<col style="width: 18%" />
-<col style="width: 78%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">#</th>
-<th style="text-align: left;">Entregable</th>
-<th style="text-align: left;">Qué es</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">1</td>
-<td style="text-align: left;"><code>memoria.pdf</code></td>
-<td style="text-align: left;">8–12 páginas: el plan del §3 más la ficha
-del modelo del §4. Declaración de trazabilidad de IA al principio.</td>
+<td style="text-align: left;"><strong>El diseño
+multi-agente</strong></td>
+<td style="text-align: left;">El reparto con el que lo habéis
+implementado: cuántos agentes, qué hace cada uno y quién llama a
+quién.</td>
+<td style="text-align: left;">El diagrama, el <strong>patrón</strong>
+elegido (orquestador con trabajadores, programador y verificadores,
+agente autónomo), <strong>qué agentes comparten contexto y cuáles
+no</strong>, y por qué ese reparto y no otro.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">2</td>
-<td style="text-align: left;"><code>prototipo/</code></td>
-<td style="text-align: left;">Las tres piezas del §2 corriendo sobre un
-caso reducido, con semillas fijadas y un <code>README.md</code> de
-arranque. Tiene que arrancar en el portátil del profesor.</td>
+<td style="text-align: left;"><strong>Modelo, esfuerzo y
+arnés</strong></td>
+<td style="text-align: left;">El modelo que lleva dentro el producto,
+con nombre y versión; si hay varios, cuál hace qué.</td>
+<td style="text-align: left;">Modelo y versión, <strong>esfuerzo de
+razonamiento</strong> por tipo de tarea y <strong>arnés</strong> desde
+el que corre (Claude Code, un SDK de agentes, la API cruda), con el
+porqué de cada elección.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">3</td>
-<td style="text-align: left;"><code>slides.pdf</code></td>
-<td style="text-align: left;">El pitch de 15 minutos, con la diapositiva
-de costes y la de cumplimiento.</td>
+<td style="text-align: left;"><strong>Lo que os ha costado
+construirlo</strong></td>
+<td style="text-align: left;">El recuento de tokens de las sesiones con
+las que habéis levantado la app, leído del
+<strong><code>usage</code></strong> de vuestra herramienta y no estimado
+a ojo.</td>
+<td style="text-align: left;">Tokens de entrada, de salida y cacheados,
+su coste en euros, y cómo entra esa cifra en la inversión inicial del
+§4.</td>
 </tr>
 </tbody>
 </table>
-<p>Entrega en Moodle en la <strong>semana 14, antes del pitch</strong>;
-pitch y defensa en la sesión del Día 18; nota tras la última sesión de
-defensas. Los grupos se cierran en las <strong>semanas 1–2</strong> (3–4
-personas) y son los mismos de los Casos II y III. El tema sale del banco
-de proyectos abiertos (30–40 ideas ancladas en empresas reales, máximo 2
-grupos por idea) o lo proponéis vosotros. Hay <strong>4 horas de
-mentorización</strong>; llegad a cada una con una pregunta concreta.</p>
-<h2 id="rúbrica">6. Rúbrica</h2>
+<h2 id="contenido-valorable-para-sacar-más-nota">3. Contenido valorable
+para sacar más nota</h2>
+<p>Un <strong>RAG</strong> sobre el corpus de vuestro sector, con cita y
+con abstención, medido con acierto@3 sobre vuestras preguntas anotadas,
+es lo que más puntúa de esta lista. Un <strong>ajuste del
+modelo</strong> con una técnica de post-entrenamiento que no hemos dado
+en clase (LoRA, RLHF) pide los datos, el método, la medida antes y
+después sobre el mismo conjunto, y <strong>saber defenderla en la ronda
+de preguntas del §6</strong>. Una <strong>tarea en bucle</strong> pide
+qué se repite, cada cuánto, con qué condición de parada, qué cuesta cada
+vuelta y qué la detiene si se desboca. Una <strong>API externa</strong>
+pide cuál es, qué devuelve, qué cobra y qué hace la app el día que se
+cae. Un <strong>análisis de datos</strong> de verdad dentro del producto
+pide el dato, el método y la decisión que cambia.</p>
+<h2 id="el-plan-de-negocio">4. El plan de negocio</h2>
+<p>La memoria (<code>memoria.pdf</code>, 8–12 páginas) va en este orden:
+el <strong>problema</strong> y de quién es; el <strong>mercado, la
+competencia y vuestro posicionamiento</strong>, incluido qué pasa si el
+modelo generalista hace esto gratis dentro de un año, y aquí puntúa
+apoyarse en <strong>frameworks de estrategia</strong> (las cinco fuerzas
+de Porter, la matriz BCG, la cadena de valor, un DAFO), que se pueblan
+saliendo a mirar el mercado real con ayuda de la IA; la
+<strong>arquitectura</strong>, con el diagrama del §2; el
+<strong>consumo por usuario</strong>, es decir tokens de entrada y de
+salida por sesión, sesiones al mes y fracción cacheada, hasta el coste
+por usuario y mes; el <strong>precio</strong> y el modelo de ingresos,
+con el margen que deja; el <strong>modelo financiero</strong>, con el
+coste del modelo cerrado por API o, si servís uno abierto, la factura
+del servidor —GPU, VRAM, horas y euros al mes—, los costes fijos, el
+<strong>punto de equilibrio</strong> en usuarios y en meses y el
+<strong>ROI</strong>: cuánto dinero hay que poner antes del primer euro
+de ingreso —con el gasto de construcción del §2 dentro—, en cuántos
+meses se recupera y qué le queda al inversor a los tres años; los
+<strong>riesgos</strong>, con la clasificación AI Act y su artículo y
+con qué hacéis el día que el proveedor suba la tarifa un 50 % o retire
+el modelo; y el <strong>roadmap</strong> con hitos medibles.</p>
+<h2 id="entregables-fechas-y-rúbrica">5. Entregables, fechas y
+rúbrica</h2>
+<p>Se entregan <code>app/</code> (con semillas fijadas y arranque
+documentado), <code>memoria.pdf</code> y <code>slides.pdf</code> —el
+pitch, con la diapositiva de costes y la de cumplimiento—. La
+<strong>fecha de entrega es flexible</strong> y se fija en clase con
+margen de sobra, y además tendréis <strong>tiempo de clase para trabajar
+el proyecto</strong> más <strong>4 horas de mentorización</strong>;
+llegad a cada una con una pregunta concreta. Los grupos se cierran en
+las semanas 1–2 (3–4 personas) y son los mismos de los Casos II y III.
+El tema sale del banco de proyectos o lo proponéis vosotros.</p>
 <table>
 <colgroup>
-<col style="width: 29%" />
+<col style="width: 30%" />
 <col style="width: 6%" />
-<col style="width: 63%" />
+<col style="width: 62%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -358,24 +328,11 @@ mentorización</strong>; llegad a cada una con una pregunta concreta.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Plan de negocio</td>
-<td style="text-align: left;">30 %</td>
-<td style="text-align: left;">Problema real, precio y márgenes
-defendibles, punto de equilibrio calculado, riesgos y roadmap con hitos
-medibles.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Las tres piezas técnicas</td>
-<td style="text-align: left;">30 %</td>
-<td style="text-align: left;">RAG medido (12), conector MCP que se llama
-de verdad y con barandilla (10), decisión de SFT con su aritmética
-(8).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Ficha del modelo</td>
-<td style="text-align: left;">15 %</td>
-<td style="text-align: left;">Las diez preguntas del §4 contestadas con
-números propios.</td>
+<td style="text-align: left;">Defensa oral</td>
+<td style="text-align: left;">40 %</td>
+<td style="text-align: left;">Respuestas correctas en la ronda de
+preguntas del §6 y dominio de todo lo entregado, pieza por pieza. Es el
+componente que más pesa, y el que decide la nota.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Pitch</td>
@@ -384,49 +341,73 @@ números propios.</td>
 slides y diagramas legibles.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Defensa oral</td>
+<td style="text-align: left;">Arquitectura de agentes</td>
+<td style="text-align: left;">15 %</td>
+<td style="text-align: left;">Las tres plataformas MCP llamadas de
+verdad y con barandilla (7), el diseño multi-agente y su patrón
+justificado (5), la ficha de modelo, esfuerzo, arnés y
+<code>usage</code> (3).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mercado, estrategia y modelo de
+negocio</td>
+<td style="text-align: left;">12 %</td>
+<td style="text-align: left;">Problema real, competencia y
+posicionamiento trabajados con frameworks de estrategia, precio y
+márgenes defendibles, riesgos y roadmap con hitos medibles.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Producto, diseño y originalidad</td>
 <td style="text-align: left;">10 %</td>
-<td style="text-align: left;">Respuestas correctas en la ronda de
-preguntas, dominio de todo lo entregado.</td>
+<td style="text-align: left;">La app arranca y resuelve el problema, la
+interfaz está cuidada, la idea no es la obvia y el agente hace trabajo
+que se nota.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Modelo financiero</td>
+<td style="text-align: left;">8 %</td>
+<td style="text-align: left;">Tokens por usuario medidos sobre la app,
+coste del modelo o del servidor, punto de equilibrio y ROI a tres
+años.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Bonus, hasta
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">+1</annotation></semantics></math>
-punto</strong>, sólo si lo obligatorio está completo: un SFT entrenado
-de verdad con su antes y después medidos
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">+0{,}5</annotation></semantics></math>);
-un segundo conector MCP contra un sistema externo real
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">+0{,}25</annotation></semantics></math>);
-el coste medido en una semana de uso real con usuarios de fuera del
-grupo
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>25</mn></mrow><annotation encoding="application/x-tex">+0{,}25</annotation></semantics></math>).</p>
-<p><strong>Suspende la práctica</strong> que el prototipo no arranque,
-que una cifra de la memoria no se pueda reproducir con lo entregado, o
-que el plan declare como medido algo que es una estimación.</p>
-<h2 id="la-defensa-sin-ia-y-la-obligatoriedad">7. La defensa sin IA y la
-obligatoriedad</h2>
+punto</strong>, sólo si lo obligatorio está completo: el RAG medido
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">+0{,}4</annotation></semantics></math>);
+el post-entrenamiento no visto en clase, con la medida antes y después y
+defendido en directo
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">+0{,}3</annotation></semantics></math>);
+la tarea en bucle corriendo y documentada
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">+0{,}15</annotation></semantics></math>);
+el análisis de datos dentro del producto
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>0</mn><mo>,</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">+0{,}15</annotation></semantics></math>).
+<strong>Suspende la práctica</strong> que la app no arranque, que una
+cifra de la memoria no se pueda reproducir con lo entregado, o que el
+plan declare como medido algo que es una estimación.</p>
+<h2 id="la-defensa-sin-ia-la-obligatoriedad-y-la-política-de-ia">6. La
+defensa sin IA, la obligatoriedad y la política de IA</h2>
 <p>La <strong>ronda de preguntas tras el pitch</strong> se responde en
-directo, sin asistente y con los ordenadores cerrados. Entran las diez
-preguntas del §4, la defensa del RAG del Caso III, y dos más: justificad
-la decisión técnica más discutible del proyecto sin decir «lo dijo el
-modelo», y defended el margen ante una objeción de inversor. Cualquier
-miembro del grupo debe poder explicar <strong>cualquier línea, gráfico o
-párrafo</strong> entregado (regla C, Día 01). No poder defender en
-directo lo entregado suspende la práctica, por bueno que sea el
-entregable. La práctica es obligatoria y su nota debe ser
+directo, sin asistente y con los ordenadores cerrados, y <strong>vale el
+40 % de la nota</strong>. Entran el modelo, el esfuerzo y el arnés del
+§2, el patrón multi-agente con su alternativa descartada y qué agentes
+comparten contexto, todo lo que hayáis sumado por el §3, qué hace el
+sistema cuando el modelo no sabe, qué dato del cliente ve el modelo y
+adónde viaja, la decisión técnica más discutible del proyecto sin decir
+«lo dijo el modelo», y el margen ante una objeción de inversor.
+Cualquier miembro del grupo debe poder explicar <strong>cualquier línea,
+gráfico o párrafo</strong> entregado (regla C, Día 01). No poder
+defenderlo en directo suspende la práctica, por bueno que sea el
+entregable, y la nota debe ser
 <strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">\geq 5</annotation></semantics></math></strong>
 para superar la asignatura, con independencia de Kahoots, casos y
 examen.</p>
-<h2 id="política-de-ia-y-ayudas">8. Política de IA y ayudas</h2>
-<p>Permitida y fomentada en todo —código, prototipo, memoria y slides—
-<strong>con declaración de trazabilidad</strong> al inicio de la memoria
-y del prototipo: qué herramienta y para qué. Construir una startup
-AI-first con agentes es exactamente lo que el curso quiere que sepáis
-hacer; lo que se evalúa es que entendáis y defendáis lo construido.
-Prohibida en la defensa del §7. Conservad los prompts relevantes. Para
-dudas, el foro, la mentorización, el <em>open practicum</em> de los
-viernes y los diez minutos después de cada clase; la charla invitada de
-la semana 8 es la ocasión de validar la idea con alguien del sector.</p>
+<p>La IA está <strong>permitida y fomentada</strong> en todo —código,
+app, memoria y slides— <strong>con declaración de trazabilidad</strong>
+al principio de la memoria: qué herramienta y para qué. Construir una
+startup AI-first con agentes es exactamente lo que el curso quiere que
+sepáis hacer, y lo que se evalúa es que entendáis y defendáis lo
+construido. Conservad los prompts relevantes.</p>
 </body>
 </html>
